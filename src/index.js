@@ -1,37 +1,15 @@
 import React from 'react';
-import { render } from 'react-dom';
-import { ThemeProvider } from "@chakra-ui/core";
 
-import Header from "./components/Header";
-import Autocorrelation from "./components/Autocorrelation";
-import Channels from "./components/Channels";
+import { createRoot } from 'react-dom/client';
+import {reportWebVitals} from './reportWebVitals';
 
-function App() {
-    return (
-        <ThemeProvider>
-            <Header />
-            {/*<Autocorrelation />*/}
-            <Channels />
-        </ThemeProvider>
-    )
-}
+import App from './components/base-components/App';
 
-const rootElement = document.getElementById("root")
-render(<App />, rootElement)
 
-// import ReactDOM from 'react-dom';
-// import './index.css';
-// import App from './App';
-// import reportWebVitals from './reportWebVitals';
-//
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>,
-//   document.getElementById('root')
-// );
+//Initialising Root Element in React 18 based on App component
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<App />);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
+// Basic performance metric printed to console.log()
+reportWebVitals();
