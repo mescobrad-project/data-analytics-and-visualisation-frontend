@@ -13,6 +13,7 @@ import AutoCorrelationFunctionPage from "./AutoCorrelationFunctionPage";
 import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import LayoutSimpleFunctions from "../../layout/LayoutSimpleFunctions";
+import PartialAutoCorrelationFunctionPage from "./PartialAutoCorrelationFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -48,6 +49,7 @@ const App = () => {
                     <Routes>
                         <Route exact path="/" element={(<LayoutMain><WelcomePage/></LayoutMain>)}/>
                         <Route exact path="/auto_correlation" element={(<LayoutMain><AutoCorrelationFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/partial_auto_correlation" element={(<LayoutMain><PartialAutoCorrelationFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                     </Routes>
