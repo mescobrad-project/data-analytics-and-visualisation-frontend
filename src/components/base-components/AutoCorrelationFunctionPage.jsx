@@ -77,7 +77,7 @@ class AutoCorrelationFunctionPage extends React.Component {
      * Call backend endpoint to get channels of eeg
      */
     async fetchChannels(url, config) {
-        API.get("test/list/channels", {}).then(res => {
+        API.get("list/channels", {}).then(res => {
             this.setState({channels: res.data.channels})
         });
     }
@@ -123,7 +123,7 @@ class AutoCorrelationFunctionPage extends React.Component {
 
 
         // Send the request
-        API.get("test/return_autocorrelation",
+        API.get("return_autocorrelation",
             {
                 params: {input_name: this.state.selected_channel, input_adjusted: this.state.selected_adjusted,
                     input_qstat: this.state.selected_qstat, input_fft: this.state.selected_fft,

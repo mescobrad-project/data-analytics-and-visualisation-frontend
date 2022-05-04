@@ -66,11 +66,11 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
      * Call backend endpoint to get channels of eeg
      */
     async fetchChannels(url, config) {
-        API.get("test/list/channels", {}).then(res => {
+        API.get("list/channels", {}).then(res => {
             this.setState({channels: res.data.channels})
         });
     }
-
+    
     /**
      * Process and send the request for auto correlation and handle the response
      */
@@ -142,7 +142,6 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                     temp_object["yValue2"] = resultJson.confint[it][1]
                     temp_array_alpha.push(temp_object)
                 }
-                // co
 
                 this.setState({confint_chart_data: temp_array_alpha})
                 this.setState({confint_chart_show: true});
@@ -286,7 +285,6 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                     </Typography>
                     <div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
                     <hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>
-
                 </Grid>
             </Grid>
         )
