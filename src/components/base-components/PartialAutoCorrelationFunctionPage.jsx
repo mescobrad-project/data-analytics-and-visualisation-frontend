@@ -21,8 +21,8 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
-class AutoCorrelationFunctionPage extends React.Component {
-    constructor(props) {
+class PartialAutoCorrelationFunctionPage extends React.Component {
+    constructor(props){
         super(props);
         this.state = {
             // List of channels sent by the backend
@@ -34,25 +34,18 @@ class AutoCorrelationFunctionPage extends React.Component {
 
             //Values selected currently on the form
             selected_channel: "",
-            selected_adjusted: false,
-            selected_qstat: false,
-            selected_fft: true,
-            selected_bartlett_confint: true,
-            selected_missing: "none",
+            selected_method: "yw",
             selected_alpha: "",
             selected_nlags: "",
 
             // Values to pass to visualisations
             correlation_chart_data : [],
             confint_chart_data : false,
-            qstat_chart_data : false,
-            pvalues_chart_data : false,
 
             // Visualisation Hide/Show values
             correlation_chart_show : false,
             confint_chart_show : false,
-            qstat_chart_show : false,
-            pvalues_chart_show : false,
+
 
         };
 
@@ -60,11 +53,7 @@ class AutoCorrelationFunctionPage extends React.Component {
         this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
-        this.handleSelectAdjustedChange = this.handleSelectAdjustedChange.bind(this);
-        this.handleSelectQstatChange = this.handleSelectQstatChange.bind(this);
-        this.handleSelectFFTChange = this.handleSelectFFTChange.bind(this);
-        this.handleSelectBartlettConfintChange = this.handleSelectBartlettConfintChange.bind(this);
-        this.handleSelectMissingChange = this.handleSelectMissingChange.bind(this);
+        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectNlagsChange = this.handleSelectNlagsChange.bind(this);
         // Initialise component
@@ -108,26 +97,18 @@ class AutoCorrelationFunctionPage extends React.Component {
         // Set flags for optional data that need to be shown since if this check is done after results have arrived, maybe the
         // data has already been changed and the wrong visualisation will be shown
         let flag_alpha = false;
-        let flag_qstat = false;
 
         // If alpha is enabled, enable relevant visualisations
         if(to_send_input_alpha){
             flag_alpha = true;
         }
 
-        // If qstat is enabled, enable relevant visualisations
-        if(this.state.selected_qstat){
-            flag_qstat = true;
-        }
-
-
-
+        console.log("METHOD VALUE")
+        console.log( this.state.selected_method)
         // Send the request
-        API.get("test/return_autocorrelation",
+        API.get("return_partial_autocorrelation",
             {
-                params: {input_name: this.state.selected_channel, input_adjusted: this.state.selected_adjusted,
-                    input_qstat: this.state.selected_qstat, input_fft: this.state.selected_fft,
-                    input_bartlett_confint: this.state.selected_bartlett_confint, input_missing: this.state.selected_missing,
+                params: {input_name: this.state.selected_channel, input_method: this.state.selected_method,
                     input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}
             }
         ).then(res => {
@@ -135,13 +116,13 @@ class AutoCorrelationFunctionPage extends React.Component {
 
             // Show only relevant visualisations and load their data
             // Correlation chart always has results so should always be enabled
-            this.setState({correlation_results: resultJson.values_autocorrelation})
+            this.setState({correlation_results: resultJson.values_partial_autocorrelation})
 
             let temp_array_correlation = []
-            for ( let it =0 ; it < resultJson.values_autocorrelation.length; it++){
+            for ( let it =0 ; it < resultJson.values_partial_autocorrelation.length; it++){
                 let temp_object = {}
                 temp_object["category"] = it
-                temp_object["yValue"] = resultJson.values_autocorrelation[it]
+                temp_object["yValue"] = resultJson.values_partial_autocorrelation[it]
                 temp_array_correlation.push(temp_object)
             }
             // console.log("")
@@ -167,28 +148,6 @@ class AutoCorrelationFunctionPage extends React.Component {
                 this.setState({confint_chart_show: true});
             }
 
-            // Qstat optional charts
-            if(flag_qstat){
-                let temp_array_qstat = []
-                for ( let it =0 ; it < resultJson.qstat.length; it++){
-                    let temp_object = {}
-                    temp_object["category"] = it
-                    temp_object["yValue"] = resultJson.qstat[it]
-                    temp_array_qstat.push(temp_object)
-                }
-                this.setState({qstat_chart_data: temp_array_qstat})
-                this.setState({qstat_chart_show: true});
-
-                let temp_array_pvalues = []
-                for ( let it =0 ; it < resultJson.pvalues.length; it++){
-                    let temp_object = {}
-                    temp_object["category"] = it
-                    temp_object["yValue"] = resultJson.pvalues[it]
-                    temp_array_pvalues.push(temp_object)
-                }
-                this.setState({pvalues_chart_data: temp_array_pvalues})
-                this.setState({pvalues_chart_show: true});
-            }
         });
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
         //     method: "GET",
@@ -215,20 +174,8 @@ class AutoCorrelationFunctionPage extends React.Component {
     handleSelectChannelChange(event){
         this.setState( {selected_channel: event.target.value})
     }
-    handleSelectAdjustedChange(event){
-        this.setState( {selected_adjusted: event.target.value})
-    }
-    handleSelectQstatChange(event){
-        this.setState( {selected_qstat: event.target.value})
-    }
-    handleSelectFFTChange(event){
-        this.setState( {selected_fft: event.target.value})
-    }
-    handleSelectBartlettConfintChange(event){
-        this.setState( {selected_bartlett_confint: event.target.value})
-    }
-    handleSelectMissingChange(event){
-        this.setState( {selected_missing: event.target.value})
+    handleSelectMethodChange(event){
+        this.setState( {selected_method: event.target.value})
     }
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
@@ -253,7 +200,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                 </Grid>
                 <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        AutoCorrelation Parameterisation
+                        Partial AutoCorrelation Parameterisation
                     </Typography>
                     <hr/>
                     <form onSubmit={this.handleSubmit}>
@@ -276,77 +223,25 @@ class AutoCorrelationFunctionPage extends React.Component {
                             <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="adjusted-selector-label">Adjusted</InputLabel>
+                            <InputLabel id="method-selector-label">Missing</InputLabel>
                             <Select
-                                labelId="adjusted-selector-label"
-                                id="adjusted-selector"
-                                value= {this.state.selected_adjusted}
-                                label="Adjusted"
-                                defaultValue={1}
-                                onChange={this.handleSelectAdjustedChange}
+                                labelId="method-selector-label"
+                                id="method-selector"
+                                value= {this.state.selected_method}
+                                label="Method"
+                                onChange={this.handleSelectMethodChange}
                             >
-                                <MenuItem value={"true"}><em>True</em></MenuItem>
-                                <MenuItem value={"false"}><em>False</em></MenuItem>
+                                {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
+                                <MenuItem value={"yw"}><em>Yule-Walker with sample-size adjustment</em></MenuItem>
+                                <MenuItem value={"ywm"}><em> Yule-Walker without adjustment</em></MenuItem>
+                                <MenuItem value={"ols"}><em>Regression of time series on lags of it and on constant</em></MenuItem>
+                                <MenuItem value={"ols-inefficient"}><em>Regression of time series on lags using a single common sample to estimate all pacf coefficients</em></MenuItem>
+                                <MenuItem value={"ols-adjusted"}><em>Regression of time series on lags with a bias adjustment</em></MenuItem>
+                                <MenuItem value={"ld"}><em>Levinson-Durbin recursion with bias correction</em></MenuItem>
+                                <MenuItem value={"ldb"}><em>Levinson-Durbin recursion without bias correction.</em></MenuItem>
+                                {/*<MenuItem value={"burg"}><em>Burg”s partial autocorrelation estimator</em></MenuItem>*/}
                             </Select>
-                            <FormHelperText>Should channels be adjusted</FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="qstat-selector-label">Qstat</InputLabel>
-                            <Select
-                                labelId="qstat-selector-label"
-                                id="qstat-selector"
-                                value= {this.state.selected_qstat}
-                                label="Qstat"
-                                onChange={this.handleSelectQstatChange}
-                            >
-                                <MenuItem value={"true"}><em>True</em></MenuItem>
-                                <MenuItem value={"false"}><em>False</em></MenuItem>
-                            </Select>
-                            <FormHelperText>Should Qstat be on?</FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="fft-selector-label">FFT</InputLabel>
-                            <Select
-                                labelId="fft-selector-label"
-                                id="fft-selector"
-                                value= {this.state.selected_fft}
-                                label="FFT"
-                                onChange={this.handleSelectFFTChange}
-                            >
-                                <MenuItem value={"true"}><em>True</em></MenuItem>
-                                <MenuItem value={"false"}><em>False</em></MenuItem>
-                            </Select>
-                            <FormHelperText>Should FFT be on?</FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="bartlett-confint-selector-label">Bartlet</InputLabel>
-                            <Select
-                                labelId="bartlett-confint-selector-label"
-                                id="bartlett-confint-selector"
-                                value= {this.state.selected_bartlett_confint}
-                                label="bartlett-confint"
-                                onChange={this.handleSelectBartlettConfintChange}
-                            >
-                                <MenuItem value={"true"}><em>True</em></MenuItem>
-                                <MenuItem value={"false"}><em>False</em></MenuItem>
-                            </Select>
-                            <FormHelperText>Should Bartlett Confint be on?</FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="missing-selector-label">Missing</InputLabel>
-                            <Select
-                                labelId="missing-selector-label"
-                                id="missing-selector"
-                                value= {this.state.selected_missing}
-                                label="Missing"
-                                onChange={this.handleSelectMissingChange}
-                            >
-                                <MenuItem value={"none"}><em>None</em></MenuItem>
-                                <MenuItem value={"raise"}><em>Raise</em></MenuItem>
-                                <MenuItem value={"conservative"}><em>Conservative</em></MenuItem>
-                                <MenuItem value={"drop"}><em>Drop</em></MenuItem>
-                            </Select>
-                            <FormHelperText>Should Bartlett Confint be on?</FormHelperText>
+                            <FormHelperText>Specify which method for the calculations to use.</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             {/*<InputLabel id="alpha-selector-label">Alpha</InputLabel>*/}
@@ -380,12 +275,6 @@ class AutoCorrelationFunctionPage extends React.Component {
                         Result Visualisation
                     </Typography>
                     <hr/>
-                    {/*<List>*/}
-                    {/*{this.state.correlation_results.map((result) => (*/}
-                    {/*    <ListItem> <ListItemText primary={result}/></ListItem>*/}
-                    {/*))}*/}
-                    {/*</List>*/}
-                    {/*// Probably should be removed to a new component !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
                         Correlation Results
                     </Typography>
@@ -398,22 +287,10 @@ class AutoCorrelationFunctionPage extends React.Component {
                     <div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
                     <hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>
 
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.qstat_chart_show ? 'block' : 'none')  }} noWrap>
-                        Qstat
-                    </Typography>
-                    <div style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="qstat_chart_id" chart_data={ this.state.qstat_chart_data}/></div>
-                    <hr style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}/>
-
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.pvalues_chart_show ? 'block' : 'none')  }} noWrap>
-                        Pvalues
-                    </Typography>
-                    <div style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="pvalues_chart_id" chart_data={ this.state.pvalues_chart_data}/></div>
-                    <hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>
-
                 </Grid>
             </Grid>
         )
     }
 }
 
-export default AutoCorrelationFunctionPage;
+export default PartialAutoCorrelationFunctionPage;
