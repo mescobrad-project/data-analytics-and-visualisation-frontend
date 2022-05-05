@@ -118,13 +118,9 @@ class PointChartCustom extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
-        //
-        console.log("UPDATED COMPONENT")
-        console.log(this.props.chart_data)
         if(this.props.chart_data){
-            console.log("------ENTERED-----")
-            this.xAxis.data.pushAll(this.props.chart_data)
-            this.series.data.pushAll(this.props.chart_data)
+            this.xAxis.data.setAll(this.props.chart_data)
+            this.series.data.setAll(this.props.chart_data)
         }
 
     }
