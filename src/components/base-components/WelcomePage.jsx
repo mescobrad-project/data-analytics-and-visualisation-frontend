@@ -1,4 +1,5 @@
 import React, {useContext, useEffect} from 'react';
+import {Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
 //
@@ -6,17 +7,77 @@ import React, {useContext, useEffect} from 'react';
 // import InitialPageService from "./InitialPageService";
 
 
+function SendIcon() {
+    return null;
+}
+
+function DraftsIcon() {
+    return null;
+}
+
+function InboxIcon() {
+    return null;
+}
+
 function WelcomePage() {
     useEffect(() => {
         document.title = ' MES-CoBraD | Analytics Engine'
     }, [])
 
     return (
-        <React.Fragment>
-            {/*<h1>{document.title}</h1>*/}
-            <h1>MES-CoBraD | Analytics Engine</h1>
-            <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
-        </React.Fragment>
+            <React.Fragment>
+                {/*<h1>{document.title}</h1>*/}
+                <h1>MES-CoBraD | Analytics Engine</h1>
+                <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
+
+                <List
+                        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                        subheader={
+                            <ListSubheader component="div" id="nested-list-subheader">
+                                <h2>Existing pages</h2>
+                            </ListSubheader>
+                        }>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/auto_correlation"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Auto Correlation >
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/partial_auto_correlation"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Partial Auto Correlation >
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/filters"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Filters (WIP)>
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/welch"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Welch (WIP)>
+                        </ListItemButton>
+                    </Link>
+                </List>
+
+            </React.Fragment>
     );
 }
 

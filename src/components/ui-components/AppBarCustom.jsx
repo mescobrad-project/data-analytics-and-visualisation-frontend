@@ -1,4 +1,4 @@
-import {AppBar, Box, Container, Toolbar, Typography} from '@mui/material'
+import {AppBar, Box, Container, Link, ListItemButton, Toolbar, Typography} from '@mui/material'
 import React from 'react';
 
 const AppBarCustom = () => {
@@ -6,9 +6,15 @@ const AppBarCustom = () => {
         <Box sx={{flexGrow: 1}}>
             <AppBar position="relative">
                 <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }} noWrap>
-                        Analytics Engine
-                    </Typography>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/"
+                    >
+                        <Typography variant="h6" sx={{ color: "#ffffff",flexGrow: 1 }} noWrap>
+                            Analytics Engine
+                        </Typography>
+                    </Link>
                 </Toolbar>
             </AppBar>
         </Box>
