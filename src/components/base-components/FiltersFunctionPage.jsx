@@ -38,11 +38,15 @@ class FiltersFunctionPage extends React.Component {
             selected_analog: false,
             selected_fs: "",
             selected_output: "ba",
-            selected_cutoff: "",
-
+            selected_cutoff_1: "",
+            selected_cutoff_2: "",
+            selected_order: "5",
+            selected_worn: "",
+            selected_whole: false,
+            selected_fs_freq: "",
             // old
-            selected_alpha: "",
-            selected_nlags: "",
+            // selected_alpha: "",
+            // selected_nlags: "",
 
             // Values to pass to visualisations
             correlation_chart_data : [],
@@ -63,7 +67,12 @@ class FiltersFunctionPage extends React.Component {
         this.handleSelectAnalogChange = this.handleSelectAnalogChange.bind(this);
         this.handleSelectFsChange = this.handleSelectFsChange.bind(this);
         this.handleSelectOutputChange = this.handleSelectOutputChange.bind(this);
-        this.handleSelectCutoffChange = this.handleSelectCutoffChange.bind(this);
+        this.handleSelectCutoff1Change = this.handleSelectCutoff1Change.bind(this);
+        this.handleSelectCutoff2Change = this.handleSelectCutoff2Change.bind(this);
+        this.handleSelectOrderChange = this.handleSelectOrderChange.bind(this);
+        this.handleSelectWornChange = this.handleSelectWornChange.bind(this);
+        this.handleSelectWholeChange = this.handleSelectWholeChange.bind(this);
+        this.handleSelectFsFreqChange = this.handleSelectFsFreqChange.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchChannels();
@@ -85,15 +94,34 @@ class FiltersFunctionPage extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
         // Convert alpha and nlags from string to int and float
-        let to_send_input_alpha = null;
-        let to_send_input_nlags = null;
+        let to_send_input_cutoff_1 = null;
+        let to_send_input_cutoff_2 = null;
+        let to_send_input_fs = null;
+        let to_send_input_order = null;
+        let to_send_input_worn = null;
+        let to_send_input_fs_freq = null;
 
-        if (!!this.state.selected_alpha){
-            to_send_input_alpha = parseFloat(this.state.selected_alpha)
+        if (!!this.state.selected_cutoff_1){
+            to_send_input_cutoff_1 = parseInt(this.state.selected_cutoff_1)
         }
 
-        if (!!this.state.selected_nlags){
-            to_send_input_nlags = parseInt(this.state.selected_nlags)
+        if (!!this.state.selected_cutoff_2){
+            to_send_input_cutoff_2 = parseInt(this.state.selected_cutoff_2)
+        }
+
+        if (!!this.state.selected_fs){
+            to_send_input_fs = parseFloat(this.state.selected_fs)
+        }
+
+        if (!!this.state.selected_order){
+            to_send_input_order = parseInt(this.state.selected_order)
+        }
+
+        if (!!this.state.selected_worn){
+            to_send_input_worn = parseInt(this.state.selected_worn)
+        }
+        if (!!this.state.selected_fs_freq){
+            to_send_input_fs_freq = parseInt(this.state.selected_fs_freq)
         }
 
         //Reset view of optional visualisations preview
@@ -104,56 +132,78 @@ class FiltersFunctionPage extends React.Component {
 
         // Set flags for optional data that need to be shown since if this check is done after results have arrived, maybe the
         // data has already been changed and the wrong visualisation will be shown
-        let flag_alpha = false;
+        // let flag_alpha = false;
+        //
+        // // If alpha is enabled, enable relevant visualisations
+        // if(to_send_input_alpha){
+        //     flag_alpha = true;
+        // }
 
-        // If alpha is enabled, enable relevant visualisations
-        if(to_send_input_alpha){
-            flag_alpha = true;
-        }
-
-        console.log("METHOD VALUE")
-        console.log( this.state.selected_method)
         // Send the request
-        API.get("return_partial_autocorrelation",
+        console.log("---------------------------")
+        console.log(this.state.selected_channel)
+        console.log(this.state.selected_cutoff_1)
+        console.log(this.state.selected_cutoff_2)
+        console.log(to_send_input_fs)
+        console.log(this.state.selected_analog)
+        console.log(this.state.selected_btype)
+        console.log(this.state.selected_output)
+        console.log(to_send_input_worn)
+        console.log(this.state.selected_whole)
+        console.log(to_send_input_fs_freq)
+        console.log("---------------------------")
+        API.get("return_filters",
             {
-                params: {input_name: this.state.selected_channel, input_method: this.state.selected_method,
-                    input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}
+                params: {input_name: this.state.selected_channel,
+                    input_cutoff_1: to_send_input_cutoff_1,
+                    input_cutoff_2: to_send_input_cutoff_2,
+                    input_order: to_send_input_order,
+                    input_fs: to_send_input_fs,
+                    input_analog: this.state.selected_analog,
+                    input_btype: this.state.selected_btype,
+                    input_output: this.state.selected_output,
+                    input_worn: to_send_input_worn,
+                    input_whole: this.state.selected_whole,
+                    input_fs_freq: to_send_input_fs_freq
+                }
             }
         ).then(res => {
             const resultJson = res.data;
-
-            // Show only relevant visualisations and load their data
-            // Correlation chart always has results so should always be enabled
-            this.setState({correlation_results: resultJson.values_partial_autocorrelation})
-
-            let temp_array_correlation = []
-            for ( let it =0 ; it < resultJson.values_partial_autocorrelation.length; it++){
-                let temp_object = {}
-                temp_object["category"] = it
-                temp_object["yValue"] = resultJson.values_partial_autocorrelation[it]
-                temp_array_correlation.push(temp_object)
-            }
-            // console.log("")
-            // console.log(temp_array)
-
-
-            this.setState({correlation_chart_data: temp_array_correlation})
-            this.setState({correlation_chart_show: true})
-
-            // Alpha optional charts
-            if(flag_alpha){
-                let temp_array_alpha = []
-                for ( let it =0 ; it < resultJson.confint.length; it++){
-                    let temp_object = {}
-                    temp_object["category"] = it
-                    temp_object["yValue1"] = resultJson.confint[it][0]
-                    temp_object["yValue2"] = resultJson.confint[it][1]
-                    temp_array_alpha.push(temp_object)
-                }
-
-                this.setState({confint_chart_data: temp_array_alpha})
-                this.setState({confint_chart_show: true});
-            }
+            console.log("resultJson")
+            console.log(resultJson)
+            //
+            // // Show only relevant visualisations and load their data
+            // // Correlation chart always has results so should always be enabled
+            // this.setState({correlation_results: resultJson.values_partial_autocorrelation})
+            //
+            // let temp_array_correlation = []
+            // for ( let it =0 ; it < resultJson.values_partial_autocorrelation.length; it++){
+            //     let temp_object = {}
+            //     temp_object["category"] = it
+            //     temp_object["yValue"] = resultJson.values_partial_autocorrelation[it]
+            //     temp_array_correlation.push(temp_object)
+            // }
+            // // console.log("")
+            // // console.log(temp_array)
+            //
+            //
+            // this.setState({correlation_chart_data: temp_array_correlation})
+            // this.setState({correlation_chart_show: true})
+            //
+            // // Alpha optional charts
+            // if(flag_alpha){
+            //     let temp_array_alpha = []
+            //     for ( let it =0 ; it < resultJson.confint.length; it++){
+            //         let temp_object = {}
+            //         temp_object["category"] = it
+            //         temp_object["yValue1"] = resultJson.confint[it][0]
+            //         temp_object["yValue2"] = resultJson.confint[it][1]
+            //         temp_array_alpha.push(temp_object)
+            //     }
+            //
+            //     this.setState({confint_chart_data: temp_array_alpha})
+            //     this.setState({confint_chart_show: true});
+            // }
 
         });
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
@@ -183,6 +233,7 @@ class FiltersFunctionPage extends React.Component {
     }
     handleSelectBTypeChange(event){
         this.setState( {selected_btype: event.target.value})
+        this.setState( {selected_cutoff_2: ""})
     }
     handleSelectAnalogChange(event){
         this.setState( {selected_analog: event.target.value})
@@ -192,9 +243,26 @@ class FiltersFunctionPage extends React.Component {
     }
     handleSelectOutputChange(event){
         this.setState( {selected_output: event.target.value})
+        this.setState( {selected_whole: false})
+        this.setState( {selected_fs_freq: ""})
     }
-    handleSelectCutoffChange(event){
-        this.setState( {selected_cutoff: event.target.value})
+    handleSelectCutoff1Change(event){
+        this.setState( {selected_cutoff_1: event.target.value})
+    }
+    handleSelectCutoff2Change(event){
+        this.setState( {selected_cutoff_2: event.target.value})
+    }
+    handleSelectWornChange(event){
+        this.setState( {selected_worn: event.target.value})
+    }
+    handleSelectWholeChange(event){
+        this.setState( {selected_whole: event.target.value})
+    }
+    handleSelectFsFreqChange(event){
+        this.setState( {selected_fs_freq: event.target.value})
+    }
+    handleSelectOrderChange(event){
+        this.setState( {selected_order: event.target.value})
     }
 
     render() {
@@ -216,10 +284,14 @@ class FiltersFunctionPage extends React.Component {
                         Partial AutoCorrelation Parameterisation
                     </Typography>
                     <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
+                        Step 1:
+                    </Typography>
                     <form onSubmit={this.handleSubmit}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
+                                required
                                 labelId="channel-selector-label"
                                 id="channel-selector"
                                 value= {this.state.selected_channel}
@@ -238,11 +310,12 @@ class FiltersFunctionPage extends React.Component {
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="btype-selector-label">Btype</InputLabel>
                             <Select
+                                required
                                 labelId="btype-selector-label"
                                 id="btype-selector"
                                 value= {this.state.selected_btype}
                                 label="BType"
-                                onChange={this.handleSelectMethodChange}
+                                onChange={this.handleSelectBTypeChange}
                             >
                                 {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
                                 <MenuItem value={"lowpass"}><em>Lowpass</em></MenuItem>
@@ -251,6 +324,26 @@ class FiltersFunctionPage extends React.Component {
                                 <MenuItem value={"bandstop"}><em>Bandstop</em></MenuItem>
                             </Select>
                             <FormHelperText>Btype</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    required
+                                    id="order-selector"
+                                    value= {this.state.selected_fs}
+                                    label="FS"
+                                    onChange={this.handleSelectFsChange}
+                            />
+                            <FormHelperText>Fs should have more than double the value from cutoff</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    required
+                                    id="cutoff-1-selector"
+                                    value= {this.state.selected_cutoff_1}
+                                    label="Cutoff"
+                                    onChange={this.handleSelectCutoff1Change}
+                            />
+                            <FormHelperText>Cutoff should be less or equal than half of fs</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="analog-selector-label">Analog</InputLabel>
@@ -268,8 +361,9 @@ class FiltersFunctionPage extends React.Component {
                             <FormHelperText>Analog.</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="output-selector-label">Analog</InputLabel>
+                            <InputLabel id="output-selector-label">Output</InputLabel>
                             <Select
+                                    required
                                     labelId="output-selector-label"
                                     id="output-selector"
                                     value= {this.state.selected_output}
@@ -281,17 +375,64 @@ class FiltersFunctionPage extends React.Component {
                                 <MenuItem value={"zpk"}><em> ZPK</em></MenuItem>
                                 <MenuItem value={"sos"}><em> SOS</em></MenuItem>
                             </Select>
-                            <FormHelperText>Analog</FormHelperText>
+                            <FormHelperText>Output</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_btype == "bandpass" ? 'block' : 'none')}}>
+                            <TextField
+                                    id="cutoff-2-selector"
+                                    value= {this.state.selected_cutoff_2}
+                                    label="Cutoff 2"
+                                    onChange={this.handleSelectCutoff2Change}
+                            />
+                            <FormHelperText>Cutoff 2?</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                id="cutoff-selector"
-                                value= {this.state.selected_fs}
-                                label="Cutoff"
-                                onChange={this.handleSelectCutoffChange}
+                                    id="order-selector"
+                                    value= {this.state.selected_order}
+                                    label="Order"
+                                    onChange={this.handleSelectOrderChange}
                             />
-                            <FormHelperText>Cutoff?</FormHelperText>
+                            <FormHelperText>Order?</FormHelperText>
                         </FormControl>
+                        <hr/>
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
+                            Step 2 Filter Config:
+                        </Typography>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="worn-selector"
+                                    value= {this.state.selected_worn}
+                                    label="WORn"
+                                    onChange={this.handleSelectWornChange}
+                            />
+                            <FormHelperText>WORn?</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_output == "sos" ? 'block' : 'none')}}>
+                            <TextField
+                                    id="fs-freq-selector"
+                                    value= {this.state.selected_fs_freq}
+                                    label="Whole"
+                                    onChange={this.handleSelectFsFreqChange}
+                            />
+                            <FormHelperText>Fs Freq?</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120 , display: (this.state.selected_output == "sos" ? 'block' : 'none')}}>
+                            <InputLabel id="whole-selector-label">Whole</InputLabel>
+                            <Select
+                                    labelId="whole-selector-label"
+                                    id="whole-selector"
+                                    value= {this.state.selected_whole}
+                                    label="Whole"
+                                    onChange={this.handleSelectWholeChange}
+                            >
+                                {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
+                                <MenuItem value={"true"}><em>True</em></MenuItem>
+                                <MenuItem value={"false"}><em> False</em></MenuItem>
+                            </Select>
+                            <FormHelperText>Whole.</FormHelperText>
+                        </FormControl>
+                        <br/>
                         <Button variant="contained" color="primary" type="submit">
                             Submit
                         </Button>
