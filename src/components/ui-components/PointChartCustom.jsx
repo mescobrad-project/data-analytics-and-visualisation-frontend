@@ -42,7 +42,8 @@ class PointChartCustom extends React.Component {
                 pinchZoomX:true
             })
         );
-
+        // Format numbers
+        root.numberFormatter.set("numberFormat", "#a");
 // Create axes
 // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
         let xRenderer = am5xy.AxisRendererX.new(root, {
