@@ -8,6 +8,7 @@ import LayoutMain from "../../layout/LayoutMain";
 import WelcomePage from "./WelcomePage";
 import PageError from "./PageError";
 import AutoCorrelationFunctionPage from "./AutoCorrelationFunctionPage";
+import WelchFunctionPage from "./WelchFunctionPage";
 
 // Import Material UI Customising
 import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/styles';
@@ -50,6 +51,7 @@ const App = () => {
                         <Route exact path="/" element={(<LayoutMain><WelcomePage/></LayoutMain>)}/>
                         <Route exact path="/auto_correlation" element={(<LayoutMain><AutoCorrelationFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/partial_auto_correlation" element={(<LayoutMain><PartialAutoCorrelationFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/welch" element={(<LayoutMain><WelchFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                     </Routes>
