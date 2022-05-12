@@ -8,13 +8,15 @@ import LayoutMain from "../../layout/LayoutMain";
 import WelcomePage from "./WelcomePage";
 import PageError from "./PageError";
 import AutoCorrelationFunctionPage from "./AutoCorrelationFunctionPage";
+import PartialAutoCorrelationFunctionPage from "./PartialAutoCorrelationFunctionPage";
 import WelchFunctionPage from "./WelchFunctionPage";
+import PeriodogramFunctionPage from "./PeriodogramFunctionPage";
 
 // Import Material UI Customising
 import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import LayoutSimpleFunctions from "../../layout/LayoutSimpleFunctions";
-import PartialAutoCorrelationFunctionPage from "./PartialAutoCorrelationFunctionPage";
+
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -52,6 +54,7 @@ const App = () => {
                         <Route exact path="/auto_correlation" element={(<LayoutMain><AutoCorrelationFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/partial_auto_correlation" element={(<LayoutMain><PartialAutoCorrelationFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/welch" element={(<LayoutMain><WelchFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/periodogram" element={(<LayoutMain><PeriodogramFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                     </Routes>
