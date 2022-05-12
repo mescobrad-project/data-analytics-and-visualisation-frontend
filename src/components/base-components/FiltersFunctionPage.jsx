@@ -49,14 +49,14 @@ class FiltersFunctionPage extends React.Component {
             // selected_nlags: "",
 
             // Values to pass to visualisations
-            correlation_chart_data : [],
-            confint_chart_data : false,
+            frequency_h_chart_data : [],
+            frequency_w_chart_data : [],
+            filter_chart_data : [],
 
             // Visualisation Hide/Show values
-            correlation_chart_show : false,
-            confint_chart_show : false,
-
-
+            frequency_h_chart_show : false,
+            frequency_w_chart_show : false,
+            filter_chart_show : false,
         };
 
         //Binding functions of the class
@@ -126,18 +126,13 @@ class FiltersFunctionPage extends React.Component {
 
         //Reset view of optional visualisations preview
         // this.setState({correlation_chart_show: false})
-        this.setState({confint_chart_show: false})
-        this.setState({qstat_chart_show: false})
-        this.setState({pvalues_chart_show: false})
+        this.setState({frequency_w_chart_show: false})
+        this.setState({filter_chart_show: false})
 
         // Set flags for optional data that need to be shown since if this check is done after results have arrived, maybe the
         // data has already been changed and the wrong visualisation will be shown
-        // let flag_alpha = false;
-        //
-        // // If alpha is enabled, enable relevant visualisations
-        // if(to_send_input_alpha){
-        //     flag_alpha = true;
-        // }
+        // Only zpk has less visualisation for now
+        let flag_output = this.state.selected_output;
 
         // Send the request
         console.log("---------------------------")
@@ -171,39 +166,40 @@ class FiltersFunctionPage extends React.Component {
             const resultJson = res.data;
             console.log("resultJson")
             console.log(resultJson)
-            //
-            // // Show only relevant visualisations and load their data
-            // // Correlation chart always has results so should always be enabled
-            // this.setState({correlation_results: resultJson.values_partial_autocorrelation})
-            //
-            // let temp_array_correlation = []
-            // for ( let it =0 ; it < resultJson.values_partial_autocorrelation.length; it++){
-            //     let temp_object = {}
-            //     temp_object["category"] = it
-            //     temp_object["yValue"] = resultJson.values_partial_autocorrelation[it]
-            //     temp_array_correlation.push(temp_object)
-            // }
-            // // console.log("")
-            // // console.log(temp_array)
-            //
-            //
-            // this.setState({correlation_chart_data: temp_array_correlation})
-            // this.setState({correlation_chart_show: true})
-            //
-            // // Alpha optional charts
-            // if(flag_alpha){
-            //     let temp_array_alpha = []
-            //     for ( let it =0 ; it < resultJson.confint.length; it++){
-            //         let temp_object = {}
-            //         temp_object["category"] = it
-            //         temp_object["yValue1"] = resultJson.confint[it][0]
-            //         temp_object["yValue2"] = resultJson.confint[it][1]
-            //         temp_array_alpha.push(temp_object)
-            //     }
-            //
-            //     this.setState({confint_chart_data: temp_array_alpha})
-            //     this.setState({confint_chart_show: true});
-            // }
+
+            // Show only relevant visualisations and load their data
+            // frequnecy chart always has results so should always be enabled
+
+            let temp_array_frequency = []
+            for ( let it =0 ; it < resultJson.frequency_w.length; it++){
+                let temp_object = {}
+                temp_object["category"] = it
+                temp_object["yValue"] = resultJson.frequency_w[it]
+                temp_array_frequency.push(temp_object)
+            }
+            // console.log("")
+            // console.log(temp_array)
+
+
+            this.setState({frequency_w_chart_data: temp_array_frequency})
+            this.setState({frequency_w_chart_show: true})
+
+            // Filter optional charts
+            if(flag_output != "zpk"){
+                let temp_array_filter = []
+                for ( let it =0 ; it < resultJson.filter.length; it++){
+                    if(it > 1000){
+                        break;
+                    }
+                    let temp_object = {}
+                    temp_object["category"] = it
+                    temp_object["yValue"] = resultJson.filter[it]
+                    temp_array_filter.push(temp_object)
+                }
+
+                this.setState({filter_chart_data: temp_array_filter})
+                this.setState({filter_chart_show: true});
+            }
 
         });
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
@@ -305,7 +301,7 @@ class FiltersFunctionPage extends React.Component {
                                     <MenuItem value={channel}>{channel}</MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
+                            <FormHelperText>Select Channel</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="btype-selector-label">Btype</InputLabel>
@@ -323,7 +319,7 @@ class FiltersFunctionPage extends React.Component {
                                 <MenuItem value={"bandpass"}><em>Bandpass</em></MenuItem>
                                 <MenuItem value={"bandstop"}><em>Bandstop</em></MenuItem>
                             </Select>
-                            <FormHelperText>Btype</FormHelperText>
+                            <FormHelperText>The type of filter</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
@@ -333,7 +329,7 @@ class FiltersFunctionPage extends React.Component {
                                     label="FS"
                                     onChange={this.handleSelectFsChange}
                             />
-                            <FormHelperText>Fs should have more than double the value from cutoff</FormHelperText>
+                            <FormHelperText>The sampling frequency of the digital sytem, float, FS should have more than double the value from cutoff</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
@@ -343,7 +339,7 @@ class FiltersFunctionPage extends React.Component {
                                     label="Cutoff"
                                     onChange={this.handleSelectCutoff1Change}
                             />
-                            <FormHelperText>Cutoff should be less or equal than half of fs</FormHelperText>
+                            <FormHelperText>Critical frequency cutoff. Cutoff should be less or equal than half of fs</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="analog-selector-label">Analog</InputLabel>
@@ -358,7 +354,7 @@ class FiltersFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em> False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Analog.</FormHelperText>
+                            <FormHelperText>Should this be an analog filter</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="output-selector-label">Output</InputLabel>
@@ -375,16 +371,16 @@ class FiltersFunctionPage extends React.Component {
                                 <MenuItem value={"zpk"}><em> ZPK</em></MenuItem>
                                 <MenuItem value={"sos"}><em> SOS</em></MenuItem>
                             </Select>
-                            <FormHelperText>Output</FormHelperText>
+                            <FormHelperText>Type of output</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_btype == "bandpass" ? 'block' : 'none')}}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_btype == "bandpass" ? 'block' : this.state.selected_btype == "bandstop" ? 'block' : 'none')}}>
                             <TextField
                                     id="cutoff-2-selector"
                                     value= {this.state.selected_cutoff_2}
                                     label="Cutoff 2"
                                     onChange={this.handleSelectCutoff2Change}
                             />
-                            <FormHelperText>Cutoff 2?</FormHelperText>
+                            <FormHelperText>Critical frequency cutoff. For Bandpass/Bandstop Filters cutoff is a length-2 sequence</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
@@ -393,7 +389,7 @@ class FiltersFunctionPage extends React.Component {
                                     label="Order"
                                     onChange={this.handleSelectOrderChange}
                             />
-                            <FormHelperText>Order?</FormHelperText>
+                            <FormHelperText>The order of filter</FormHelperText>
                         </FormControl>
                         <hr/>
                         <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
@@ -412,7 +408,7 @@ class FiltersFunctionPage extends React.Component {
                             <TextField
                                     id="fs-freq-selector"
                                     value= {this.state.selected_fs_freq}
-                                    label="Whole"
+                                    label="Fs Freq"
                                     onChange={this.handleSelectFsFreqChange}
                             />
                             <FormHelperText>Fs Freq?</FormHelperText>
@@ -439,21 +435,24 @@ class FiltersFunctionPage extends React.Component {
                     </form>
                 </Grid>
                 <Grid item xs={5}>
-                    {/*<Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
-                    {/*    Result Visualisation*/}
-                    {/*</Typography>*/}
-                    {/*<hr/>*/}
-                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                    {/*    Correlation Results*/}
-                    {/*</Typography>*/}
-                    {/*<div style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>*/}
-                    {/*<hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>*/}
+                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Result Visualisation
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.filter_chart_show ? 'block' : 'none')  }} noWrap>
+                        Filters
+                    </Typography>
+                    <Typography variant="p" sx={{ flexGrow: 1, display: (this.state.filter_chart_show ? 'block' : 'none')  }} noWrap>
+                        Showing first 1000 entries
+                    </Typography>
+                    <div style={{ display: (this.state.filter_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="frequency_chart_id" chart_data={ this.state.filter_chart_data}/></div>
+                    <hr style={{ display: (this.state.filter_chart_show ? 'block' : 'none') }}/>
 
-                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                    {/*    Confidence Interval*/}
-                    {/*</Typography>*/}
-                    {/*<div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>*/}
-                    {/*<hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>*/}
+                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.frequency_w_chart_show ? 'block' : 'none')  }} noWrap>
+                        Frequency
+                    </Typography>
+                    <div style={{ display: (this.state.frequency_w_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="filter_chart_id" chart_data={ this.state.frequency_w_chart_data}/></div>
+                    <hr style={{ display: (this.state.frequency_w_chart_show ? 'block' : 'none') }}/>
                 </Grid>
             </Grid>
         )
