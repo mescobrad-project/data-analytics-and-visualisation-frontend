@@ -63,7 +63,7 @@ function WelcomePage() {
                             href="/filters"
                     >
                         <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
-                            Filters (WIP)>
+                            Filters>
                         </ListItemButton>
                     </Link>
                     <Link
@@ -72,7 +72,7 @@ function WelcomePage() {
                             href="/welch"
                     >
                         <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
-                            Welch (WIP)>
+                            Welch>
                         </ListItemButton>
                     </Link>
                 </List>
