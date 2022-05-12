@@ -245,6 +245,16 @@ class AutoCorrelationFunctionPage extends React.Component {
                         Data Preview
                     </Typography>
                     <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        File Name:
+                    </Typography>
+                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        trial_av.edf
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Channels:
+                    </Typography>
                     <List>
                         {this.state.channels.map((channel) => (
                             <ListItem> <ListItemText primary={channel}/></ListItem>
@@ -288,7 +298,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should channels be adjusted</FormHelperText>
+                            <FormHelperText>If True, then denominators for autocovariance are n-k, otherwise n</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="qstat-selector-label">Qstat</InputLabel>
@@ -302,7 +312,8 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should Qstat be on?</FormHelperText>
+                            <FormHelperText>If True, returns the Ljung-Box q statistic for each autocorrelation
+                                coefficient</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="fft-selector-label">FFT</InputLabel>
@@ -316,7 +327,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should FFT be on?</FormHelperText>
+                            <FormHelperText>If True, computes the ACF via FFT</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="bartlett-confint-selector-label">Bartlet</InputLabel>
@@ -330,7 +341,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should Bartlett Confint be on?</FormHelperText>
+                            <FormHelperText>Should confidence intervals be generated using Bartlett's formula?</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="missing-selector-label">Missing</InputLabel>
@@ -346,7 +357,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"conservative"}><em>Conservative</em></MenuItem>
                                 <MenuItem value={"drop"}><em>Drop</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should Bartlett Confint be on?</FormHelperText>
+                            <FormHelperText>How should missing values be treated?</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             {/*<InputLabel id="alpha-selector-label">Alpha</InputLabel>*/}
@@ -357,7 +368,8 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 label="Alpha"
                                 onChange={this.handleSelectAlphaChange}
                             />
-                            <FormHelperText>Alpha to be checked?</FormHelperText>
+                            <FormHelperText>The confidence intervals for the given level are
+                                returned</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             {/*<InputLabel id="nlags-selector-label">Nlags</InputLabel>*/}
@@ -368,7 +380,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 label="Nlags"
                                 onChange={this.handleSelectNlagsChange}
                             />
-                            <FormHelperText>Nlags to be checked?</FormHelperText>
+                            <FormHelperText>Number of lags to return autocorrelation for</FormHelperText>
                         </FormControl>
                         <Button variant="contained" color="primary" type="submit">
                             Submit

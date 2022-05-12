@@ -269,9 +269,19 @@ class FiltersFunctionPage extends React.Component {
                         Data Preview
                     </Typography>
                     <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        File Name:
+                    </Typography>
+                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        trial_av.edf
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Channels:
+                    </Typography>
                     <List>
                         {this.state.channels.map((channel) => (
-                            <ListItem> <ListItemText primary={channel}/></ListItem>
+                                <ListItem> <ListItemText primary={channel}/></ListItem>
                         ))}
                     </List>
                 </Grid>
@@ -399,10 +409,10 @@ class FiltersFunctionPage extends React.Component {
                             <TextField
                                     id="worn-selector"
                                     value= {this.state.selected_worn}
-                                    label="WORn"
+                                    label="worN"
                                     onChange={this.handleSelectWornChange}
                             />
-                            <FormHelperText>WORn?</FormHelperText>
+                            <FormHelperText>How many frquencies to compute</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_output == "sos" ? 'block' : 'none')}}>
                             <TextField
@@ -411,7 +421,7 @@ class FiltersFunctionPage extends React.Component {
                                     label="Fs Freq"
                                     onChange={this.handleSelectFsFreqChange}
                             />
-                            <FormHelperText>Fs Freq?</FormHelperText>
+                            <FormHelperText>The sampling frequency of the digital system</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120 , display: (this.state.selected_output == "sos" ? 'block' : 'none')}}>
                             <InputLabel id="whole-selector-label">Whole</InputLabel>
@@ -426,7 +436,7 @@ class FiltersFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em> False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Whole.</FormHelperText>
+                            <FormHelperText> If whole is True, compute frequencies from 0 to fs, otherwise compute from 0 to the Nyquist frequency, fs/2 </FormHelperText>
                         </FormControl>
                         <br/>
                         <Button variant="contained" color="primary" type="submit">
