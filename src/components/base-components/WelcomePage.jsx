@@ -75,6 +75,15 @@ function WelcomePage() {
                             Welch>
                         </ListItemButton>
                     </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/find_peaks"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Find Peaks>
+                        </ListItemButton>
+                    </Link>
                 </List>
 
             </React.Fragment>
