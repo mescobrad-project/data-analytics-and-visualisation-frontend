@@ -81,7 +81,7 @@ function WelcomePage() {
                             href="/periodogram"
                     >
                         <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
-                            Periodogram (WIP)>
+                            Periodogram>
                         </ListItemButton>
                     </Link>
                 </List>
