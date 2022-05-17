@@ -191,9 +191,19 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                         Data Preview
                     </Typography>
                     <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        File Name:
+                    </Typography>
+                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        trial_av.edf
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Channels:
+                    </Typography>
                     <List>
                         {this.state.channels.map((channel) => (
-                            <ListItem> <ListItemText primary={channel}/></ListItem>
+                                <ListItem> <ListItemText primary={channel}/></ListItem>
                         ))}
                     </List>
                 </Grid>
@@ -251,7 +261,8 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                                 label="Alpha"
                                 onChange={this.handleSelectAlphaChange}
                             />
-                            <FormHelperText>Alpha to be checked?</FormHelperText>
+                            <FormHelperText>The confidence intervals for the given level are
+                                returned</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             {/*<InputLabel id="nlags-selector-label">Nlags</InputLabel>*/}
@@ -262,7 +273,7 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                                 label="Nlags"
                                 onChange={this.handleSelectNlagsChange}
                             />
-                            <FormHelperText>Nlags to be checked?</FormHelperText>
+                            <FormHelperText>Number of lags to return autocorrelation for</FormHelperText>
                         </FormControl>
                         <Button variant="contained" color="primary" type="submit">
                             Submit
