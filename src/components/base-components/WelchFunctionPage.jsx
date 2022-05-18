@@ -279,7 +279,7 @@ class WelchFunctionPage extends React.Component {
                                         label="Nfft"
                                         onChange={this.handleSelectNfftChange}
                                 />
-                                <FormHelperText>Nfft must be equal or higher than Nperseg</FormHelperText>
+                                <FormHelperText>Length of the FFT used, Nfft must be equal or higher than Nperseg</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="return-onesided-selector-label">Return Onesided</InputLabel>
