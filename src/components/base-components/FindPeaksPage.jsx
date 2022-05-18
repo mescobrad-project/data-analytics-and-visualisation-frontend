@@ -1,6 +1,8 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import PropTypes from 'prop-types';
+import InnerHTML from 'dangerously-set-html-content'
+
+// import PropTypes from 'prop-types';
 import {
     Button,
     FormControl,
@@ -19,7 +21,7 @@ import {
 // import * as am5xy from "@amcharts/amcharts5/xy";
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
-import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+// import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class FindPeaksPage extends React.Component {
     constructor(props){
@@ -53,12 +55,32 @@ class FindPeaksPage extends React.Component {
             selected_plateau_size_1: "",
             selected_plateau_size_2: "",
 
+            //TEST
+            test_chart_html:"",
 
             // Values to pass to visualisations
             peak_chart_data : [],
+            peak_heights_data : [],
+            left_thresholds_data : [],
+            right_thresholds_data : [],
+            prominences_data : [],
+            right_bases_data : [],
+            left_bases_data : [],
+            width_heights_data : [],
+            left_ips_data : [],
+            right_ips_data : [],
+            plateau_sizes_data : [],
+            left_edges_data : [],
+            right_edges_data : [],
 
             // Visualisation Hide/Show values
             peak_chart_show : false,
+            peak_heights_show : false,
+            thresholds_show : false,
+            // peak_chart_show : false,
+            // peak_chart_show : false,
+            // peak_chart_show : false,
+            // peak_chart_show : false,
         };
 
         //Binding functions of the class
@@ -126,43 +148,43 @@ class FindPeaksPage extends React.Component {
         }
 
         // MISSING SETTING VALUE AS INFINITY
-        if (this.state.selected_height_type != "none"){
-            if(this.state.selected_height_type == "min"){
-                to_send_input_height = parseInt(this.state.selected_height_1)
-            }else if(this.state.selected_height_type == "min-max"){
-                to_send_input_height = [parseInt(this.state.selected_height_1) , parseInt(this.state.selected_height_2)]
+        if (this.state.selected_height_type !== "none"){
+            if(this.state.selected_height_type === "min"){
+                to_send_input_height = parseFloat(this.state.selected_height_1)
+            }else if(this.state.selected_height_type === "min-max"){
+                to_send_input_height = JSON.stringify([parseFloat(this.state.selected_height_1) , parseFloat(this.state.selected_height_2)])
             }
         }
 
-        if (this.state.selected_threshold_type != "none"){
-            if(this.state.selected_threshold_type == "min"){
-                to_send_input_threshold = parseInt(this.state.selected_threshold_1)
-            }else if(this.state.selected_threshold_type == "min-max"){
-                to_send_input_threshold = [parseInt(this.state.selected_threshold_1) , parseInt(this.state.selected_threshold_2)]
+        if (this.state.selected_threshold_type !== "none"){
+            if(this.state.selected_threshold_type === "min"){
+                to_send_input_threshold = parseFloat(this.state.selected_threshold_1)
+            }else if(this.state.selected_threshold_type === "min-max"){
+                to_send_input_threshold = [parseFloat(this.state.selected_threshold_1) , parseFloat(this.state.selected_threshold_2)]
             }
         }
 
-        if (this.state.selected_prominence_type != "none"){
-            if(this.state.selected_prominence_type == "min"){
-                to_send_input_prominence = parseInt(this.state.selected_prominence_1)
-            }else if(this.state.selected_prominence_type == "min-max"){
-                to_send_input_prominence = [parseInt(this.state.selected_prominence_1) , parseInt(this.state.selected_prominence_2)]
+        if (this.state.selected_prominence_type !== "none"){
+            if(this.state.selected_prominence_type === "min"){
+                to_send_input_prominence = parseFloat(this.state.selected_prominence_1)
+            }else if(this.state.selected_prominence_type === "min-max"){
+                to_send_input_prominence = [parseFloat(this.state.selected_prominence_1) , parseFloat(this.state.selected_prominence_2)]
             }
         }
 
-        if (this.state.selected_width_type != "none"){
-            if(this.state.selected_width_type == "min"){
-                to_send_input_width = parseInt(this.state.selected_width_1)
-            }else if(this.state.selected_width_type == "min-max"){
-                to_send_input_width = [parseInt(this.state.selected_width_1) , parseInt(this.state.selected_width_2)]
+        if (this.state.selected_width_type !== "none"){
+            if(this.state.selected_width_type === "min"){
+                to_send_input_width = parseFloat(this.state.selected_width_1)
+            }else if(this.state.selected_width_type === "min-max"){
+                to_send_input_width = [parseFloat(this.state.selected_width_1) , parseFloat(this.state.selected_width_2)]
             }
         }
 
-        if (this.state.selected_plateau_size_type != "none"){
-            if(this.state.selected_plateau_size_type == "min"){
-                to_send_input_plateau = parseInt(this.state.selected_plateau_size_1)
-            }else if(this.state.selected_plateau_size_type == "min-max"){
-                to_send_input_plateau = [parseInt(this.state.selected_plateau_size_1) , parseInt(this.state.selected_plateau_size_2)]
+        if (this.state.selected_plateau_size_type !== "none"){
+            if(this.state.selected_plateau_size_type === "min"){
+                to_send_input_plateau = parseFloat(this.state.selected_plateau_size_1)
+            }else if(this.state.selected_plateau_size_type === "min-max"){
+                to_send_input_plateau = [parseFloat(this.state.selected_plateau_size_1) , parseFloat(this.state.selected_plateau_size_2)]
             }
         }
 
@@ -179,6 +201,8 @@ class FindPeaksPage extends React.Component {
         //     flag_alpha = true;
         // }
 
+        console.log("--------")
+        console.log(to_send_input_height)
         // Send the request
         API.get("return_peaks",
             {
@@ -198,7 +222,7 @@ class FindPeaksPage extends React.Component {
             console.log("--- Results ---")
             console.log(resultJson)
 
-
+            this.setState({test_chart_html: resultJson.figure})
             // Show only relevant visualisations and load their data
             // Correlation chart always has results so should always be enabled
             // this.setState({correlation_results: resultJson.values_partial_autocorrelation})
@@ -215,6 +239,23 @@ class FindPeaksPage extends React.Component {
 
             this.setState({peak_chart_data: temp_array_peaks})
             this.setState({peak_chart_show: true});
+
+            // let temp_array_height_peaks = []
+            // for ( let it =0 ; it < resultJson.peak_heights.length; it++){
+            //     let temp_object = {}
+            //     temp_object["category"] = it
+            //     temp_object["yValue"] = resultJson.peak_heights[it]
+            //     temp_array_height_peaks.push(temp_object)
+            // }
+            // // console.log("")
+            // console.log(temp_array_height_peaks)
+            //
+            // this.setState({peak_heights_data: temp_array_height_peaks})
+            // this.setState({peak_heights_show: true});
+
+
+
+
             //
             //
             // this.setState({correlation_chart_data: temp_array_correlation})
@@ -364,7 +405,7 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_height_type != "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_height_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="height-1-selector"
@@ -374,7 +415,7 @@ class FindPeaksPage extends React.Component {
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_height_type == "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_height_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="height-2-selector"
@@ -400,7 +441,7 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_threshold_type != "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_threshold_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="threshold-1-selector"
@@ -410,7 +451,7 @@ class FindPeaksPage extends React.Component {
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_threshold_type == "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_threshold_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="threshold-2-selector"
@@ -436,7 +477,7 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_prominence_type != "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_prominence_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="prominence-1-selector"
@@ -446,7 +487,7 @@ class FindPeaksPage extends React.Component {
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_prominence_type == "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_prominence_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="prominence-2-selector"
@@ -472,7 +513,7 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_width_type != "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_width_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="width-1-selector"
@@ -482,7 +523,7 @@ class FindPeaksPage extends React.Component {
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_width_type == "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_width_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="width-2-selector"
@@ -508,7 +549,7 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_plateau_size_type != "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_plateau_size_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="plateau-size-1-selector"
@@ -518,7 +559,7 @@ class FindPeaksPage extends React.Component {
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_plateau_size_type == "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_plateau_size_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="plateau-size-2-selector"
@@ -562,7 +603,7 @@ class FindPeaksPage extends React.Component {
                         </Button>
                     </form>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={5} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>
@@ -570,8 +611,24 @@ class FindPeaksPage extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
                         Peaks
                     </Typography>
-                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
-                    <hr style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}/>
+                    <InnerHTML html={this.state.test_chart_html} />
+                    {/*<iframe src="http://127.0.0.1:8000/test/chart" width= "95%" height="95%" ></iframe>*/}
+
+                    {/*<div*/}
+                    {/*        dangerouslySetInnerHTML={{__html: this.state.test_chart_html}}*/}
+                    {/*/>*/}
+
+                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*    Peaks*/}
+                    {/*</Typography>*/}
+                    {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
+                    {/*<hr style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}/>*/}
+
+                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*    Height Peak*/}
+                    {/*</Typography>*/}
+                    {/*<div style={{ display: (this.state.peak_heights_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_heights_chart_id" chart_data={ this.state.peak_heights_data}/></div>*/}
+                    {/*<hr style={{ display: (this.state.peak_heights_show ? 'block' : 'none') }}/>*/}
                 </Grid>
             </Grid>
         )
