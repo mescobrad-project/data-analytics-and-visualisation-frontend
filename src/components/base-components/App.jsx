@@ -8,17 +8,18 @@ import LayoutMain from "../../layout/LayoutMain";
 import WelcomePage from "./WelcomePage";
 import PageError from "./PageError";
 import AutoCorrelationFunctionPage from "./AutoCorrelationFunctionPage";
-
 import LayoutSimpleFunctions from "../../layout/LayoutSimpleFunctions";
 import PartialAutoCorrelationFunctionPage from "./PartialAutoCorrelationFunctionPage";
 import FiltersFunctionPage from "./FiltersFunctionPage";
 import WelchFunctionPage from "./WelchFunctionPage";
+import PeriodogramFunctionPage from "./PeriodogramFunctionPage";
 
 
 // Import Material UI Customising
 import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import FindPeaksPage from "./FindPeaksPage";
+
 
 
 // Theme Colors Declaration
@@ -59,6 +60,7 @@ const App = () => {
                         <Route exact path="/filters" element={(<LayoutMain><FiltersFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/welch" element={(<LayoutMain><WelchFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/find_peaks" element={(<LayoutMain><FindPeaksPage/></LayoutMain>)}/>
+                        <Route exact path="/periodogram" element={(<LayoutMain><PeriodogramFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                     </Routes>
