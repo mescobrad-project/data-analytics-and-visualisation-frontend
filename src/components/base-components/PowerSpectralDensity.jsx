@@ -36,39 +36,22 @@ class PowerSpectralDensity extends React.Component {
 
             //Values selected currently on the form
             selected_channel: "",
-            selected_fmin: "",
+            selected_fmin: "0",
             selected_fmax: "",
             selected_bandwidth: "",
-            selected_adaptive: "",
-            selected_low_bias: "",
-            selected_normalization: "",
-            selected_output: "",
-            selected_n_jobs: "",
+            selected_adaptive: false,
+            selected_low_bias: true,
+            selected_normalization: "length",
+            selected_output: "power",
+            selected_n_jobs: "1",
             selected_verbose: "",
 
-
-            //TEST
-            test_chart_html:"",
-
             // Values to pass to visualisations
-            peak_chart_data : [],
-            peak_heights_data : [],
-            left_thresholds_data : [],
-            right_thresholds_data : [],
-            prominences_data : [],
-            right_bases_data : [],
-            left_bases_data : [],
-            width_heights_data : [],
-            left_ips_data : [],
-            right_ips_data : [],
-            plateau_sizes_data : [],
-            left_edges_data : [],
-            right_edges_data : [],
+            psd_chart_data : [],
 
             // Visualisation Hide/Show values
-            peak_chart_show : false,
-            peak_heights_show : false,
-            thresholds_show : false,
+            psd_chart_show : false,
+
             // peak_chart_show : false,
             // peak_chart_show : false,
             // peak_chart_show : false,
@@ -109,18 +92,30 @@ class PowerSpectralDensity extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
         // Convert alpha and nlags from string to int and float
-        // let to_send_input_height = null;     //number or array[number,number]
-        // let to_send_input_threshold = null;  //number or array[number,number]
-        // let to_send_input_distance = null;   //number
-        // let to_send_input_prominence = null; //number or array[number,number]
-        // let to_send_input_width = null;      //number or array[number,number]
-        // let to_send_input_wlen = null;       //int
-        // let to_send_input_rel_height = null; //float
-        // let to_send_input_plateau = null;    //number or array[number,number]
-        //
-        // if (!!this.state.selected_distance){
-        //     to_send_input_distance = parseInt(this.state.selected_distance)
-        // }
+        let to_send_input_fmin = null;     //float
+        let to_send_input_fmax = null;  //float
+        let to_send_input_bandwidth = null;  //float
+        let to_send_input_n_jobs = null;  //float
+        // let to_send_input_verbose = null;  //bool|str|int
+
+
+        if (!!this.state.selected_fmin){
+            to_send_input_fmin = parseFloat(this.state.selected_fmin)
+        }
+
+        if (!!this.state.selected_fmax){
+            to_send_input_fmax = parseFloat(this.state.selected_fmax)
+        }else{
+            to_send_input_fmax = null
+        }
+
+        if (!!this.state.selected_bandwidth){
+            to_send_input_bandwidth = parseFloat(this.state.selected_bandwidth)
+        }
+
+        if (!!this.state.selected_n_jobs){
+            to_send_input_n_jobs = parseFloat(this.state.selected_n_jobs)
+        }
         //
         // if (!!this.state.selected_wlen){
         //     to_send_input_wlen = parseInt(this.state.selected_wlen)
@@ -138,58 +133,22 @@ class PowerSpectralDensity extends React.Component {
         //         to_send_input_height = JSON.stringify([parseFloat(this.state.selected_height_1) , parseFloat(this.state.selected_height_2)])
         //     }
         // }
-        //
-        // if (this.state.selected_threshold_type !== "none"){
-        //     if(this.state.selected_threshold_type === "min"){
-        //         to_send_input_threshold = parseFloat(this.state.selected_threshold_1)
-        //     }else if(this.state.selected_threshold_type === "min-max"){
-        //         to_send_input_threshold = [parseFloat(this.state.selected_threshold_1) , parseFloat(this.state.selected_threshold_2)]
-        //     }
-        // }
-        //
-        // if (this.state.selected_prominence_type !== "none"){
-        //     if(this.state.selected_prominence_type === "min"){
-        //         to_send_input_prominence = parseFloat(this.state.selected_prominence_1)
-        //     }else if(this.state.selected_prominence_type === "min-max"){
-        //         to_send_input_prominence = [parseFloat(this.state.selected_prominence_1) , parseFloat(this.state.selected_prominence_2)]
-        //     }
-        // }
-        //
-        // if (this.state.selected_width_type !== "none"){
-        //     if(this.state.selected_width_type === "min"){
-        //         to_send_input_width = parseFloat(this.state.selected_width_1)
-        //     }else if(this.state.selected_width_type === "min-max"){
-        //         to_send_input_width = [parseFloat(this.state.selected_width_1) , parseFloat(this.state.selected_width_2)]
-        //     }
-        // }
-        //
-        // if (this.state.selected_plateau_size_type !== "none"){
-        //     if(this.state.selected_plateau_size_type === "min"){
-        //         to_send_input_plateau = parseFloat(this.state.selected_plateau_size_1)
-        //     }else if(this.state.selected_plateau_size_type === "min-max"){
-        //         to_send_input_plateau = [parseFloat(this.state.selected_plateau_size_1) , parseFloat(this.state.selected_plateau_size_2)]
-        //     }
-        // }
-
-        //Reset view of optional visualisations preview
-        // this.setState({peak_chart_show: false})
 
 
-        // Set flags for optional data that need to be shown since if this check is done after results have arrived, maybe the
-        // data has already been changed and the wrong visualisation will be shown
-        // let flag_alpha = false;
-
-        // If alpha is enabled, enable relevant visualisations
-        // if(to_send_input_alpha){
-        //     flag_alpha = true;
-        // }
-
-        // console.log("--------")
-        // console.log(to_send_input_height)
         // Send the request
         API.get("return_power_spectral_density",
             {
-                params: {input_name: this.state.selected_channel
+                params: {input_name: this.state.selected_channel,
+                    input_fmin: to_send_input_fmin,
+                    input_fmax: to_send_input_fmax,
+                input_bandwidth: to_send_input_bandwidth,
+                    input_adaptive: this.state.selected_adaptive ,
+                    input_low_bias: this.state.selected_low_bias,
+                    input_normalization: this.state.selected_normalization,
+                    input_output: this.state.selected_output,
+                    input_n_jobs: to_send_input_n_jobs,
+                    input_verbose: this.state.selected_verbose
+
                 }
             }
         ).then(res => {
@@ -197,60 +156,22 @@ class PowerSpectralDensity extends React.Component {
             console.log("--- Results ---")
             console.log(resultJson)
 
-            // this.setState({test_chart_html: resultJson.figure})
-            // // Show only relevant visualisations and load their data
-            // // Correlation chart always has results so should always be enabled
-            // // this.setState({correlation_results: resultJson.values_partial_autocorrelation})
-            // //
-            // let temp_array_peaks = []
-            // for ( let it =0 ; it < resultJson.peaks.length; it++){
-            //     let temp_object = {}
-            //     temp_object["category"] = it
-            //     temp_object["yValue"] = resultJson.peaks[it]
-            //     temp_array_peaks.push(temp_object)
-            // }
-            // // console.log("")
-            // console.log(temp_array_peaks)
-            //
-            // this.setState({peak_chart_data: temp_array_peaks})
-            // this.setState({peak_chart_show: true});
-
-            // let temp_array_height_peaks = []
-            // for ( let it =0 ; it < resultJson.peak_heights.length; it++){
-            //     let temp_object = {}
-            //     temp_object["category"] = it
-            //     temp_object["yValue"] = resultJson.peak_heights[it]
-            //     temp_array_height_peaks.push(temp_object)
-            // }
-            // // console.log("")
-            // console.log(temp_array_height_peaks)
-            //
-            // this.setState({peak_heights_data: temp_array_height_peaks})
-            // this.setState({peak_heights_show: true});
+            let temp_array_psd = []
+            for ( let it =0 ; it < resultJson['power spectral density'].length; it++){
+                if(it > 1000){
+                    break;
+                }
+                let temp_object = {}
+                temp_object["category"] = resultJson['frequencies'][it]
+                temp_object["yValue"] = resultJson['power spectral density'][it]
+                temp_array_psd.push(temp_object)
+            }
+            // console.log("")
+            // console.log(temp_array)
 
 
-
-
-            //
-            //
-            // this.setState({correlation_chart_data: temp_array_correlation})
-            // this.setState({correlation_chart_show: true})
-            //
-            // // Alpha optional charts
-            // if(flag_alpha){
-            //     let temp_array_alpha = []
-            //     for ( let it =0 ; it < resultJson.confint.length; it++){
-            //         let temp_object = {}
-            //         temp_object["category"] = it
-            //         temp_object["yValue1"] = resultJson.confint[it][0]
-            //         temp_object["yValue2"] = resultJson.confint[it][1]
-            //         temp_array_alpha.push(temp_object)
-            //     }
-            //
-            //     this.setState({confint_chart_data: temp_array_alpha})
-            //     this.setState({confint_chart_show: true});
-            // }
-
+            this.setState({psd_chart_data: temp_array_psd})
+            this.setState({psd_chart_show: true})
         });
     }
 
@@ -315,7 +236,7 @@ class PowerSpectralDensity extends React.Component {
                 </Grid>
                 <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Detection of peaks
+                        Power Spectral Density
                     </Typography>
                     <hr/>
                     <form onSubmit={this.handleSubmit}>
@@ -335,7 +256,7 @@ class PowerSpectralDensity extends React.Component {
                                     <MenuItem value={channel}>{channel}</MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
+                            <FormHelperText>Select Channel</FormHelperText>
                         </FormControl>
                         <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
@@ -354,7 +275,7 @@ class PowerSpectralDensity extends React.Component {
                                     label="FMin"
                                     onChange={this.handleSelectFMaxChange}
                             />
-                            <FormHelperText> The upper  frequency of interest </FormHelperText>
+                            <FormHelperText> The upper  frequency of interest (Leave empty for infinity) </FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
@@ -380,10 +301,10 @@ class PowerSpectralDensity extends React.Component {
                             <FormHelperText>Use adaptive weights to combine the tapered spectra into PSD</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="low-bias-selector-label">Adaptive</InputLabel>
+                            <InputLabel id="low-bias-selector-label">Low Bias</InputLabel>
                             <Select
                                     labelId="low-bias-selector-label"
-                                    id="adaptive-selector"
+                                    id="low-bias-selector"
                                     value= {this.state.selected_low_bias}
                                     label="Low Bias"
                                     onChange={this.handleSelectLowBiasChange}
@@ -394,7 +315,7 @@ class PowerSpectralDensity extends React.Component {
                             <FormHelperText>Only use tapers with more than 90% spectral concentration within bandwidth.</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="normalization-selector-label">Adaptive</InputLabel>
+                            <InputLabel id="normalization-selector-label">Normalization</InputLabel>
                             <Select
                                     labelId="normalization-selector-label"
                                     id="normalization-selector"
@@ -407,38 +328,39 @@ class PowerSpectralDensity extends React.Component {
                             </Select>
                             <FormHelperText>Normalization strategy. If “full”, the PSD will be normalized by the sampling rate as well as the length of the signal </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="output-selector-label">Output</InputLabel>
-                            <Select
-                                    labelId="output-selector-label"
-                                    id="output-selector"
-                                    value= {this.state.selected_output}
-                                    label="Output"
-                                    onChange={this.handleSelectOutputChange}
-                            >
-                                <MenuItem value={"complex"}><em>Complex</em></MenuItem>
-                                <MenuItem value={"power"}><em>Power</em></MenuItem>
-                            </Select>
-                            <FormHelperText>The format of the returned psds array. Can be either 'complex' or 'power'. If 'power', the power spectral density is returned. If output='complex', the complex fourier coefficients are returned per taper. </FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <TextField
-                                    id="n-jobs-selector"
-                                    value= {this.state.selected_n_jobs}
-                                    label="N-Jobs"
-                                    onChange={this.handleSelectNJobsChange}
-                            />
-                            <FormHelperText>The number of jobs to run in parallel. </FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <TextField
-                                    id="verbose-selector"
-                                    value= {this.state.selected_verbose}
-                                    label="Verbose"
-                                    onChange={this.handleSelectVerboseChange}
-                            />
-                            <FormHelperText>Control verbosity of the logging output. If None, use the default verbosity level. </FormHelperText>
-                        </FormControl>
+                        {/* COMPLEX OUTPUT IS CURRENTLY  DISABLED  CAUSE IT MIGHT NOT BE NEEDED, IF ENABLED DIFFERENT OUTPUT SHOULD BE TAKEN INTO ACCOUNT*/}
+                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                        {/*    <InputLabel id="output-selector-label">Output</InputLabel>*/}
+                        {/*    <Select*/}
+                        {/*            labelId="output-selector-label"*/}
+                        {/*            id="output-selector"*/}
+                        {/*            value= {this.state.selected_output}*/}
+                        {/*            label="Output"*/}
+                        {/*            onChange={this.handleSelectOutputChange}*/}
+                        {/*    >*/}
+                        {/*        <MenuItem value={"complex"}><em>Complex</em></MenuItem>*/}
+                        {/*        <MenuItem value={"power"}><em>Power</em></MenuItem>*/}
+                        {/*    </Select>*/}
+                        {/*    <FormHelperText>The format of the returned psds array. Can be either 'complex' or 'power'. If 'power', the power spectral density is returned. If output='complex', the complex fourier coefficients are returned per taper. </FormHelperText>*/}
+                        {/*</FormControl>*/}
+                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                        {/*    <TextField*/}
+                        {/*            id="n-jobs-selector"*/}
+                        {/*            value= {this.state.selected_n_jobs}*/}
+                        {/*            label="N-Jobs"*/}
+                        {/*            onChange={this.handleSelectNJobsChange}*/}
+                        {/*    />*/}
+                        {/*    <FormHelperText>The number of jobs to run in parallel. </FormHelperText>*/}
+                        {/*</FormControl>*/}
+                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                        {/*    <TextField*/}
+                        {/*            id="verbose-selector"*/}
+                        {/*            value= {this.state.selected_verbose}*/}
+                        {/*            label="Verbose"*/}
+                        {/*            onChange={this.handleSelectVerboseChange}*/}
+                        {/*    />*/}
+                        {/*    <FormHelperText>Control verbosity of the logging output. If None, use the default verbosity level. </FormHelperText>*/}
+                        {/*</FormControl>*/}
                        <br/>
                         <Button variant="contained" color="primary" type="submit">
                             Submit
@@ -450,27 +372,15 @@ class PowerSpectralDensity extends React.Component {
                         Result Visualisation
                     </Typography>
                     <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
-                        PSD
+                    <Typography variant="p" sx={{ flexGrow: 1, display: (this.state.psd_chart_show ? 'block' : 'none')  }} noWrap>
+                        Showing first 1000 entries
                     </Typography>
-                    <InnerHTML html={this.state.test_chart_html} />
-                    {/*<iframe src="http://127.0.0.1:8000/test/chart" width= "95%" height="95%" ></iframe>*/}
+                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.psd_chart_show ? 'block' : 'none')  }} noWrap>
+                        Welch Results
+                    </Typography>
 
-                    {/*<div*/}
-                    {/*        dangerouslySetInnerHTML={{__html: this.state.test_chart_html}}*/}
-                    {/*/>*/}
-
-                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                    {/*    Peaks*/}
-                    {/*</Typography>*/}
-                    {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
-                    {/*<hr style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}/>*/}
-
-                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                    {/*    Height Peak*/}
-                    {/*</Typography>*/}
-                    {/*<div style={{ display: (this.state.peak_heights_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_heights_chart_id" chart_data={ this.state.peak_heights_data}/></div>*/}
-                    {/*<hr style={{ display: (this.state.peak_heights_show ? 'block' : 'none') }}/>*/}
+                    <div style={{ display: (this.state.psd_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="psd_chart_id" chart_data={ this.state.psd_chart_data}/></div>
+                    <hr style={{ display: (this.state.psd_chart_show ? 'block' : 'none') }}/>
                 </Grid>
             </Grid>
         )
