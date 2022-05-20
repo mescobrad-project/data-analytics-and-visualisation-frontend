@@ -44,7 +44,7 @@ function WelcomePage() {
                             variant="h6"
                             href="/auto_correlation"
                     >
-                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                             Auto Correlation >
                         </ListItemButton>
                     </Link>
@@ -53,7 +53,7 @@ function WelcomePage() {
                             variant="h6"
                             href="/partial_auto_correlation"
                     >
-                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                             Partial Auto Correlation >
                         </ListItemButton>
                     </Link>
@@ -62,7 +62,7 @@ function WelcomePage() {
                             variant="h6"
                             href="/filters"
                     >
-                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                             Filters>
                         </ListItemButton>
                     </Link>
@@ -71,7 +71,7 @@ function WelcomePage() {
                             variant="h6"
                             href="/welch"
                     >
-                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                             Welch>
                         </ListItemButton>
                     </Link>
@@ -80,12 +80,26 @@ function WelcomePage() {
                             variant="h6"
                             href="/find_peaks"
                     >
-                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                             Find Peaks>
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
                             href="/periodogram"
                     >
-                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                             Periodogram>
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/power_spectral_density"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            Power Spectral Density>
                         </ListItemButton>
                     </Link>
                 </List>
