@@ -21,6 +21,7 @@ import {
 // import * as am5xy from "@amcharts/amcharts5/xy";
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
+import LineMultipleColorsChartCustom from "../ui-components/LineMultipleColorsChartCustom";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class SpindleDetection extends React.Component {
@@ -50,10 +51,11 @@ class SpindleDetection extends React.Component {
             selected_remove_outliers : false,
 
             // Values to pass to visualisations
-            psd_chart_data : [],
+            signal_chart_data : [],
+            signal_chart_highlighted_data : [],
 
             // Visualisation Hide/Show values
-            psd_chart_show : false,
+            signal_chart_show : false,
 
             // peak_chart_show : false,
             // peak_chart_show : false,
@@ -98,63 +100,79 @@ class SpindleDetection extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
         // Convert alpha and nlags from string to int and float
-        let to_send_input_fmin = null;     //float
-        let to_send_input_fmax = null;  //float
-        let to_send_input_bandwidth = null;  //float
-        let to_send_input_n_jobs = null;  //float
+        let to_send_input_freq_sp_low = null;     //float
+        let to_send_input_freq_sp_high = null;     //float
+        let to_send_input_freq_broad_low = null;     //float
+        let to_send_input_freq_broad_high = null;     //float
+        let to_send_input_duration_low = null;     //float
+        let to_send_input_duration_high = null;     //float
+        let to_send_input_min_distance = null;     //float
+        let to_send_input_thresh_rel_pow = null;     //float
+        let to_send_input_thresh_corr = null;     //float
+        let to_send_input_thresh_rms = null;     //float
+
         // let to_send_input_verbose = null;  //bool|str|int
 
 
-        if (!!this.state.selected_fmin){
-            to_send_input_fmin = parseFloat(this.state.selected_fmin)
+        if (!!this.state.selected_freq_sp_low){
+            to_send_input_freq_sp_low = parseFloat(this.state.selected_freq_sp_low)
         }
 
-        if (!!this.state.selected_fmax){
-            to_send_input_fmax = parseFloat(this.state.selected_fmax)
-        }else{
-            to_send_input_fmax = null
+        if (!!this.state.selected_freq_sp_high){
+            to_send_input_freq_sp_high = parseFloat(this.state.selected_freq_sp_high)
         }
 
-        if (!!this.state.selected_bandwidth){
-            to_send_input_bandwidth = parseFloat(this.state.selected_bandwidth)
+        if (!!this.state.selected_freq_broad_low){
+            to_send_input_freq_broad_low = parseFloat(this.state.selected_freq_broad_low)
         }
 
-        if (!!this.state.selected_n_jobs){
-            to_send_input_n_jobs = parseFloat(this.state.selected_n_jobs)
+        if (!!this.state.selected_freq_broad_high){
+            to_send_input_freq_broad_high = parseFloat(this.state.selected_freq_broad_high)
         }
-        //
-        // if (!!this.state.selected_wlen){
-        //     to_send_input_wlen = parseInt(this.state.selected_wlen)
-        // }
-        //
-        // if (!!this.state.selected_rel_height){
-        //     to_send_input_rel_height = parseFloat(this.state.selected_rel_height)
-        // }
-        //
-        // // MISSING SETTING VALUE AS INFINITY
-        // if (this.state.selected_height_type !== "none"){
-        //     if(this.state.selected_height_type === "min"){
-        //         to_send_input_height = parseFloat(this.state.selected_height_1)
-        //     }else if(this.state.selected_height_type === "min-max"){
-        //         to_send_input_height = JSON.stringify([parseFloat(this.state.selected_height_1) , parseFloat(this.state.selected_height_2)])
-        //     }
-        // }
+
+        if (!!this.state.selected_duration_low){
+            to_send_input_duration_low = parseFloat(this.state.selected_duration_low)
+        }
+
+        if (!!this.state.selected_duration_high){
+            to_send_input_duration_high = parseFloat(this.state.selected_duration_high)
+        }
+
+        if (!!this.state.selected_min_distance){
+            to_send_input_min_distance = parseInt(this.state.selected_min_distance)
+        }
+
+        if (!!this.state.selected_thresh_rel_pow){
+            to_send_input_thresh_rel_pow = parseFloat(this.state.selected_thresh_rel_pow)
+        }
+
+        if (!!this.state.selected_thresh_corr){
+            to_send_input_thresh_corr = parseFloat(this.state.selected_thresh_corr)
+        }
+
+        if (!!this.state.selected_thresh_rms){
+            to_send_input_thresh_rms = parseFloat(this.state.selected_thresh_rms)
+        }
+
+
 
 
         // Send the request
-        API.get("return_power_spectral_density",
+        API.get("return_spindles_detection",
             {
                 params: {input_name: this.state.selected_channel,
-                    input_fmin: to_send_input_fmin,
-                    input_fmax: to_send_input_fmax,
-                input_bandwidth: to_send_input_bandwidth,
-                    input_adaptive: this.state.selected_adaptive ,
-                    input_low_bias: this.state.selected_low_bias,
-                    input_normalization: this.state.selected_normalization,
-                    input_output: this.state.selected_output,
-                    input_n_jobs: to_send_input_n_jobs,
-                    input_verbose: this.state.selected_verbose
-
+                    input_freq_sp_low: to_send_input_freq_sp_low,
+                    input_freq_sp_high: to_send_input_freq_sp_high,
+                    input_freq_broad_low: to_send_input_freq_broad_low,
+                    input_freq_broad_high: to_send_input_freq_broad_high,
+                    input_duration_low: to_send_input_duration_low,
+                    input_duration_high: to_send_input_duration_high,
+                    input_min_distance: to_send_input_min_distance,
+                    input_thresh_rel_pow: to_send_input_thresh_rel_pow,
+                    input_thresh_corr: to_send_input_thresh_corr,
+                    input_thresh_rms: to_send_input_thresh_rms,
+                    input_multi_only: this.state.selected_multi_only,
+                    input_remove_outliers: this.state.selected_remove_outliers
                 }
             }
         ).then(res => {
@@ -162,22 +180,26 @@ class SpindleDetection extends React.Component {
             console.log("--- Results ---")
             console.log(resultJson)
 
-            let temp_array_psd = []
-            for ( let it =0 ; it < resultJson['power spectral density'].length; it++){
+            let temp_array_singal = []
+            for ( let it =0 ; it < resultJson['signal'].length; it++){
                 if(it > 1000){
                     break;
                 }
                 let temp_object = {}
-                temp_object["category"] = resultJson['frequencies'][it]
-                temp_object["yValue"] = resultJson['power spectral density'][it]
-                temp_array_psd.push(temp_object)
+                temp_object["category"] = it
+                temp_object["yValue"] = resultJson['signal'][it]
+                // temp_object["strokeSettings"] = {stroke: colorSet.getIndex(0)}
+                // temp_object["fillSettings"] = {fill: colorSet.getIndex(0)}
+                // temp_object["bulletSettings"] = {fill: colorSet.getIndex(0)}
+                temp_array_singal.push(temp_object)
             }
             // console.log("")
             // console.log(temp_array)
 
 
-            this.setState({psd_chart_data: temp_array_psd})
-            this.setState({psd_chart_show: true})
+            this.setState({signal_chart_data: temp_array_singal})
+            this.setState({signal_chart_highlighted_data: resultJson['detected_spindles']})
+            this.setState({signal_chart_show: true})
         });
     }
 
@@ -251,7 +273,7 @@ class SpindleDetection extends React.Component {
                 </Grid>
                 <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Power Spectral Density
+                        Spindle Detection
                     </Typography>
                     <hr/>
                     <form onSubmit={this.handleSubmit}>
@@ -276,106 +298,129 @@ class SpindleDetection extends React.Component {
                         <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                    id="fmin-selector"
-                                    value= {this.state.selected_fmin}
-                                    label="FMin"
-                                    onChange={this.handleSelectFMinChange}
+                                    id="freq-sp-low-selector"
+                                    value= {this.state.selected_freq_sp_low}
+                                    label="Freq Sp Low"
+                                    onChange={this.handleSelectedFreqSpLow}
                             />
-                            <FormHelperText> The lower frequency of interest </FormHelperText>
+                            <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                    id="fmax-selector"
-                                    value= {this.state.selected_fmax}
-                                    label="FMin"
-                                    onChange={this.handleSelectFMaxChange}
+                                    id="freq-sp-high-selector"
+                                    value= {this.state.selected_freq_sp_high}
+                                    label="Freq Sp High"
+                                    onChange={this.handleSelectedFreqSpHigh}
                             />
-                            <FormHelperText> The upper  frequency of interest (Leave empty for infinity) </FormHelperText>
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <hr/>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="freq-broad-low-selector"
+                                    value= {this.state.selected_freq_broad_low}
+                                    label="Freq Broad Low"
+                                    onChange={this.handleSelectedFreqBroadLow}
+                            />
+                            <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                    id="bandwidth-selector"
-                                    value= {this.state.selected_bandwidth}
-                                    label="Bandwidth"
-                                    onChange={this.handleSelectBandwidthChange}
+                                    id="freq-broad-high-selector"
+                                    value= {this.state.selected_freq_broad_high}
+                                    label="Freq Broad High"
+                                    onChange={this.handleSelectedFreqBroadHigh}
                             />
-                            <FormHelperText>     The bandwidth of the multi taper windowing function in Hz. </FormHelperText>
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <hr/>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="duration-low-selector"
+                                    value= {this.state.selected_duration_low}
+                                    label="Duration Low"
+                                    onChange={this.handleSelectedDurationLow}
+                            />
+                            <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="adaptive-selector-label">Adaptive</InputLabel>
+                            <TextField
+                                    id="duration-high-selector"
+                                    value= {this.state.selected_duration_high}
+                                    label="Duration High"
+                                    onChange={this.handleSelectedDurationHigh}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <hr/>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="min-distance-selector"
+                                    value= {this.state.selected_min_distance}
+                                    label="Min Distance"
+                                    onChange={this.handleSelectedMinDistance}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <hr/>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="thresh-rel-pow-selector"
+                                    value= {this.state.selected_thresh_rel_pow}
+                                    label="Threshold Rel Pow"
+                                    onChange={this.handleSelectedThreshRelPow}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="thresh-corr-selector"
+                                    value= {this.state.selected_thresh_corr}
+                                    label="Thresh Corr"
+                                    onChange={this.handleSelectedThreshRelCorr}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="thresh-rms-selector"
+                                    value= {this.state.selected_thresh_rms}
+                                    label="Thresh rms"
+                                    onChange={this.handleSelectedThreshRelRms}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <hr/>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <InputLabel id="multi-only-label">Multi Only</InputLabel>
                             <Select
-                                    labelId="adaptive-selector-label"
-                                    id="adaptive-selector"
-                                    value= {this.state.selected_adaptive}
-                                    label="Adaptive"
-                                    onChange={this.handleSelectAdaptiveTypeChange}
+                                    labelId="multi-only-label"
+                                    id="multi-only-selector"
+                                    value= {this.state.selected_multi_only}
+                                    label="Multi Only"
+                                    onChange={this.handleSelectedMultiOnly}
                             >
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Use adaptive weights to combine the tapered spectra into PSD</FormHelperText>
+                            <FormHelperText> </FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="low-bias-selector-label">Low Bias</InputLabel>
+                            <InputLabel id="remove-outliers-selector-label">Remove Outliers</InputLabel>
                             <Select
-                                    labelId="low-bias-selector-label"
-                                    id="low-bias-selector"
-                                    value= {this.state.selected_low_bias}
-                                    label="Low Bias"
-                                    onChange={this.handleSelectLowBiasChange}
+                                    labelId="remove-outliers-selector-label"
+                                    id="remove-outliers-selector"
+                                    value= {this.state.selected_remove_outliers}
+                                    label="Remove Outliers"
+                                    onChange={this.handleSelectedRemoveOutliers}
                             >
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Only use tapers with more than 90% spectral concentration within bandwidth.</FormHelperText>
+                            <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="normalization-selector-label">Normalization</InputLabel>
-                            <Select
-                                    labelId="normalization-selector-label"
-                                    id="normalization-selector"
-                                    value= {this.state.selected_normalization}
-                                    label="Normalization"
-                                    onChange={this.handleSelectNormalizationChange}
-                            >
-                                <MenuItem value={"full"}><em>Full</em></MenuItem>
-                                <MenuItem value={"length"}><em>Length</em></MenuItem>
-                            </Select>
-                            <FormHelperText>Normalization strategy. If “full”, the PSD will be normalized by the sampling rate as well as the length of the signal </FormHelperText>
-                        </FormControl>
-                        {/* COMPLEX OUTPUT IS CURRENTLY  DISABLED  CAUSE IT MIGHT NOT BE NEEDED, IF ENABLED DIFFERENT OUTPUT SHOULD BE TAKEN INTO ACCOUNT*/}
-                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
-                        {/*    <InputLabel id="output-selector-label">Output</InputLabel>*/}
-                        {/*    <Select*/}
-                        {/*            labelId="output-selector-label"*/}
-                        {/*            id="output-selector"*/}
-                        {/*            value= {this.state.selected_output}*/}
-                        {/*            label="Output"*/}
-                        {/*            onChange={this.handleSelectOutputChange}*/}
-                        {/*    >*/}
-                        {/*        <MenuItem value={"complex"}><em>Complex</em></MenuItem>*/}
-                        {/*        <MenuItem value={"power"}><em>Power</em></MenuItem>*/}
-                        {/*    </Select>*/}
-                        {/*    <FormHelperText>The format of the returned psds array. Can be either 'complex' or 'power'. If 'power', the power spectral density is returned. If output='complex', the complex fourier coefficients are returned per taper. </FormHelperText>*/}
-                        {/*</FormControl>*/}
-                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
-                        {/*    <TextField*/}
-                        {/*            id="n-jobs-selector"*/}
-                        {/*            value= {this.state.selected_n_jobs}*/}
-                        {/*            label="N-Jobs"*/}
-                        {/*            onChange={this.handleSelectNJobsChange}*/}
-                        {/*    />*/}
-                        {/*    <FormHelperText>The number of jobs to run in parallel. </FormHelperText>*/}
-                        {/*</FormControl>*/}
-                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
-                        {/*    <TextField*/}
-                        {/*            id="verbose-selector"*/}
-                        {/*            value= {this.state.selected_verbose}*/}
-                        {/*            label="Verbose"*/}
-                        {/*            onChange={this.handleSelectVerboseChange}*/}
-                        {/*    />*/}
-                        {/*    <FormHelperText>Control verbosity of the logging output. If None, use the default verbosity level. </FormHelperText>*/}
-                        {/*</FormControl>*/}
+
+
                        <br/>
                         <Button variant="contained" color="primary" type="submit">
                             Submit
@@ -387,15 +432,15 @@ class SpindleDetection extends React.Component {
                         Result Visualisation
                     </Typography>
                     <hr/>
-                    <Typography variant="p" sx={{ flexGrow: 1, display: (this.state.psd_chart_show ? 'block' : 'none')  }} noWrap>
-                        Showing first 1000 entries
-                    </Typography>
+                    {/*<Typography variant="p" sx={{ flexGrow: 1, display: (this.state.psd_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*    Showing first 1000 entries*/}
+                    {/*</Typography>*/}
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.psd_chart_show ? 'block' : 'none')  }} noWrap>
                         Welch Results
                     </Typography>
 
-                    <div style={{ display: (this.state.psd_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="psd_chart_id" chart_data={ this.state.psd_chart_data}/></div>
-                    <hr style={{ display: (this.state.psd_chart_show ? 'block' : 'none') }}/>
+                    <div style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}><LineMultipleColorsChartCustom chart_id="signal_chart_id" chart_data={ this.state.signal_chart_data} highlighted_areas={this.state.signal_chart_highlighted_data}/></div>
+                    <hr style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}/>
                 </Grid>
             </Grid>
         )

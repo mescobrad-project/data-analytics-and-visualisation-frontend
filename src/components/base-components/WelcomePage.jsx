@@ -102,6 +102,15 @@ function WelcomePage() {
                             Power Spectral Density>
                         </ListItemButton>
                     </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/spindle_detection"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            Spindle Detection>
+                        </ListItemButton>
+                    </Link>
                 </List>
 
             </React.Fragment>
