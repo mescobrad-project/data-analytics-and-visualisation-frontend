@@ -180,24 +180,25 @@ class SpindleDetection extends React.Component {
             console.log("--- Results ---")
             console.log(resultJson)
 
-            let temp_array_singal = []
-            for ( let it =0 ; it < resultJson['signal'].length; it++){
-                if(it > 1000){
-                    break;
-                }
-                let temp_object = {}
-                temp_object["category"] = it
-                temp_object["yValue"] = resultJson['signal'][it]
-                // temp_object["strokeSettings"] = {stroke: colorSet.getIndex(0)}
-                // temp_object["fillSettings"] = {fill: colorSet.getIndex(0)}
-                // temp_object["bulletSettings"] = {fill: colorSet.getIndex(0)}
-                temp_array_singal.push(temp_object)
-            }
+            // We do this just once inside the chart compoennt to avoid multiple for loops
+            // let temp_array_singal = []
+            // for ( let it =0 ; it < resultJson['signal'].length; it++){
+            //     if(it > 1000){
+            //         break;
+            //     }
+            //     let temp_object = {}
+            //     temp_object["category"] = it
+            //     temp_object["yValue"] = resultJson['signal'][it]
+            //     // temp_object["strokeSettings"] = {stroke: colorSet.getIndex(0)}
+            //     // temp_object["fillSettings"] = {fill: colorSet.getIndex(0)}
+            //     // temp_object["bulletSettings"] = {fill: colorSet.getIndex(0)}
+            //     temp_array_singal.push(temp_object)
+            // }
             // console.log("")
             // console.log(temp_array)
 
 
-            this.setState({signal_chart_data: temp_array_singal})
+            this.setState({signal_chart_data: resultJson['signal']})
             this.setState({signal_chart_highlighted_data: resultJson['detected_spindles']})
             this.setState({signal_chart_show: true})
         });
