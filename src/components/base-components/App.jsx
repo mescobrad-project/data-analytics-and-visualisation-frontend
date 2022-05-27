@@ -13,7 +13,7 @@ import LayoutSimpleFunctions from "../../layout/LayoutSimpleFunctions";
 import PartialAutoCorrelationFunctionPage from "./PartialAutoCorrelationFunctionPage";
 import FiltersFunctionPage from "./FiltersFunctionPage";
 import WelchFunctionPage from "./WelchFunctionPage";
-
+import StftFunctionPage from "./StftFunctionPage"
 
 // Import Material UI Customising
 import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/styles';
@@ -57,6 +57,7 @@ const App = () => {
                         <Route exact path="/partial_auto_correlation" element={(<LayoutMain><PartialAutoCorrelationFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/filters" element={(<LayoutMain><FiltersFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/welch" element={(<LayoutMain><WelchFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/stft" element={(<LayoutMain><StftFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                     </Routes>

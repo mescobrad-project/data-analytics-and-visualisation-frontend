@@ -75,6 +75,33 @@ function WelcomePage() {
                             Welch>
                         </ListItemButton>
                     </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/find_peaks"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Find Peaks>
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/periodogram"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Periodogram>
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/stft"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Short Time Fourier Transform>
+                        </ListItemButton>
+                    </Link>
                 </List>
 
             </React.Fragment>
