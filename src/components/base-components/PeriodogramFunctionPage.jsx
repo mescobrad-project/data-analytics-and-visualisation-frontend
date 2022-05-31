@@ -21,7 +21,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
-class WelchFunctionPage extends React.Component {
+class PeriodogramFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -31,19 +31,16 @@ class WelchFunctionPage extends React.Component {
             //Values selected currently on the form
             selected_channel: "",
             selected_window: "hann",
-            selected_nperseg: "256",
-            selected_noverlap: "",
             selected_nfft: "256",
             selected_return_onesided: true,
             selected_scaling: "density",
             selected_axis: "-1",
-            selected_average: "mean",
 
             // Values to pass to visualisations
-            welch_chart_data : [],
+            periodogram_chart_data : [],
 
             // Visualisation Hide/Show values
-            welch_chart_show : false
+            periodogram_chart_show : false
 
 
         };
@@ -53,13 +50,10 @@ class WelchFunctionPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectWindowChange = this.handleSelectWindowChange.bind(this);
-        this.handleSelectNpersegChange = this.handleSelectNpersegChange.bind(this);
-        this.handleSelectNoverlapChange = this.handleSelectNoverlapChange.bind(this);
         this.handleSelectNfftChange = this.handleSelectNfftChange.bind(this);
         this.handleSelectReturnonesidedChange = this.handleSelectReturnonesidedChange.bind(this);
         this.handleSelectScalingChange = this.handleSelectScalingChange.bind(this);
         this.handleSelectAxisChange = this.handleSelectAxisChange.bind(this);
-        this.handleSelectAverageChange = this.handleSelectAverageChange.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchChannels();
@@ -80,55 +74,42 @@ class WelchFunctionPage extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
-        // Convert nperseg, noverlap, nfft from string to int
-        let to_send_input_nperseg = null;
-        let to_send_input_noverlap = null;
+        // Convert nfft from string to int
+
         let to_send_input_nfft = null;
-
-        if (!!this.state.selected_nperseg){
-            to_send_input_nperseg = parseInt(this.state.selected_nperseg)
-        }
-
-        if (!!this.state.selected_noverlap){
-            to_send_input_noverlap = parseInt(this.state.selected_noverlap)
-        }
 
         if (!!this.state.selected_nfft){
             to_send_input_nfft = parseInt(this.state.selected_nfft)
         }
 
         //Reset view of optional visualisations preview
-        this.setState({welch_chart_show: false})
-
-
+        this.setState({periodogram_chart_show: false})
 
 
         // Send the request
-        API.get("return_welch",
+        API.get("return_periodogram",
                 {
                     params: {input_name: this.state.selected_channel, input_window: this.state.selected_window,
-                        input_nperseg: to_send_input_nperseg, input_noverlap: to_send_input_noverlap,
                         input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,
-                        input_scaling: this.state.selected_scaling, input_axis: this.state.selected_axis,
-                        input_average: this.state.selected_average}
+                        input_scaling: this.state.selected_scaling, input_axis: this.state.selected_axis}
                 }
         ).then(res => {
             const resultJson = res.data;
             console.log(resultJson)
             console.log('Test')
-            let temp_array_welch = []
+            let temp_array_peridogram = []
             for ( let it =0 ; it < resultJson['power spectral density'].length; it++){
                 let temp_object = {}
                 temp_object["category"] = resultJson['frequencies'][it]
                 temp_object["yValue"] = resultJson['power spectral density'][it]
-                temp_array_welch.push(temp_object)
+                temp_array_peridogram.push(temp_object)
             }
             // console.log("")
             // console.log(temp_array)
 
 
-            this.setState({welch_chart_data: temp_array_welch})
-            this.setState({welch_chart_show: true})
+            this.setState({peridogram_chart_data: temp_array_peridogram})
+            this.setState({peridogram_chart_show: true})
 
 
 
@@ -161,12 +142,6 @@ class WelchFunctionPage extends React.Component {
     handleSelectWindowChange(event){
         this.setState( {selected_window: event.target.value})
     }
-    handleSelectNpersegChange(event){
-        this.setState( {selected_nperseg: event.target.value})
-    }
-    handleSelectNoverlapChange(event){
-        this.setState( {selected_noverlap: event.target.value})
-    }
     handleSelectNfftChange(event){
         this.setState( {selected_nfft: event.target.value})
     }
@@ -179,10 +154,6 @@ class WelchFunctionPage extends React.Component {
     handleSelectAxisChange(event){
         this.setState( {selected_axis: event.target.value})
     }
-    handleSelectAverageChange(event){
-        this.setState( {selected_average: event.target.value})
-    }
-
 
 
     render() {
@@ -201,7 +172,7 @@ class WelchFunctionPage extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Welch Parameterisation
+                            Periodogram Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -221,7 +192,7 @@ class WelchFunctionPage extends React.Component {
                                             <MenuItem value={channel}>{channel}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Channel for Welch</FormHelperText>
+                                <FormHelperText>Select Channel for Periodogram</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="window-selector-label">Window</InputLabel>
@@ -252,34 +223,13 @@ class WelchFunctionPage extends React.Component {
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <TextField
-                                        labelId="nperseg-selector-label"
-                                        id="nperseg-selector"
-                                        value= {this.state.selected_nperseg}
-                                        label="Nperseg"
-                                        onChange={this.handleSelectNpersegChange}
-                                />
-                                <FormHelperText>Length of each segment</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
-                                <TextField
-                                        labelId="noverlap-selector-label"
-                                        id="noverlap-selector"
-                                        value= {this.state.selected_noverlap}
-                                        label="Noverlap"
-                                        onChange={this.handleSelectNoverlapChange}
-                                />
-                                <FormHelperText>Number of points to overlap between segments</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <TextField
                                         // labelId="nfft-selector-label"
                                         id="nfft-selector"
                                         value= {this.state.selected_nfft}
                                         label="Nfft"
                                         onChange={this.handleSelectNfftChange}
                                 />
-                                <FormHelperText>Length of the FFT used, Nfft must be equal or higher than Nperseg</FormHelperText>
+                                <FormHelperText>Nfft </FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="return-onesided-selector-label">Return Onesided</InputLabel>
@@ -319,20 +269,6 @@ class WelchFunctionPage extends React.Component {
                                 />
                                 <FormHelperText>Axis along which the periodogram is computed</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="average-selector-label">Average</InputLabel>
-                                <Select
-                                        // labelId="nfft-selector-label"
-                                        id="average-selector"
-                                        value= {this.state.selected_average}
-                                        label="Average"
-                                        onChange={this.handleSelectAverageChange}
-                                >
-                                    <MenuItem value={"mean"}><em>Mean</em></MenuItem>
-                                    <MenuItem value={"median"}><em>Median</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Method to use when averaging periodograms</FormHelperText>
-                            </FormControl>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
@@ -343,16 +279,16 @@ class WelchFunctionPage extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>
-                            Welch Results
+                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peridogram_chart_show ? 'block' : 'none')  }} noWrap>
+                            Periodogram Results
                         </Typography>
 
-                        <div style={{ display: (this.state.welch_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="welch_chart_id" chart_data={ this.state.welch_chart_data}/></div>
-                        <hr style={{ display: (this.state.welch_chart_show ? 'block' : 'none') }}/>
+                        <div style={{ display: (this.state.peridogram_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peridogram_chart_id" chart_data={ this.state.peridogram_chart_data}/></div>
+                        <hr style={{ display: (this.state.peridogram_chart_show ? 'block' : 'none') }}/>
                     </Grid>
                 </Grid>
         )
     }
 }
 
-export default WelchFunctionPage;
+export default PeriodogramFunctionPage;
