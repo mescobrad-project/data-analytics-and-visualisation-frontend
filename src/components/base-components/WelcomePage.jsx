@@ -96,6 +96,15 @@ function WelcomePage() {
                     <Link
                             component={Link}
                             variant="h6"
+                            href="/stft"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
+                            Short Time Fourier Transform>
+                              </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
                             href="/power_spectral_density"
                     >
                         <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>

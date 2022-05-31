@@ -12,6 +12,7 @@ import LayoutSimpleFunctions from "../../layout/LayoutSimpleFunctions";
 import PartialAutoCorrelationFunctionPage from "./PartialAutoCorrelationFunctionPage";
 import FiltersFunctionPage from "./FiltersFunctionPage";
 import WelchFunctionPage from "./WelchFunctionPage";
+import StftFunctionPage from "./StftFunctionPage"
 import PeriodogramFunctionPage from "./PeriodogramFunctionPage";
 
 
@@ -60,6 +61,7 @@ const App = () => {
                         <Route exact path="/partial_auto_correlation" element={(<LayoutMain><PartialAutoCorrelationFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/filters" element={(<LayoutMain><FiltersFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/welch" element={(<LayoutMain><WelchFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/stft" element={(<LayoutMain><StftFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/find_peaks" element={(<LayoutMain><FindPeaksPage/></LayoutMain>)}/>
                         <Route exact path="/periodogram" element={(<LayoutMain><PeriodogramFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/power_spectral_density" element={(<LayoutMain><PowerSpectralDensity/></LayoutMain>)}/>
