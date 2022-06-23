@@ -42,6 +42,8 @@ class FreesurferReconFunctionPage extends React.Component {
             //Variable that is either set by creating new process or checking status old one.
             selected_freesurfer_function_id_to_log: "",
 
+            //Function to show/hide
+            show_neurodesk: false,
 
             //Returned variables
             returned_status: ""
@@ -51,6 +53,7 @@ class FreesurferReconFunctionPage extends React.Component {
         this.fetchSlices = this.fetchSlices.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSubmitCheck = this.handleSubmitCheck.bind(this);
+        this.handleProcessFinished = this.handleProcessFinished.bind(this);
         this.handleProcessUpdate = this.handleProcessUpdate.bind(this);
         this.handleSelectTestNameChange = this.handleSelectTestNameChange.bind(this);
         this.handleSelectTestNameCheckChange = this.handleSelectTestNameCheckChange.bind(this);
@@ -156,12 +159,20 @@ class FreesurferReconFunctionPage extends React.Component {
 
     async handleProcessFinished() {
         // event.preventDefault();
-        let confirmAction = window.confirm("Are you sure the process is finalised? \n The output will be sent to the datalake regardless of the output \n If fore some reason you believe the process has failed either no new logs for a significant amount of time or logs have explicitly stated failure contact the administrators and send the logs");
-        if (confirmAction) {
-            alert("Action successfully executed");
-        } else {
-            alert("Action canceled");
-        }
+        // let confirmAction = window.confirm("Are you sure the process is finalised? \n The output will be sent to the datalake regardless of the output \n If fore some reason you believe the process has failed either no new logs for a significant amount of time or logs have explicitly stated failure contact the administrators and send the logs");
+        // if (confirmAction) {
+        //     alert("Action successfully executed");
+        // } else {
+        //     alert("Action canceled");
+        // }
+
+        // Show neurodesk
+        this.setState({show_neurodesk: true});
+        console.log("show_neurodesk")
+        console.log(this.state.show_neurodesk)
+        // Finally scroll to bottom where iframe is
+        window.scrollTo(0, document.body.scrollHeight);
+
     }
 
     /**
@@ -190,152 +201,170 @@ class FreesurferReconFunctionPage extends React.Component {
 
     render() {
         return (
-                <Grid container direction="row">
-                    <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Data Preview
-                        </Typography>
-                        <hr/>
-                        <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            File Name:
-                        </Typography>
-                        <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            mri_example
-                        </Typography>
-                        <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            File Type:
-                        </Typography>
-                        <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            DICOM
-                        </Typography>
-                        <hr/>
-                        {/*Not sure if slices need to be displayed*/}
-                        {/*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
-                        {/*    Slices:*/}
-                        {/*</Typography>*/}
-                        {/*<List>*/}
-                        {/*    {this.state.channels.map((channel) => (*/}
-                        {/*            <ListItem> <ListItemText primary={channel}/></ListItem>*/}
-                        {/*    ))}*/}
-                        {/*</List>*/}
-                    </Grid>
-                    <Grid item xs={5} sx={{borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Freesurfer recon all
-                        </Typography>
-                        <hr/>
-                        <div style={{display: (this.state.selected_page_function !== "Old" ? 'block' : 'none')}}>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Create New Process
+                <Grid container direction="column">
+                    <Grid container direction="row">
+                        <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Data Preview
                             </Typography>
-                            <form onSubmit={this.handleSubmit}>
-                                <FormControl sx={{m: 1, minWidth: 120}}>
-                                    <TextField
-                                            id="test-name-selector"
-                                            value={this.state.selected_test_name}
-                                            label="Test Name Automatically Generated?"
-                                            onChange={this.handleSelectTestNameChange}
-                                            disabled={true}
-                                    />
-                                    <FormHelperText>The automatically generated? test name</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{m: 1, minWidth: 120}}>
-                                    <InputLabel id="slice-selector-label">Slice</InputLabel>
-                                    <Select
-                                            labelId="slice-selector-label"
-                                            id="slice-selector"
-                                            value={this.state.selected_slice}
-                                            label="Slice"
-                                            onChange={this.handleSelectSliceChange}
+                            <hr/>
+                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                File Name:
+                            </Typography>
+                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                mri_example
+                            </Typography>
+                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                File Type:
+                            </Typography>
+                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                DICOM
+                            </Typography>
+                            <hr/>
+                            {/*Not sure if slices need to be displayed*/}
+                            {/*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                            {/*    Slices:*/}
+                            {/*</Typography>*/}
+                            {/*<List>*/}
+                            {/*    {this.state.channels.map((channel) => (*/}
+                            {/*            <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                            {/*    ))}*/}
+                            {/*</List>*/}
+                        </Grid>
+                        <Grid item xs={5} sx={{borderRight: "1px solid grey"}}>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Freesurfer recon all
+                            </Typography>
+                            <hr/>
+                            <div style={{display: (this.state.selected_page_function !== "Old" ? 'block' : 'none')}}>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Create New Process
+                                </Typography>
+                                <form onSubmit={this.handleSubmit}>
+                                    <FormControl sx={{m: 1, minWidth: 120}}>
+                                        <TextField
+                                                id="test-name-selector"
+                                                value={this.state.selected_test_name}
+                                                label="Test Name Automatically Generated?"
+                                                onChange={this.handleSelectTestNameChange}
+                                                disabled={true}
+                                        />
+                                        <FormHelperText>The automatically generated? test name</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, minWidth: 120}}>
+                                        <InputLabel id="slice-selector-label">Slice</InputLabel>
+                                        <Select
+                                                labelId="slice-selector-label"
+                                                id="slice-selector"
+                                                value={this.state.selected_slice}
+                                                label="Slice"
+                                                onChange={this.handleSelectSliceChange}
+                                        >
+                                            {this.state.slices.map((slice) => (
+                                                    <MenuItem value={slice}>{slice}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>Select slice to recon all</FormHelperText>
+                                    </FormControl>
+
+                                    <Button variant="contained" color="primary" type="submit"
+                                            sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
                                     >
-                                        {this.state.slices.map((slice) => (
-                                                <MenuItem value={slice}>{slice}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Select slice to recon all</FormHelperText>
-                                </FormControl>
+                                        Submit
+                                    </Button>
+                                </form>
+                                <hr/>
+                            </div>
+                            <div style={{display: (this.state.selected_page_function !== "New" ? 'block' : 'none')}}>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Check Old Process Status
+                                </Typography>
+                                <form onSubmit={this.handleSubmitCheck}>
+                                    <FormControl sx={{m: 1, minWidth: 120}}>
+                                        <TextField
+                                                id="test-name-selector"
+                                                value={this.state.selected_test_name_check}
+                                                label="Process Name to check"
+                                                onChange={this.handleSelectTestNameCheckChange}
+                                        />
+                                        <FormHelperText>The provided id of the process previously saved by the user</FormHelperText>
+                                    </FormControl>
+                                    <Button variant="contained" color="primary" type="submit"
+                                            sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
+                                    >
+                                        Submit
+                                    </Button>
+                                </form>
+                                <hr/>
+                            </div>
+                                <Typography variant="body2" sx={{flexGrow: 1, textAlign: "left"}}>
+                                    Process Information:
 
-                                <Button variant="contained" color="primary" type="submit"
-                                        sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
-                                >
-                                    Submit
+                                    Press  the "Get Status" button to get its logs and check its progress
+                                    When application is finished press on the "Process Finished" button to finalise the results
+
+                                    The output will be sent to the datalake regardless of the output. If fore some reason
+                                    you believe the process has failed either no new logs for a significant amount of time
+                                    or logs have explicitly stated failure contact the administrators and send the logs
+                                </Typography>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Output Status
+                            </Typography>
+                            <hr/>
+                            <form onSubmit={this.handleProcessUpdate}>
+                                <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}
+                                        disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }>
+                                    Check progress
+                                </Button>
+                                <Button onClick={this.sendToBottom} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    Scroll down to latest log >
                                 </Button>
                             </form>
-                            <hr/>
-                        </div>
-                        <div style={{display: (this.state.selected_page_function !== "New" ? 'block' : 'none')}}>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Check Old Process Status
-                            </Typography>
-                            <form onSubmit={this.handleSubmitCheck}>
-                                <FormControl sx={{m: 1, minWidth: 120}}>
-                                    <TextField
-                                            id="test-name-selector"
-                                            value={this.state.selected_test_name_check}
-                                            label="Process Name to check"
-                                            onChange={this.handleSelectTestNameCheckChange}
-                                    />
-                                    <FormHelperText>The provided id of the process previously saved by the user</FormHelperText>
-                                </FormControl>
-                                <Button variant="contained" color="primary" type="submit"
-                                        sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
-                                >
-                                    Submit
-                                </Button>
-                            </form>
-                            <hr/>
-                        </div>
-                            <Typography variant="body2" sx={{flexGrow: 1, textAlign: "left"}}>
-                                Process Information:
 
-                                Press  the "Get Status" button to get its logs and check its progress
-                                When application is finished press on the "Process Finished" button to finalise the results
-
-                                The output will be sent to the datalake regardless of the output. If fore some reason
-                                you believe the process has failed either no new logs for a significant amount of time
-                                or logs have explicitly stated failure contact the administrators and send the logs
-                            </Typography>
-                    </Grid>
-                    <Grid item xs={5}>
-                        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Output Status
-                        </Typography>
-                        <hr/>
-                        <form onSubmit={this.handleProcessUpdate}>
-                            <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}
-                                    disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }>
-                                Check progress
+                            <br/>
+                            <TextareaAutosize
+                                    aria-label="Status Log"
+                                    placeholder="Status Log of recon function"
+                                    value={this.state.returned_status}
+                                    style={{
+                                        width: "90%",
+                                        backgroundColor: "black",
+                                        color: "white",
+                                        padding: "10px",
+                                        margin: "8px"
+                                    }}
+                            />
+                            <Button onClick={this.handleProcessFinished} variant="contained" color="primary"
+                                    disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }
+                                    sx={{margin: "8px"}}>
+                                Process Finished
                             </Button>
-                            <Button onClick={this.sendToBottom} variant="contained" color="secondary"
+                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
                                     sx={{margin: "8px", float: "right"}}>
-                                Scroll down to latest log >
+                                Back to Top >
                             </Button>
-                        </form>
-
-                        <br/>
-                        <TextareaAutosize
-                                aria-label="Status Log"
-                                placeholder="Status Log of recon function"
-                                value={this.state.returned_status}
-                                style={{
-                                    width: "90%",
-                                    backgroundColor: "black",
-                                    color: "white",
-                                    padding: "10px",
-                                    margin: "8px"
-                                }}
-                        />
-                        <Button onClick={this.handleProcessFinished} variant="contained" color="primary"
-                                disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }
-                                sx={{margin: "8px"}}>
-                            Process Finished
-                        </Button>
-                        <Button onClick={this.sendToTop} variant="contained" color="secondary"
-                                sx={{margin: "8px", float: "right"}}>
-                            Back to Top >
-                        </Button>
+                        </Grid>
                     </Grid>
+                    {this.state.show_neurodesk ? <Grid container direction="row">
+                        <Grid item xs={12} sx={{height: "10vh", borderTop: "1px solid grey", borderBottom: "1px solid grey", backgroundColor: "#0099cc"}}>
+                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
+                                Back to Top >
+                            </Button>
+                        </Grid>
+                    </Grid> : ""}
+                    {this.state.show_neurodesk ?
+                    <Grid container direction="row">
+                        <Grid item xs={12} sx={{height: "90vh"}}>
+                            <iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "95%", height: "100%" , marginLeft: "2.5%"}}></iframe>
+                        </Grid>
+                    </Grid> : "a"
+                    }
                 </Grid>
+
         )
     }
 }
