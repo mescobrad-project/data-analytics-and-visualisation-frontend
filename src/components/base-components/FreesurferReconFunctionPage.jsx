@@ -2,16 +2,17 @@ import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
+    AppBar,
     Button,
     FormControl,
     FormHelperText,
     Grid,
-    InputLabel,
+    InputLabel, Link,
     List,
     ListItem,
     ListItemText,
     MenuItem,
-    Select, TextareaAutosize, TextField, Typography
+    Select, TextareaAutosize, TextField, Toolbar, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -350,10 +351,14 @@ class FreesurferReconFunctionPage extends React.Component {
                     </Grid>
                     {this.state.show_neurodesk ? <Grid container direction="row">
                         <Grid item xs={12} sx={{height: "10vh", borderTop: "1px solid grey", borderBottom: "1px solid grey", backgroundColor: "#0099cc"}}>
-                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
-                                    sx={{margin: "8px", float: "right"}}>
-                                Back to Top >
-                            </Button>
+                            <AppBar position="relative">
+                                <Toolbar>
+                                    <Button onClick={this.sendToTop} variant="contained" color="secondary"
+                                            sx={{margin: "8px", float: "right"}}>
+                                        Back to Top >
+                                    </Button>
+                                </Toolbar>
+                            </AppBar>
                         </Grid>
                     </Grid> : ""}
                     {this.state.show_neurodesk ?
