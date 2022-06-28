@@ -14,6 +14,8 @@ import {
     MenuItem,
     Select, TextareaAutosize, TextField, Toolbar, Typography
 } from "@mui/material";
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem'
 
 // Amcharts
 // import * as am5 from "@amcharts/amcharts5";
@@ -44,10 +46,20 @@ class FreesurferReconFunctionPage extends React.Component {
             selected_freesurfer_function_id_to_log: "",
 
             //Function to show/hide
-            show_neurodesk: false,
+            show_neurodesk: true,
 
             //Returned variables
-            returned_status: ""
+            returned_status: "",
+
+            itemData : [
+                {
+                    img: 'http://localhost:8000/static/screenshots/lh.pial.T1_127.png',
+                },
+                {
+                    img: 'http://localhost:8000/static/screenshots/rh.pial.T1_127.png',
+                    // title: 'Burger',
+                }
+            ]
         };
 
         //Binding functions of the class
@@ -62,10 +74,11 @@ class FreesurferReconFunctionPage extends React.Component {
         this.sendToBottom = this.sendToBottom.bind(this);
         this.sendToTop = this.sendToTop.bind(this);
 
-
         // Initialise component
         // - values of channels from the backend
+
         this.fetchSlices();
+
 
     }
 
@@ -110,6 +123,7 @@ class FreesurferReconFunctionPage extends React.Component {
             }
 
         });
+
 
     }
 
@@ -173,6 +187,26 @@ class FreesurferReconFunctionPage extends React.Component {
         console.log(this.state.show_neurodesk)
         // Finally scroll to bottom where iframe is
         window.scrollTo(0, document.body.scrollHeight);
+        API.get("free_view",
+                {
+                    params: {
+                        input_test_name: this.state.selected_test_name,
+                        input_slices: this.state.selected_slice
+                    }
+                }
+        ).then(res => {
+            const result = res.data;
+            console.log("Freeview")
+            console.log(result)
+            if (result === "Success") {
+                this.setState({
+                    returned_status: "Process has commenced: \n" +
+                            "Press  the \" Get Status \" button to get its logs and check its progress \n" +
+                            "When application is finished press on the \" Process Finished \" button to finalise the results "
+                })
+            }
+
+        });
 
     }
 
@@ -364,7 +398,19 @@ class FreesurferReconFunctionPage extends React.Component {
                     {this.state.show_neurodesk ?
                     <Grid container direction="row">
                         <Grid item xs={12} sx={{height: "90vh"}}>
-                            <iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "95%", height: "100%" , marginLeft: "2.5%"}}></iframe>
+                            {/*<iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "95%", height: "100%" , marginLeft: "2.5%"}}></iframe>*/}
+                            <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+                                {this.state.itemData.map((item) => (
+                                        <ImageListItem key={item.img}>
+                                            <img
+                                                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                                                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                                    alt={item.title}
+                                                    loading="lazy"
+                                            />
+                                        </ImageListItem>
+                                ))}
+                            </ImageList>
                         </Grid>
                     </Grid> : "a"
                     }
