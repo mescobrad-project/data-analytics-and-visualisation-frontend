@@ -127,12 +127,16 @@ function WelcomePage() {
                     <Link
                             component={Link}
                             variant="h6"
-                            href="/freesurfer/recon"
+                            href="/eeg"
                     >
                         <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                            EEG EDF Review>
-                        {/*   1) New annotation */}
-                        {/*   2) New aggregate channels /montage */}
+                            EEG Analysis>
+                        {/*   0) Open File and see all channels*/}
+                        {/*   1)  List of annotations in our UI*/}
+                        {/*   2) New annotation */}
+                        {/*   2.1) Annotations by user*/}
+                        {/*   2) New aggregate channels */}
+                        {/*   3) Montage */}
                         </ListItemButton>
                     </Link>
                     {/*   1) Find how to create and how different users act in neurodesk */}

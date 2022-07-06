@@ -618,10 +618,10 @@ class FindPeaksPage extends React.Component {
                     {/*        dangerouslySetInnerHTML={{__html: this.state.test_chart_html}}*/}
                     {/*/>*/}
 
-                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                    {/*    Peaks*/}
-                    {/*</Typography>*/}
-                    {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
+                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
+                        Peaks
+                    </Typography>
+                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
                     {/*<hr style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}/>*/}
 
                     {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
