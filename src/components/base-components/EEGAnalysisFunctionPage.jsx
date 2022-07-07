@@ -73,12 +73,13 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleSelectSliceChange = this.handleSelectSliceChange.bind(this);
         this.sendToBottom = this.sendToBottom.bind(this);
         this.sendToTop = this.sendToTop.bind(this);
+        this.handleProcessOpenEEG = this.handleProcessOpenEEG.bind(this);
 
         // Initialise component
         // - values of channels from the backend
 
         this.fetchSlices();
-
+        this.handleProcessOpenEEG();
 
     }
 
@@ -210,6 +211,20 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     }
 
+    async handleProcessOpenEEG() {
+        //Parameter are only placeholder
+        API.get("/mne/open/eeg",
+                {
+                    params: {
+                        input_run_id: "a",
+                        input_step_id: "b"
+                    }
+                }
+        ).then(res => {
+        });
+
+    }
+
     /**
      * Update state when selection changes in the form
      */
@@ -276,9 +291,9 @@ class EEGAnalysisFunctionPage extends React.Component {
                                       sx={{height: "10vh", borderTop: "2px solid black", backgroundColor: "#0099cc"}}>
                                     <AppBar position="relative">
                                         <Toolbar>
-                                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
+                                            <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
                                                     sx={{margin: "8px", float: "right"}}>
-                                                Show EDF >
+                                                Restart View App >
                                             </Button>
                                         </Toolbar>
                                     </AppBar>
