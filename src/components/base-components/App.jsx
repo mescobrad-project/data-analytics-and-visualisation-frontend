@@ -21,6 +21,8 @@ import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/st
 import CssBaseline from '@mui/material/CssBaseline';
 import FindPeaksPage from "./FindPeaksPage";
 import PowerSpectralDensity from "./PowerSpectralDensity";
+import FreesurferReconFunctionPage from "./FreesurferReconFunctionPage";
+import EEGAnalysisFunctionPage from "./EEGAnalysisFunctionPage";
 
 
 
@@ -65,6 +67,8 @@ const App = () => {
                         <Route exact path="/find_peaks" element={(<LayoutMain><FindPeaksPage/></LayoutMain>)}/>
                         <Route exact path="/periodogram" element={(<LayoutMain><PeriodogramFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/power_spectral_density" element={(<LayoutMain><PowerSpectralDensity/></LayoutMain>)}/>
+                        <Route exact path="/freesurfer/recon" element={(<LayoutMain><FreesurferReconFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                     </Routes>

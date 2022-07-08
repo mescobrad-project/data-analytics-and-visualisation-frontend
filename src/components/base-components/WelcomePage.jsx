@@ -111,6 +111,37 @@ function WelcomePage() {
                             Power Spectral Density>
                         </ListItemButton>
                     </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/freesurfer/recon"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            Free Surfer >
+                            {/*   1) Freeview screenshots*/}
+                            {/*   1.5) Altenrate MRI screenshots with nilearn*/}
+                            {/*   2) Other files produced by freesurfer */}
+                        </ListItemButton>
+                    </Link>
+                    <h3>EEG</h3>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/eeg"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            EEG Analysis>
+                        {/*   0) Open File and see all channels*/}
+                        {/*   1)  List of annotations in our UI*/}
+                        {/*   2) New annotation */}
+                        {/*   2.1) Annotations by user*/}
+                        {/*   2) New aggregate channels */}
+                        {/*   3) Montage */}
+                        </ListItemButton>
+                    </Link>
+                    {/*   1) Find how to create and how different users act in neurodesk */}
+                    {/*   2) Show the right eeg channels  */}
+
                 </List>
 
             </React.Fragment>
