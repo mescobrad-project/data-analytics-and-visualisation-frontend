@@ -7,12 +7,24 @@ import {
     FormControl,
     FormHelperText,
     Grid,
-    InputLabel, Link,
+    InputLabel,
+    Link,
     List,
     ListItem,
     ListItemText,
     MenuItem,
-    Select, TextareaAutosize, TextField, Toolbar, Typography
+    Paper,
+    Select,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextareaAutosize,
+    TextField,
+    Toolbar,
+    Typography
 } from "@mui/material";
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem'
@@ -50,7 +62,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
             //Returned variables
             returned_status: "",
-
+            list_annotations: [],
             itemData: [
                 {
                     img: 'http://localhost:8000/static/screenshots/lh.pial.T1_127.png',
@@ -74,13 +86,14 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.sendToBottom = this.sendToBottom.bind(this);
         this.sendToTop = this.sendToTop.bind(this);
         this.handleProcessOpenEEG = this.handleProcessOpenEEG.bind(this);
+        this.handleGetAnnotations = this.handleGetAnnotations.bind(this);
 
         // Initialise component
         // - values of channels from the backend
 
         this.fetchSlices();
         this.handleProcessOpenEEG();
-
+        setInterval(this.handleGetAnnotations, 5000);
     }
 
     /**
@@ -225,6 +238,34 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     }
 
+    async handleGetAnnotations() {
+        //Parameter are only placeholder
+        API.get("/mne/return_annotations",
+                {
+
+                }
+        ).then(res => {
+            console.log(res.data)
+            this.setState({list_annotations: res.data})
+        });
+
+    }
+
+    // async autoLoadAnnotations() {
+    //     const result = await api.getStock(props.item)
+    //     console.log(props.item)
+    //     const symbol = result.data.symbol
+    //     const lastest = result.data.latestPrice
+    //     const change = result.data.change
+    //     setStock({symbol:symbol, lastest:lastest, change:change})
+    // }
+
+// Write this line
+
+
+
+
+
     /**
      * Update state when selection changes in the form
      */
@@ -253,7 +294,7 @@ class EEGAnalysisFunctionPage extends React.Component {
         return (
                 <Grid container direction="column">
                     <Grid container direction="row">
-                        <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
+                        <Grid item xs={3} sx={{borderRight: "1px solid grey"}}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Data Preview
                             </Typography>
@@ -271,6 +312,35 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 EDF
                             </Typography>
                             <hr/>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Annotations in File
+                            </Typography>
+                            <TableContainer component={Paper}>
+                                {/* sx={{ minWidth: 650 }}*/}
+                                <Table aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="right">Creator</TableCell>
+                                            <TableCell align="right">Description</TableCell>
+                                            <TableCell align="right">Onset</TableCell>
+                                            <TableCell align="right">Duration</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {this.state.list_annotations.map((row) => (
+                                                <TableRow
+                                                        key={row.name}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell align="right">{row.creator}</TableCell>
+                                                    <TableCell align="right">{row.description}</TableCell>
+                                                    <TableCell align="right">{row.onset}</TableCell>
+                                                    <TableCell align="right">{row.duration}</TableCell>
+                                                </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                             {/*Not sure if slices need to be displayed*/}
                             {/*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
                             {/*    Slices:*/}
@@ -281,7 +351,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                             {/*    ))}*/}
                             {/*</List>*/}
                         </Grid>
-                        <Grid item xs={10} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
+                        <Grid item xs={9} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             {/*<Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
                             {/*    EEG Analysis*/}
                             {/*</Typography>*/}
@@ -291,10 +361,15 @@ class EEGAnalysisFunctionPage extends React.Component {
                                       sx={{height: "10vh", borderTop: "2px solid black", backgroundColor: "#0099cc"}}>
                                     <AppBar position="relative">
                                         <Toolbar>
+                                            <Button onClick={this.handleGetAnnotations} variant="contained" color="secondary"
+                                                    sx={{margin: "8px", float: "left"}}>
+                                                Get Annotations>
+                                            </Button>
                                             <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
                                                     sx={{margin: "8px", float: "right"}}>
                                                 Restart View App >
                                             </Button>
+
                                         </Toolbar>
                                     </AppBar>
                                 </Grid>
