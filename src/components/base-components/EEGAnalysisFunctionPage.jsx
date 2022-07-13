@@ -3,8 +3,8 @@ import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
     AppBar,
-    Button,
-    FormControl,
+    Button, Checkbox,
+    FormControl, FormControlLabel, FormGroup,
     FormHelperText,
     Grid,
     InputLabel,
@@ -294,9 +294,9 @@ class EEGAnalysisFunctionPage extends React.Component {
         return (
                 <Grid container direction="column">
                     <Grid container direction="row">
-                        <Grid item xs={3} sx={{borderRight: "1px solid grey"}}>
+                        <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Data Preview
+                                File preview
                             </Typography>
                             <hr/>
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
@@ -341,6 +341,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+
                             {/*Not sure if slices need to be displayed*/}
                             {/*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
                             {/*    Slices:*/}
@@ -351,7 +352,37 @@ class EEGAnalysisFunctionPage extends React.Component {
                             {/*    ))}*/}
                             {/*</List>*/}
                         </Grid>
-                        <Grid item xs={9} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
+                        <Grid item xs={2} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
+                            <form onSubmit={this.handleSubmit}>
+                                <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    EEG Settings
+                                </Typography>
+                                <hr/>
+                                <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Notch Filter
+                                </Typography>
+                                <FormGroup>
+                                    <FormControlLabel control={<Checkbox />} label="Enable Notches" />
+                                </FormGroup>
+                                <hr/>
+                                <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    References
+                                </Typography>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Average Reference
+                                </Typography>
+                                <hr/>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Bipolar Reference
+                                </Typography>
+                                <hr/>
+                                <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    Apply Changes>
+                                </Button>
+                            </form>
+                        </Grid>
+                        <Grid item xs={8} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             {/*<Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
                             {/*    EEG Analysis*/}
                             {/*</Typography>*/}
@@ -362,7 +393,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     <AppBar position="relative">
                                         <Toolbar>
                                             <Button onClick={this.handleGetAnnotations} variant="contained" color="secondary"
-                                                    sx={{margin: "8px", float: "left"}}>
+                                                    sx={{margin: "8px", float: "center"}}>
                                                 Get Annotations>
                                             </Button>
                                             <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
