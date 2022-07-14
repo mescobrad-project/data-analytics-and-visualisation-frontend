@@ -15,7 +15,6 @@ import WelchFunctionPage from "./WelchFunctionPage";
 import StftFunctionPage from "./StftFunctionPage"
 import PeriodogramFunctionPage from "./PeriodogramFunctionPage";
 
-
 // Import Material UI Customising
 import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -23,6 +22,7 @@ import FindPeaksPage from "./FindPeaksPage";
 import PowerSpectralDensity from "./PowerSpectralDensity";
 import FreesurferReconFunctionPage from "./FreesurferReconFunctionPage";
 import EEGAnalysisFunctionPage from "./EEGAnalysisFunctionPage";
+import SamsegResultsPage from "./SamsegResults";
 
 
 
@@ -71,6 +71,7 @@ const App = () => {
                         <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
+                        <Route exact path="/Samseg_Results" element={(<LayoutMain><SamsegResultsPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

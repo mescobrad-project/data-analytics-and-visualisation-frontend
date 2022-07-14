@@ -123,6 +123,18 @@ function WelcomePage() {
                             {/*   2) Other files produced by freesurfer */}
                         </ListItemButton>
                     </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/SamsegResults"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            Samseg Results >
+                            {/*   1) Freeview screenshots*/}
+                            {/*   1.5) Altenrate MRI screenshots with nilearn*/}
+                            {/*   2) Other files produced by freesurfer */}
+                        </ListItemButton>
+                    </Link>
                     <h3>EEG</h3>
                     <Link
                             component={Link}
