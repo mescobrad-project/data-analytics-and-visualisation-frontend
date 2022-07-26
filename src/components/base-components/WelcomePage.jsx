@@ -126,13 +126,19 @@ function WelcomePage() {
                     <Link
                             component={Link}
                             variant="h6"
-                            href="/SamsegResults"
+                            href="/Freesurfer_ReconAll_Results"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            Recon-All Results >
+                        </ListItemButton>
+                    </Link>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/Freesurfer_Samseg_Results"
                     >
                         <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                             Samseg Results >
-                            {/*   1) Freeview screenshots*/}
-                            {/*   1.5) Altenrate MRI screenshots with nilearn*/}
-                            {/*   2) Other files produced by freesurfer */}
                         </ListItemButton>
                     </Link>
                     <h3>EEG</h3>

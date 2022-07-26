@@ -22,7 +22,8 @@ import FindPeaksPage from "./FindPeaksPage";
 import PowerSpectralDensity from "./PowerSpectralDensity";
 import FreesurferReconFunctionPage from "./FreesurferReconFunctionPage";
 import EEGAnalysisFunctionPage from "./EEGAnalysisFunctionPage";
-import SamsegResultsPage from "./SamsegResults";
+import Freesurfer_ReconAll_ResultsPage from "../../pages/freesurfer/ReconAllResults";
+import Freesurfer_Samseg_ResultsPage from "../../pages/freesurfer/SamsegResults";
 
 
 
@@ -71,7 +72,8 @@ const App = () => {
                         <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
-                        <Route exact path="/Samseg_Results" element={(<LayoutMain><SamsegResultsPage/></LayoutMain>)}/>
+                        <Route exact path="/Freesurfer_ReconAll_Results" element={(<LayoutMain><Freesurfer_ReconAll_ResultsPage/></LayoutMain>)}/>
+                        <Route exact path="/Freesurfer_Samseg_Results" element={(<LayoutMain><Freesurfer_Samseg_ResultsPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
