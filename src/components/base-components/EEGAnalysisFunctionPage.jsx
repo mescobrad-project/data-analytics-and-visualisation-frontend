@@ -3,7 +3,7 @@ import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
     AppBar,
-    Button, Checkbox,
+    Button, Checkbox, Chip,
     FormControl, FormControlLabel, FormGroup,
     FormHelperText,
     Grid,
@@ -42,10 +42,18 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.state = {
             // List of channels sent by the backend
             slices: [],
-
+            channels_anode: [],
+            channels_cathode: [],
+            selected_channel_anode: "",
+            selected_channel_cathode: "",
+            added_bipolar_references: [],
+            added_channel_references: [],
+            selected_reference_channel: "",
+            // bipolar_chips:[],
             //Values selected currently on the form
             selected_test_name: "runId",
             selected_slice: "",
+
 
             selected_test_name_check: "",
 
@@ -59,7 +67,8 @@ class EEGAnalysisFunctionPage extends React.Component {
 
             //Function to show/hide
             show_neurodesk: true,
-
+            selected_notch_length: 0,
+            selected_notch: false,
             //Returned variables
             returned_status: "",
             list_annotations: [],
@@ -76,6 +85,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
         //Binding functions of the class
         this.fetchSlices = this.fetchSlices.bind(this);
+        this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSubmitCheck = this.handleSubmitCheck.bind(this);
         this.handleProcessFinished = this.handleProcessFinished.bind(this);
@@ -87,6 +97,15 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.sendToTop = this.sendToTop.bind(this);
         this.handleProcessOpenEEG = this.handleProcessOpenEEG.bind(this);
         this.handleGetAnnotations = this.handleGetAnnotations.bind(this);
+        this.handleSelectNotchLengthChange = this.handleSelectNotchLengthChange.bind(this);
+        this.handleSelectNotchSelectedChange = this.handleSelectNotchSelectedChange.bind(this);
+        this.addBipolarReference = this.addBipolarReference.bind(this);
+        this.handleSelectChannelAnodeChange = this.handleSelectChannelAnodeChange.bind(this);
+        this.handleSelectChannelCathodeChange = this.handleSelectChannelCathodeChange.bind(this);
+        this.handleDeleteBipolarChip = this.handleDeleteBipolarChip.bind(this);
+        this.handleSelectChannelReferenceChange = this.handleSelectChannelReferenceChange.bind(this);
+        this.addChannelReference = this.addChannelReference.bind(this);
+        this.handleDeleteReferenceChip = this.handleDeleteReferenceChip.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -94,6 +113,7 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.fetchSlices();
         this.handleProcessOpenEEG();
         setInterval(this.handleGetAnnotations, 5000);
+        this.fetchChannels();
     }
 
     /**
@@ -169,7 +189,6 @@ class EEGAnalysisFunctionPage extends React.Component {
             console.log(resultJson)
             let prevstate = this.state.returned_status + res.data.status
             this.setState({returned_status: prevstate})
-
         });
 
         // API.get("free_surfer/recon/check",
@@ -245,7 +264,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
                 }
         ).then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             this.setState({list_annotations: res.data})
         });
 
@@ -262,7 +281,12 @@ class EEGAnalysisFunctionPage extends React.Component {
 
 // Write this line
 
-
+    async fetchChannels(url, config) {
+        API.get("list/channels", {}).then(res => {
+            this.setState({channels_cathode: res.data.channels})
+            this.setState({channels_anode: res.data.channels})
+        });
+    }
 
 
 
@@ -280,6 +304,23 @@ class EEGAnalysisFunctionPage extends React.Component {
     handleSelectTestNameCheckChange(event) {
         this.setState({selected_test_name_check: event.target.value})
     }
+    handleSelectChannelCathodeChange(event){
+        this.setState({selected_channel_cathode: event.target.value})
+    }
+    handleSelectChannelAnodeChange(event){
+        this.setState({selected_channel_anode: event.target.value})
+    }
+    handleSelectNotchSelectedChange(event) {
+        this.setState({selected_notch: event.target.checked})
+        // alert("hey")
+        // console.log(this.state.selected_notch)
+    }
+    handleSelectNotchLengthChange(event) {
+        this.setState({selected_notch_length: event.target.value})
+    }
+    handleSelectChannelReferenceChange(event) {
+        this.setState({selected_reference_channel: event.target.value})
+    }
 
     sendToBottom() {
         window.scrollTo(0, document.body.scrollHeight);
@@ -287,6 +328,59 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     sendToTop() {
         window.scrollTo(0, 0)
+    }
+
+    handleDeleteReferenceChip (channel_name) {
+        for (let i=0; i < this.state.added_channel_references.length; i++){
+            let temp_references = this.state.added_channel_references
+            if(temp_references[i] === channel_name){
+                console.log("temp_references")
+                console.log(temp_references[i])
+                temp_references.splice(i,1)
+                console.log(temp_references)
+                this.setState({added_channel_references: temp_references})
+                return
+            }
+        }
+    }
+
+    handleDeleteBipolarChip (anode, cathode) {
+        console.log(anode)
+        console.log(cathode)
+        for (let i=0; i < this.state.added_bipolar_references.length; i++){
+            let temp_references = this.state.added_bipolar_references
+            if(temp_references[i]["anode"] === anode && temp_references[i]["cathode"] === cathode){
+                temp_references.splice(i,1)
+                this.setState({added_bipolar_references: temp_references})
+                return
+            }
+        }
+    }
+
+    addBipolarReference() {
+        // Check if both fields are filled
+        if(this.state.selected_channel_anode === "" || this.state.selected_channel_cathode === ""){
+            console.log("cancel")
+            return
+        }
+
+        this.setState({added_bipolar_references: [...this.state.added_bipolar_references,
+                {"anode": this.state.selected_channel_anode,
+                "cathode":this.state.selected_channel_cathode
+                }]})
+        // console.log(this.state.added_bipolar_references)
+
+    }
+
+    addChannelReference() {
+        // Check if both fields are filled
+        if(this.state.selected_reference_channel === "" ){
+            // console.log("cancel")
+            return
+        }
+
+        this.setState({added_channel_references: [...this.state.added_channel_references, this.state.selected_reference_channel]})
+        // console.log(this.state.added_bipolar_references)
     }
 
 
@@ -362,19 +456,99 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     Notch Filter
                                 </Typography>
                                 <FormGroup>
-                                    <FormControlLabel control={<Checkbox />} label="Enable Notches" />
+                                    <FormControlLabel control={<Checkbox onChange={this.handleSelectNotchSelectedChange} />} label="Enable Notches" />
+                                    <FormControl sx={{m: 1, minWidth: 120}}>
+                                        <TextField
+                                                // labelId="nfft-selector-label"
+                                                id="notch-length-selector"
+                                                value= {this.state.selected_notch_length}
+                                                label="Notch length"
+                                                disabled={!this.state.selected_notch}
+                                                onChange={this.handleSelectNotchLengthChange}
+                                        />
+                                        <FormHelperText>Length of the Notch</FormHelperText>
+                                    </FormControl>
                                 </FormGroup>
                                 <hr/>
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                    References
+                                    Reference Channels
                                 </Typography>
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Average Reference
                                 </Typography>
+                                <FormControl sx={{m: 1, width: "80%"}}>
+                                    {this.state.added_channel_references.map((chip_data) => (
+                                            <Chip label={chip_data} variant="outlined" onDelete={this.handleDeleteReferenceChip.bind(this, chip_data)} />
+                                    ))}
+                                    <InputLabel id="channel-reference-selector-label">Channel</InputLabel>
+                                    <Select
+                                            labelId="channel-reference-selector-label"
+                                            id="channel-reference-selector"
+                                            value= {this.state.selected_reference_channel}
+                                            label="Channel"
+                                            onChange={this.handleSelectChannelReferenceChange}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {this.state.channels_cathode.map((channel) => (
+                                                <MenuItem value={channel}>{channel}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    <FormHelperText>Select reference channel</FormHelperText>
+                                </FormControl>
+                                <Button onClick={this.addChannelReference} variant="contained" color="primary"
+                                        sx={{marginLeft: "10%"}}>
+                                    Add reference channel >
+                                </Button>
                                 <hr/>
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Bipolar Reference
                                 </Typography>
+                                {this.state.added_bipolar_references.map((chip_data) => (
+                                        <Chip label={chip_data["anode"] + "||" + chip_data["cathode"]} variant="outlined" onDelete={this.handleDeleteBipolarChip.bind(this, chip_data["anode"], chip_data["cathode"])} />
+                                ))}
+                                <FormControl sx={{m: 1, width: "80%"}}>
+                                    <InputLabel id="channel-anode-selector-label">Channel</InputLabel>
+                                    <Select
+                                            labelId="channel-anode-selector-label"
+                                            id="channel-anode-selector"
+                                            value= {this.state.selected_channel_anode}
+                                            label="Channel"
+                                            onChange={this.handleSelectChannelAnodeChange}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {this.state.channels_anode.map((channel) => (
+                                                <MenuItem value={channel}>{channel}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    <FormHelperText>Select anode channel</FormHelperText>
+                                </FormControl>
+
+                                <FormControl sx={{m: 1, width: "80%"}}>
+                                    <InputLabel id="channel-cathode-selector-label">Channel</InputLabel>
+                                    <Select
+                                            labelId="channel-cathode-selector-label"
+                                            id="channel-cathode-selector"
+                                            value= {this.state.selected_channel_cathode}
+                                            label="Channel"
+                                            onChange={this.handleSelectChannelCathodeChange}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {this.state.channels_cathode.map((channel) => (
+                                                <MenuItem value={channel}>{channel}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    <FormHelperText>Select anode channel</FormHelperText>
+                                </FormControl>
+                                <Button onClick={this.addBipolarReference} variant="contained" color="primary"
+                                        sx={{marginLeft: "25%"}}>
+                                    Add reference >
+                                </Button>
                                 <hr/>
                                 <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
