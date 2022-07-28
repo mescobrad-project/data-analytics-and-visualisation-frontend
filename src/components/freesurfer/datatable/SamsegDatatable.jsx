@@ -4,23 +4,18 @@ import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import API from "../../../axiosInstance";
 
-// const SamsegDatatable = () => {
-//     const [data, setData] = useState(userRows);
-//
-//     const handleDelete = (id) => {
-//         setData(data.filter((item) => item.id !== id));
-//     };
+
 const userColumns = [
-    { field: "measure", headerName: "Measure", width: 200 },
+    { field: "measure", headerName: "Measure", maxWidth: 500, minWidth: 140, width: 500, sortable: true},
     {
         field: "value",
         headerName: "Value",
-        width: 100,
+        maxWidth: 500, minWidth: 140, width: 500
     },
     {
         field: "unit",
         headerName: "Unit",
-        width: 100,
+        maxWidth: 200, minWidth: 80, width: 200
     }
 ];
 
@@ -41,12 +36,6 @@ class SamsegDatatable extends React.Component {
         });
     }
     render () {
-        // let tb_data = this.state.samseg_data.map((item) => {
-        //     <div>
-        //         <p><strong>Unit : </strong>{item['unit']}</p>
-        //     </div>
-        // }
-        // )
         return(
             <div className="datatable">
                 <div className="datatableTitle">

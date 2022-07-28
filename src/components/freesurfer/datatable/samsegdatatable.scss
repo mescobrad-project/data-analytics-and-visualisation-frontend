@@ -1,7 +1,9 @@
 .datatable {
-    height: 600px;
+    height: 500px;
     padding: 20px;
-
+    .columns{
+        align-items: center;
+    }
     .datatableTitle{
         width: 100%;
         font-size: 24px;

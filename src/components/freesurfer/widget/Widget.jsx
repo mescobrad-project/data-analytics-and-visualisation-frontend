@@ -1,9 +1,7 @@
 import "./widget.scss";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
+import React from "react";
 
 const Widget = ({ type }) => {
     let data;
@@ -13,13 +11,13 @@ const Widget = ({ type }) => {
     const diff = 20;
 
     switch (type) {
-        case "user":
+        case "whole_brain_measurements_left":
             data = {
-                title: "USERS",
+                title: "Whole Brain Measurements - Left hemisphere",
                 isMoney: false,
                 link: "See all users",
                 icon: (
-                        <PersonOutlinedIcon
+                        <PsychologyOutlinedIcon
                                 className="icon"
                                 style={{
                                     color: "crimson",
@@ -29,47 +27,15 @@ const Widget = ({ type }) => {
                 ),
             };
             break;
-        case "order":
+        case "whole_brain_measurements_right":
             data = {
-                title: "ORDERS",
-                isMoney: false,
-                link: "View all orders",
-                icon: (
-                        <ShoppingCartOutlinedIcon
-                                className="icon"
-                                style={{
-                                    backgroundColor: "rgba(218, 165, 32, 0.2)",
-                                    color: "goldenrod",
-                                }}
-                        />
-                ),
-            };
-            break;
-        case "earning":
-            data = {
-                title: "EARNINGS",
+                title: "Whole Brain Measurements - Right hemisphere",
                 isMoney: true,
                 link: "View net earnings",
                 icon: (
-                        <MonetizationOnOutlinedIcon
+                        <PsychologyOutlinedIcon
                                 className="icon"
                                 style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color: "green" }}
-                        />
-                ),
-            };
-            break;
-        case "balance":
-            data = {
-                title: "BALANCE",
-                isMoney: true,
-                link: "See details",
-                icon: (
-                        <AccountBalanceWalletOutlinedIcon
-                                className="icon"
-                                style={{
-                                    backgroundColor: "rgba(128, 0, 128, 0.2)",
-                                    color: "purple",
-                                }}
                         />
                 ),
             };

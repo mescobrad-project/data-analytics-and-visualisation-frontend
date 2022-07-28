@@ -1,0 +1,21 @@
+.samseg_whole_brain_measurements_widget{
+    display: flex;
+    justify-content: space-between;
+    flex: 2;
+    padding: 20px;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0,0,0,0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201,201,201,0.47);
+    border-radius: 10px;
+    height: 300px;
+
+    .left, .right {
+        display: flex;
+        flex-direction: column;
+        //justify-content: space-between;
+    }
+    .title {
+        font-weight: bold;
+        font-size: 14px;
+        color: rgb(160, 160, 160);
+    }
+}
