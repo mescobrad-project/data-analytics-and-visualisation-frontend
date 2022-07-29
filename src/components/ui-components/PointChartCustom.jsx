@@ -39,7 +39,8 @@ class PointChartCustom extends React.Component {
                 wheelY: "zoomX",
                 scrollbarX: am5.Scrollbar.new(root, { orientation: "horizontal" }),
                 scrollbarY: am5.Scrollbar.new(root, { orientation: "vertical" }),
-                pinchZoomX:true
+                pinchZoomX:true,
+
             })
         );
         // Format numbers

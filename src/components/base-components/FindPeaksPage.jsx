@@ -21,6 +21,7 @@ import {
 // import * as am5xy from "@amcharts/amcharts5/xy";
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
+import PointChartCustomAM4 from "../ui-components/PointChartCustomAM4";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class FindPeaksPage extends React.Component {
@@ -611,7 +612,7 @@ class FindPeaksPage extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
                         Peaks
                     </Typography>
-                    <InnerHTML html={this.state.test_chart_html} />
+                    {/*<InnerHTML html={this.state.test_chart_html} />*/}
                     {/*<iframe src="http://127.0.0.1:8000/test/chart" width= "95%" height="95%" ></iframe>*/}
 
                     {/*<div*/}
@@ -621,7 +622,11 @@ class FindPeaksPage extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
                         Peaks
                     </Typography>
-                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
+                    {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
+                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'block') }}><PointChartCustomAM4 chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
+
+
+
                     {/*<hr style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}/>*/}
 
                     {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
