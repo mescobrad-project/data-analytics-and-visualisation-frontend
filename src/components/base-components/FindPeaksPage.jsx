@@ -22,6 +22,7 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import PointChartCustomAM4 from "../ui-components/PointChartCustomAM4";
+import PointChartCustomAM4Date from "../ui-components/PointChartCustomAM4Date";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class FindPeaksPage extends React.Component {
@@ -223,16 +224,50 @@ class FindPeaksPage extends React.Component {
             console.log("--- Results ---")
             console.log(resultJson)
 
+            console.log(" -- DATE IS --")
+            let start_date = new Date(resultJson.start_date_time);
+            console.log(start_date)
+
             this.setState({test_chart_html: resultJson.figure})
             // Show only relevant visualisations and load their data
             // Correlation chart always has results so should always be enabled
             // this.setState({correlation_results: resultJson.values_partial_autocorrelation})
             //
             let temp_array_peaks = []
-            for ( let it =0 ; it < resultJson.peaks.length; it++){
+            let peak_it = 0;
+            for ( let it =0 ; it < resultJson.signal.length; it++){
                 let temp_object = {}
                 temp_object["category"] = it
-                temp_object["yValue"] = resultJson.peaks[it]
+                let adjusted_time = ""
+                if(it === 0){
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]
+                }else{
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]*100
+                }
+                let temp_date = new Date(adjusted_time )
+                // let temp_date = new Date(start_date.getTime() + resultJson.signal_time[it] )
+                // temp_date = temp_date.setSeconds(temp_date.getSeconds() +  resultJson.signal_time[it])
+                temp_object["date"] = temp_date
+                temp_object["yValue"] = resultJson.signal[it]
+
+                // temp_object["yValue"] = resultJson.peaks[it]
+                if(resultJson.peaks[peak_it] === it){
+                    temp_object["show_peak"] = false
+                    temp_object["color"] = "red"
+                    peak_it++;
+                }else{
+                    temp_object["show_peak"] = true
+                    temp_object["color"] = "blue"
+                }
+
+                //TEST
+                // if(it%2 === 0){
+                //     temp_object["show_peak"] = false
+                //     temp_object["color"] = "blue"
+                // }else{
+                //     temp_object["show_peak"] = true
+                //     temp_object["color"] = "red"
+                // }
                 temp_array_peaks.push(temp_object)
             }
             // console.log("")
@@ -612,7 +647,9 @@ class FindPeaksPage extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
                         Peaks
                     </Typography>
-                    {/*<InnerHTML html={this.state.test_chart_html} />*/}
+                    <InnerHTML html={this.state.test_chart_html} />
+
+
                     {/*<iframe src="http://127.0.0.1:8000/test/chart" width= "95%" height="95%" ></iframe>*/}
 
                     {/*<div*/}
@@ -623,7 +660,8 @@ class FindPeaksPage extends React.Component {
                         Peaks
                     </Typography>
                     {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
-                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'block') }}><PointChartCustomAM4 chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
+                    {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustomAM4 chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
+                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustomAM4Date chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
 
 
 
