@@ -12,7 +12,7 @@ import {
     List,
     ListItem,
     ListItemText,
-    MenuItem,
+    MenuItem, Modal,
     Paper,
     Select,
     Table,
@@ -35,6 +35,20 @@ import ImageListItem from '@mui/material/ImageListItem'
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import {Box} from "@mui/system";
+import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 class EEGAnalysisFunctionPage extends React.Component {
     constructor(props) {
@@ -53,7 +67,10 @@ class EEGAnalysisFunctionPage extends React.Component {
             //Values selected currently on the form
             selected_test_name: "runId",
             selected_slice: "",
+            open_modal: false,
 
+            select_signal_chart_show: false,
+            signal_chart_data: [],
 
             selected_test_name_check: "",
 
@@ -106,6 +123,9 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleSelectChannelReferenceChange = this.handleSelectChannelReferenceChange.bind(this);
         this.addChannelReference = this.addChannelReference.bind(this);
         this.handleDeleteReferenceChip = this.handleDeleteReferenceChip.bind(this);
+        this.handleModalOpen = this.handleModalOpen.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
+        this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -128,6 +148,40 @@ class EEGAnalysisFunctionPage extends React.Component {
     /**
      * Process and send the request for auto correlation and handle the response
      */
+
+    async handleGetChannelSignal(){
+        API.get("return_signal",
+                {
+                    params: {input_name: "C3-Ref",
+                    // params: {input_name: this.state.selected_channel,
+                    }
+                }
+        ).then(res => {
+            const resultJson = res.data;
+            let temp_array_signal = []
+            for ( let it =0 ; it < resultJson.signal.length; it++){
+                let temp_object = {}
+                let adjusted_time = ""
+                // First entry is 0 so no need to add any milliseconds
+                // Time added is as millisecond/100 so we multiply by 10000
+                if(it === 0){
+                    adjusted_time = resultJson.start_date_time
+                }else{
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]*10000
+                }
+
+                let temp_date = new Date(adjusted_time )
+                temp_object["date"] = temp_date
+                temp_object["yValue"] = resultJson.signal[it]
+
+                temp_array_signal.push(temp_object)
+            }
+
+            this.setState({signal_chart_data: temp_array_signal})
+            this.setState({select_signal_chart_show: true});
+        });
+    }
+
     async handleSubmit(event) {
         event.preventDefault();
         // Set the freesurfer process id to log and the appropriate page function
@@ -321,7 +375,13 @@ class EEGAnalysisFunctionPage extends React.Component {
     handleSelectChannelReferenceChange(event) {
         this.setState({selected_reference_channel: event.target.value})
     }
-
+    handleModalOpen(){
+        this.setState({open_modal: true})
+        this.handleGetChannelSignal()
+    }
+    handleModalClose(){
+        this.setState({open_modal: false})
+    }
     sendToBottom() {
         window.scrollTo(0, document.body.scrollHeight);
     }
@@ -549,6 +609,24 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         sx={{marginLeft: "25%"}}>
                                     Add reference >
                                 </Button>
+                                <hr/>
+                                <Button onClick={this.handleModalOpen}>Open modal</Button>
+                                <Modal
+                                        open={this.state.open_modal}
+                                        onClose={this.handleModalClose}
+                                        aria-labelledby="modal-modal-title"
+                                        aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style}>
+                                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                                            Select range of signal
+                                        </Typography>
+                                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                            To select press on the
+                                        </Typography>
+                                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
+                                    </Box>
+                                </Modal>
                                 <hr/>
                                 <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
