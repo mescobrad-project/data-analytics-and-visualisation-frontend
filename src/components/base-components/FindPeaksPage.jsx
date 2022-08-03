@@ -16,14 +16,7 @@ import {
     Select, TextField, Typography
 } from "@mui/material";
 
-// Amcharts
-// import * as am5 from "@amcharts/amcharts5";
-// import * as am5xy from "@amcharts/amcharts5/xy";
-// import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-import PointChartCustom from "../ui-components/PointChartCustom";
-import PointChartCustomAM4 from "../ui-components/PointChartCustomAM4";
-import PointChartCustomAM4Date from "../ui-components/PointChartCustomAM4Date";
-// import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
 
 class FindPeaksPage extends React.Component {
     constructor(props){
@@ -62,6 +55,7 @@ class FindPeaksPage extends React.Component {
 
             // Values to pass to visualisations
             peak_chart_data : [],
+            peaks_length : 0,
             peak_heights_data : [],
             left_thresholds_data : [],
             right_thresholds_data : [],
@@ -221,13 +215,6 @@ class FindPeaksPage extends React.Component {
             }
         ).then(res => {
             const resultJson = res.data;
-            console.log("--- Results ---")
-            console.log(resultJson)
-
-            console.log(" -- DATE IS --")
-            let start_date = new Date(resultJson.start_date_time);
-            console.log(start_date)
-
             this.setState({test_chart_html: resultJson.figure})
             // Show only relevant visualisations and load their data
             // Correlation chart always has results so should always be enabled
@@ -235,83 +222,44 @@ class FindPeaksPage extends React.Component {
             //
             let temp_array_peaks = []
             let peak_it = 0;
+
+            // Set number of peak detected to be shown to the user
+            this.setState({peaks_length: resultJson.peaks.length})
             for ( let it =0 ; it < resultJson.signal.length; it++){
                 let temp_object = {}
                 temp_object["category"] = it
                 let adjusted_time = ""
+
+                // First entry is 0 so no need to add any milliseconds
+                // Time added is as millisecond/100 so we multiply by 10000
                 if(it === 0){
-                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]
+                    adjusted_time = resultJson.start_date_time
                 }else{
-                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]*100
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]*10000
                 }
+
                 let temp_date = new Date(adjusted_time )
-                // let temp_date = new Date(start_date.getTime() + resultJson.signal_time[it] )
-                // temp_date = temp_date.setSeconds(temp_date.getSeconds() +  resultJson.signal_time[it])
                 temp_object["date"] = temp_date
                 temp_object["yValue"] = resultJson.signal[it]
 
-                // temp_object["yValue"] = resultJson.peaks[it]
+                // Only show bullets for the entries that have them
+                // Colours can also be added but are currently commented to avoid issues with scaling and graph not even laoding
                 if(resultJson.peaks[peak_it] === it){
                     temp_object["show_peak"] = false
-                    temp_object["color"] = "red"
+                    // temp_object["color"] = "red"
+
+                    //Increase the iterator to the next detected peak
                     peak_it++;
                 }else{
                     temp_object["show_peak"] = true
-                    temp_object["color"] = "blue"
+                    // temp_object["color"] = "blue"
                 }
 
-                //TEST
-                // if(it%2 === 0){
-                //     temp_object["show_peak"] = false
-                //     temp_object["color"] = "blue"
-                // }else{
-                //     temp_object["show_peak"] = true
-                //     temp_object["color"] = "red"
-                // }
                 temp_array_peaks.push(temp_object)
             }
-            // console.log("")
-            console.log(temp_array_peaks)
 
             this.setState({peak_chart_data: temp_array_peaks})
             this.setState({peak_chart_show: true});
-
-            // let temp_array_height_peaks = []
-            // for ( let it =0 ; it < resultJson.peak_heights.length; it++){
-            //     let temp_object = {}
-            //     temp_object["category"] = it
-            //     temp_object["yValue"] = resultJson.peak_heights[it]
-            //     temp_array_height_peaks.push(temp_object)
-            // }
-            // // console.log("")
-            // console.log(temp_array_height_peaks)
-            //
-            // this.setState({peak_heights_data: temp_array_height_peaks})
-            // this.setState({peak_heights_show: true});
-
-
-
-
-            //
-            //
-            // this.setState({correlation_chart_data: temp_array_correlation})
-            // this.setState({correlation_chart_show: true})
-            //
-            // // Alpha optional charts
-            // if(flag_alpha){
-            //     let temp_array_alpha = []
-            //     for ( let it =0 ; it < resultJson.confint.length; it++){
-            //         let temp_object = {}
-            //         temp_object["category"] = it
-            //         temp_object["yValue1"] = resultJson.confint[it][0]
-            //         temp_object["yValue2"] = resultJson.confint[it][1]
-            //         temp_array_alpha.push(temp_object)
-            //     }
-            //
-            //     this.setState({confint_chart_data: temp_array_alpha})
-            //     this.setState({confint_chart_show: true});
-            // }
-
         });
     }
 
@@ -644,34 +592,24 @@ class FindPeaksPage extends React.Component {
                         Result Visualisation
                     </Typography>
                     <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
-                        Peaks
-                    </Typography>
-                    <InnerHTML html={this.state.test_chart_html} />
-
-
-                    {/*<iframe src="http://127.0.0.1:8000/test/chart" width= "95%" height="95%" ></iframe>*/}
-
-                    {/*<div*/}
-                    {/*        dangerouslySetInnerHTML={{__html: this.state.test_chart_html}}*/}
-                    {/*/>*/}
-
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
-                        Peaks
-                    </Typography>
-                    {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
-                    {/*<div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustomAM4 chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>*/}
-                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><PointChartCustomAM4Date chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
-
-
-
-                    {/*<hr style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}/>*/}
-
+                    {/* Alternative way to delvier graphs left here for alternatives */}
                     {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                    {/*    Height Peak*/}
+                    {/*    Peaks*/}
                     {/*</Typography>*/}
-                    {/*<div style={{ display: (this.state.peak_heights_show ? 'block' : 'none') }}><PointChartCustom chart_id="peak_heights_chart_id" chart_data={ this.state.peak_heights_data}/></div>*/}
-                    {/*<hr style={{ display: (this.state.peak_heights_show ? 'block' : 'none') }}/>*/}
+                    {/*<InnerHTML html={this.state.test_chart_html} />*/}
+
+
+                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peak_chart_show ? 'block' : 'none')  }} noWrap>
+                        Peaks
+                    </Typography>
+                    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center", display: (this.state.peak_chart_show ? 'block' : 'none') }} >
+                        Peaks in graph: {this.state.peaks_length}
+                    </Typography>
+                    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center", display: (this.state.peak_chart_show ? 'block' : 'none') }} >
+                        If no peaks are apparent in the graph but the counter mentions more, there are probably too many to be displayed.
+                        Zoom in to see them.
+                    </Typography>
+                    <div style={{ display: (this.state.peak_chart_show ? 'block' : 'none') }}><ChannelSignalPeaksChartCustom chart_id="peak_chart_id" chart_data={ this.state.peak_chart_data}/></div>
                 </Grid>
             </Grid>
         )

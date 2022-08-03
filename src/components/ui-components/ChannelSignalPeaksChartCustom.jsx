@@ -9,7 +9,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
  * Component returns an lollipop style am5chart
  * Intented to be used to show an array of data usually in linear order but can be used in different manners
  */
-class PointChartCustomAM4 extends React.Component {
+class ChannelSignalPeaksChartCustom extends React.Component {
     static propTypes = {
         /** Prop "chart_id" provides the id of the chart and needs to be unique in each page */
         chart_id: PropTypes.string,
@@ -28,116 +28,87 @@ class PointChartCustomAM4 extends React.Component {
     componentDidMount() {
         am4core.options.minPolylineStep = 5;
         let chart = am4core.create(this.props.chart_id, am4charts.XYChart);
+        // chart.dateFormatter.dateFormat = "H:mm:ss";
         chart.paddingRight = 20;
-        // ... chart code goes here ...
-        let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-        categoryAxis.dataFields.category = "category";
-        // categoryAxis.renderer.grid.template.location = 0;
-        categoryAxis.minZoomCount = 5;
+        let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+        dateAxis.renderer.grid.template.location = 0;
+        dateAxis.minZoomCount = 300;
+        dateAxis.dateFormatter = new am4core.DateFormatter()
+        dateAxis.dateFormatter.dateFormat = "h:m:ss"
+        // Options for grouping data based on date currently not used
+        // dateAxis.groupData = true;
+        // dateAxis.groupCount = 500;
+
+
+        // dateAxis.dateFormats = "mm:ss SSS";
+        // categoryAxis.dataFields.category = "category";
+        // // categoryAxis.renderer.grid.template.location = 0;
+        // categoryAxis.minZoomCount = 5;
         // categoryAxis.keepSelection=true
         // categoryAxis.start =0;
         // categoryAxis.end =0.5;
         // categoryAxis.keepSelection = true;
 
-// this makes the data to be grouped
-//         categoryAxis.groupData = true;
-//         categoryAxis.groupCount = 500;
 
-        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-        // valueAxis.propertyFields.
-        // valueAxis.keepSelection =true;
-        // valueAxis.start =0;
-        // valueAxis.end =0.5;
+        let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-        // var valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
 
-        var series = chart.series.push(new am4charts.LineSeries());
-        series.dataFields.categoryX = "category";
+        let series = chart.series.push(new am4charts.LineSeries());
+        series.dataFields.dateX  = "date";
         series.dataFields.valueY = "yValue";
         series.name = "Signal";
         series.tooltipText = "{yValue}";
         series.tooltip.pointerOrientation = "vertical";
         series.tooltip.background.fillOpacity = 1;
-        series.fillOpacity = 1;
+        series.fillOpacity = 0;
+        // Apply different colour to peaks show it is visible from all zoom level but due to scaling currently disabled
         // series.propertyFields.stroke = "color"
         // series.propertyFields.fill = "color"
 
         series.minBulletDistance = 1;
 
-        var bullet = series.bullets.push(new am4charts.Bullet());
+        // Initialise bullets
+        let bullet = series.bullets.push(new am4charts.Bullet());
         bullet.hidden = true
-        // bullet.show = true
         bullet.propertyFields.hidden = "show_peak"
 
-        var square = bullet.createChild(am4core.Rectangle);
+        let square = bullet.createChild(am4core.Rectangle);
         square.width = 10;
         square.height = 10;
         square.fill = am4core.color("#ff0000");
         square.horizontalCenter = "middle";
         square.verticalCenter = "middle";
-        // if(chart.yAxes.indexOf(valueAxis2) != 0){
-        //     valueAxis2.syncWithAxis = chart.yAxes.getIndex(0);
-        // }
-
-
-        // valueAxis2.renderer.opposite = true;
-        //
-        // var series2 = chart.series.push(new am4charts.LineSeries());
-        // series2.dataFields.categoryX = "category";
-        // series2.dataFields.valueY = "yValue2";
-        // series2.name = "Peaks";
-        // series2.tooltipText = "{yValue2}";
-        // series2.tooltip.pointerOrientation = "vertical";
-        // series2.tooltip.background.fillOpacity = 1;
-        // series2.fillOpacity = 1;
 
         chart.cursor = new am4charts.XYCursor();
         chart.cursor.lineY.opacity = 0;
-        // chart.cursor.xAxis = valueAxis;
 
-        var scrollbarX = new am4core.Scrollbar();
+        let scrollbarX = new am4core.Scrollbar();
         scrollbarX.marginBottom = 10;
         chart.scrollbarX = scrollbarX;
 
-        var scrollbarY = new am4core.Scrollbar();
+        let scrollbarY = new am4core.Scrollbar();
         scrollbarY.marginLeft = 10;
         chart.scrollbarY = scrollbarY;
 
-        var data = [];
-        // var visits = 10;
-        // for (var i = 1; i < 50000; i++) {
-        //     visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
-        //     data.push({ category: i, yValue: visits });
-        // }
-
-        // var data = [];
-        console.log("DATA TO SHOW IS")
-        console.log(data)
+        let data = [];
         chart.data = data;
 
-        categoryAxis.start = 0.8;
-        categoryAxis.end = 1;
 
 
-
-
+        // Bind variables used outside this initialisation to this
         this.chart = chart;
-        this.categoryAxis = categoryAxis;
-        // this.root = root;
+        this.dateAxis = dateAxis;
         this.series = series;
 
+        // Trigger the initial zoom when new data is loaded
         chart.events.on("datavalidated",this.zoomOnUpdate)
-
-        // chart.events.on("ready", function () {
-        //     valueAxis.start = 0.8;
-        //     valueAxis.end = 1;
-        //     valueAxis.keepSelection = true;
-        // });
-
     }
 
+     // Function that shows only the first half of chart on load
      zoomOnUpdate() {
-        this.categoryAxis.zoomToCategories("0",String(this.props.chart_data.length/2) )
+        // this.dateAxis.zoomToCategories("0",String(this.props.chart_data.length/2) )
+         this.dateAxis.start = 0;
+         this.dateAxis.end = 0.5;
     }
 
     componentDidUpdate(oldProps) {
@@ -168,4 +139,4 @@ class PointChartCustomAM4 extends React.Component {
     }
 }
 
-export default PointChartCustomAM4;
+export default ChannelSignalPeaksChartCustom;
