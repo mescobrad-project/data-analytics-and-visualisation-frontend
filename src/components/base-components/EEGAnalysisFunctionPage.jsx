@@ -43,7 +43,8 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: "80%",
+    height: "80%",
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -126,6 +127,7 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleModalOpen = this.handleModalOpen.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
+        this.getSelectionOfSignal = this.getSelectionOfSignal.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -443,6 +445,16 @@ class EEGAnalysisFunctionPage extends React.Component {
         // console.log(this.state.added_bipolar_references)
     }
 
+    getSelectionOfSignal() {
+        let selection_array_from = document.getElementsByClassName('amcharts-range-selector-from-input');
+        let selection_array_to = document.getElementsByClassName('amcharts-range-selector-to-input');
+
+        // We assume that only one of this class exists, if more selector amcharts exists in one page this needs to change
+        let selection_from_div = selection_array_from[0]
+        let selection_to_div = selection_array_to[0]
+        console.log(selection_from_div.value)
+    }
+
 
     render() {
         return (
@@ -616,15 +628,20 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         onClose={this.handleModalClose}
                                         aria-labelledby="modal-modal-title"
                                         aria-describedby="modal-modal-description"
+                                        disableEnforceFocus={true}
                                 >
                                     <Box sx={style}>
                                         <Typography id="modal-modal-title" variant="h6" component="h2">
                                             Select range of signal
                                         </Typography>
                                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                            To select press on the
+                                            To select zoom on the selection you want and when the view matches the wanted selection press select
                                         </Typography>
                                         <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
+                                        <Button onClick={this.getSelectionOfSignal} variant="contained" color="primary"
+                                                sx={{marginLeft: "25%"}}>
+                                            Get Selection
+                                        </Button>
                                     </Box>
                                 </Modal>
                                 <hr/>

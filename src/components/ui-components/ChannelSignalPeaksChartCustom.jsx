@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
+import * as am4plugins_rangeSelector from "@amcharts/amcharts4/plugins/rangeSelector";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 // am4core.useTheme(am4themes_animated);
 /**
@@ -26,15 +27,17 @@ class ChannelSignalPeaksChartCustom extends React.Component {
     }
 
     componentDidMount() {
+        console.log("MOUNTED AGAIN")
         am4core.options.minPolylineStep = 5;
         let chart = am4core.create(this.props.chart_id, am4charts.XYChart);
-        // chart.dateFormatter.dateFormat = "H:mm:ss";
+        chart.dateFormatter.dateFormat = "h-m-ss";
+        // chart.dateFormatter.dateFormat = "yyyy-MM-dd";
         chart.paddingRight = 20;
         let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
         dateAxis.renderer.grid.template.location = 0;
         dateAxis.minZoomCount = 300;
         dateAxis.dateFormatter = new am4core.DateFormatter()
-        dateAxis.dateFormatter.dateFormat = "h:m:ss"
+        // dateAxis.dateFormatter.dateFormat = "h:m:ss"
         // Options for grouping data based on date currently not used
         // dateAxis.groupData = true;
         // dateAxis.groupCount = 500;
@@ -100,6 +103,21 @@ class ChannelSignalPeaksChartCustom extends React.Component {
         this.dateAxis = dateAxis;
         this.series = series;
 
+        var selector = new am4plugins_rangeSelector.DateAxisRangeSelector();
+        selector.container = document.getElementById("selectordiv");
+        selector.axis = dateAxis;
+        selector.position = "right";
+        selector.inputDateFormat = "h-m-ss";
+        // Remove unneeded buttons already existing
+        selector.periods = []
+
+
+        // Add new relevant buttons
+        // selector.periods.unshift(
+        //         { name: "50%", interval: { timeUnit: "day", count: 3 } }
+        // );
+
+        console.log(selector.periods)
         // Trigger the initial zoom when new data is loaded
         chart.events.on("datavalidated",this.zoomOnUpdate)
     }
@@ -116,7 +134,8 @@ class ChannelSignalPeaksChartCustom extends React.Component {
         //     this.chart.paddingRight = this.props.paddingRight;
         // }
 
-        if(this.props.chart_data){
+        if(this.props.chart_data !== this.chart.data){
+            console.log("TESTRTEARAWR")
             this.chart.data = this.props.chart_data
 
             // this.categoryAxis.zoomToCategories("1", "50")
@@ -134,7 +153,10 @@ class ChannelSignalPeaksChartCustom extends React.Component {
 
     render() {
         return (
+                <div>
                     <div id={this.props.chart_id} style={{ width: "100%", height: "500px" }}></div>
+                    <div id="selectordiv"></div>
+                </div>
         )
     }
 }
