@@ -3,6 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import API from "../../../axiosInstance";
+import {textAlign} from "@mui/system";
 
 
 const userColumns = [

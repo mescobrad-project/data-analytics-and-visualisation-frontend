@@ -1,47 +1,47 @@
 import "./reconallresults.scss"
-import Widget from "../../components/freesurfer/widget/Widget";
-import TableOfReports from "../../components/freesurfer/table/Table";
-import Samseg_whole_brain_measurements_widget from "../../components/freesurfer/widget/Samseg_whole_brain_measurements_widget";
+import Samseg_Whole_Brain_Measurements_Widget from "../../components/freesurfer/widget/Samseg_whole_brain_measurements_widget";
 import React from 'react';
-import NumberFormat from 'react-number-format';
-import API from "../../axiosInstance";
-import {
-    Box,
-    Button,
-    Card,
-    CardHeader,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    TableSortLabel,
-    Tooltip
-} from '@mui/material';
+import ReconallVolumeDatatable from "../../components/freesurfer/datatable/ReconallVolumeDatatable";
 
 
-// const reconAllResults=()=>{
+function importAll(r) {
+    return r.keys().map(r);
+}
+
+const images = importAll(require.context('../../sample-data', false, /\.(png|jpe?g|svg)$/));
+
+
 class ReconAllResults extends React.Component {
     render() {
         return(
                 <div  className="reconallresults">
                     <div className="reconallContainer">
                         <h3>Cortical Parcellation Stats</h3>
-                        <Card>
-                            {/*{tb_data}*/}
-                        </Card>
                         <div className="widgets">
-                            <Samseg_whole_brain_measurements_widget hemisphere="left"/>
-                            <Samseg_whole_brain_measurements_widget hemisphere="right"/>
-                            <Widget type="whole_brain_measurements_left" />
-                            <Widget type="whole_brain_measurements_right" />
+                            <Samseg_Whole_Brain_Measurements_Widget hemisphere="left"/>
+                            <Samseg_Whole_Brain_Measurements_Widget hemisphere="right"/>
                         </div>
-                        <div className="listContainer">
-                            <div className="listTitle">
-                                Maybe - a list of freesurfer files...
+                        <h3>Structural Measurements</h3>
+                        <div className="list">
+                            <div className="listContainer">
+                                <ReconallVolumeDatatable/>
                             </div>
-                            <TableOfReports/>
                         </div>
+                        <h3>Images - Cortical Measurements</h3>
+                        <div className="images">
+                            {/*TODO: Retrieve images from the correct folder*/}
+                            {images.map(image => (
+                                    <img className="image" src={image}/>
+                            ))}
+                        </div>
+
+                        {/*<div className="listContainer">*/}
+                        {/*    <div className="listTitle">*/}
+                        {/*        Maybe - a list of freesurfer files...*/}
+                        {/*    </div>*/}
+                        {/*    <TableOfReports/>*/}
+                        {/*</div>*/}
+
                     </div>
                 </div>
     )
