@@ -24,6 +24,8 @@ import FreesurferReconFunctionPage from "./FreesurferReconFunctionPage";
 import EEGAnalysisFunctionPage from "./EEGAnalysisFunctionPage";
 import Freesurfer_ReconAll_ResultsPage from "../../pages/freesurfer/ReconAllResults";
 import Freesurfer_Samseg_ResultsPage from "../../pages/freesurfer/SamsegResults";
+import normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
+import Normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
 
 
 
@@ -74,6 +76,7 @@ const App = () => {
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_ReconAll_Results" element={(<LayoutMain><Freesurfer_ReconAll_ResultsPage/></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_Samseg_Results" element={(<LayoutMain><Freesurfer_Samseg_ResultsPage/></LayoutMain>)}/>
+                        <Route exact path="/normality_Tests" element={(<LayoutMain><Normality_Tests/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

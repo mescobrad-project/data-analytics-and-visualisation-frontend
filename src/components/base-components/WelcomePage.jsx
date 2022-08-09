@@ -141,6 +141,16 @@ function WelcomePage() {
                             Samseg Results >
                         </ListItemButton>
                     </Link>
+                    <h3>Hypothesis</h3>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/normality_Tests"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            Normality test >
+                        </ListItemButton>
+                    </Link>
                     <h3>EEG</h3>
                     <Link
                             component={Link}
