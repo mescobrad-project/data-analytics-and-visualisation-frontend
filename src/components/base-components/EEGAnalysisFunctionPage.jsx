@@ -61,9 +61,16 @@ class EEGAnalysisFunctionPage extends React.Component {
             channels_cathode: [],
             selected_channel_anode: "",
             selected_channel_cathode: "",
+            selected_part_channel: "",
             added_bipolar_references: [],
             added_channel_references: [],
             selected_reference_channel: "",
+            mne_notebook_config: {
+                bipolar_references: [],
+                average_channel: "",
+                notches_enabled: false,
+                notches_length: 0
+            },
             // bipolar_chips:[],
             //Values selected currently on the form
             selected_test_name: "runId",
@@ -105,9 +112,6 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.fetchSlices = this.fetchSlices.bind(this);
         this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSubmitCheck = this.handleSubmitCheck.bind(this);
-        this.handleProcessFinished = this.handleProcessFinished.bind(this);
-        this.handleProcessUpdate = this.handleProcessUpdate.bind(this);
         this.handleSelectTestNameChange = this.handleSelectTestNameChange.bind(this);
         this.handleSelectTestNameCheckChange = this.handleSelectTestNameCheckChange.bind(this);
         this.handleSelectSliceChange = this.handleSelectSliceChange.bind(this);
@@ -128,6 +132,9 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
         this.getSelectionOfSignal = this.getSelectionOfSignal.bind(this);
+        this.handleSelectChannelPartChange = this.handleSelectChannelPartChange.bind(this);
+        this.handleSendSelectionSignal = this.handleSendSelectionSignal.bind(this);
+        this.handleSendMNENotebookConfig = this.handleSendMNENotebookConfig.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -152,9 +159,13 @@ class EEGAnalysisFunctionPage extends React.Component {
      */
 
     async handleGetChannelSignal(){
+        if (this.state.selected_part_channel === "") {
+            return
+        }
+
         API.get("return_signal",
                 {
-                    params: {input_name: "C3-Ref",
+                    params: {input_name: this.state.selected_part_channel,
                     // params: {input_name: this.state.selected_channel,
                     }
                 }
@@ -217,90 +228,12 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     }
 
-    async handleSubmitCheck(event) {
-        event.preventDefault();
-
-        // Set the freesurfer process id to log and the appropriate page function
-        // No need to do any calls to  backend here since they are done by the get "check progress"button
-        this.setState({selected_freesurfer_function_id_to_log: this.state.selected_test_name_check})
-        this.setState({selected_page_function: "Old"})
-        this.setState({
-            returned_status: "Process's status can be queried: \n" +
-                    "Press  the \" Get Status \" button to get its logs and check its progress \n" +
-                    "When application is finished press on the \" Process Finished \" button to finalise the results "
-        })
-
-    }
-
-    async handleProcessUpdate(event) {
-        event.preventDefault();
-        // This function should in the future call the free_surfer/recon/check endpoint and provide the name
-        API.get("freesurfer/status/",
-                {
-                    params: {}
-                }
-        ).then(res => {
-            const resultJson = res.data;
-            console.log("status")
-            console.log(resultJson)
-            let prevstate = this.state.returned_status + res.data.status
-            this.setState({returned_status: prevstate})
-        });
-
-        // API.get("free_surfer/recon/check",
-        //         {
-        //             params: {
-        //                 input_test_name_check: this.state.selected_test_name_check
-        //             }
-        //         }
-        // ).then(res => {
-        //     const result = res.data;
-        //     console.log("Recon")
-        //     console.log(result)
-        //
-        // });
-    }
-
-    async handleProcessFinished() {
-        // event.preventDefault();
-        // let confirmAction = window.confirm("Are you sure the process is finalised? \n The output will be sent to the datalake regardless of the output \n If fore some reason you believe the process has failed either no new logs for a significant amount of time or logs have explicitly stated failure contact the administrators and send the logs");
-        // if (confirmAction) {
-        //     alert("Action successfully executed");
-        // } else {
-        //     alert("Action canceled");
-        // }
-
-        // Show neurodesk
-        this.setState({show_neurodesk: true});
-        console.log("show_neurodesk")
-        console.log(this.state.show_neurodesk)
-        // Finally scroll to bottom where iframe is
-        window.scrollTo(0, document.body.scrollHeight);
-        API.get("free_view",
-                {
-                    params: {
-                        input_test_name: this.state.selected_test_name,
-                        input_slices: this.state.selected_slice
-                    }
-                }
-        ).then(res => {
-            const result = res.data;
-            console.log("Freeview")
-            console.log(result)
-            if (result === "Success") {
-                this.setState({
-                    returned_status: "Process has commenced: \n" +
-                            "Press  the \" Get Status \" button to get its logs and check its progress \n" +
-                            "When application is finished press on the \" Process Finished \" button to finalise the results "
-                })
-            }
-
-        });
-
-    }
-
     async handleProcessOpenEEG() {
         //Parameter are only placeholder
+
+        //THIS IS A TEST
+        this.handleSendMNENotebookConfig()
+
         API.get("/mne/open/eeg",
                 {
                     params: {
@@ -326,6 +259,19 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     }
 
+    async handleSendSelectionSignal(event) {
+    }
+
+    async handleSendMNENotebookConfig(event) {
+        API.post("receive_mne_notebook_configuration",
+                {
+                    params: this.state.mne_notebook_config
+                }
+        ).then(res => {
+        //   Must reload the notebook from the frontend or trigger it here otherwise
+
+        });
+    }
     // async autoLoadAnnotations() {
     //     const result = await api.getStock(props.item)
     //     console.log(props.item)
@@ -360,30 +306,42 @@ class EEGAnalysisFunctionPage extends React.Component {
     handleSelectTestNameCheckChange(event) {
         this.setState({selected_test_name_check: event.target.value})
     }
+
     handleSelectChannelCathodeChange(event){
         this.setState({selected_channel_cathode: event.target.value})
     }
+
     handleSelectChannelAnodeChange(event){
         this.setState({selected_channel_anode: event.target.value})
     }
+
     handleSelectNotchSelectedChange(event) {
         this.setState({selected_notch: event.target.checked})
         // alert("hey")
         // console.log(this.state.selected_notch)
     }
+
     handleSelectNotchLengthChange(event) {
         this.setState({selected_notch_length: event.target.value})
     }
+
     handleSelectChannelReferenceChange(event) {
         this.setState({selected_reference_channel: event.target.value})
     }
+
+    handleSelectChannelPartChange(event) {
+        this.setState({selected_part_channel: event.target.value})
+    }
+
     handleModalOpen(){
         this.setState({open_modal: true})
         this.handleGetChannelSignal()
     }
+
     handleModalClose(){
         this.setState({open_modal: false})
     }
+
     sendToBottom() {
         window.scrollTo(0, document.body.scrollHeight);
     }
@@ -453,6 +411,8 @@ class EEGAnalysisFunctionPage extends React.Component {
         let selection_from_div = selection_array_from[0]
         let selection_to_div = selection_array_to[0]
         console.log(selection_from_div.value)
+        console.log(selection_to_div.value)
+        this.handleSendSelectionSignal(selection_from_div.value, selection_to_div.value)
     }
 
 
@@ -569,7 +529,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </Select>
                                     <FormHelperText>Select reference channel</FormHelperText>
                                 </FormControl>
-                                <Button onClick={this.addChannelReference} variant="contained" color="primary"
+                                <Button onClick={this.addChannelReference} disabled={(this.state.selected_reference_channel !== "" ? false : true)} variant="contained" color="primary"
                                         sx={{marginLeft: "10%"}}>
                                     Add reference channel >
                                 </Button>
@@ -617,12 +577,35 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </Select>
                                     <FormHelperText>Select anode channel</FormHelperText>
                                 </FormControl>
-                                <Button onClick={this.addBipolarReference} variant="contained" color="primary"
+                                {/* Nested ternary operator that enables button only if both values have a value*/}
+                                {/* TODO: Change this to a more readable format and add more condition if necessary like resetting when pressed */}
+                                <Button onClick={this.addBipolarReference} disabled={(this.state.selected_channel_cathode !== "" ? this.state.selected_channel_anode === "" ? true : false : true)} variant="contained" color="primary"
                                         sx={{marginLeft: "25%"}}>
                                     Add reference >
                                 </Button>
                                 <hr/>
-                                <Button onClick={this.handleModalOpen}>Open modal</Button>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Select part in channel
+                                </Typography>
+                                <FormControl sx={{m: 1, width: "80%"}}>
+                                    <InputLabel id="channel-part-selector-label">Channel</InputLabel>
+                                    <Select
+                                            labelId="channel-part-selector-label"
+                                            id="channel-part-selector"
+                                            value= {this.state.selected_part_channel}
+                                            label="Channel"
+                                            onChange={this.handleSelectChannelPartChange}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {this.state.channels_anode.map((channel) => (
+                                                <MenuItem value={channel}>{channel}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    <FormHelperText>Select channel to select</FormHelperText>
+                                </FormControl>
+                                <Button variant="contained" color="primary" sx={{marginLeft: "25%"}} disabled={(this.state.selected_part_channel === "" ? true : false)} onClick={this.handleModalOpen}>Open modal</Button>
                                 <Modal
                                         open={this.state.open_modal}
                                         onClose={this.handleModalClose}
@@ -677,7 +660,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
                             <Grid container direction="row">
                                 <Grid item xs={12} sx={{height: "82vh"}}>
-                                    <iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
                                 </Grid>
                             </Grid>
 
