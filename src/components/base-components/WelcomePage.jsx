@@ -2,6 +2,7 @@ import React, {useContext, useEffect} from 'react';
 import {Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
 import {display} from "@mui/system";
 import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation";
+import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
 //
@@ -227,10 +228,18 @@ function WelcomePage() {
                                 Point Biserial Correlation >
                             </ListItemButton>
                         </Link>
-                        <p>check_homoscedasticity</p>
-                        <p>transformed_data_for_use_in_an_ANOVA</p>
-                        <p>statistical_tests</p>
-                        <p>multiple_comparisons</p>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/DataTransformationForANOVA"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Data Transformation for use in ANOVA >
+                            </ListItemButton>
+                        </Link>
+                        <p>Homoscedasticity</p>
+                        <p>Statistical Tests</p>
+                        <p>Multiple Comparisons</p>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}

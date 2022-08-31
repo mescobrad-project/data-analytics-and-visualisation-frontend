@@ -97,9 +97,9 @@ class Transform_data extends React.Component {
         ).then(res => {
             this.setState({test_data: res.data})
             const resultJson = res.data;
-            console.log(resultJson)
-            console.log('Test')
-            let temp_array = []
+            // console.log(resultJson)
+            // console.log('Test')
+            // let temp_array = []
             let temp_array_chart = []
             for ( let it =0 ; it < resultJson['Box-Cox power transformed array'].length; it++){
                 // for testing

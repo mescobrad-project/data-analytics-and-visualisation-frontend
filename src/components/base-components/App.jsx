@@ -28,6 +28,7 @@ import Transform_data from "../../pages/hypothesis_testing/transform_data";
 import Normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
 import Pearson_correlation from "../../pages/hypothesis_testing/Pearson_correlation"
 import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation"
+import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 
 
 
@@ -82,6 +83,7 @@ const App = () => {
                         <Route exact path="/transform_data" element={(<LayoutMain><Transform_data/></LayoutMain>)}/>
                         <Route exact path="/Pearson_correlation" element={(<LayoutMain><Pearson_correlation/></LayoutMain>)}/>
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
+                        <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
