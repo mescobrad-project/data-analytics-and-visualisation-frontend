@@ -1,6 +1,5 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import "./normality_tests.scss"
 import {
     Button,
     FormControl,
@@ -15,7 +14,7 @@ import {
     Typography
 } from "@mui/material";
 
-class Normality_Tests extends React.Component {
+class Pearson_correlation extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -24,15 +23,15 @@ class Normality_Tests extends React.Component {
             test_data: [],
             //Values selected currently on the form
             selected_column: "",
-            selected_method: "Shapiro-Wilk",
+            selected_column2: "",
 
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
-        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
+        this.handleSelectColumnChange1 = this.handleSelectColumnChange1.bind(this);
+        this.handleSelectColumnChange2 = this.handleSelectColumnChange2.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
@@ -42,7 +41,7 @@ class Normality_Tests extends React.Component {
     /**
      * Call backend endpoint to get column names
      */
-    async fetchColumnNames(url, config) {
+    async fetchColumnNames() {
         API.get("return_columns", {}).then(res => {
             this.setState({column_names: res.data.columns})
         });
@@ -55,9 +54,9 @@ class Normality_Tests extends React.Component {
         event.preventDefault();
 
         // Send the request
-        API.get("normality_tests",
+        API.get("compute_pearson_correlation",
                 {
-                    params: {column: this.state.selected_column, name_test: this.state.selected_method}
+                    params: {column_1: this.state.selected_column, column_2: this.state.selected_column2}
                 }
         ).then(res => {
             this.setState({test_data: res.data})
@@ -68,11 +67,11 @@ class Normality_Tests extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectColumnChange(event){
+    handleSelectColumnChange1(event){
         this.setState( {selected_column: event.target.value})
     }
-    handleSelectMethodChange(event){
-        this.setState( {selected_method: event.target.value})
+    handleSelectColumnChange2(event){
+        this.setState( {selected_column2: event.target.value})
     }
 
     render() {
@@ -91,18 +90,18 @@ class Normality_Tests extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select Normality Test
+                            Select columns
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="column-selector-label">Column</InputLabel>
+                                <InputLabel id="column-selector-label">Column 1</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
                                         value= {this.state.selected_column}
                                         label="Column"
-                                        onChange={this.handleSelectColumnChange}
+                                        onChange={this.handleSelectColumnChange1}
                                 >
                                     <MenuItem value="">
                                         <em>None</em>
@@ -111,24 +110,25 @@ class Normality_Tests extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column for Normality test</FormHelperText>
+                                <FormHelperText>Select First column for correlation</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="method-selector-label">Method</InputLabel>
+                                <InputLabel id="column2-selector-label">Column 2</InputLabel>
                                 <Select
-                                        labelId="method-selector-label"
-                                        id="method-selector"
-                                        value= {this.state.selected_method}
-                                        label="Method"
-                                        onChange={this.handleSelectMethodChange}
+                                        labelId="column2-selector-label"
+                                        id="column2-selector"
+                                        value= {this.state.selected_column2}
+                                        label="Second column"
+                                        onChange={this.handleSelectColumnChange2}
                                 >
-                                    {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
-                                    <MenuItem value={"Shapiro-Wilk"}><em>Shapiro-Wilk</em></MenuItem>
-                                    <MenuItem value={"Kolmogorov-Smirnov"}><em>Kolmogorov-Smirnov</em></MenuItem>
-                                    <MenuItem value={"Anderson-Darling"}><em>Anderson-Darling</em></MenuItem>
-                                    <MenuItem value={"D’Agostino’s K^2"}><em>D’Agostino’s K^2</em></MenuItem>
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {this.state.column_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
                                 </Select>
-                                <FormHelperText>Specify which method to use.</FormHelperText>
+                                <FormHelperText>Select Second column for correlation</FormHelperText>
                             </FormControl>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
@@ -140,14 +140,9 @@ class Normality_Tests extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peridogram_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                        {/*    Normality test Results*/}
-                        {/*</Typography>*/}
-
                         <div>
-                            <p className="result_texts">Statistic :  { this.state.test_data.statistic}</p>
-                            <p className="result_texts">p_value :    { this.state.test_data.p_value}</p>
-                            <p className="result_texts">Description :    {this.state.test_data.Description}</p>
+                            <p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data['Pearson’s correlation coefficient']}</p>
+                            <p className="result_texts">p_value :    { this.state.test_data['p-value']}</p>
                         </div>
                     </Grid>
                 </Grid>
@@ -155,4 +150,4 @@ class Normality_Tests extends React.Component {
     }
 }
 
-export default Normality_Tests;
+export default Pearson_correlation;

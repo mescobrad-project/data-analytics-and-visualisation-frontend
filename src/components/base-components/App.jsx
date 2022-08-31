@@ -24,8 +24,10 @@ import FreesurferReconFunctionPage from "./FreesurferReconFunctionPage";
 import EEGAnalysisFunctionPage from "./EEGAnalysisFunctionPage";
 import Freesurfer_ReconAll_ResultsPage from "../../pages/freesurfer/ReconAllResults";
 import Freesurfer_Samseg_ResultsPage from "../../pages/freesurfer/SamsegResults";
-import normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
+import Transform_data from "../../pages/hypothesis_testing/transform_data";
 import Normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
+import Pearson_correlation from "../../pages/hypothesis_testing/Pearson_correlation"
+import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation"
 
 
 
@@ -77,6 +79,9 @@ const App = () => {
                         <Route exact path="/Freesurfer_ReconAll_Results" element={(<LayoutMain><Freesurfer_ReconAll_ResultsPage/></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_Samseg_Results" element={(<LayoutMain><Freesurfer_Samseg_ResultsPage/></LayoutMain>)}/>
                         <Route exact path="/normality_Tests" element={(<LayoutMain><Normality_Tests/></LayoutMain>)}/>
+                        <Route exact path="/transform_data" element={(<LayoutMain><Transform_data/></LayoutMain>)}/>
+                        <Route exact path="/Pearson_correlation" element={(<LayoutMain><Pearson_correlation/></LayoutMain>)}/>
+                        <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

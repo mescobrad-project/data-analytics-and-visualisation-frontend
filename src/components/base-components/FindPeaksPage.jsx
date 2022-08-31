@@ -1,6 +1,6 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import InnerHTML from 'dangerously-set-html-content'
+// import InnerHTML from 'dangerously-set-html-content'
 
 // import PropTypes from 'prop-types';
 import {
