@@ -3,6 +3,7 @@ import {Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSu
 import {display} from "@mui/system";
 import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation";
 import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
+import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
 //
@@ -237,7 +238,15 @@ function WelcomePage() {
                                 Data Transformation for use in ANOVA >
                             </ListItemButton>
                         </Link>
-                        <p>Homoscedasticity</p>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Homoscedasticity"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Homoscedasticity check >
+                            </ListItemButton>
+                        </Link>
                         <p>Statistical Tests</p>
                         <p>Multiple Comparisons</p>
                     </List>
