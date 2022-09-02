@@ -107,7 +107,7 @@ class ChannelSignalPeaksChartCustom extends React.Component {
         selector.container = document.getElementById("selectordiv");
         selector.axis = dateAxis;
         selector.position = "right";
-        selector.inputDateFormat = "h-m-ss";
+        selector.inputDateFormat = "yyyy-MM-dd H:m:ss";
         // Remove unneeded buttons already existing
         selector.periods = []
 

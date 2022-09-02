@@ -12,6 +12,7 @@ const AppBarCustom = () => {
                             href="/"
                     >
                         <Typography variant="h6" sx={{ color: "#ffffff",flexGrow: 1 }} noWrap>
+                        {/*<Typography variant="h6" sx={{ color: "#ffffff",flexGrow: 1 }} noWrap>*/}
                             Analytics Engine
                         </Typography>
                     </Link>

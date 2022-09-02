@@ -57,20 +57,27 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.state = {
             // List of channels sent by the backend
             slices: [],
+
+
+
+            //Values for selecting channel part
+            selected_part_channel: "",
+            selected_start_time: "",
+            selected_stop_time: "",
+            signal_original_start_seconds: 0,
+
+            //Values For Bipolar Reference
+            added_bipolar_references: [],
             channels_anode: [],
             channels_cathode: [],
             selected_channel_anode: "",
             selected_channel_cathode: "",
-            selected_part_channel: "",
-            added_bipolar_references: [],
+
+            //Values for Reference
             added_channel_references: [],
+            selected_reference_type: "none",
             selected_reference_channel: "",
-            mne_notebook_config: {
-                bipolar_references: [],
-                average_channel: "",
-                notches_enabled: false,
-                notches_length: 0
-            },
+
             // bipolar_chips:[],
             //Values selected currently on the form
             selected_test_name: "runId",
@@ -134,7 +141,8 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.getSelectionOfSignal = this.getSelectionOfSignal.bind(this);
         this.handleSelectChannelPartChange = this.handleSelectChannelPartChange.bind(this);
         this.handleSendSelectionSignal = this.handleSendSelectionSignal.bind(this);
-        this.handleSendMNENotebookConfig = this.handleSendMNENotebookConfig.bind(this);
+        this.handleSendNotebookAndSelectionConfig = this.handleSendNotebookAndSelectionConfig.bind(this);
+        this.handleSelectReferenceTypeChange = this.handleSelectReferenceTypeChange.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -171,6 +179,11 @@ class EEGAnalysisFunctionPage extends React.Component {
                 }
         ).then(res => {
             const resultJson = res.data;
+            console.log(res.data)
+            console.log("ORIGINAL LENGTH")
+            console.log(resultJson.signal.length)
+            this.setState({signal_original_start_seconds: resultJson.start_date_time});
+
             let temp_array_signal = []
             for ( let it =0 ; it < resultJson.signal.length; it++){
                 let temp_object = {}
@@ -231,9 +244,6 @@ class EEGAnalysisFunctionPage extends React.Component {
     async handleProcessOpenEEG() {
         //Parameter are only placeholder
 
-        //THIS IS A TEST
-        this.handleSendMNENotebookConfig()
-
         API.get("/mne/open/eeg",
                 {
                     params: {
@@ -262,26 +272,60 @@ class EEGAnalysisFunctionPage extends React.Component {
     async handleSendSelectionSignal(event) {
     }
 
-    async handleSendMNENotebookConfig(event) {
-        API.post("receive_mne_notebook_configuration",
-                {
-                    params: this.state.mne_notebook_config
+    async handleSendNotebookAndSelectionConfig() {
+        // COnvert string to date time
+        // console.log("TIME Was SECONDS")
+        //
+        // console.log(this.state.selected_start_time)
+        // console.log(this.state.selected_stop_time)
+        let start_time_seconds = new Date(this.state.selected_start_time);
+        let end_time_seconds = new Date(this.state.selected_stop_time);
+
+        // console.log("TIME Was")
+        //
+        // console.log(start_time_seconds)
+        // console.log(end_time_seconds)
+
+        //Convert datetime to seconds
+        start_time_seconds = start_time_seconds.getTime() / 1000;
+        end_time_seconds = end_time_seconds.getTime() / 1000;
+
+        // console.log("TIME IS")
+        // console.log(this.state.signal_original_start_seconds)
+        // console.log(start_time_seconds)
+        // console.log(end_time_seconds)
+
+        //Convert to seconds from start of signal
+        //Original time is in milliseconds by dividing by 1000 we convert to
+        // seconds
+        start_time_seconds = Math.abs(this.state.signal_original_start_seconds/1000 - start_time_seconds );
+        end_time_seconds = Math.abs(this.state.signal_original_start_seconds/1000 - end_time_seconds);
+
+
+        let data_to_send = {
+            bipolar_references: this.state.added_bipolar_references,
+            type_of_reference: this.state.selected_reference_type,
+            channels_reference: this.state.added_channel_references,
+            notches_enabled: this.state.selected_notch,
+            notches_length: this.state.selected_notch_length,
+            selection_channel: this.state.selected_part_channel,
+            selection_start_time: start_time_seconds,
+            selection_end_time: end_time_seconds
+        }
+        console.log("data_to_send")
+        console.log(data_to_send)
+        API.post("receive_notebook_and_selection_configuration",
+                data_to_send
+                , {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }
         ).then(res => {
         //   Must reload the notebook from the frontend or trigger it here otherwise
 
         });
     }
-    // async autoLoadAnnotations() {
-    //     const result = await api.getStock(props.item)
-    //     console.log(props.item)
-    //     const symbol = result.data.symbol
-    //     const lastest = result.data.latestPrice
-    //     const change = result.data.change
-    //     setStock({symbol:symbol, lastest:lastest, change:change})
-    // }
-
-// Write this line
 
     async fetchChannels(url, config) {
         API.get("list/channels", {}).then(res => {
@@ -331,6 +375,16 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     handleSelectChannelPartChange(event) {
         this.setState({selected_part_channel: event.target.value})
+    }
+
+    handleSelectReferenceTypeChange(event) {
+        //Clear other values of references when changing
+        this.setState({added_channel_references: []})
+
+
+        this.setState({selected_reference_type: event.target.value})
+
+
     }
 
     handleModalOpen(){
@@ -412,7 +466,9 @@ class EEGAnalysisFunctionPage extends React.Component {
         let selection_to_div = selection_array_to[0]
         console.log(selection_from_div.value)
         console.log(selection_to_div.value)
-        this.handleSendSelectionSignal(selection_from_div.value, selection_to_div.value)
+        this.setState({selected_start_time: selection_from_div.value})
+        this.setState({selected_stop_time: selection_to_div.value})
+        // this.handleSendSelectionSignal(selection_from_div.value, selection_to_div.value)
     }
 
 
@@ -505,6 +561,24 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Reference Channels
                                 </Typography>
+                                <FormControl sx={{m: 1, width: "80%"}}>
+                                    <InputLabel id="channel-reference-type-label">Reference Type</InputLabel>
+                                    <Select
+                                            labelId="channel-reference-type-label"
+                                            id="channel-reference-selector"
+                                            value= {this.state.selected_reference_type}
+                                            label="Channel"
+                                            onChange={this.handleSelectReferenceTypeChange}
+                                    >
+                                            <MenuItem value="none"> None</MenuItem>
+                                            <MenuItem value="average"> Average</MenuItem>
+                                            <MenuItem value="rest"> Rest</MenuItem>
+                                            <MenuItem value="channels"> Channels</MenuItem>
+                                    </Select>
+                                    <FormHelperText>Select type of reference:</FormHelperText>
+                                </FormControl>
+
+                                <div style={{display: (this.state.selected_reference_type !== "channels" ? "none" : "block") }} >
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Average Reference
                                 </Typography>
@@ -533,6 +607,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         sx={{marginLeft: "10%"}}>
                                     Add reference channel >
                                 </Button>
+                                </div>
                                 <hr/>
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Bipolar Reference
@@ -628,7 +703,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </Box>
                                 </Modal>
                                 <hr/>
-                                <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
+                                <Button onClick={this.handleSendNotebookAndSelectionConfig} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
                                     Apply Changes>
                                 </Button>
