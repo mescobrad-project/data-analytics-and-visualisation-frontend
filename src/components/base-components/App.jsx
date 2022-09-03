@@ -31,6 +31,7 @@ import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiseri
 import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 import AlphaDeltaRatioFunctionPage from "./AlphaDeltaRatioFunctionPage";
+import PredictionsFunctionPage from "./PredictionsFunctionPage";
 
 
 
@@ -88,6 +89,7 @@ const App = () => {
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
