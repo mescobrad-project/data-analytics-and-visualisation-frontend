@@ -278,29 +278,37 @@ class EEGAnalysisFunctionPage extends React.Component {
         //
         // console.log(this.state.selected_start_time)
         // console.log(this.state.selected_stop_time)
-        let start_time_seconds = new Date(this.state.selected_start_time);
-        let end_time_seconds = new Date(this.state.selected_stop_time);
+        let start_time_seconds;
+        let end_time_seconds;
 
-        // console.log("TIME Was")
-        //
-        // console.log(start_time_seconds)
-        // console.log(end_time_seconds)
+        if(this.state.selected_part_channel !== "") {
 
-        //Convert datetime to seconds
-        start_time_seconds = start_time_seconds.getTime() / 1000;
-        end_time_seconds = end_time_seconds.getTime() / 1000;
+            start_time_seconds = new Date(this.state.selected_start_time);
+            end_time_seconds = new Date(this.state.selected_stop_time);
 
-        // console.log("TIME IS")
-        // console.log(this.state.signal_original_start_seconds)
-        // console.log(start_time_seconds)
-        // console.log(end_time_seconds)
+            // console.log("TIME Was")
+            //
+            // console.log(start_time_seconds)
+            // console.log(end_time_seconds)
 
-        //Convert to seconds from start of signal
-        //Original time is in milliseconds by dividing by 1000 we convert to
-        // seconds
-        start_time_seconds = Math.abs(this.state.signal_original_start_seconds/1000 - start_time_seconds );
-        end_time_seconds = Math.abs(this.state.signal_original_start_seconds/1000 - end_time_seconds);
+            //Convert datetime to seconds
+            start_time_seconds = start_time_seconds.getTime() / 1000;
+            end_time_seconds = end_time_seconds.getTime() / 1000;
 
+            // console.log("TIME IS")
+            // console.log(this.state.signal_original_start_seconds)
+            // console.log(start_time_seconds)
+            // console.log(end_time_seconds)
+
+            //Convert to seconds from start of signal
+            //Original time is in milliseconds by dividing by 1000 we convert to
+            // seconds
+            start_time_seconds = Math.abs(this.state.signal_original_start_seconds / 1000 - start_time_seconds);
+            end_time_seconds = Math.abs(this.state.signal_original_start_seconds / 1000 - end_time_seconds);
+        }else{
+            start_time_seconds = 0
+            end_time_seconds = 0
+        }
 
         let data_to_send = {
             bipolar_references: this.state.added_bipolar_references,
@@ -572,7 +580,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     >
                                             <MenuItem value="none"> None</MenuItem>
                                             <MenuItem value="average"> Average</MenuItem>
-                                            <MenuItem value="rest"> Rest</MenuItem>
+                                            {/*<MenuItem value="rest"> Rest</MenuItem>*/}
                                             <MenuItem value="channels"> Channels</MenuItem>
                                     </Select>
                                     <FormHelperText>Select type of reference:</FormHelperText>
