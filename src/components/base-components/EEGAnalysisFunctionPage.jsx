@@ -189,11 +189,11 @@ class EEGAnalysisFunctionPage extends React.Component {
                 let temp_object = {}
                 let adjusted_time = ""
                 // First entry is 0 so no need to add any milliseconds
-                // Time added is as millisecond/100 so we multiply by 10000
+                // Time added is as millisecond/100 so we multiply by 1000
                 if(it === 0){
                     adjusted_time = resultJson.start_date_time
                 }else{
-                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]*10000
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]*1000
                 }
 
                 let temp_date = new Date(adjusted_time )
@@ -331,7 +331,15 @@ class EEGAnalysisFunctionPage extends React.Component {
                 }
         ).then(res => {
         //   Must reload the notebook from the frontend or trigger it here otherwise
-
+            API.get("/mne/open/eeg",
+                    {
+                        params: {
+                            input_run_id: "a",
+                            input_step_id: "b"
+                        }
+                    }
+            ).then(res => {
+            });
         });
     }
 
