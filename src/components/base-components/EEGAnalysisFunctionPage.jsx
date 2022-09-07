@@ -28,7 +28,8 @@ import {
 } from "@mui/material";
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem'
-
+// import { withRouter } from "react-router";
+import withRouter from '../withRouter';
 // Amcharts
 // import * as am5 from "@amcharts/amcharts5";
 // import * as am5xy from "@amcharts/amcharts5/xy";
@@ -52,13 +53,23 @@ const style = {
 };
 
 class EEGAnalysisFunctionPage extends React.Component {
+    // static propTypes = {
+    //     /** Prop "chart_id" provides the id of the chart and needs to be unique in each page */
+    //     egg_function: PropTypes.string,
+    //     /** Prop "chart_data" provides the data of the chart, inside the array there should be an object with two keys
+    //      * yValue
+    //      * category
+    //      * */
+    //     run_id: PropTypes.string,
+    //     step_id: PropTypes.string
+    // }
+
     constructor(props) {
         super(props);
         this.state = {
             // List of channels sent by the backend
             slices: [],
-
-
+            eeg_function: "",
 
             //Values for selecting channel part
             selected_part_channel: "",
@@ -143,6 +154,7 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleSendSelectionSignal = this.handleSendSelectionSignal.bind(this);
         this.handleSendNotebookAndSelectionConfig = this.handleSendNotebookAndSelectionConfig.bind(this);
         this.handleSelectReferenceTypeChange = this.handleSelectReferenceTypeChange.bind(this);
+        this.handleProcceed = this.handleProcceed.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -151,6 +163,20 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleProcessOpenEEG();
         setInterval(this.handleGetAnnotations, 5000);
         this.fetchChannels();
+        // const location = useLocation();
+        console.log("PROPS")
+        // console.log(this.props.match.params)
+        console.log(window.location.search)
+        // const queryParams = new URLSearchParams(window.location.search)
+        // for (const [key, value] of queryParams) {
+        //     if(key === "eeg_function"){
+        //         console.log("HEYHEYHAEYHYAID")
+        //         console.log(value)
+        //         this.setState({eeg_function: value});
+        //     }
+        //     console.log({ key, value }) // {key: 'term', value: 'pizza'} {key: 'location', value: 'Bangalore'}
+        //
+        // }
     }
 
     /**
@@ -433,6 +459,26 @@ class EEGAnalysisFunctionPage extends React.Component {
             }
         }
     }
+    handleProcceed () {
+        let send_page = "";
+        const queryParams = new URLSearchParams(window.location.search)
+        for (const [key, value] of queryParams) {
+            if(key === "eeg_function"){
+                console.log("HEYHEYHAEYHYAID")
+                console.log(value)
+                send_page = value
+                // this.setState({eeg_function: value});
+            }
+            console.log({ key, value }) // {key: 'term', value: 'pizza'} {key: 'location', value: 'Bangalore'}
+
+        }
+
+        let to_send_to = "http://localhost:3000/" + send_page
+        console.log("PROCEEDING")
+        console.log(to_send_to)
+        // console.log(this.state.eeg_function)
+        window.location.replace(to_send_to);
+    }
 
     handleDeleteBipolarChip (anode, cathode) {
         console.log(anode)
@@ -484,6 +530,9 @@ class EEGAnalysisFunctionPage extends React.Component {
         console.log(selection_to_div.value)
         this.setState({selected_start_time: selection_from_div.value})
         this.setState({selected_stop_time: selection_to_div.value})
+
+        // Close the Modal Afterwards
+        this.setState({open_modal:false})
         // this.handleSendSelectionSignal(selection_from_div.value, selection_to_div.value)
     }
 
@@ -723,6 +772,10 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         sx={{margin: "8px", float: "right"}}>
                                     Apply Changes>
                                 </Button>
+                                <Button onClick={this.handleProcceed} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    Proceed>
+                                </Button>
                             </form>
                         </Grid>
                         <Grid item xs={8} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
@@ -765,4 +818,4 @@ class EEGAnalysisFunctionPage extends React.Component {
     }
 }
 
-export default EEGAnalysisFunctionPage;
+export default withRouter(EEGAnalysisFunctionPage);
