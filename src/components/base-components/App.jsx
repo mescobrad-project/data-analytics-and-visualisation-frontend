@@ -17,13 +17,14 @@ import PeriodogramFunctionPage from "./PeriodogramFunctionPage";
 
 // Import Material UI Customising
 import {ThemeProvider, StyledEngineProvider, createTheme} from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import FindPeaksPage from "./FindPeaksPage";
 import PowerSpectralDensity from "./PowerSpectralDensity";
 import FreesurferReconFunctionPage from "./FreesurferReconFunctionPage";
 import EEGAnalysisFunctionPage from "./EEGAnalysisFunctionPage";
 import Freesurfer_ReconAll_ResultsPage from "../../pages/freesurfer/ReconAllResults";
 import Freesurfer_Samseg_ResultsPage from "../../pages/freesurfer/SamsegResults";
+import {CssBaseline} from "@mui/material";
+import '@fontsource/roboto/400.css';
 import Transform_data from "../../pages/hypothesis_testing/transform_data";
 import Normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
 import Pearson_correlation from "../../pages/hypothesis_testing/Pearson_correlation"
@@ -33,31 +34,32 @@ import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 import AlphaDeltaRatioFunctionPage from "./AlphaDeltaRatioFunctionPage";
 
 
-
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
 let secondColor = '#FFFFFF'
 
 // Create custom theme for material UI
 const theme = createTheme({
-    palette: {
-        primary: {
-            main: firstColor
-        },
-        secondary: {
-            main: secondColor
-        },
-        barBackgroundFirst: {
-            main: `linear-gradient(to right, ${firstColor}, ${secondColor})`
-        }
-    },
-    typography: {
-        fontFamily: [
-            'Poppins',
-            'Roboto',
-        ].join(','),
-    }
+    // palette: {
+    //     primary: {
+    //         main: firstColor
+    //     },
+    //     secondary: {
+    //         main: secondColor
+    //     },
+    //     barBackgroundFirst: {
+    //         main: `linear-gradient(to right, ${firstColor}, ${secondColor})`
+    //     }
+    // },
+    // typography: {
+    //     fontFamily: [
+    //         'Poppins',
+    //         'Roboto',
+    //     ].join(','),
+    // }
 });
+
+
 
 const App = () => {
     return (

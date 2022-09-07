@@ -353,8 +353,8 @@ class StftFunctionPage extends React.Component {
                             Stft Results
                         </Typography>
                         {/*<InnerHTML html={this.state.test_chart_html} />*/}
-                        <div style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="stft_chart_id" chart_data={ this.state.stft_chart_data}/></div>
-                        <hr style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}/>
+                        {/*<div style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="stft_chart_id" chart_data={ this.state.stft_chart_data}/></div>*/}
+                        {/*<hr style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}/>*/}
                     </Grid>
                 </Grid>
         )
