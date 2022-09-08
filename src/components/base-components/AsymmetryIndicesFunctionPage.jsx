@@ -1,6 +1,5 @@
 import React from 'react';
 import API from "../../axiosInstance";
-// import InnerHTML from 'dangerously-set-html-content'
 import PropTypes from 'prop-types';
 import {
     Button,
@@ -22,7 +21,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
-class StftFunctionPage extends React.Component {
+class AsymmetryIndicesFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -30,21 +29,22 @@ class StftFunctionPage extends React.Component {
             channels: [],
 
             //Values selected currently on the form
-            selected_channel: "",
+            selected_channel_1: "",
+            selected_channel_2: "",
             selected_window: "hann",
             selected_nperseg: "256",
             selected_noverlap: "",
             selected_nfft: "256",
             selected_return_onesided: true,
-            selected_boundary: "zeros",
-            selected_padded: true,
+            selected_scaling: "density",
             selected_axis: "-1",
+            selected_average: "mean",
 
-            // Values to pass to visualisations
-            stft_chart_data : [],
 
-            // Visualisation Hide/Show values
-            stft_chart_show : false
+            asymmetry_indices : "",
+
+            // Hide/show results
+            asymmetry_indices_show : false
 
 
         };
@@ -52,15 +52,16 @@ class StftFunctionPage extends React.Component {
         //Binding functions of the class
         this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
+        this.handleSelectChannel1Change = this.handleSelectChannel1Change.bind(this);
+        this.handleSelectChannel2Change = this.handleSelectChannel2Change.bind(this);
         this.handleSelectWindowChange = this.handleSelectWindowChange.bind(this);
         this.handleSelectNpersegChange = this.handleSelectNpersegChange.bind(this);
         this.handleSelectNoverlapChange = this.handleSelectNoverlapChange.bind(this);
         this.handleSelectNfftChange = this.handleSelectNfftChange.bind(this);
         this.handleSelectReturnonesidedChange = this.handleSelectReturnonesidedChange.bind(this);
-        this.handleSelectBoundaryChange = this.handleSelectBoundaryChange.bind(this);
-        this.handleSelectPaddedChange = this.handleSelectPaddedChange.bind(this);
+        this.handleSelectScalingChange = this.handleSelectScalingChange.bind(this);
         this.handleSelectAxisChange = this.handleSelectAxisChange.bind(this);
+        this.handleSelectAverageChange = this.handleSelectAverageChange.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchChannels();
@@ -98,39 +99,33 @@ class StftFunctionPage extends React.Component {
             to_send_input_nfft = parseInt(this.state.selected_nfft)
         }
 
-        //Reset view of optional visualisations preview
-        this.setState({stft_chart_show: false})
+
 
 
 
 
         // Send the request
-        API.get("return_stft",
+        API.get("return_asymmetry_indices",
                 {
-                    params: {input_name: this.state.selected_channel, input_window: this.state.selected_window,
+                    params: {input_name_1: this.state.selected_channel_1, input_name_2: this.state.selected_channel_2, input_window: this.state.selected_window,
                         input_nperseg: to_send_input_nperseg, input_noverlap: to_send_input_noverlap,
                         input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,
-                        input_boundary: this.state.selected_boundary, input_axis: this.state.selected_axis,
+                        input_scaling: this.state.selected_scaling, input_axis: this.state.selected_axis,
                         input_average: this.state.selected_average}
                 }
         ).then(res => {
             const resultJson = res.data;
-            this.setState({test_chart_html: resultJson.figure})
             console.log(resultJson)
             console.log('Test')
-            let temp_array_stft = []
-            for ( let it =0 ; it < resultJson['frequencies'].length; it++){
-                let temp_object = {}
-                temp_object["category"] = resultJson['array of segment times'][it]
-                temp_object["yValue"] = resultJson['frequencies'][it]
-                temp_array_stft.push(temp_object)
-            }
+
+
+
             // console.log("")
             // console.log(temp_array)
 
 
-            this.setState({stft_chart_data: temp_array_stft})
-            this.setState({stft_chart_show: true})
+            this.setState({asymmetry_indices: resultJson['asymmetry_indices']})
+            this.setState({asymmetry_indices_show: true})
 
 
 
@@ -157,8 +152,11 @@ class StftFunctionPage extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectChannelChange(event){
-        this.setState( {selected_channel: event.target.value})
+    handleSelectChannel1Change(event){
+        this.setState( {selected_channel_1: event.target.value})
+    }
+    handleSelectChannel2Change(event){
+        this.setState( {selected_channel_2: event.target.value})
     }
     handleSelectWindowChange(event){
         this.setState( {selected_window: event.target.value})
@@ -175,16 +173,15 @@ class StftFunctionPage extends React.Component {
     handleSelectReturnonesidedChange(event){
         this.setState( {selected_return_onesided: event.target.value})
     }
-    handleSelectBoundaryChange(event){
-        this.setState( {selected_boundary: event.target.value})
-    }
-    handleSelectPaddedChange(event){
-        this.setState( {selected_padded: event.target.value})
+    handleSelectScalingChange(event){
+        this.setState( {selected_scaling: event.target.value})
     }
     handleSelectAxisChange(event){
         this.setState( {selected_axis: event.target.value})
     }
-
+    handleSelectAverageChange(event){
+        this.setState( {selected_average: event.target.value})
+    }
 
 
 
@@ -204,18 +201,18 @@ class StftFunctionPage extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Stft Parameterisation
+                            Asymmetry Indices Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="channel-selector-label">Channel</InputLabel>
+                                <InputLabel id="channel1-selector-label">Channel 1</InputLabel>
                                 <Select
-                                        labelId="channel-selector-label"
-                                        id="channel-selector"
-                                        value= {this.state.selected_channel}
-                                        label="Channel"
-                                        onChange={this.handleSelectChannelChange}
+                                        labelId="channel1-selector-label"
+                                        id="channel1-selector"
+                                        value= {this.state.selected_channel_1}
+                                        label="Channel 1"
+                                        onChange={this.handleSelectChannel1Change}
                                 >
                                     <MenuItem value="">
                                         <em>None</em>
@@ -224,7 +221,25 @@ class StftFunctionPage extends React.Component {
                                             <MenuItem value={channel}>{channel}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Channel for Stft</FormHelperText>
+                                <FormHelperText>Select Channel 1 for Welch</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="channel2-selector-label">Channel 2</InputLabel>
+                                <Select
+                                        labelId="channel2-selector-label"
+                                        id="channel2-selector"
+                                        value= {this.state.selected_channel_2}
+                                        label="Channel 2"
+                                        onChange={this.handleSelectChannel2Change}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {this.state.channels.map((channel) => (
+                                            <MenuItem value={channel}>{channel}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select Channel 2 for Welch</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="window-selector-label">Window</InputLabel>
@@ -282,7 +297,7 @@ class StftFunctionPage extends React.Component {
                                         label="Nfft"
                                         onChange={this.handleSelectNfftChange}
                                 />
-                                <FormHelperText>Nfft must be equal or higher than Nperseg</FormHelperText>
+                                <FormHelperText>Length of the FFT used, Nfft must be equal or higher than Nperseg</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="return-onesided-selector-label">Return Onesided</InputLabel>
@@ -299,35 +314,18 @@ class StftFunctionPage extends React.Component {
                                 <FormHelperText>If True, return a one-sided spectrum</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="boundary-selector-label">Boundary</InputLabel>
+                                <InputLabel id="scaling-selector-label">Scaling</InputLabel>
                                 <Select
                                         // labelId="scaling-selector-label"
-                                        id="boundary-selector"
-                                        value= {this.state.selected_boundary}
-                                        label="Boundary"
-                                        onChange={this.handleSelectBoundaryChange}
+                                        id="scaling-selector"
+                                        value= {this.state.selected_scaling}
+                                        label="Scaling"
+                                        onChange={this.handleSelectScalingChange}
                                 >
-                                    <MenuItem value={"zeros"}><em>Zeros</em></MenuItem>
-                                    <MenuItem value={"even"}><em>Even</em></MenuItem>
-                                    <MenuItem value={"odd"}><em>Odd</em></MenuItem>
-                                    <MenuItem value={"constant"}><em>Constant</em></MenuItem>
-                                    <MenuItem value={"none"}><em>None</em></MenuItem>
+                                    <MenuItem value={"density"}><em>Density</em></MenuItem>
+                                    <MenuItem value={"spectrum"}><em>Spectrum</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Specifies whether the input signal is extended at both ends</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="padded-selector-label">Padded</InputLabel>
-                                <Select
-                                        // labelId="scaling-selector-label"
-                                        id="padded-selector"
-                                        value= {this.state.selected_padded}
-                                        label="Padded"
-                                        onChange={this.handleSelectPaddedChange}
-                                >
-                                    <MenuItem value={"true"}><em>True</em></MenuItem>
-                                    <MenuItem value={"false"}><em>False</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Specifies whether the input signal is zero-padded at the end</FormHelperText>
+                                <FormHelperText>Selects between computing the power spectral density or the power spectrum</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <TextField
@@ -337,7 +335,21 @@ class StftFunctionPage extends React.Component {
                                         label="Axis"
                                         onChange={this.handleSelectAxisChange}
                                 />
-                                <FormHelperText>Axis along which the short time fourier transform is computed</FormHelperText>
+                                <FormHelperText>Axis along which the periodogram is computed</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="average-selector-label">Average</InputLabel>
+                                <Select
+                                        // labelId="nfft-selector-label"
+                                        id="average-selector"
+                                        value= {this.state.selected_average}
+                                        label="Average"
+                                        onChange={this.handleSelectAverageChange}
+                                >
+                                    <MenuItem value={"mean"}><em>Mean</em></MenuItem>
+                                    <MenuItem value={"median"}><em>Median</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Method to use when averaging periodograms</FormHelperText>
                             </FormControl>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
@@ -346,19 +358,19 @@ class StftFunctionPage extends React.Component {
                     </Grid>
                     <Grid item xs={5}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Result Visualisation
+                            Asymmetry Indices Result
                         </Typography>
                         <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.stft_chart_show ? 'block' : 'none')  }} noWrap>
-                            Stft Results
-                        </Typography>
-                        {/*<InnerHTML html={this.state.test_chart_html} />*/}
-                        {/*<div style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="stft_chart_id" chart_data={ this.state.stft_chart_data}/></div>*/}
-                        {/*<hr style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}/>*/}
+                        {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                        {/*    Welch Results*/}
+                        {/*</Typography>*/}
+
+                        <div style={{ display: (this.state.asymmetry_indices_show ? 'block' : 'none') }}>{this.state.asymmetry_indices}</div>
+                        <hr style={{ display: (this.state.asymmetry_indices_show ? 'block' : 'none') }}/>
                     </Grid>
                 </Grid>
         )
     }
 }
 
-export default StftFunctionPage;
+export default AsymmetryIndicesFunctionPage;

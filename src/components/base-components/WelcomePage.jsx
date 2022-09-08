@@ -1,9 +1,13 @@
 import React, {useContext, useEffect} from 'react';
-import {Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
+import {Button, Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
 import {display} from "@mui/system";
 import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation";
 import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
+import API from "../../axiosInstance";
+import { useNavigate } from "react-router-dom";
+import {withRouter} from '../withRouter';
+
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
 //
@@ -23,10 +27,28 @@ function InboxIcon() {
     return null;
 }
 
+async function handleSubmit(event) {
+    event.preventDefault();
+
+    // Send the request
+    API.put("function/navigation/",
+            {
+                    run_id: "1",
+                    step_id: "1",
+                    metadata: [{"function" : "auto_correlation"}],
+            }
+    ).then(res => {
+       console.log("BACK_________________________")
+       console.log("BACK")
+       console.log(res)
+    });
+}
+
 function WelcomePage() {
     useEffect(() => {
         document.title = ' MES-CoBraD | Analytics Engine'
     }, [])
+    const navigate = useNavigate();
 
     return (
             <React.Fragment>
@@ -34,6 +56,27 @@ function WelcomePage() {
                 <h1>MES-CoBraD | Analytics Engine</h1>
                 <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
                 <div class="list-container" style={{display: 'flex'}}>
+                {/*<form onSubmit={async (event) => {*/}
+                {/*    event.preventDefault();*/}
+
+                {/*    // Send the request*/}
+                {/*    API.put("function/navigation/",*/}
+                {/*            {*/}
+                {/*                run_id: "1",*/}
+                {/*                step_id: "1",*/}
+                {/*                metadata: [{"function" : "auto_correlation"}],*/}
+                {/*            }*/}
+                {/*    ).then(res => {*/}
+                {/*        console.log("BACK_________________________")*/}
+                {/*        console.log("BACK")*/}
+                {/*        console.log(res.data.url)*/}
+                {/*        navigate(res.data.url);*/}
+                {/*    });*/}
+                {/*}}>*/}
+                {/*    <Button variant="contained" color="primary" type="submit">*/}
+                {/*        Submit*/}
+                {/*    </Button>*/}
+                {/*</form>*/}
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
@@ -46,7 +89,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/auto_correlation"
+                                // href="/auto_correlation"
+                                href="/eeg?eeg_function=auto_correlation"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Auto Correlation >
@@ -55,7 +99,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/partial_auto_correlation"
+                                // href="/partial_auto_correlation"
+                                href="/eeg?eeg_function=partial_auto_correlation"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Partial Auto Correlation >
@@ -64,7 +109,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/filters"
+                                // href="/filters"
+                                href="/eeg?eeg_function=filters"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Filters>
@@ -73,7 +119,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/welch"
+                                // href="/welch"
+                                href="/eeg?eeg_function=welch"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Welch>
@@ -82,7 +129,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/find_peaks"
+                                // href="/find_peaks"
+                                href="/eeg?eeg_function=find_peaks"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Find Peaks>
@@ -91,7 +139,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/periodogram"
+                                // href="/periodogram"
+                                href="/eeg?eeg_function=periodogram"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Periodogram>
@@ -100,7 +149,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/stft"
+                                // href="/stft"
+                                href="/eeg?eeg_function=stft"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
                                 Short Time Fourier Transform>
@@ -109,10 +159,30 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/power_spectral_density"
+                                // href="/power_spectral_density"
+                                href="/eeg?eeg_function=power_spectral_density"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Power Spectral Density>
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                // href="/alpha_delta_ratio"
+                                href="/eeg?eeg_function=alpha_delta_ratio"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Alpha Delta Ratio>
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/asymmetry_indices"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Asymmetry Indices>
                             </ListItemButton>
                         </Link>
                         <p>alpha_delta_ratio</p>

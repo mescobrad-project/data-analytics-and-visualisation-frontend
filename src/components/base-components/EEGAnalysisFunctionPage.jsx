@@ -12,7 +12,7 @@ import {
     List,
     ListItem,
     ListItemText,
-    MenuItem,
+    MenuItem, Modal,
     Paper,
     Select,
     Table,
@@ -28,32 +28,75 @@ import {
 } from "@mui/material";
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem'
-
+// import { withRouter } from "react-router";
+import withRouter from '../withRouter';
 // Amcharts
 // import * as am5 from "@amcharts/amcharts5";
 // import * as am5xy from "@amcharts/amcharts5/xy";
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import {Box} from "@mui/system";
+import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: "80%",
+    height: "80%",
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 class EEGAnalysisFunctionPage extends React.Component {
+    // static propTypes = {
+    //     /** Prop "chart_id" provides the id of the chart and needs to be unique in each page */
+    //     egg_function: PropTypes.string,
+    //     /** Prop "chart_data" provides the data of the chart, inside the array there should be an object with two keys
+    //      * yValue
+    //      * category
+    //      * */
+    //     run_id: PropTypes.string,
+    //     step_id: PropTypes.string
+    // }
+
     constructor(props) {
         super(props);
         this.state = {
             // List of channels sent by the backend
             slices: [],
+            eeg_function: "",
+
+            //Values for selecting channel part
+            selected_part_channel: "",
+            selected_start_time: "",
+            selected_stop_time: "",
+            signal_original_start_seconds: 0,
+
+            //Values For Bipolar Reference
+            added_bipolar_references: [],
             channels_anode: [],
             channels_cathode: [],
             selected_channel_anode: "",
             selected_channel_cathode: "",
-            added_bipolar_references: [],
+
+            //Values for Reference
             added_channel_references: [],
+            selected_reference_type: "none",
             selected_reference_channel: "",
+
             // bipolar_chips:[],
             //Values selected currently on the form
             selected_test_name: "runId",
             selected_slice: "",
+            open_modal: false,
 
+            select_signal_chart_show: false,
+            signal_chart_data: [],
 
             selected_test_name_check: "",
 
@@ -87,9 +130,6 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.fetchSlices = this.fetchSlices.bind(this);
         this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSubmitCheck = this.handleSubmitCheck.bind(this);
-        this.handleProcessFinished = this.handleProcessFinished.bind(this);
-        this.handleProcessUpdate = this.handleProcessUpdate.bind(this);
         this.handleSelectTestNameChange = this.handleSelectTestNameChange.bind(this);
         this.handleSelectTestNameCheckChange = this.handleSelectTestNameCheckChange.bind(this);
         this.handleSelectSliceChange = this.handleSelectSliceChange.bind(this);
@@ -106,6 +146,15 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleSelectChannelReferenceChange = this.handleSelectChannelReferenceChange.bind(this);
         this.addChannelReference = this.addChannelReference.bind(this);
         this.handleDeleteReferenceChip = this.handleDeleteReferenceChip.bind(this);
+        this.handleModalOpen = this.handleModalOpen.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
+        this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
+        this.getSelectionOfSignal = this.getSelectionOfSignal.bind(this);
+        this.handleSelectChannelPartChange = this.handleSelectChannelPartChange.bind(this);
+        this.handleSendSelectionSignal = this.handleSendSelectionSignal.bind(this);
+        this.handleSendNotebookAndSelectionConfig = this.handleSendNotebookAndSelectionConfig.bind(this);
+        this.handleSelectReferenceTypeChange = this.handleSelectReferenceTypeChange.bind(this);
+        this.handleProcceed = this.handleProcceed.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -114,6 +163,20 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleProcessOpenEEG();
         setInterval(this.handleGetAnnotations, 5000);
         this.fetchChannels();
+        // const location = useLocation();
+        console.log("PROPS")
+        // console.log(this.props.match.params)
+        console.log(window.location.search)
+        // const queryParams = new URLSearchParams(window.location.search)
+        // for (const [key, value] of queryParams) {
+        //     if(key === "eeg_function"){
+        //         console.log("HEYHEYHAEYHYAID")
+        //         console.log(value)
+        //         this.setState({eeg_function: value});
+        //     }
+        //     console.log({ key, value }) // {key: 'term', value: 'pizza'} {key: 'location', value: 'Bangalore'}
+        //
+        // }
     }
 
     /**
@@ -128,6 +191,49 @@ class EEGAnalysisFunctionPage extends React.Component {
     /**
      * Process and send the request for auto correlation and handle the response
      */
+
+    async handleGetChannelSignal(){
+        if (this.state.selected_part_channel === "") {
+            return
+        }
+
+        API.get("return_signal",
+                {
+                    params: {input_name: this.state.selected_part_channel,
+                    // params: {input_name: this.state.selected_channel,
+                    }
+                }
+        ).then(res => {
+            const resultJson = res.data;
+            console.log(res.data)
+            console.log("ORIGINAL LENGTH")
+            console.log(resultJson.signal.length)
+            this.setState({signal_original_start_seconds: resultJson.start_date_time});
+
+            let temp_array_signal = []
+            for ( let it =0 ; it < resultJson.signal.length; it++){
+                let temp_object = {}
+                let adjusted_time = ""
+                // First entry is 0 so no need to add any milliseconds
+                // Time added is as millisecond/100 so we multiply by 1000
+                if(it === 0){
+                    adjusted_time = resultJson.start_date_time
+                }else{
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it]*1000
+                }
+
+                let temp_date = new Date(adjusted_time )
+                temp_object["date"] = temp_date
+                temp_object["yValue"] = resultJson.signal[it]
+
+                temp_array_signal.push(temp_object)
+            }
+
+            this.setState({signal_chart_data: temp_array_signal})
+            this.setState({select_signal_chart_show: true});
+        });
+    }
+
     async handleSubmit(event) {
         event.preventDefault();
         // Set the freesurfer process id to log and the appropriate page function
@@ -161,90 +267,9 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     }
 
-    async handleSubmitCheck(event) {
-        event.preventDefault();
-
-        // Set the freesurfer process id to log and the appropriate page function
-        // No need to do any calls to  backend here since they are done by the get "check progress"button
-        this.setState({selected_freesurfer_function_id_to_log: this.state.selected_test_name_check})
-        this.setState({selected_page_function: "Old"})
-        this.setState({
-            returned_status: "Process's status can be queried: \n" +
-                    "Press  the \" Get Status \" button to get its logs and check its progress \n" +
-                    "When application is finished press on the \" Process Finished \" button to finalise the results "
-        })
-
-    }
-
-    async handleProcessUpdate(event) {
-        event.preventDefault();
-        // This function should in the future call the free_surfer/recon/check endpoint and provide the name
-        API.get("freesurfer/status/",
-                {
-                    params: {}
-                }
-        ).then(res => {
-            const resultJson = res.data;
-            console.log("status")
-            console.log(resultJson)
-            let prevstate = this.state.returned_status + res.data.status
-            this.setState({returned_status: prevstate})
-        });
-
-        // API.get("free_surfer/recon/check",
-        //         {
-        //             params: {
-        //                 input_test_name_check: this.state.selected_test_name_check
-        //             }
-        //         }
-        // ).then(res => {
-        //     const result = res.data;
-        //     console.log("Recon")
-        //     console.log(result)
-        //
-        // });
-    }
-
-    async handleProcessFinished() {
-        // event.preventDefault();
-        // let confirmAction = window.confirm("Are you sure the process is finalised? \n The output will be sent to the datalake regardless of the output \n If fore some reason you believe the process has failed either no new logs for a significant amount of time or logs have explicitly stated failure contact the administrators and send the logs");
-        // if (confirmAction) {
-        //     alert("Action successfully executed");
-        // } else {
-        //     alert("Action canceled");
-        // }
-
-        // Show neurodesk
-        this.setState({show_neurodesk: true});
-        console.log("show_neurodesk")
-        console.log(this.state.show_neurodesk)
-        // Finally scroll to bottom where iframe is
-        window.scrollTo(0, document.body.scrollHeight);
-        API.get("free_view",
-                {
-                    params: {
-                        input_test_name: this.state.selected_test_name,
-                        input_slices: this.state.selected_slice
-                    }
-                }
-        ).then(res => {
-            const result = res.data;
-            console.log("Freeview")
-            console.log(result)
-            if (result === "Success") {
-                this.setState({
-                    returned_status: "Process has commenced: \n" +
-                            "Press  the \" Get Status \" button to get its logs and check its progress \n" +
-                            "When application is finished press on the \" Process Finished \" button to finalise the results "
-                })
-            }
-
-        });
-
-    }
-
     async handleProcessOpenEEG() {
         //Parameter are only placeholder
+
         API.get("/mne/open/eeg",
                 {
                     params: {
@@ -270,16 +295,79 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     }
 
-    // async autoLoadAnnotations() {
-    //     const result = await api.getStock(props.item)
-    //     console.log(props.item)
-    //     const symbol = result.data.symbol
-    //     const lastest = result.data.latestPrice
-    //     const change = result.data.change
-    //     setStock({symbol:symbol, lastest:lastest, change:change})
-    // }
+    async handleSendSelectionSignal(event) {
+    }
 
-// Write this line
+    async handleSendNotebookAndSelectionConfig() {
+        // COnvert string to date time
+        // console.log("TIME Was SECONDS")
+        //
+        // console.log(this.state.selected_start_time)
+        // console.log(this.state.selected_stop_time)
+        let start_time_seconds;
+        let end_time_seconds;
+
+        if(this.state.selected_part_channel !== "") {
+
+            start_time_seconds = new Date(this.state.selected_start_time);
+            end_time_seconds = new Date(this.state.selected_stop_time);
+
+            // console.log("TIME Was")
+            //
+            // console.log(start_time_seconds)
+            // console.log(end_time_seconds)
+
+            //Convert datetime to seconds
+            start_time_seconds = start_time_seconds.getTime() / 1000;
+            end_time_seconds = end_time_seconds.getTime() / 1000;
+
+            // console.log("TIME IS")
+            // console.log(this.state.signal_original_start_seconds)
+            // console.log(start_time_seconds)
+            // console.log(end_time_seconds)
+
+            //Convert to seconds from start of signal
+            //Original time is in milliseconds by dividing by 1000 we convert to
+            // seconds
+            start_time_seconds = Math.abs(this.state.signal_original_start_seconds / 1000 - start_time_seconds);
+            end_time_seconds = Math.abs(this.state.signal_original_start_seconds / 1000 - end_time_seconds);
+        }else{
+            start_time_seconds = 0
+            end_time_seconds = 0
+        }
+
+        let data_to_send = {
+            bipolar_references: this.state.added_bipolar_references,
+            type_of_reference: this.state.selected_reference_type,
+            channels_reference: this.state.added_channel_references,
+            notches_enabled: this.state.selected_notch,
+            notches_length: this.state.selected_notch_length,
+            selection_channel: this.state.selected_part_channel,
+            selection_start_time: start_time_seconds,
+            selection_end_time: end_time_seconds
+        }
+        console.log("data_to_send")
+        console.log(data_to_send)
+        API.post("receive_notebook_and_selection_configuration",
+                data_to_send
+                , {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+        ).then(res => {
+        //   Must reload the notebook from the frontend or trigger it here otherwise
+            API.get("/mne/open/eeg",
+                    {
+                        params: {
+                            input_run_id: "a",
+                            input_step_id: "b"
+                        }
+                    }
+            ).then(res => {
+            });
+        });
+    }
 
     async fetchChannels(url, config) {
         API.get("list/channels", {}).then(res => {
@@ -304,22 +392,50 @@ class EEGAnalysisFunctionPage extends React.Component {
     handleSelectTestNameCheckChange(event) {
         this.setState({selected_test_name_check: event.target.value})
     }
+
     handleSelectChannelCathodeChange(event){
         this.setState({selected_channel_cathode: event.target.value})
     }
+
     handleSelectChannelAnodeChange(event){
         this.setState({selected_channel_anode: event.target.value})
     }
+
     handleSelectNotchSelectedChange(event) {
         this.setState({selected_notch: event.target.checked})
         // alert("hey")
         // console.log(this.state.selected_notch)
     }
+
     handleSelectNotchLengthChange(event) {
         this.setState({selected_notch_length: event.target.value})
     }
+
     handleSelectChannelReferenceChange(event) {
         this.setState({selected_reference_channel: event.target.value})
+    }
+
+    handleSelectChannelPartChange(event) {
+        this.setState({selected_part_channel: event.target.value})
+    }
+
+    handleSelectReferenceTypeChange(event) {
+        //Clear other values of references when changing
+        this.setState({added_channel_references: []})
+
+
+        this.setState({selected_reference_type: event.target.value})
+
+
+    }
+
+    handleModalOpen(){
+        this.setState({open_modal: true})
+        this.handleGetChannelSignal()
+    }
+
+    handleModalClose(){
+        this.setState({open_modal: false})
     }
 
     sendToBottom() {
@@ -342,6 +458,26 @@ class EEGAnalysisFunctionPage extends React.Component {
                 return
             }
         }
+    }
+    handleProcceed () {
+        let send_page = "";
+        const queryParams = new URLSearchParams(window.location.search)
+        for (const [key, value] of queryParams) {
+            if(key === "eeg_function"){
+                console.log("HEYHEYHAEYHYAID")
+                console.log(value)
+                send_page = value
+                // this.setState({eeg_function: value});
+            }
+            console.log({ key, value }) // {key: 'term', value: 'pizza'} {key: 'location', value: 'Bangalore'}
+
+        }
+
+        let to_send_to = "http://localhost:3000/" + send_page
+        console.log("PROCEEDING")
+        console.log(to_send_to)
+        // console.log(this.state.eeg_function)
+        window.location.replace(to_send_to);
     }
 
     handleDeleteBipolarChip (anode, cathode) {
@@ -381,6 +517,23 @@ class EEGAnalysisFunctionPage extends React.Component {
 
         this.setState({added_channel_references: [...this.state.added_channel_references, this.state.selected_reference_channel]})
         // console.log(this.state.added_bipolar_references)
+    }
+
+    getSelectionOfSignal() {
+        let selection_array_from = document.getElementsByClassName('amcharts-range-selector-from-input');
+        let selection_array_to = document.getElementsByClassName('amcharts-range-selector-to-input');
+
+        // We assume that only one of this class exists, if more selector amcharts exists in one page this needs to change
+        let selection_from_div = selection_array_from[0]
+        let selection_to_div = selection_array_to[0]
+        console.log(selection_from_div.value)
+        console.log(selection_to_div.value)
+        this.setState({selected_start_time: selection_from_div.value})
+        this.setState({selected_stop_time: selection_to_div.value})
+
+        // Close the Modal Afterwards
+        this.setState({open_modal:false})
+        // this.handleSendSelectionSignal(selection_from_div.value, selection_to_div.value)
     }
 
 
@@ -473,6 +626,24 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Reference Channels
                                 </Typography>
+                                <FormControl sx={{m: 1, width: "80%"}}>
+                                    <InputLabel id="channel-reference-type-label">Reference Type</InputLabel>
+                                    <Select
+                                            labelId="channel-reference-type-label"
+                                            id="channel-reference-selector"
+                                            value= {this.state.selected_reference_type}
+                                            label="Channel"
+                                            onChange={this.handleSelectReferenceTypeChange}
+                                    >
+                                            <MenuItem value="none"> None</MenuItem>
+                                            <MenuItem value="average"> Average</MenuItem>
+                                            {/*<MenuItem value="rest"> Rest</MenuItem>*/}
+                                            <MenuItem value="channels"> Channels</MenuItem>
+                                    </Select>
+                                    <FormHelperText>Select type of reference:</FormHelperText>
+                                </FormControl>
+
+                                <div style={{display: (this.state.selected_reference_type !== "channels" ? "none" : "block") }} >
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Average Reference
                                 </Typography>
@@ -497,10 +668,11 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </Select>
                                     <FormHelperText>Select reference channel</FormHelperText>
                                 </FormControl>
-                                <Button onClick={this.addChannelReference} variant="contained" color="primary"
+                                <Button onClick={this.addChannelReference} disabled={(this.state.selected_reference_channel !== "" ? false : true)} variant="contained" color="primary"
                                         sx={{marginLeft: "10%"}}>
                                     Add reference channel >
                                 </Button>
+                                </div>
                                 <hr/>
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Bipolar Reference
@@ -545,14 +717,64 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </Select>
                                     <FormHelperText>Select anode channel</FormHelperText>
                                 </FormControl>
-                                <Button onClick={this.addBipolarReference} variant="contained" color="primary"
+                                {/* Nested ternary operator that enables button only if both values have a value*/}
+                                {/* TODO: Change this to a more readable format and add more condition if necessary like resetting when pressed */}
+                                <Button onClick={this.addBipolarReference} disabled={(this.state.selected_channel_cathode !== "" ? this.state.selected_channel_anode === "" ? true : false : true)} variant="contained" color="primary"
                                         sx={{marginLeft: "25%"}}>
                                     Add reference >
                                 </Button>
                                 <hr/>
-                                <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Select part in channel
+                                </Typography>
+                                <FormControl sx={{m: 1, width: "80%"}}>
+                                    <InputLabel id="channel-part-selector-label">Channel</InputLabel>
+                                    <Select
+                                            labelId="channel-part-selector-label"
+                                            id="channel-part-selector"
+                                            value= {this.state.selected_part_channel}
+                                            label="Channel"
+                                            onChange={this.handleSelectChannelPartChange}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {this.state.channels_anode.map((channel) => (
+                                                <MenuItem value={channel}>{channel}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    <FormHelperText>Select channel to select</FormHelperText>
+                                </FormControl>
+                                <Button variant="contained" color="primary" sx={{marginLeft: "25%"}} disabled={(this.state.selected_part_channel === "" ? true : false)} onClick={this.handleModalOpen}>Open modal</Button>
+                                <Modal
+                                        open={this.state.open_modal}
+                                        onClose={this.handleModalClose}
+                                        aria-labelledby="modal-modal-title"
+                                        aria-describedby="modal-modal-description"
+                                        disableEnforceFocus={true}
+                                >
+                                    <Box sx={style}>
+                                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                                            Select range of signal
+                                        </Typography>
+                                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                            To select zoom on the selection you want and when the view matches the wanted selection press select
+                                        </Typography>
+                                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
+                                        <Button onClick={this.getSelectionOfSignal} variant="contained" color="primary"
+                                                sx={{marginLeft: "25%"}}>
+                                            Get Selection
+                                        </Button>
+                                    </Box>
+                                </Modal>
+                                <hr/>
+                                <Button onClick={this.handleSendNotebookAndSelectionConfig} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
                                     Apply Changes>
+                                </Button>
+                                <Button onClick={this.handleProcceed} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    Proceed>
                                 </Button>
                             </form>
                         </Grid>
@@ -582,7 +804,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
                             <Grid container direction="row">
                                 <Grid item xs={12} sx={{height: "82vh"}}>
-                                    <iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
                                 </Grid>
                             </Grid>
 
@@ -596,4 +818,4 @@ class EEGAnalysisFunctionPage extends React.Component {
     }
 }
 
-export default EEGAnalysisFunctionPage;
+export default withRouter(EEGAnalysisFunctionPage);
