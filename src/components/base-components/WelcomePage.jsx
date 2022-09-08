@@ -115,6 +115,14 @@ function WelcomePage() {
                                 Power Spectral Density>
                             </ListItemButton>
                         </Link>
+                        <p>alpha_delta_ratio</p>
+                        <p>asymmetry_indices</p>
+                        <p>alpha_variability</p>
+                        <p>Spindles</p>
+                        <p>Slowwaves</p>
+                        <p>Multitaper</p>
+                        <p>Predictions (ARIMA)</p>
+                        <p>Discrete Wavelet Transform</p>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -249,6 +257,7 @@ function WelcomePage() {
                         </Link>
                         <p>Statistical Tests</p>
                         <p>Multiple Comparisons</p>
+                        <p>calculate_SpO2 from eeg_router</p>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
