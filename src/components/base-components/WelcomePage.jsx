@@ -185,8 +185,6 @@ function WelcomePage() {
                                 Asymmetry Indices>
                             </ListItemButton>
                         </Link>
-                        <p>alpha_delta_ratio</p>
-                        <p>asymmetry_indices</p>
                         <p>alpha_variability</p>
                         <p>Spindles</p>
                         <p>Slowwaves</p>
