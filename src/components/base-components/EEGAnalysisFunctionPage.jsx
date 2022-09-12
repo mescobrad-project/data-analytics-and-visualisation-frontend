@@ -10,7 +10,7 @@ import {
     InputLabel,
     Link,
     List,
-    ListItem,
+    ListItem, ListItemIcon,
     ListItemText,
     MenuItem, Modal,
     Paper,
@@ -67,6 +67,12 @@ class EEGAnalysisFunctionPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            //Channel Select order modal
+            checked: [],
+            leftChecked: [],
+            rightChecked: [],
+            left:[0,1,2,3],
+            right:[4,5,6,7],
             // List of channels sent by the backend
             slices: [],
             eeg_function: "",
@@ -155,6 +161,15 @@ class EEGAnalysisFunctionPage extends React.Component {
         this.handleSendNotebookAndSelectionConfig = this.handleSendNotebookAndSelectionConfig.bind(this);
         this.handleSelectReferenceTypeChange = this.handleSelectReferenceTypeChange.bind(this);
         this.handleProcceed = this.handleProcceed.bind(this);
+        this.not = this.not.bind(this);
+        this.intersection = this.intersection.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
+        this.handleAllRight = this.handleAllRight.bind(this);
+        this.handleCheckedRight = this.handleCheckedRight.bind(this);
+        this.handleCheckedLeft = this.handleCheckedLeft.bind(this);
+        this.handleAllLeft = this.handleAllLeft.bind(this);
+        this.customList = this.customList.bind(this);
+        this.debug = this.debug.bind(this);
 
         // Initialise component
         // - values of channels from the backend
@@ -177,6 +192,8 @@ class EEGAnalysisFunctionPage extends React.Component {
         //     console.log({ key, value }) // {key: 'term', value: 'pizza'} {key: 'location', value: 'Bangalore'}
         //
         // }
+
+
     }
 
     /**
@@ -537,6 +554,115 @@ class EEGAnalysisFunctionPage extends React.Component {
     }
 
 
+    not(a, b) {
+        return a.filter((value) => b.indexOf(value) === -1);
+    }
+
+    intersection(a, b) {
+        return a.filter((value) => b.indexOf(value) !== -1);
+    }
+
+
+    handleToggle = (value) => () => {
+        const currentIndex = this.state.checked.indexOf(value);
+        const newChecked = [...this.state.checked];
+
+        if (currentIndex === -1) {
+            newChecked.push(value);
+        } else {
+            newChecked.splice(currentIndex, 1);
+        }
+
+        this.setState({checked: newChecked});
+        // console.log("newChecked")
+        // console.log(newChecked)
+        // console.log(this.intersection(newChecked, this.state.left))
+        // console.log(this.intersection(newChecked, this.state.right))
+        this.setState({leftChecked: this.intersection(newChecked, this.state.left)});
+        this.setState({rightChecked: this.intersection(newChecked, this.state.right)});
+
+    };
+
+    handleAllRight = () => {
+        let tempRight = this.state.right;
+        this.setState({right: tempRight.concat(this.state.left)});
+        this.setState({left: []})
+    };
+
+    handleCheckedRight = () => {
+        let tempRight = this.state.right;
+        this.setState({right: tempRight.concat(this.state.leftChecked)});
+
+        let tempLeft = this.state.left;
+        this.setState({left: this.not(tempLeft, this.state.leftChecked)});
+
+
+        this.setState({checked: this.not(this.state.checked, this.state.leftChecked)});
+    };
+
+    handleCheckedLeft = () => {
+        let tempLeft = this.state.left;
+        console.log("LEFT IS")
+        console.log(this.state.left)
+        console.log(this.state.right)
+        console.log(this.state.rightChecked)
+        console.log(this.state.leftChecked)
+        this.setState({left: tempLeft.concat(this.state.rightChecked)});
+
+        let tempRight = this.state.right;
+        console.log(this.not(tempRight, this.state.rightChecked))
+        this.setState({right: this.not(tempRight, this.state.rightChecked)});
+
+
+        this.setState({checked: this.not(this.state.checked, this.state.rightChecked)});
+    };
+
+    handleAllLeft = () => {
+        let tempLeft = this.state.left;
+        this.setState({left: tempLeft.concat(this.state.right)});
+        this.setState({right: []})
+    };
+
+    customList = (items) => (
+            <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
+                <List dense component="div" role="list">
+                    {items.map((value) => {
+                        const labelId = `transfer-list-item-${value}-label`;
+
+                        return (
+                                <ListItem
+                                        key={value}
+                                        role="listitem"
+                                        button
+                                        onClick={this.handleToggle(value)}
+                                >
+                                    <ListItemIcon>
+                                        <Checkbox
+                                                checked={this.state.checked.indexOf(value) !== -1}
+                                                tabIndex={-1}
+                                                disableRipple
+                                                inputProps={{
+                                                    'aria-labelledby': labelId,
+                                                }}
+                                        />
+                                    </ListItemIcon>
+                                    <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+                                </ListItem>
+                        );
+                    })}
+                    <ListItem />
+                </List>
+            </Paper>
+    );
+
+    debug = () => {
+        console.log("DEBUG")
+        console.log(this.state.left)
+        console.log(this.state.right)
+        console.log(this.state.rightChecked)
+        console.log(this.state.leftChecked)
+    };
+
     render() {
         return (
                 <Grid container direction="column">
@@ -768,6 +894,55 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </Box>
                                 </Modal>
                                 <hr/>
+                                <Grid container spacing={2} justifyContent="center" alignItems="center">
+                                    <Grid item>{this.customList(this.state.left)}</Grid>
+                                    <Grid item>
+                                        <Grid container direction="column" alignItems="center">
+                                            <Button
+                                                    sx={{ my: 0.5 }}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={this.handleAllRight}
+                                                    disabled={this.state.left.length === 0}
+                                                    aria-label="move all right"
+                                            >
+                                                ≫
+                                            </Button>
+                                            <Button
+                                                    sx={{ my: 0.5 }}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={this.handleCheckedRight}
+                                                    disabled={this.state.leftChecked.length === 0}
+                                                    aria-label="move selected right"
+                                            >
+                                                &gt;
+                                            </Button>
+                                            <Button
+                                                    sx={{ my: 0.5 }}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={this.handleCheckedLeft}
+                                                    disabled={this.state.rightChecked.length === 0}
+                                                    aria-label="move selected left"
+                                            >
+                                                &lt;
+                                            </Button>
+                                            <Button
+                                                    sx={{ my: 0.5 }}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={this.handleAllLeft}
+                                                    disabled={this.state.right.length === 0}
+                                                    aria-label="move all left"
+                                            >
+                                                ≪
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item>{this.customList(this.state.right)}</Grid>
+                                </Grid>
+                                <hr/>
                                 <Button onClick={this.handleSendNotebookAndSelectionConfig} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
                                     Apply Changes>
@@ -775,6 +950,10 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 <Button onClick={this.handleProcceed} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
                                     Proceed>
+                                </Button>
+                                <Button onClick={this.debug} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    DEBUG>
                                 </Button>
                             </form>
                         </Grid>
