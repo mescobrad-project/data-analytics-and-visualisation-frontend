@@ -7,6 +7,7 @@ import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 import API from "../../axiosInstance";
 import { useNavigate } from "react-router-dom";
 import {withRouter} from '../withRouter';
+import Kendalltau_correlation from "../../pages/hypothesis_testing/Kendalltau_correlation";
 
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
@@ -321,6 +322,24 @@ function WelcomePage() {
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Homoscedasticity check >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Spearman_correlation"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Spearman Correlation >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Kendalltau_correlation"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Kendalltau Correlation >
                             </ListItemButton>
                         </Link>
                         <p>Statistical Tests</p>
