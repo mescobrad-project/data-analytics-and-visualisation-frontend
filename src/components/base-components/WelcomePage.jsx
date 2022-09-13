@@ -1,14 +1,10 @@
 import React, {useContext, useEffect} from 'react';
 import {Button, Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
 import {display} from "@mui/system";
-import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation";
-import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
-import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 import API from "../../axiosInstance";
 import { useNavigate } from "react-router-dom";
 import {withRouter} from '../withRouter';
-import Kendalltau_correlation from "../../pages/hypothesis_testing/Kendalltau_correlation";
-import Welch_t_test from "../../pages/hypothesis_testing/Welch_t_test";
+import Independent_t_test from "../../pages/hypothesis_testing/Independent_t_test";
 
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
@@ -353,7 +349,15 @@ function WelcomePage() {
                                 Welch t-test >
                             </ListItemButton>
                         </Link>
-
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Independent_t_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Independent t-test >
+                            </ListItemButton>
+                        </Link>
                         <p>Multiple Comparisons</p>
                         <p>calculate_SpO2 from eeg_router</p>
                     </List>
