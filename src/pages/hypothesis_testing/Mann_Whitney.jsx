@@ -14,7 +14,7 @@ import {
     Typography
 } from "@mui/material";
 
-class Welch_t_test extends React.Component {
+class Mann_Whitney extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -26,7 +26,8 @@ class Welch_t_test extends React.Component {
             selected_column2: "",
             selected_alternative: "two-sided",
             selected_nan_policy:"propagate",
-            selected_statistical_test:"Welch t-test"
+            selected_method: "auto",
+            selected_statistical_test:"Mann-Whitney U rank test"
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -36,6 +37,7 @@ class Welch_t_test extends React.Component {
         this.handleSelectColumn2Change = this.handleSelectColumn2Change.bind(this);
         this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
         this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
+        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
@@ -62,7 +64,7 @@ class Welch_t_test extends React.Component {
                 {
                     params: {column_1: this.state.selected_column, column_2:this.state.selected_column2,
                         alternative: this.state.selected_alternative, nan_policy: this.state.selected_nan_policy,
-                        statistical_test: this.state.selected_statistical_test}
+                        method: this.state.selected_method, statistical_test: this.state.selected_statistical_test}
                 }
         ).then(res => {
             this.setState({test_data: res.data})
@@ -85,6 +87,9 @@ class Welch_t_test extends React.Component {
     handleSelectNanPolicyChange(event){
         this.setState( {selected_nan_policy: event.target.value})
     }
+    handleSelectMethodChange(event){
+        this.setState( {selected_method: event.target.value})
+    }
 
     render() {
         return (
@@ -102,7 +107,7 @@ class Welch_t_test extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select data for Welch t-test
+                            Select TWO RELATED samples of scores for t-test
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -143,6 +148,22 @@ class Welch_t_test extends React.Component {
                                 <FormHelperText>Select Column 02 for correlation check</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="method-selector-label">Method</InputLabel>
+                                <Select
+                                        labelid="method-selector-label"
+                                        id="method-selector"
+                                        value= {this.state.selected_method}
+                                        label="Method"
+                                        onChange={this.handleSelectMethodChange}
+                                >
+                                    {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
+                                    <MenuItem value={"auto"}><em>auto</em></MenuItem>
+                                    <MenuItem value={"asymptotic"}><em>asymptotic</em></MenuItem>
+                                    <MenuItem value={"exact"}><em>exact</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Specify which method to use.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
                                 <Select
                                         labelid="nanpolicy-selector-label"
@@ -172,6 +193,7 @@ class Welch_t_test extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
                             </FormControl>
+                            <hr/>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
@@ -196,4 +218,4 @@ class Welch_t_test extends React.Component {
     }
 }
 
-export default Welch_t_test;
+export default Mann_Whitney;

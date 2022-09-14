@@ -14,7 +14,7 @@ import {
     Typography
 } from "@mui/material";
 
-class Welch_t_test extends React.Component {
+class Two_Related_samples_t_test extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -26,7 +26,7 @@ class Welch_t_test extends React.Component {
             selected_column2: "",
             selected_alternative: "two-sided",
             selected_nan_policy:"propagate",
-            selected_statistical_test:"Welch t-test"
+            selected_statistical_test:"t-test on TWO RELATED samples of scores"
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -102,7 +102,7 @@ class Welch_t_test extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select data for Welch t-test
+                            Select TWO RELATED samples of scores for t-test
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -196,4 +196,4 @@ class Welch_t_test extends React.Component {
     }
 }
 
-export default Welch_t_test;
+export default Two_Related_samples_t_test;
