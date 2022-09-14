@@ -3,7 +3,7 @@ import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
     AppBar,
-    Button, Checkbox, Chip,
+    Button, Checkbox, Chip, Divider,
     FormControl, FormControlLabel, FormGroup,
     FormHelperText,
     Grid,
@@ -71,8 +71,8 @@ class EEGAnalysisFunctionPage extends React.Component {
             checked: [],
             leftChecked: [],
             rightChecked: [],
-            left:[0,1,2,3],
-            right:[4,5,6,7],
+            left:[],
+            right:[],
             // List of channels sent by the backend
             slices: [],
             eeg_function: "",
@@ -116,7 +116,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
             //Function to show/hide
             show_neurodesk: true,
-            selected_notch_length: 0,
+            selected_notch_length: 50,
             selected_notch: false,
             //Returned variables
             returned_status: "",
@@ -390,6 +390,7 @@ class EEGAnalysisFunctionPage extends React.Component {
         API.get("list/channels", {}).then(res => {
             this.setState({channels_cathode: res.data.channels})
             this.setState({channels_anode: res.data.channels})
+            this.setState({left: res.data.channels})
         });
     }
 
@@ -646,7 +647,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                                 }}
                                         />
                                     </ListItemIcon>
-                                    <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+                                    <ListItemText id={labelId} primary={`${value}`} />
                                 </ListItem>
                         );
                     })}
@@ -668,10 +669,11 @@ class EEGAnalysisFunctionPage extends React.Component {
                 <Grid container direction="column">
                     <Grid container direction="row">
                         <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
+                            <Grid container direction="column">
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 File preview
                             </Typography>
-                            <hr/>
+                            <Divider sx={{bgcolor: "black"}}/>
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 File Name:
                             </Typography>
@@ -684,7 +686,52 @@ class EEGAnalysisFunctionPage extends React.Component {
                             <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 EDF
                             </Typography>
-                            <hr/>
+                            <Divider sx={{bgcolor: "black"}}/>
+
+
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Montage
+                            </Typography>
+                            {/*TODO THIS*/}
+                            <Divider>Load Montage</Divider>
+                            <FormControl sx={{m: 1, width: "80%"}}>
+                                <InputLabel id="montage-load-label">Load Montage</InputLabel>
+                                <Select
+                                        labelId="montage-load-label"
+                                        id="montage-load-selector"
+                                        value= {this.state.selected_reference_type}
+                                        label="Montage"
+                                        onChange={this.handleSelectReferenceTypeChange}
+                                >
+                                    <MenuItem value="none"> None</MenuItem>
+                                    <MenuItem value="m1"> Montage - 1</MenuItem>
+                                    <MenuItem value="m2"> Montage - 2</MenuItem>
+                                    <MenuItem value="m3"> Montage - 3</MenuItem>
+                                    {/*<MenuItem value="rest"> Rest</MenuItem>*/}
+                                    {/*<MenuItem value="channels"> Channels</MenuItem>*/}
+                                </Select>
+                                <FormHelperText>Load existing montage</FormHelperText>
+                            </FormControl>
+                            <Button onClick={this.debug} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
+                                Load Montage
+                            </Button>
+                                <Divider> Save New Montage</Divider>
+                                <FormControl sx={{m: 1, minWidth: 120}}>
+                                    <TextField
+                                            labelId="save-new-montage-label"
+                                            id="save-new-montage"
+                                            value= {this.state.selected_nperseg}
+                                            label="Montage Name"
+                                            onChange={this.handleSelectNpersegChange}
+                                    />
+                                    <FormHelperText>Montage Name</FormHelperText>
+                                </FormControl>
+                            <Button onClick={this.debug} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
+                                Save Configuration as new montage
+                            </Button>
+                            <Divider sx={{bgcolor: "black"}}/>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Annotations in File
                             </Typography>
@@ -714,6 +761,8 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            <Divider sx={{bgcolor: "black"}}/>
+
 
                             {/*Not sure if slices need to be displayed*/}
                             {/*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
@@ -724,31 +773,44 @@ class EEGAnalysisFunctionPage extends React.Component {
                             {/*            <ListItem> <ListItemText primary={channel}/></ListItem>*/}
                             {/*    ))}*/}
                             {/*</List>*/}
+                            </Grid>
                         </Grid>
-                        <Grid item xs={2} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
+                        <Grid item xs={3} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             <form onSubmit={this.handleSubmit}>
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                    EEG Settings
+                                    EEG Display Settings
                                 </Typography>
-                                <hr/>
+                                <Divider sx={{bgcolor: "black"}}/>
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Notch Filter
                                 </Typography>
                                 <FormGroup>
-                                    <FormControlLabel control={<Checkbox onChange={this.handleSelectNotchSelectedChange} />} label="Enable Notches" />
+                                    <FormControlLabel control={<Checkbox onChange={this.handleSelectNotchSelectedChange} />} label="Enable Notche Filter" />
                                     <FormControl sx={{m: 1, minWidth: 120}}>
-                                        <TextField
-                                                // labelId="nfft-selector-label"
+                                        {/*<TextField*/}
+                                        {/*        // labelId="nfft-selector-label"*/}
+                                        {/*        id="notch-length-selector"*/}
+                                        {/*        value= {this.state.selected_notch_length}*/}
+                                        {/*        label="Notch length"*/}
+                                        {/*        disabled={!this.state.selected_notch}*/}
+                                        {/*        onChange={this.handleSelectNotchLengthChange}*/}
+                                        {/*/>*/}
+                                        <InputLabel id="notch-label">Notch Hz</InputLabel>
+                                        <Select
+                                                labelId="notch-label"
                                                 id="notch-length-selector"
                                                 value= {this.state.selected_notch_length}
-                                                label="Notch length"
+                                                label="Notch Filter"
                                                 disabled={!this.state.selected_notch}
                                                 onChange={this.handleSelectNotchLengthChange}
-                                        />
-                                        <FormHelperText>Length of the Notch</FormHelperText>
+                                        >
+                                            <MenuItem value="50"> 50Hz</MenuItem>
+                                            <MenuItem value="60"> 60Hz</MenuItem>
+                                            {/*<MenuItem value="rest"> Rest</MenuItem>*/}
+                                        </Select>
                                     </FormControl>
                                 </FormGroup>
-                                <hr/>
+                                <Divider sx={{bgcolor: "black"}}/>
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Reference Channels
                                 </Typography>
@@ -770,9 +832,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 </FormControl>
 
                                 <div style={{display: (this.state.selected_reference_type !== "channels" ? "none" : "block") }} >
-                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                    Average Reference
-                                </Typography>
+                                <Divider>Channels Reference Selector</Divider>
                                 <FormControl sx={{m: 1, width: "80%"}}>
                                     {this.state.added_channel_references.map((chip_data) => (
                                             <Chip label={chip_data} variant="outlined" onDelete={this.handleDeleteReferenceChip.bind(this, chip_data)} />
@@ -799,7 +859,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     Add reference channel >
                                 </Button>
                                 </div>
-                                <hr/>
+                                <Divider sx={{bgcolor: "black"}}/>
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Bipolar Reference
                                 </Typography>
@@ -849,9 +909,39 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         sx={{marginLeft: "25%"}}>
                                     Add reference >
                                 </Button>
-                                <hr/>
+                                <Divider sx={{bgcolor: "black"}}/>
+
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                    Select part in channel
+                                    Filtering
+                                </Typography>
+                                {/*TODO */}
+                                <FormControl sx={{m: 1, minWidth: 120}}>
+                                    <TextField
+                                            labelId="lowpass-label"
+                                            id="lowpass-montage"
+                                            value= {this.state.selected_nperseg}
+                                            label="Lowpass"
+                                            onChange={this.handleSelectNpersegChange}
+                                    />
+                                    <FormHelperText>Lowpass</FormHelperText>
+                                </FormControl>
+
+                                <FormControl sx={{m: 1, minWidth: 120}}>
+                                    <TextField
+                                            labelId="highpass-label"
+                                            id="highpass-montage"
+                                            value= {this.state.selected_nperseg}
+                                            label="Highpass"
+                                            onChange={this.handleSelectNpersegChange}
+                                    />
+                                    <FormHelperText>Highpass</FormHelperText>
+                                </FormControl>
+                                <Typography sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    If highpass > lowpass, a bandstop rather than bandpass filter will be applied.
+                                </Typography>
+                                <Divider sx={{bgcolor: "black"}}/>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Crop signal
                                 </Typography>
                                 <FormControl sx={{m: 1, width: "80%"}}>
                                     <InputLabel id="channel-part-selector-label">Channel</InputLabel>
@@ -869,7 +959,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                                 <MenuItem value={channel}>{channel}</MenuItem>
                                         ))}
                                     </Select>
-                                    <FormHelperText>Select channel to select</FormHelperText>
+                                    <FormHelperText>Select channel to preview for the crop</FormHelperText>
                                 </FormControl>
                                 <Button variant="contained" color="primary" sx={{marginLeft: "25%"}} disabled={(this.state.selected_part_channel === "" ? true : false)} onClick={this.handleModalOpen}>Open modal</Button>
                                 <Modal
@@ -893,9 +983,11 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         </Button>
                                     </Box>
                                 </Modal>
-                                <hr/>
-                                <Grid container spacing={2} justifyContent="center" alignItems="center">
-                                    <Grid item>{this.customList(this.state.left)}</Grid>
+                                <Divider sx={{bgcolor: "black"}}/>
+                                <Grid container spacing={0} justifyContent="center" alignItems="center">
+                                    <Grid item><Typography id="modal-modal-title" component="h2">
+                                        Hide Channels
+                                    </Typography>{this.customList(this.state.left)}</Grid>
                                     <Grid item>
                                         <Grid container direction="column" alignItems="center">
                                             <Button
@@ -940,9 +1032,14 @@ class EEGAnalysisFunctionPage extends React.Component {
                                             </Button>
                                         </Grid>
                                     </Grid>
-                                    <Grid item>{this.customList(this.state.right)}</Grid>
+                                    <Grid item><Typography id="modal-modal-title" component="h2">
+                                        Show Channels
+                                    </Typography>{this.customList(this.state.right)}</Grid>
+                                    <Typography id="modal-modal-title" component="h2">
+                                        Channels will be shown in the order specified. If all channels are hidenn all will be shown in default order.
+                                    </Typography>
                                 </Grid>
-                                <hr/>
+                                <Divider sx={{bgcolor: "black"}}/>
                                 <Button onClick={this.handleSendNotebookAndSelectionConfig} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
                                     Apply Changes>
@@ -951,17 +1048,23 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         sx={{margin: "8px", float: "right"}}>
                                     Proceed>
                                 </Button>
-                                <Button onClick={this.debug} variant="contained" color="secondary"
-                                        sx={{margin: "8px", float: "right"}}>
-                                    DEBUG>
-                                </Button>
+                                {/*<Button onClick={this.debug} variant="contained" color="secondary"*/}
+                                {/*        sx={{margin: "8px", float: "right"}}>*/}
+                                {/*    DEBUG>*/}
+                                {/*</Button>*/}
                             </form>
                         </Grid>
-                        <Grid item xs={8} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
+                        {/*<Grid item xs={2} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>*/}
+                        {/*    <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        Montage*/}
+                        {/*    </Typography>*/}
+                        {/*    <Divider sx={{bgcolor: "black"}}/>*/}
+                        {/*</Grid>*/}
+                        <Grid item xs={7} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             {/*<Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
                             {/*    EEG Analysis*/}
                             {/*</Typography>*/}
-                            {/*<hr/>*/}
+                            {/*<Divider sx={{bgcolor: "black"}}/>*/}
                             <Grid container direction="row">
                                 <Grid item xs={12}
                                       sx={{height: "10vh", borderTop: "2px solid black", backgroundColor: "#0099cc"}}>
