@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import {withRouter} from '../withRouter';
 import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
 import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
+import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
 
 
 // import {useHistory} from "react-router-dom";
@@ -424,6 +425,15 @@ function WelcomePage() {
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 one-way ANOVA >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Wilcoxon_rank_sum_statistic"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Wilcoxon rank-sum statistic >
                             </ListItemButton>
                         </Link>
 
