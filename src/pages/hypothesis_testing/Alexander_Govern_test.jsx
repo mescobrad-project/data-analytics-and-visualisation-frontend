@@ -14,19 +14,27 @@ import {
     Typography
 } from "@mui/material";
 
-class Independent_t_test extends React.Component {
+class Alexander_Govern_test extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns in dataset
             column_names: [],
-            test_data: [],
+            test_data: {
+                mean_positive: '',
+                standard_deviation_positive: '',
+                mean_negative: '',
+                standard_deviation_negative: '',
+                'statistic, p_value': {
+                    statistic:'',
+                    p_value:''
+                }
+            },
             //Values selected currently on the form
             selected_column: "",
             selected_column2: "",
-            selected_alternative: "two-sided",
             selected_nan_policy:"propagate",
-            selected_statistical_test:"Independent t-test"
+            selected_statistical_test:"Alexander Govern test"
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -34,8 +42,8 @@ class Independent_t_test extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
         this.handleSelectColumn2Change = this.handleSelectColumn2Change.bind(this);
-        this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
         this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
+
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
@@ -61,11 +69,12 @@ class Independent_t_test extends React.Component {
         API.get("statistical_tests",
                 {
                     params: {column_1: this.state.selected_column, column_2:this.state.selected_column2,
-                        alternative: this.state.selected_alternative, nan_policy: this.state.selected_nan_policy,
+                        nan_policy: this.state.selected_nan_policy,
                         statistical_test: this.state.selected_statistical_test}
                 }
         ).then(res => {
             this.setState({test_data: res.data})
+            // console.log(res.data['statistic, p_value']['statistic'])
         });
     }
 
@@ -79,15 +88,13 @@ class Independent_t_test extends React.Component {
     handleSelectColumn2Change(event){
         this.setState( {selected_column2: event.target.value})
     }
-    handleSelectAlternativeChange(event){
-        this.setState( {selected_alternative: event.target.value})
-    }
     handleSelectNanPolicyChange(event){
         this.setState( {selected_nan_policy: event.target.value})
     }
 
     render() {
         return (
+
                 <Grid container direction="row">
                     <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -102,7 +109,7 @@ class Independent_t_test extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select data for Independent t-test
+                            Alexander Govern test
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -122,7 +129,7 @@ class Independent_t_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
+                                <FormHelperText>Select sample 01 </FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="column2-selector-label">Column</InputLabel>
@@ -140,7 +147,7 @@ class Independent_t_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 02 for correlation check</FormHelperText>
+                                <FormHelperText>Select sample 02</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
@@ -157,21 +164,6 @@ class Independent_t_test extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
-                                <Select
-                                        labelid="alternative-selector-label"
-                                        id="alternative-selector"
-                                        value= {this.state.selected_alternative}
-                                        label="Alternative parameter"
-                                        onChange={this.handleSelectAlternativeChange}
-                                >
-                                    <MenuItem value={"two-sided"}><em>two-sided</em></MenuItem>
-                                    <MenuItem value={"less"}><em>less</em></MenuItem>
-                                    <MenuItem value={"greater"}><em>greater</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
-                            </FormControl>
                             <hr/>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
@@ -184,8 +176,8 @@ class Independent_t_test extends React.Component {
                         </Typography>
                         <hr/>
                         <div>
-                            <p className="result_texts">Statistic :  { this.state.test_data['statistic']}</p>
-                            <p className="result_texts">p value :    { this.state.test_data['p-value']}</p>
+                            <p className="result_texts">Statistic :  { this.state.test_data['statistic, p_value']['statistic']}</p>
+                            <p className="result_texts">p value :    { this.state.test_data['statistic, p_value']['pvalue']}</p>
                             <p className="result_texts">mean_positive :    { this.state.test_data['mean_positive']}</p>
                             <p className="result_texts">mean_negative :    { this.state.test_data['mean_negative']}</p>
                             <p className="result_texts">standard_deviation_positive :    { this.state.test_data['standard_deviation_positive']}</p>
@@ -197,4 +189,4 @@ class Independent_t_test extends React.Component {
     }
 }
 
-export default Independent_t_test;
+export default Alexander_Govern_test;

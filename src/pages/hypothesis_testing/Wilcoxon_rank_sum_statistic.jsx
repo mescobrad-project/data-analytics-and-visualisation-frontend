@@ -14,7 +14,7 @@ import {
     Typography
 } from "@mui/material";
 
-class Independent_t_test extends React.Component {
+class Wilcoxon_rank_sum_statistic extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -26,7 +26,7 @@ class Independent_t_test extends React.Component {
             selected_column2: "",
             selected_alternative: "two-sided",
             selected_nan_policy:"propagate",
-            selected_statistical_test:"Independent t-test"
+            selected_statistical_test:"Wilcoxon rank-sum statistic"
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -102,7 +102,7 @@ class Independent_t_test extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select data for Independent t-test
+                            Wilcoxon rank-sum statistic
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -122,7 +122,7 @@ class Independent_t_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
+                                <FormHelperText>Select sample 01 </FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="column2-selector-label">Column</InputLabel>
@@ -140,7 +140,7 @@ class Independent_t_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 02 for correlation check</FormHelperText>
+                                <FormHelperText>Select sample 02 </FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
@@ -197,4 +197,4 @@ class Independent_t_test extends React.Component {
     }
 }
 
-export default Independent_t_test;
+export default Wilcoxon_rank_sum_statistic;

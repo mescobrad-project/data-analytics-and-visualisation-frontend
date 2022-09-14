@@ -1,10 +1,24 @@
 import React, {useContext, useEffect} from 'react';
-import {Button, Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
+import {
+    Button,
+    Link,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    ListSubheader,
+    Typography
+} from "@mui/material";
 import {display} from "@mui/system";
 import API from "../../axiosInstance";
 import { useNavigate } from "react-router-dom";
 import {withRouter} from '../withRouter';
-import Independent_t_test from "../../pages/hypothesis_testing/Independent_t_test";
+import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
+import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
+import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
+import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
+
 
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
@@ -339,7 +353,9 @@ function WelcomePage() {
                                 Kendalltau Correlation >
                             </ListItemButton>
                         </Link>
-                        <p>Statistical Tests</p>
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left", padding: "10px" }} noWrap>
+                            Statistical Tests
+                        </Typography>
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -358,6 +374,79 @@ function WelcomePage() {
                                 Independent t-test >
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Two_Related_samples_t_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                t-test on TWO RELATED samples of scores >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Mann_Whitney"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Mann-Whitney U rank test >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Wilcoxon_signed_rank_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Wilcoxon signed-rank test >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Alexander_Govern_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Alexander Govern test >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Kruskal_Wallis_H_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Kruskal-Wallis H-test >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/One_way_ANOVA"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                one-way ANOVA >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Wilcoxon_rank_sum_statistic"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Wilcoxon rank-sum statistic >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/One_way_chi_square_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                One-way chi-square test >
+                            </ListItemButton>
+                        </Link>
+
                         <p>Multiple Comparisons</p>
                         <p>calculate_SpO2 from eeg_router</p>
                     </List>

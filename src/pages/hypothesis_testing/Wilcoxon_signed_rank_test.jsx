@@ -14,7 +14,7 @@ import {
     Typography
 } from "@mui/material";
 
-class Independent_t_test extends React.Component {
+class Wilcoxon_signed_rank_test extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -24,9 +24,12 @@ class Independent_t_test extends React.Component {
             //Values selected currently on the form
             selected_column: "",
             selected_column2: "",
+            selected_zero_method:"wilcox",
+            selected_correction:false,
             selected_alternative: "two-sided",
+            selected_method:"auto",
             selected_nan_policy:"propagate",
-            selected_statistical_test:"Independent t-test"
+            selected_statistical_test:"Wilcoxon signed-rank test"
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -36,6 +39,9 @@ class Independent_t_test extends React.Component {
         this.handleSelectColumn2Change = this.handleSelectColumn2Change.bind(this);
         this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
         this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
+        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
+        this.handleSelectZeroMethodChange = this.handleSelectZeroMethodChange.bind(this);
+        this.handleSelectCorrectionChange = this.handleSelectCorrectionChange.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
@@ -61,7 +67,9 @@ class Independent_t_test extends React.Component {
         API.get("statistical_tests",
                 {
                     params: {column_1: this.state.selected_column, column_2:this.state.selected_column2,
-                        alternative: this.state.selected_alternative, nan_policy: this.state.selected_nan_policy,
+                        zero_method:this.state.selected_zero_method, correction:this.state.selected_correction,
+                        alternative: this.state.selected_alternative, method: this.state.selected_method,
+                        nan_policy: this.state.selected_nan_policy,
                         statistical_test: this.state.selected_statistical_test}
                 }
         ).then(res => {
@@ -79,8 +87,17 @@ class Independent_t_test extends React.Component {
     handleSelectColumn2Change(event){
         this.setState( {selected_column2: event.target.value})
     }
+    handleSelectZeroMethodChange(event){
+        this.setState( {selected_zero_method: event.target.value})
+    }
+    handleSelectCorrectionChange(event){
+        this.setState( {selected_correction: event.target.value})
+    }
     handleSelectAlternativeChange(event){
         this.setState( {selected_alternative: event.target.value})
+    }
+    handleSelectMethodChange(event){
+        this.setState( {selected_method: event.target.value})
     }
     handleSelectNanPolicyChange(event){
         this.setState( {selected_nan_policy: event.target.value})
@@ -102,7 +119,7 @@ class Independent_t_test extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select data for Independent t-test
+                            Wilcoxon signed-rank test
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -141,6 +158,53 @@ class Independent_t_test extends React.Component {
                                     ))}
                                 </Select>
                                 <FormHelperText>Select Column 02 for correlation check</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="zeromethod-selector-label">zero-method</InputLabel>
+                                <Select
+                                        labelid="zeromethod-selector-label"
+                                        id="zeromethod-selector"
+                                        value= {this.state.selected_zero_method}
+                                        label="zero-method"
+                                        onChange={this.handleSelectZeroMethodChange}
+                                >
+                                    <MenuItem value={"wilcox"}><em>wilcox</em></MenuItem>
+                                    <MenuItem value={"pratt"}><em>pratt</em></MenuItem>
+                                    <MenuItem value={"zsplit"}><em>zsplit</em></MenuItem>
+                                </Select>
+                                <FormHelperText>There are different conventions for handling pairs of observations with equal values (“zero-differences”, or “zeros”).
+                                    “wilcox”: Discards all zero-differences.
+                                    “pratt”: Includes zero-differences in the ranking process, but drops the ranks of the zeros (more conservative).
+                                    “zsplit”: Includes zero-differences in the ranking process and splits the zero rank between positive and negative ones.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="correction-selector-label">Correction</InputLabel>
+                                <Select
+                                        labelid="correction-selector-label"
+                                        id="correction-selector"
+                                        value= {this.state.selected_correction}
+                                        label="Correction"
+                                        onChange={this.handleSelectCorrectionChange}
+                                >
+                                    <MenuItem value={"false"}><em>false</em></MenuItem>
+                                    <MenuItem value={"true"}><em>true</em></MenuItem>
+                                </Select>
+                                <FormHelperText>If True, apply continuity correction by adjusting the Wilcoxon rank statistic by 0.5 towards the mean value when computing the z-statistic if a normal approximation is used.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="method-selector-label">Method</InputLabel>
+                                <Select
+                                        labelid="method-selector-label"
+                                        id="method-selector"
+                                        value= {this.state.selected_method}
+                                        label="Method"
+                                        onChange={this.handleSelectMethodChange}
+                                >
+                                    <MenuItem value={"auto"}><em>auto</em></MenuItem>
+                                    <MenuItem value={"exact"}><em>exact</em></MenuItem>
+                                    <MenuItem value={"approx"}><em>approx</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Method to calculate the p-value.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
@@ -197,4 +261,4 @@ class Independent_t_test extends React.Component {
     }
 }
 
-export default Independent_t_test;
+export default Wilcoxon_signed_rank_test;

@@ -38,6 +38,14 @@ import Kendalltau_correlation from "../../pages/hypothesis_testing/Kendalltau_co
 import Welch_t_test from "../../pages/hypothesis_testing/Welch_t_test";
 import Independent_t_test from "../../pages/hypothesis_testing/Independent_t_test";
 import DashboardPage from "./DashboardPage";
+import Two_Related_samples_t_test from "../../pages/hypothesis_testing/Two_Related_samples_t_test";
+import Mann_Whitney from "../../pages/hypothesis_testing/Mann_Whitney";
+import Wilcoxon_signed_rank_test from "../../pages/hypothesis_testing/Wilcoxon_signed_rank_test";
+import Alexander_Govern_test from "../../pages/hypothesis_testing/Alexander_Govern_test";
+import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
+import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
+import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
+import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -96,7 +104,14 @@ const App = () => {
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
                         <Route exact path="/Welch_t_test" element={(<LayoutMain><Welch_t_test/></LayoutMain>)}/>
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
-                        <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
+                        <Route exact path="/Two_Related_samples_t_test" element={(<LayoutMain><Two_Related_samples_t_test/></LayoutMain>)}/>
+                        <Route exact path="/Mann_Whitney" element={(<LayoutMain><Mann_Whitney/></LayoutMain>)}/>
+                        <Route exact path="/Wilcoxon_signed_rank_test" element={(<LayoutMain><Wilcoxon_signed_rank_test/></LayoutMain>)}/>
+                        <Route exact path="/Alexander_Govern_test" element={(<LayoutMain><Alexander_Govern_test/></LayoutMain>)}/>
+                        <Route exact path="/Kruskal_Wallis_H_test" element={(<LayoutMain><Kruskal_Wallis_H_test/></LayoutMain>)}/>
+                        <Route exact path="/One_way_ANOVA" element={(<LayoutMain><One_way_ANOVA/></LayoutMain>)}/>
+                        <Route exact path="/Wilcoxon_rank_sum_statistic" element={(<LayoutMain><Wilcoxon_rank_sum_statistic/></LayoutMain>)}/>
+                        <Route exact path="/One_way_chi_square_test" element={(<LayoutMain><One_way_chi_square_test/></LayoutMain>)}/>
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>

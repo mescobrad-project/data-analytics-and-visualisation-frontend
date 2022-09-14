@@ -14,7 +14,7 @@ import {
     Typography
 } from "@mui/material";
 
-class Independent_t_test extends React.Component {
+class One_way_ANOVA extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -24,9 +24,7 @@ class Independent_t_test extends React.Component {
             //Values selected currently on the form
             selected_column: "",
             selected_column2: "",
-            selected_alternative: "two-sided",
-            selected_nan_policy:"propagate",
-            selected_statistical_test:"Independent t-test"
+            selected_statistical_test:"one-way ANOVA"
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -34,8 +32,7 @@ class Independent_t_test extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
         this.handleSelectColumn2Change = this.handleSelectColumn2Change.bind(this);
-        this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
-        this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
+
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
@@ -61,7 +58,6 @@ class Independent_t_test extends React.Component {
         API.get("statistical_tests",
                 {
                     params: {column_1: this.state.selected_column, column_2:this.state.selected_column2,
-                        alternative: this.state.selected_alternative, nan_policy: this.state.selected_nan_policy,
                         statistical_test: this.state.selected_statistical_test}
                 }
         ).then(res => {
@@ -78,12 +74,6 @@ class Independent_t_test extends React.Component {
     }
     handleSelectColumn2Change(event){
         this.setState( {selected_column2: event.target.value})
-    }
-    handleSelectAlternativeChange(event){
-        this.setState( {selected_alternative: event.target.value})
-    }
-    handleSelectNanPolicyChange(event){
-        this.setState( {selected_nan_policy: event.target.value})
     }
 
     render() {
@@ -102,7 +92,7 @@ class Independent_t_test extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select data for Independent t-test
+                            One-way ANOVA
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -122,7 +112,7 @@ class Independent_t_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
+                                <FormHelperText>Select sample 01 </FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="column2-selector-label">Column</InputLabel>
@@ -140,37 +130,7 @@ class Independent_t_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 02 for correlation check</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
-                                <Select
-                                        labelid="nanpolicy-selector-label"
-                                        id="nanpolicy-selector"
-                                        value= {this.state.selected_nan_policy}
-                                        label="Nan_policy"
-                                        onChange={this.handleSelectNanPolicyChange}
-                                >
-                                    <MenuItem value={"propagate"}><em>propagate</em></MenuItem>
-                                    <MenuItem value={"raise"}><em>raise</em></MenuItem>
-                                    <MenuItem value={"omit"}><em>omit</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
-                                <Select
-                                        labelid="alternative-selector-label"
-                                        id="alternative-selector"
-                                        value= {this.state.selected_alternative}
-                                        label="Alternative parameter"
-                                        onChange={this.handleSelectAlternativeChange}
-                                >
-                                    <MenuItem value={"two-sided"}><em>two-sided</em></MenuItem>
-                                    <MenuItem value={"less"}><em>less</em></MenuItem>
-                                    <MenuItem value={"greater"}><em>greater</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
+                                <FormHelperText>Select sample 02</FormHelperText>
                             </FormControl>
                             <hr/>
                             <Button variant="contained" color="primary" type="submit">
@@ -197,4 +157,4 @@ class Independent_t_test extends React.Component {
     }
 }
 
-export default Independent_t_test;
+export default One_way_ANOVA;

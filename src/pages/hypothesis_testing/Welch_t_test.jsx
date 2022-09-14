@@ -155,10 +155,10 @@ class Welch_t_test extends React.Component {
                                     <MenuItem value={"raise"}><em>raise</em></MenuItem>
                                     <MenuItem value={"omit"}><em>omit</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Defines how to handle when input contains nan.</FormHelperText>
+                                <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="alternative-selector-label">Variant</InputLabel>
+                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
                                 <Select
                                         labelid="alternative-selector-label"
                                         id="alternative-selector"
@@ -172,6 +172,7 @@ class Welch_t_test extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
                             </FormControl>
+                            <hr/>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
@@ -185,6 +186,10 @@ class Welch_t_test extends React.Component {
                         <div>
                             <p className="result_texts">Statistic :  { this.state.test_data['statistic']}</p>
                             <p className="result_texts">p value :    { this.state.test_data['p-value']}</p>
+                            <p className="result_texts">mean_positive :    { this.state.test_data['mean_positive']}</p>
+                            <p className="result_texts">mean_negative :    { this.state.test_data['mean_negative']}</p>
+                            <p className="result_texts">standard_deviation_positive :    { this.state.test_data['standard_deviation_positive']}</p>
+                            <p className="result_texts">standard_deviation_negative :    { this.state.test_data['standard_deviation_negative']}</p>
                         </div>
                     </Grid>
                 </Grid>
