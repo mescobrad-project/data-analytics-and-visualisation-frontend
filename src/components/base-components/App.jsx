@@ -39,6 +39,7 @@ import Welch_t_test from "../../pages/hypothesis_testing/Welch_t_test";
 import Independent_t_test from "../../pages/hypothesis_testing/Independent_t_test";
 import Two_Related_samples_t_test from "../../pages/hypothesis_testing/Two_Related_samples_t_test";
 import Mann_Whitney from "../../pages/hypothesis_testing/Mann_Whitney";
+import Wilcoxon_signed_rank_test from "../../pages/hypothesis_testing/Wilcoxon_signed_rank_test";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -99,6 +100,7 @@ const App = () => {
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
                         <Route exact path="/Two_Related_samples_t_test" element={(<LayoutMain><Two_Related_samples_t_test/></LayoutMain>)}/>
                         <Route exact path="/Mann_Whitney" element={(<LayoutMain><Mann_Whitney/></LayoutMain>)}/>
+                        <Route exact path="/Wilcoxon_signed_rank_test" element={(<LayoutMain><Wilcoxon_signed_rank_test/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>

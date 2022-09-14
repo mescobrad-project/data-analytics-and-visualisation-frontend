@@ -14,6 +14,7 @@ import {display} from "@mui/system";
 import API from "../../axiosInstance";
 import { useNavigate } from "react-router-dom";
 import {withRouter} from '../withRouter';
+import Wilcoxon_signed_rank_test from "../../pages/hypothesis_testing/Wilcoxon_signed_rank_test";
 
 
 // import {useHistory} from "react-router-dom";
@@ -388,6 +389,16 @@ function WelcomePage() {
                                 Mann-Whitney U rank test >
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Wilcoxon_signed_rank_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Wilcoxon signed-rank test >
+                            </ListItemButton>
+                        </Link>
+
 
                         <p>Multiple Comparisons</p>
                         <p>calculate_SpO2 from eeg_router</p>

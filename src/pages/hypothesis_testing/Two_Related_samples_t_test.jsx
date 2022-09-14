@@ -155,10 +155,10 @@ class Two_Related_samples_t_test extends React.Component {
                                     <MenuItem value={"raise"}><em>raise</em></MenuItem>
                                     <MenuItem value={"omit"}><em>omit</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Defines how to handle when input contains nan.</FormHelperText>
+                                <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="alternative-selector-label">Variant</InputLabel>
+                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
                                 <Select
                                         labelid="alternative-selector-label"
                                         id="alternative-selector"
@@ -172,6 +172,7 @@ class Two_Related_samples_t_test extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
                             </FormControl>
+                            <hr/>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
