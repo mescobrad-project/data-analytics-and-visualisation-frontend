@@ -20,7 +20,16 @@ class Alexander_Govern_test extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
-            test_data: [],
+            test_data: {
+                mean_positive: '',
+                standard_deviation_positive: '',
+                mean_negative: '',
+                standard_deviation_negative: '',
+                'statistic, p_value': {
+                    statistic:'',
+                    p_value:''
+                }
+            },
             //Values selected currently on the form
             selected_column: "",
             selected_column2: "",
@@ -65,6 +74,7 @@ class Alexander_Govern_test extends React.Component {
                 }
         ).then(res => {
             this.setState({test_data: res.data})
+            // console.log(res.data['statistic, p_value']['statistic'])
         });
     }
 
@@ -84,6 +94,7 @@ class Alexander_Govern_test extends React.Component {
 
     render() {
         return (
+
                 <Grid container direction="row">
                     <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -165,8 +176,8 @@ class Alexander_Govern_test extends React.Component {
                         </Typography>
                         <hr/>
                         <div>
-                            <p className="result_texts">Statistic :  { this.state.test_data['statistic']}</p>
-                            <p className="result_texts">p value :    { this.state.test_data['p-value']}</p>
+                            <p className="result_texts">Statistic :  { this.state.test_data['statistic, p_value']['statistic']}</p>
+                            <p className="result_texts">p value :    { this.state.test_data['statistic, p_value']['pvalue']}</p>
                             <p className="result_texts">mean_positive :    { this.state.test_data['mean_positive']}</p>
                             <p className="result_texts">mean_negative :    { this.state.test_data['mean_negative']}</p>
                             <p className="result_texts">standard_deviation_positive :    { this.state.test_data['standard_deviation_positive']}</p>
