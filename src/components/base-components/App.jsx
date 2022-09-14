@@ -41,6 +41,7 @@ import Two_Related_samples_t_test from "../../pages/hypothesis_testing/Two_Relat
 import Mann_Whitney from "../../pages/hypothesis_testing/Mann_Whitney";
 import Wilcoxon_signed_rank_test from "../../pages/hypothesis_testing/Wilcoxon_signed_rank_test";
 import Alexander_Govern_test from "../../pages/hypothesis_testing/Alexander_Govern_test";
+import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -103,6 +104,7 @@ const App = () => {
                         <Route exact path="/Mann_Whitney" element={(<LayoutMain><Mann_Whitney/></LayoutMain>)}/>
                         <Route exact path="/Wilcoxon_signed_rank_test" element={(<LayoutMain><Wilcoxon_signed_rank_test/></LayoutMain>)}/>
                         <Route exact path="/Alexander_Govern_test" element={(<LayoutMain><Alexander_Govern_test/></LayoutMain>)}/>
+                        <Route exact path="/Kruskal_Wallis_H_test" element={(<LayoutMain><Kruskal_Wallis_H_test H-test/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>

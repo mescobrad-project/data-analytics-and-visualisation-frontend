@@ -14,6 +14,7 @@ import {display} from "@mui/system";
 import API from "../../axiosInstance";
 import { useNavigate } from "react-router-dom";
 import {withRouter} from '../withRouter';
+import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
 
 
 // import {useHistory} from "react-router-dom";
@@ -404,6 +405,15 @@ function WelcomePage() {
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Alexander Govern test >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Kruskal_Wallis_H_test"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Kruskal-Wallis H-test >
                             </ListItemButton>
                         </Link>
 
