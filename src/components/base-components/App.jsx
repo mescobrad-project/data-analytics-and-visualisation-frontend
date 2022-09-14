@@ -44,6 +44,7 @@ import Alexander_Govern_test from "../../pages/hypothesis_testing/Alexander_Gove
 import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
 import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
 import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
+import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -109,6 +110,7 @@ const App = () => {
                         <Route exact path="/Kruskal_Wallis_H_test" element={(<LayoutMain><Kruskal_Wallis_H_test/></LayoutMain>)}/>
                         <Route exact path="/One_way_ANOVA" element={(<LayoutMain><One_way_ANOVA/></LayoutMain>)}/>
                         <Route exact path="/Wilcoxon_rank_sum_statistic" element={(<LayoutMain><Wilcoxon_rank_sum_statistic/></LayoutMain>)}/>
+                        <Route exact path="/One_way_chi_square_test" element={(<LayoutMain><One_way_chi_square_test/></LayoutMain>)}/>
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
