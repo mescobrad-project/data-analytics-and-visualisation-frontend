@@ -367,6 +367,34 @@ function WelcomePage() {
                             aria-labelledby="nested-list-subheader"
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Dashboard Pages</h2>
+                                </ListSubheader>
+                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/dashboard"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Dashboard>
+                                {/*   0) Open File and see all channels*/}
+                                {/*   1)  List of annotations in our UI*/}
+                                {/*   2) New annotation */}
+                                {/*   2.1) Annotations by user*/}
+                                {/*   2) New aggregate channels */}
+                                {/*   3) Montage */}
+                            </ListItemButton>
+                        </Link>
+                        {/*   1) Find how to create and how different users act in neurodesk */}
+                        {/*   2) Show the right eeg channels  */}
+
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
                                     <h2>Pending pages</h2>
                                 </ListSubheader>
                             }></List>

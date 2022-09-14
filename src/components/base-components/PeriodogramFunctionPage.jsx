@@ -85,7 +85,11 @@ class PeriodogramFunctionPage extends React.Component {
         //Reset view of optional visualisations preview
         this.setState({periodogram_chart_show: false})
 
-
+        console.log(
+                {input_name: this.state.selected_channel, input_window: this.state.selected_window,
+                    input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,
+                    input_scaling: this.state.selected_scaling, input_axis: this.state.selected_axis}
+        )
         // Send the request
         API.get("return_periodogram",
                 {

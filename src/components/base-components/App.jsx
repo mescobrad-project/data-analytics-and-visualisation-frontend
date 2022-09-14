@@ -37,6 +37,7 @@ import AsymmetryIndicesFunctionPage from "./AsymmetryIndicesFunctionPage";
 import Kendalltau_correlation from "../../pages/hypothesis_testing/Kendalltau_correlation"
 import Welch_t_test from "../../pages/hypothesis_testing/Welch_t_test";
 import Independent_t_test from "../../pages/hypothesis_testing/Independent_t_test";
+import DashboardPage from "./DashboardPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -99,6 +100,7 @@ const App = () => {
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
