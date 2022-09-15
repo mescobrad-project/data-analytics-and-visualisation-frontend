@@ -33,6 +33,7 @@ import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiseri
 import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 import AlphaDeltaRatioFunctionPage from "./AlphaDeltaRatioFunctionPage";
+import AlphaVariabilityFunctionPage from "./AlphaVariabilityFunctionPage";
 import AsymmetryIndicesFunctionPage from "./AsymmetryIndicesFunctionPage";
 import Kendalltau_correlation from "../../pages/hypothesis_testing/Kendalltau_correlation"
 import Welch_t_test from "../../pages/hypothesis_testing/Welch_t_test";
@@ -114,6 +115,7 @@ const App = () => {
                         <Route exact path="/One_way_chi_square_test" element={(<LayoutMain><One_way_chi_square_test/></LayoutMain>)}/>
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/alpha_variability" element={(<LayoutMain><AlphaVariabilityFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
                     </Routes>
