@@ -1,25 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {
-    Button,
-    Link,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    ListSubheader,
-    Typography
-} from "@mui/material";
-import {display} from "@mui/system";
-import API from "../../axiosInstance";
-import { useNavigate } from "react-router-dom";
-import {withRouter} from '../withRouter';
-import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
-import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
-import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
-import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
-
-
+import {Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
 //
@@ -197,8 +177,17 @@ function WelcomePage() {
                                 Asymmetry Indices>
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/spindle_detection"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Spindle Detection>
+                            </ListItemButton>
+                        </Link>
                         <p>alpha_variability</p>
-                        <p>Spindles</p>
+
                         <p>Slowwaves</p>
                         <p>Multitaper</p>
                         <p>Predictions (ARIMA)</p>
@@ -447,47 +436,6 @@ function WelcomePage() {
                             </ListItemButton>
                         </Link>
 
-                        <p>Multiple Comparisons</p>
-                        <p>calculate_SpO2 from eeg_router</p>
-                    </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Dashboard Pages</h2>
-                                </ListSubheader>
-                            }>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/dashboard"
-                        >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Dashboard>
-                                {/*   0) Open File and see all channels*/}
-                                {/*   1)  List of annotations in our UI*/}
-                                {/*   2) New annotation */}
-                                {/*   2.1) Annotations by user*/}
-                                {/*   2) New aggregate channels */}
-                                {/*   3) Montage */}
-                            </ListItemButton>
-                        </Link>
-                        {/*   1) Find how to create and how different users act in neurodesk */}
-                        {/*   2) Show the right eeg channels  */}
-
-                    </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Pending pages</h2>
-                                </ListSubheader>
-                            }></List>
-                </div>
             </React.Fragment>
     );
 }
