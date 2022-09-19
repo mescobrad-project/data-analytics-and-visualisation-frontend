@@ -678,7 +678,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 File Name:
                             </Typography>
                             <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                EDF_example
+                                trial_av.edf
                             </Typography>
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 File Type:
@@ -785,7 +785,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     Notch Filter
                                 </Typography>
                                 <FormGroup>
-                                    <FormControlLabel control={<Checkbox onChange={this.handleSelectNotchSelectedChange} />} label="Enable Notche Filter" />
+                                    <FormControlLabel control={<Checkbox onChange={this.handleSelectNotchSelectedChange} />} label="Enable Notches Filter" />
                                     <FormControl sx={{m: 1, minWidth: 120}}>
                                         {/*<TextField*/}
                                         {/*        // labelId="nfft-selector-label"*/}

@@ -197,7 +197,7 @@ function WelcomePage() {
                                 Alpha Variability>
                             </ListItemButton>
                         </Link>
-                        <Link
+                      <Link
                                 component={Link}
                                 variant="h6"
                                 href="/asymmetry_indices"

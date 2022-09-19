@@ -603,7 +603,7 @@ class DashboardPage extends React.Component {
                             </Typography>
                             <Divider/>
                             <Typography>
-                                Workflow Description: "Lorem Ipsum"
+                                Workflow Description: " "
                             </Typography>
                             <Divider/>
                         </div>
@@ -620,7 +620,7 @@ class DashboardPage extends React.Component {
                             </Typography>
                             <Divider/>
                             <Typography>
-                                Step Description: "Lorem Ipsum"
+                                Step Description: " "
                             </Typography>
                             <Divider/>
                         </div>
@@ -634,7 +634,7 @@ class DashboardPage extends React.Component {
                             </Typography>
                             <Divider/>
                             <Typography>
-                                Step Description: "Lorem Ipsum"
+                                Step Description: " "
                             </Typography>
                             <Divider/>
                         </div>
@@ -654,7 +654,7 @@ class DashboardPage extends React.Component {
                             </Typography>
                             <Divider/>
                             <Typography>
-                                Step Description: "Lorem Ipsum"
+                                Step Description: " "
                             </Typography>
                             <Divider/>
                         </div>
