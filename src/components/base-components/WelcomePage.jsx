@@ -1,5 +1,25 @@
 import React, {useContext, useEffect} from 'react';
-import {Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
+import {
+    Button,
+    Link,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    ListSubheader,
+    Typography
+} from "@mui/material";
+import {display} from "@mui/system";
+import API from "../../axiosInstance";
+import { useNavigate } from "react-router-dom";
+import {withRouter} from '../withRouter';
+import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
+import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
+import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
+import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
+
+
 // import {useHistory} from "react-router-dom";
 // import {AuthContext} from "../contexts/AuthContext";
 //
@@ -25,14 +45,14 @@ async function handleSubmit(event) {
     // Send the request
     API.put("function/navigation/",
             {
-                    run_id: "1",
-                    step_id: "1",
-                    metadata: [{"function" : "auto_correlation"}],
+                run_id: "1",
+                step_id: "1",
+                metadata: [{"function" : "auto_correlation"}],
             }
     ).then(res => {
-       console.log("BACK_________________________")
-       console.log("BACK")
-       console.log(res)
+        console.log("BACK_________________________")
+        console.log("BACK")
+        console.log(res)
     });
 }
 
@@ -48,27 +68,27 @@ function WelcomePage() {
                 <h1>MES-CoBraD | Analytics Engine</h1>
                 <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
                 <div class="list-container" style={{display: 'flex'}}>
-                {/*<form onSubmit={async (event) => {*/}
-                {/*    event.preventDefault();*/}
+                    {/*<form onSubmit={async (event) => {*/}
+                    {/*    event.preventDefault();*/}
 
-                {/*    // Send the request*/}
-                {/*    API.put("function/navigation/",*/}
-                {/*            {*/}
-                {/*                run_id: "1",*/}
-                {/*                step_id: "1",*/}
-                {/*                metadata: [{"function" : "auto_correlation"}],*/}
-                {/*            }*/}
-                {/*    ).then(res => {*/}
-                {/*        console.log("BACK_________________________")*/}
-                {/*        console.log("BACK")*/}
-                {/*        console.log(res.data.url)*/}
-                {/*        navigate(res.data.url);*/}
-                {/*    });*/}
-                {/*}}>*/}
-                {/*    <Button variant="contained" color="primary" type="submit">*/}
-                {/*        Submit*/}
-                {/*    </Button>*/}
-                {/*</form>*/}
+                    {/*    // Send the request*/}
+                    {/*    API.put("function/navigation/",*/}
+                    {/*            {*/}
+                    {/*                run_id: "1",*/}
+                    {/*                step_id: "1",*/}
+                    {/*                metadata: [{"function" : "auto_correlation"}],*/}
+                    {/*            }*/}
+                    {/*    ).then(res => {*/}
+                    {/*        console.log("BACK_________________________")*/}
+                    {/*        console.log("BACK")*/}
+                    {/*        console.log(res.data.url)*/}
+                    {/*        navigate(res.data.url);*/}
+                    {/*    });*/}
+                    {/*}}>*/}
+                    {/*    <Button variant="contained" color="primary" type="submit">*/}
+                    {/*        Submit*/}
+                    {/*    </Button>*/}
+                    {/*</form>*/}
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
@@ -146,7 +166,7 @@ function WelcomePage() {
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
                                 Short Time Fourier Transform>
-                                  </ListItemButton>
+                            </ListItemButton>
                         </Link>
                         <Link
                                 component={Link}
@@ -171,6 +191,15 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
+                                href="/alpha_variability"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Alpha Variability>
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
                                 href="/asymmetry_indices"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
@@ -180,15 +209,23 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/spindle_detection"
+                                href="/slowwaves"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Spindle Detection>
+                                Slowwaves>
                             </ListItemButton>
                         </Link>
-                        <p>alpha_variability</p>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/spindles"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Spindles>
+                            </ListItemButton>
+                        </Link>
 
-                        <p>Slowwaves</p>
+                        <p>alpha_variability</p>
                         <p>Multitaper</p>
                         <p>Predictions (ARIMA)</p>
                         <p>Discrete Wavelet Transform</p>
@@ -262,14 +299,14 @@ function WelcomePage() {
                         </Link>
                     </List>
                     <List
-                        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                        subheader={
-                        <ListSubheader component="div" id="nested-list-subheader">
-                            <h2>Existing Hypothesis pages</h2>
-                        </ListSubheader>
-                    }>
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Existing Hypothesis pages</h2>
+                                </ListSubheader>
+                            }>
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -436,6 +473,47 @@ function WelcomePage() {
                             </ListItemButton>
                         </Link>
 
+                        <p>Multiple Comparisons</p>
+                        <p>calculate_SpO2 from eeg_router</p>
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Dashboard Pages</h2>
+                                </ListSubheader>
+                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/dashboard"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Dashboard>
+                                {/*   0) Open File and see all channels*/}
+                                {/*   1)  List of annotations in our UI*/}
+                                {/*   2) New annotation */}
+                                {/*   2.1) Annotations by user*/}
+                                {/*   2) New aggregate channels */}
+                                {/*   3) Montage */}
+                            </ListItemButton>
+                        </Link>
+                        {/*   1) Find how to create and how different users act in neurodesk */}
+                        {/*   2) Show the right eeg channels  */}
+
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Pending pages</h2>
+                                </ListSubheader>
+                            }></List>
+                </div>
             </React.Fragment>
     );
 }

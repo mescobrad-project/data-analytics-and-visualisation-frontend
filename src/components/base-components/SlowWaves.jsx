@@ -4,7 +4,7 @@ import API from "../../axiosInstance";
 
 // import PropTypes from 'prop-types';
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -24,7 +24,7 @@ import PointChartCustom from "../ui-components/PointChartCustom";
 import LineMultipleColorsChartCustom from "../ui-components/LineMultipleColorsChartCustom";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
-class SpindleDetection extends React.Component {
+class SlowWaves extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -37,16 +37,26 @@ class SpindleDetection extends React.Component {
 
             //Values selected currently on the form
             selected_channel: "",
-            selected_freq_sp_low: "12",
-            selected_freq_sp_high: "15",
+            selected_freq_sp_low: "0.3",
+            selected_freq_sp_high: "1.5",
             selected_freq_broad_low : "1",
             selected_freq_broad_high : "30",
             selected_duration_low : "0.5",
             selected_duration_high : "2",
+            duration_negative_low : "0.5",
+            duration_negative_high : "1.5",
+            selected_duration_positive_low : "0.1",
+            selected_duration_positive_high : "1",
+            selected_amplitude_positive_low : "10",
+            selected_amplitude_positive_high : "150",
+            selected_amplitude_negative_low : "40",
+            selected_amplitude_negative_high : "200",
+            selected_amplitude_p2p_low : "75",
+            selected_amplitude_p2p_high : "350",
             selected_min_distance : "500",
             selected_thresh_rel_pow : "0.2",
-            selected_thresh_corr : "0.65",
-            selected_thresh_rms : "1.5",
+            selected_thresh_corr : "1",
+            selected_thresh_rms : "1",
             selected_multi_only : false,
             selected_remove_outliers : false,
 
@@ -274,7 +284,7 @@ class SpindleDetection extends React.Component {
                 </Grid>
                 <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Spindle Detection
+                        Slow Waves
                     </Typography>
                     <hr/>
                     <form onSubmit={this.handleSubmit}>
@@ -301,7 +311,7 @@ class SpindleDetection extends React.Component {
                             <TextField
                                     id="freq-sp-low-selector"
                                     value= {this.state.selected_freq_sp_low}
-                                    label="Freq Sp Low"
+                                    label="Freq SW Low"
                                     onChange={this.handleSelectedFreqSpLow}
                             />
                             <FormHelperText>  </FormHelperText>
@@ -310,7 +320,7 @@ class SpindleDetection extends React.Component {
                             <TextField
                                     id="freq-sp-high-selector"
                                     value= {this.state.selected_freq_sp_high}
-                                    label="Freq Sp High"
+                                    label="Freq SW High"
                                     onChange={this.handleSelectedFreqSpHigh}
                             />
                             <FormHelperText>  </FormHelperText>
@@ -318,28 +328,9 @@ class SpindleDetection extends React.Component {
                         <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                    id="freq-broad-low-selector"
-                                    value= {this.state.selected_freq_broad_low}
-                                    label="Freq Broad Low"
-                                    onChange={this.handleSelectedFreqBroadLow}
-                            />
-                            <FormHelperText>  </FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <TextField
-                                    id="freq-broad-high-selector"
-                                    value= {this.state.selected_freq_broad_high}
-                                    label="Freq Broad High"
-                                    onChange={this.handleSelectedFreqBroadHigh}
-                            />
-                            <FormHelperText>  </FormHelperText>
-                        </FormControl>
-                        <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <TextField
                                     id="duration-low-selector"
-                                    value= {this.state.selected_duration_low}
-                                    label="Duration Low"
+                                    value= {this.state.duration_negative_low}
+                                    label="Duration Negative Low"
                                     onChange={this.handleSelectedDurationLow}
                             />
                             <FormHelperText>  </FormHelperText>
@@ -347,8 +338,8 @@ class SpindleDetection extends React.Component {
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
                                     id="duration-high-selector"
-                                    value= {this.state.selected_duration_high}
-                                    label="Duration High"
+                                    value= {this.state.duration_negative_high}
+                                    label="Duration Negative High"
                                     onChange={this.handleSelectedDurationHigh}
                             />
                             <FormHelperText>  </FormHelperText>
@@ -356,49 +347,87 @@ class SpindleDetection extends React.Component {
                         <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                    id="min-distance-selector"
-                                    value= {this.state.selected_min_distance}
-                                    label="Min Distance"
-                                    onChange={this.handleSelectedMinDistance}
+                                    id="duration-low-selector"
+                                    value= {this.state.selected_duration_positive_low}
+                                    label="Duration Positive Low"
+                                    onChange={this.handleSelectedDurationLow}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="duration-high-selector"
+                                    value= {this.state.selected_duration_positive_high}
+                                    label="Duration Positive High"
+                                    onChange={this.handleSelectedDurationHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                    id="thresh-rel-pow-selector"
-                                    value= {this.state.selected_thresh_rel_pow}
-                                    label="Threshold Rel Pow"
-                                    onChange={this.handleSelectedThreshRelPow}
+                                    id="duration-low-selector"
+                                    value= {this.state.selected_amplitude_positive_low}
+                                    label="Amplitude Positive Low"
+                                    onChange={this.handleSelectedDurationLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
-                                    id="thresh-corr-selector"
-                                    value= {this.state.selected_thresh_corr}
-                                    label="Thresh Corr"
-                                    onChange={this.handleSelectedThreshRelCorr}
-                            />
-                            <FormHelperText>  </FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <TextField
-                                    id="thresh-rms-selector"
-                                    value= {this.state.selected_thresh_rms}
-                                    label="Thresh rms"
-                                    onChange={this.handleSelectedThreshRelRms}
+                                    id="duration-high-selector"
+                                    value= {this.state.selected_amplitude_positive_high}
+                                    label="Amplitude  Positive High"
+                                    onChange={this.handleSelectedDurationHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="multi-only-label">Multi Only</InputLabel>
+                            <TextField
+                                    id="duration-low-selector"
+                                    value= {this.state.selected_amplitude_negative_low}
+                                    label="Amplitude Negative Low"
+                                    onChange={this.handleSelectedDurationLow}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="duration-high-selector"
+                                    value= {this.state.selected_amplitude_negative_high}
+                                    label="Amplitude  Negative High"
+                                    onChange={this.handleSelectedDurationHigh}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <hr/>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="duration-low-selector"
+                                    value= {this.state.selected_amplitude_p2p_low}
+                                    label="Amplitude Peak to Peak Low"
+                                    onChange={this.handleSelectedDurationLow}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="duration-high-selector"
+                                    value= {this.state.selected_amplitude_p2p_high}
+                                    label="Amplitude Peak to Peak High"
+                                    onChange={this.handleSelectedDurationHigh}
+                            />
+                            <FormHelperText>  </FormHelperText>
+                        </FormControl>
+                        <hr/>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <InputLabel id="multi-only-label">Coupling</InputLabel>
                             <Select
                                     labelId="multi-only-label"
                                     id="multi-only-selector"
                                     value= {this.state.selected_multi_only}
-                                    label="Multi Only"
+                                    label="Coupling"
                                     onChange={this.handleSelectedMultiOnly}
                             >
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
@@ -406,6 +435,35 @@ class SpindleDetection extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
+                        {/*<Divider> Coupling Settings</Divider>*/}
+                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                        {/*    <TextField*/}
+                        {/*            id="thresh-rel-pow-selector"*/}
+                        {/*            value= {this.state.selected_thresh_rel_pow}*/}
+                        {/*            label="Time"*/}
+                        {/*            onChange={this.handleSelectedThreshRelPow}*/}
+                        {/*    />*/}
+                        {/*    <FormHelperText>  </FormHelperText>*/}
+                        {/*</FormControl>*/}
+                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                        {/*    <TextField*/}
+                        {/*            id="thresh-corr-selector"*/}
+                        {/*            value= {this.state.selected_thresh_corr}*/}
+                        {/*            label="Frequency spindles"*/}
+                        {/*            onChange={this.handleSelectedThreshRelCorr}*/}
+                        {/*    />*/}
+                        {/*    <FormHelperText>  </FormHelperText>*/}
+                        {/*</FormControl>*/}
+                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                        {/*    <TextField*/}
+                        {/*            id="thresh-rms-selector"*/}
+                        {/*            value= {this.state.selected_thresh_rms}*/}
+                        {/*            label="P"*/}
+                        {/*            onChange={this.handleSelectedThreshRelRms}*/}
+                        {/*    />*/}
+                        {/*    <FormHelperText>  </FormHelperText>*/}
+                        {/*</FormControl>*/}
+                        <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="remove-outliers-selector-label">Remove Outliers</InputLabel>
                             <Select
@@ -448,4 +506,4 @@ class SpindleDetection extends React.Component {
     }
 }
 
-export default SpindleDetection;
+export default SlowWaves;

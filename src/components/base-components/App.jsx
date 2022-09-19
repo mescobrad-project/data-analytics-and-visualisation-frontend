@@ -47,6 +47,7 @@ import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
 import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 import SpindleDetection from "./SpindleDetection";
+import SlowWaves from "./SlowWaves";
 
 
 
@@ -95,7 +96,8 @@ const App = () => {
                         <Route exact path="/power_spectral_density" element={(<LayoutMain><PowerSpectralDensity/></LayoutMain>)}/>
                         <Route exact path="/freesurfer/recon" element={(<LayoutMain><FreesurferReconFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/spindle_detection" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>
+                        <Route exact path="/spindles" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>
+                        <Route exact path="/slowwaves" element={(<LayoutMain><SlowWaves/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_ReconAll_Results" element={(<LayoutMain><Freesurfer_ReconAll_ResultsPage/></LayoutMain>)}/>
