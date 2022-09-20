@@ -224,21 +224,6 @@ function WelcomePage() {
                                 Spindles>
                             </ListItemButton>
                         </Link>
-
-                        <p>alpha_variability</p>
-                        <p>Multitaper</p>
-                        <p>Predictions (ARIMA)</p>
-                        <p>Discrete Wavelet Transform</p>
-                    </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing EEG pages</h2>
-                                </ListSubheader>
-                            }>
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -254,9 +239,38 @@ function WelcomePage() {
                                 {/*   3) Montage */}
                             </ListItemButton>
                         </Link>
-                        {/*   1) Find how to create and how different users act in neurodesk */}
-                        {/*   2) Show the right eeg channels  */}
-
+                        <p>alpha_variability</p>
+                        <p>Multitaper</p>
+                        <p>Predictions (ARIMA)</p>
+                        <p>Discrete Wavelet Transform</p>
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Actigraphy</h2>
+                                </ListSubheader>
+                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/actigraphy"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Actigraphy Viewer>
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/actigraphy/general/"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Actigraphy General Viewer>
+                            </ListItemButton>
+                        </Link>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -307,6 +321,15 @@ function WelcomePage() {
                                     <h2>Existing Hypothesis pages</h2>
                                 </ListSubheader>
                             }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Level"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Level >
+                            </ListItemButton>
+                        </Link>
                         <Link
                                 component={Link}
                                 variant="h6"

@@ -1,6 +1,6 @@
 import React from 'react';
 import API from "../../axiosInstance";
-// import InnerHTML from 'dangerously-set-html-content'
+import InnerHTML from 'dangerously-set-html-content'
 
 // import PropTypes from 'prop-types';
 import {
@@ -259,6 +259,8 @@ class FindPeaksPage extends React.Component {
                 temp_array_peaks.push(temp_object)
             }
 
+            console.log("temp_array_peaks")
+            console.log(temp_array_peaks)
             this.setState({peak_chart_data: temp_array_peaks})
             this.setState({peak_chart_show: true});
         });

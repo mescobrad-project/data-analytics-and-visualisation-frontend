@@ -49,6 +49,9 @@ import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 import SpindleDetection from "./SpindleDetection";
 import SlowWaves from "./SlowWaves";
+import ActrigraphyViewer from "./ActrigraphyViewer";
+import Level from "./Level";
+import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 
 
 
@@ -124,6 +127,9 @@ const App = () => {
                         <Route exact path="/alpha_variability" element={(<LayoutMain><AlphaVariabilityFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
+                        <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
