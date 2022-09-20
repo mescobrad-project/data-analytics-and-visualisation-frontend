@@ -41,7 +41,9 @@ class PredictionsFunctionPage extends React.Component {
 
             // Values to pass to visualisations
             predictions_chart_data : [],
-            data_2: [],
+            table_1: [],
+            table_2: [],
+            table_3: [],
 
             // Visualisation Hide/Show values
             predictions_chart_show : false
@@ -120,32 +122,48 @@ class PredictionsFunctionPage extends React.Component {
 
 
         // Send the request
+
         API.get("return_predictions",
                 {
-                    params: {input_name: this.state.selected_channel, input_test_size: to_send_input_test_size,
-                             input_future_seconds: to_send_input_future_seconds, input_start_p: to_send_input_start_p,
-                             input_start_q: to_send_input_start_q, input_max_p: to_send_input_max_p,
-                             input_max_q: to_send_input_max_q, input_method: this.state.selected_method, input_criterion: this.state.selected_criterion}
+                    params: {input_name: this.state.selected_channel,
+                        input_test_size: to_send_input_test_size,
+                        input_future_seconds: to_send_input_future_seconds,
+                        input_start_p: to_send_input_start_p,
+                        input_start_q: to_send_input_start_q,
+                        input_max_p: to_send_input_max_p,
+                        input_max_q: to_send_input_max_q,
+                        input_method: this.state.selected_method,
+                        input_criterion: this.state.selected_criterion}
                 }
         ).then(res => {
             const resultJson = res.data;
             console.log(resultJson)
             console.log('Test')
             let temp_array_predictions = []
-            for ( let it =0 ; it < resultJson['power spectral density'].length; it++){
-                let temp_object = {}
-                temp_object["category"] = resultJson['frequencies'][it]
-                temp_object["yValue"] = resultJson['power spectral density'][it]
-                temp_array_predictions.push(temp_object)
-            }
-            // console.log("")
-            // console.log(temp_array)
+            // for ( let it =0 ; it < resultJson['power spectral density'].length; it++){
+            //     let temp_object = {}
+            //     temp_object["category"] = resultJson['frequencies'][it]
+            //     temp_object["yValue"] = resultJson['power spectral density'][it]
+            //     temp_array_predictions.push(temp_object)
+            // }
+            // // console.log("")
+            // // console.log(temp_array)
 
 
             this.setState({predictions_chart_data: resultJson['predictions']})
-            this.setState({data_2: resultJson['first_table']})
+            this.setState({table_1: resultJson['first_table']})
+            this.setState({table_2: resultJson['second_table']})
+            this.setState({table_3: resultJson['third_table']})
             this.setState({predictions_chart_show: true})
 
+            // let temp_array = []
+            // for ( let it =0 ; it < resultJson['predictions'].length; it++){
+            //     let temp_object = {}
+            //     temp_object["order"] = it
+            //     temp_object["value"] = resultJson.values_autocorrelation[it]
+            //     temp_array.push(temp_object)
+            // }
+            // console.log(temp_array)
 
 
         });
@@ -157,14 +175,7 @@ class PredictionsFunctionPage extends React.Component {
         // })
         // // .then(response => updateResult(response.json()) )
         // const resultJson = await response.json()
-        // // let temp_array = []
-        // // for ( let it =0 ; it < resultJson.values_autocorrelation.length; it++){
-        // //     let temp_object = {}
-        // //     temp_object["order"] = it
-        // //     temp_object["value"] = resultJson.values_autocorrelation[it]
-        // //     temp_array.push(temp_object)
-        // // }
-        // // console.log(temp_array)
+
         // this.setState({correlation_results: resultJson.values_autocorrelation})
     }
 
@@ -324,6 +335,7 @@ class PredictionsFunctionPage extends React.Component {
                                     <MenuItem value={"cg"}><em>Cg</em></MenuItem>
                                     <MenuItem value={"ncg"}><em>Ncg</em></MenuItem>
                                     <MenuItem value={"basinhopping"}><em>Basinhopping</em></MenuItem>
+                                    <MenuItem value={"powell"}><em>Powell</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>
@@ -339,7 +351,7 @@ class PredictionsFunctionPage extends React.Component {
                                     {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
                                     <MenuItem value={"aic"}><em>Aic</em></MenuItem>
                                     <MenuItem value={"bic"}><em>Bic</em></MenuItem>
-                                    <MenuItem value={"hgic"}><em>Hgic</em></MenuItem>
+                                    <MenuItem value={"hqic"}><em>Hqic</em></MenuItem>
                                     <MenuItem value={"oob"}><em>Oob</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which information criterion to use.</FormHelperText>
@@ -358,8 +370,14 @@ class PredictionsFunctionPage extends React.Component {
                             Welch Results
                         </Typography>
 
-                        <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="predictions_chart_id" chart_data={ this.state.predictions_chart_data}/>
-                            {this.state.data_2}</div>
+                        {/*<div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="predictions_chart_id" chart_data={ this.state.predictions_chart_data}/>*/}
+                        {/*    {this.state.data_2}</div>*/}
+
+                        <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_1}} />
+                        <hr style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}/>
+                        <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_2}} />
+                        <hr style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}/>
+                        <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_3}} />
                         <hr style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}/>
                     </Grid>
                 </Grid>
