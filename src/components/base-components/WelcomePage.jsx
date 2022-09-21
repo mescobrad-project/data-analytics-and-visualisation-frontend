@@ -18,6 +18,7 @@ import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis
 import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
 import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
+import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
 
 
 // import {useHistory} from "react-router-dom";
@@ -446,8 +447,15 @@ function WelcomePage() {
                                 One-way chi-square test >
                             </ListItemButton>
                         </Link>
-
-                        <p>Multiple Comparisons</p>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Multiple_comparisons"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Multiple Comparisons >
+                            </ListItemButton>
+                        </Link>
                         <p>calculate_SpO2 from eeg_router</p>
                     </List>
                     <List

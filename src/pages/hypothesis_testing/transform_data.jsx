@@ -224,11 +224,6 @@ class Transform_data extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.transformation_chart_show ? 'block' : 'none')  }} noWrap>
-                            Transformation test Results
-                        </Typography>
-                        <div style={{ display: (this.state.transformation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="transformation_chart_id" chart_data={ this.state.transformation_chart_data}/></div>
-                        <hr style={{ display: (this.state.transformation_chart_show ? 'block' : 'none') }}/>
                         <div>
                             <p className="result_texts"> Lamda parameter: {this.state.lamda_value}</p>
                             <p className="result_texts"> Minimum confidence limit: {this.state.min_confidence}</p>
@@ -242,6 +237,12 @@ class Transform_data extends React.Component {
                             {/*<p>{this.renderArrayValues(this.state.transformation_data)}</p>*/}
 
                         </div>
+                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.transformation_chart_show ? 'block' : 'none')  }} noWrap>
+                            Transformation test Results
+                        </Typography>
+                        <div style={{ display: (this.state.transformation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="transformation_chart_id" chart_data={ this.state.transformation_chart_data}/></div>
+                        <hr style={{ display: (this.state.transformation_chart_show ? 'block' : 'none') }}/>
+
                     </Grid>
                 </Grid>
         )
