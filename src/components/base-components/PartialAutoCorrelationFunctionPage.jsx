@@ -232,7 +232,7 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                             <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="method-selector-label">Missing</InputLabel>
+                            <InputLabel id="method-selector-label">Methods</InputLabel>
                             <Select
                                 labelId="method-selector-label"
                                 id="method-selector"

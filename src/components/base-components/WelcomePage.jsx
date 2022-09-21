@@ -46,14 +46,14 @@ async function handleSubmit(event) {
     // Send the request
     API.put("function/navigation/",
             {
-                    run_id: "1",
-                    step_id: "1",
-                    metadata: [{"function" : "auto_correlation"}],
+                run_id: "1",
+                step_id: "1",
+                metadata: [{"function" : "auto_correlation"}],
             }
     ).then(res => {
-       console.log("BACK_________________________")
-       console.log("BACK")
-       console.log(res)
+        console.log("BACK_________________________")
+        console.log("BACK")
+        console.log(res)
     });
 }
 
@@ -69,27 +69,27 @@ function WelcomePage() {
                 <h1>MES-CoBraD | Analytics Engine</h1>
                 <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
                 <div class="list-container" style={{display: 'flex'}}>
-                {/*<form onSubmit={async (event) => {*/}
-                {/*    event.preventDefault();*/}
+                    {/*<form onSubmit={async (event) => {*/}
+                    {/*    event.preventDefault();*/}
 
-                {/*    // Send the request*/}
-                {/*    API.put("function/navigation/",*/}
-                {/*            {*/}
-                {/*                run_id: "1",*/}
-                {/*                step_id: "1",*/}
-                {/*                metadata: [{"function" : "auto_correlation"}],*/}
-                {/*            }*/}
-                {/*    ).then(res => {*/}
-                {/*        console.log("BACK_________________________")*/}
-                {/*        console.log("BACK")*/}
-                {/*        console.log(res.data.url)*/}
-                {/*        navigate(res.data.url);*/}
-                {/*    });*/}
-                {/*}}>*/}
-                {/*    <Button variant="contained" color="primary" type="submit">*/}
-                {/*        Submit*/}
-                {/*    </Button>*/}
-                {/*</form>*/}
+                    {/*    // Send the request*/}
+                    {/*    API.put("function/navigation/",*/}
+                    {/*            {*/}
+                    {/*                run_id: "1",*/}
+                    {/*                step_id: "1",*/}
+                    {/*                metadata: [{"function" : "auto_correlation"}],*/}
+                    {/*            }*/}
+                    {/*    ).then(res => {*/}
+                    {/*        console.log("BACK_________________________")*/}
+                    {/*        console.log("BACK")*/}
+                    {/*        console.log(res.data.url)*/}
+                    {/*        navigate(res.data.url);*/}
+                    {/*    });*/}
+                    {/*}}>*/}
+                    {/*    <Button variant="contained" color="primary" type="submit">*/}
+                    {/*        Submit*/}
+                    {/*    </Button>*/}
+                    {/*</form>*/}
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
@@ -167,7 +167,7 @@ function WelcomePage() {
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
                                 Short Time Fourier Transform>
-                                  </ListItemButton>
+                            </ListItemButton>
                         </Link>
                         <Link
                                 component={Link}
@@ -192,28 +192,39 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
+                                href="/alpha_variability"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Alpha Variability>
+                            </ListItemButton>
+                        </Link>
+                      <Link
+                                component={Link}
+                                variant="h6"
                                 href="/asymmetry_indices"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Asymmetry Indices>
                             </ListItemButton>
                         </Link>
-                        <p>alpha_variability</p>
-                        <p>Spindles</p>
-                        <p>Slowwaves</p>
-                        <p>Multitaper</p>
-                        <p>Predictions (ARIMA)</p>
-                        <p>Discrete Wavelet Transform</p>
-                    </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing EEG pages</h2>
-                                </ListSubheader>
-                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/slowwaves"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Slowwaves>
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/spindles"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Spindles>
+                            </ListItemButton>
+                        </Link>
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -229,9 +240,38 @@ function WelcomePage() {
                                 {/*   3) Montage */}
                             </ListItemButton>
                         </Link>
-                        {/*   1) Find how to create and how different users act in neurodesk */}
-                        {/*   2) Show the right eeg channels  */}
-
+                        <p>alpha_variability</p>
+                        <p>Multitaper</p>
+                        <p>Predictions (ARIMA)</p>
+                        <p>Discrete Wavelet Transform</p>
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Actigraphy</h2>
+                                </ListSubheader>
+                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/actigraphy"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Actigraphy Viewer>
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/actigraphy/general/"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Actigraphy General Viewer>
+                            </ListItemButton>
+                        </Link>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -274,14 +314,23 @@ function WelcomePage() {
                         </Link>
                     </List>
                     <List
-                        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                        subheader={
-                        <ListSubheader component="div" id="nested-list-subheader">
-                            <h2>Existing Hypothesis pages</h2>
-                        </ListSubheader>
-                    }>
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Existing Hypothesis pages</h2>
+                                </ListSubheader>
+                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/Level"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Level >
+                            </ListItemButton>
+                        </Link>
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -457,6 +506,34 @@ function WelcomePage() {
                             </ListItemButton>
                         </Link>
                         <p>calculate_SpO2 from eeg_router</p>
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Dashboard Pages</h2>
+                                </ListSubheader>
+                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/dashboard"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Dashboard>
+                                {/*   0) Open File and see all channels*/}
+                                {/*   1)  List of annotations in our UI*/}
+                                {/*   2) New annotation */}
+                                {/*   2.1) Annotations by user*/}
+                                {/*   2) New aggregate channels */}
+                                {/*   3) Montage */}
+                            </ListItemButton>
+                        </Link>
+                        {/*   1) Find how to create and how different users act in neurodesk */}
+                        {/*   2) Show the right eeg channels  */}
+
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
