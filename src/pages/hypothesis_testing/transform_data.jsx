@@ -155,7 +155,7 @@ class Transform_data extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select Normality Test
+                            Select Dataset for Transformation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
