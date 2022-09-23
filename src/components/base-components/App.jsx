@@ -33,6 +33,7 @@ import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiseri
 import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 import AlphaDeltaRatioFunctionPage from "./AlphaDeltaRatioFunctionPage";
+import PredictionsFunctionPage from "./PredictionsFunctionPage";
 import AlphaVariabilityFunctionPage from "./AlphaVariabilityFunctionPage";
 import AsymmetryIndicesFunctionPage from "./AsymmetryIndicesFunctionPage";
 import Kendalltau_correlation from "../../pages/hypothesis_testing/Kendalltau_correlation"
@@ -136,6 +137,7 @@ const App = () => {
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
                         <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
+                        <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

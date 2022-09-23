@@ -192,6 +192,25 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
+                                href="/predictions"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Predictions>
+                            </ListItemButton>
+                        </Link>
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Existing EEG pages</h2>
+                                </ListSubheader>
+                            }>
+                        <Link
+                                component={Link}
+                                variant="h6"
                                 href="/alpha_variability"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
