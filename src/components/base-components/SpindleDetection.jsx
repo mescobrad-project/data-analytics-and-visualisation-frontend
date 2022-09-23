@@ -23,6 +23,8 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import LineMultipleColorsChartCustom from "../ui-components/LineMultipleColorsChartCustom";
 import InnerHTML from "dangerously-set-html-content";
+import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class SpindleDetection extends React.Component {
@@ -57,7 +59,8 @@ class SpindleDetection extends React.Component {
 
             // Visualisation Hide/Show values
             signal_chart_show : false,
-            test_chart_html: ""
+            test_chart_html: "",
+            selected_part_channel: "F8-AV"
             // peak_chart_show : false,
             // peak_chart_show : false,
             // peak_chart_show : false,
@@ -66,6 +69,7 @@ class SpindleDetection extends React.Component {
 
         //Binding functions of the class
         this.fetchChannels = this.fetchChannels.bind(this);
+        this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
@@ -84,6 +88,7 @@ class SpindleDetection extends React.Component {
         // Initialise component
         // - values of channels from the backend
         this.fetchChannels();
+        this.handleGetChannelSignal();
     }
 
     /**
@@ -94,7 +99,55 @@ class SpindleDetection extends React.Component {
             this.setState({channels: res.data.channels})
         });
     }
-    
+
+    async handleGetChannelSignal() {
+        if (this.state.selected_part_channel === "") {
+            return
+        }
+
+        API.get("return_signal",
+                {
+                    params: {
+                        input_name: this.state.selected_part_channel,
+                        // params: {input_name: this.state.selected_channel,
+                    }
+                }
+        ).then(res => {
+            const resultJson = res.data;
+            console.log(res.data)
+            console.log("ORIGINAL LENGTH")
+            console.log(resultJson.signal.length)
+            this.setState({signal_original_start_seconds: resultJson.start_date_time});
+
+            let temp_array_signal = []
+            for (let it = 0; it < resultJson.signal.length; it++) {
+                let temp_object = {}
+                let adjusted_time = ""
+                // First entry is 0 so no need to add any milliseconds
+                // Time added is as millisecond/100 so we multiply by 1000
+                if (it === 0) {
+                    adjusted_time = resultJson.start_date_time
+                } else {
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it] * 1000
+                }
+
+                let temp_date = new Date(adjusted_time)
+                temp_object["date"] = temp_date
+                temp_object["yValue"] = resultJson.signal[it]
+                //TODO
+                if(it > 12579 && it <12793){
+                    temp_object["color"] = "red"
+                }else{
+                    temp_object["color"] = "blue"
+                }
+
+                temp_array_signal.push(temp_object)
+            }
+
+            this.setState({signal_chart_data: temp_array_signal})
+            this.setState({select_signal_chart_show: true});
+        });
+    }
     /**
      * Process and send the request for auto correlation and handle the response
      */
@@ -444,7 +497,8 @@ class SpindleDetection extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1,   }} noWrap>
                         Spindle Results
                     </Typography>
-                    <InnerHTML html={this.state.test_chart_html} />
+                    {/*<InnerHTML html={this.state.test_chart_html} />*/}
+                    <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
 
                     {/*<div style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}><LineMultipleColorsChartCustom chart_id="signal_chart_id" chart_data={ this.state.signal_chart_data} highlighted_areas={this.state.signal_chart_highlighted_data}/></div>*/}
                     {/*<hr style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}/>*/}

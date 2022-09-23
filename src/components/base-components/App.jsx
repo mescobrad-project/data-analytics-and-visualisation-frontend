@@ -100,6 +100,10 @@ const App = () => {
                         <Route exact path="/power_spectral_density" element={(<LayoutMain><PowerSpectralDensity/></LayoutMain>)}/>
                         <Route exact path="/freesurfer/recon" element={(<LayoutMain><FreesurferReconFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        {/*TODO*/}
+                        <Route exact path="/mri" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg/pre" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+
                         <Route exact path="/spindles" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>
                         <Route exact path="/slowwaves" element={(<LayoutMain><SlowWaves/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
