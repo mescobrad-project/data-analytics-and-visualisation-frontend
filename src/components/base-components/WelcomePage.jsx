@@ -198,6 +198,15 @@ function WelcomePage() {
                                 Predictions>
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/artifacts"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Artifacts >
+                            </ListItemButton>
+                        </Link>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
