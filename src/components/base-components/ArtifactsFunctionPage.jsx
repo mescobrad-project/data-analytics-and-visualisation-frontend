@@ -113,10 +113,16 @@ class ArtifactsFunctionPage extends React.Component {
             notches_enabled: false,
             notches_length: "",
             selection_channel: "",
-            selection_start_time: "",
-            selection_end_time: ""
+            selection_start_time: "0",
+            selection_end_time: "0",
+            repairing_artifacts_ica: true,
+            n_components: this.state.selected_components,
+            list_exclude_ica: this.state.right,
+            ica_method: this.state.selected_repair_method
         }
 
+        console.log("SEND DATA")
+        console.log(data_to_send)
         API.post("receive_notebook_and_selection_configuration",
                 data_to_send
                 , {
@@ -141,7 +147,7 @@ class ArtifactsFunctionPage extends React.Component {
     async fetchChannels(url, config) {
         API.get("list/channels", {}).then(res => {
             this.setState({channels_cathode: res.data.channels})
-            this.setState({left: res.data.channels})
+            // this.setState({left: res.data.channels})
         });
     }
 
@@ -152,6 +158,19 @@ class ArtifactsFunctionPage extends React.Component {
      */
     handleSelectComponentsChange(event) {
         this.setState({selected_components: event.target.value})
+        let tempToAdd = [];
+        console.log("IT")
+        console.log(event.target.value)
+        for(let it=0; it<  parseInt(event.target.value); it++){
+            // console.log(it)
+            tempToAdd.push(String(it))
+        }
+        this.setState({left: tempToAdd})
+        this.setState({right: []})
+        this.setState({leftChecked: []})
+        this.setState({rightChecked: []})
+        this.setState({checked: []})
+
     }
 
     handleSelectComponentsTypeChange(event) {
@@ -433,6 +452,10 @@ class ArtifactsFunctionPage extends React.Component {
                                 </Grid>
 
                             </form>
+                            <Button onClick={this.handleSendNotebookAndSelectionConfig} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
+                                Apply Changes>
+                            </Button>
                         </Grid>
                         <Grid item xs={7} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             <Grid container direction="row">
