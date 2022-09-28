@@ -22,7 +22,7 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import LineMultipleColorsChartCustom from "../ui-components/LineMultipleColorsChartCustom";
-import InnerHTML from "dangerously-set-html-content";
+// import InnerHTML from "dangerously-set-html-content";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class SpindleDetection extends React.Component {
@@ -444,7 +444,7 @@ class SpindleDetection extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1,   }} noWrap>
                         Spindle Results
                     </Typography>
-                    <InnerHTML html={this.state.test_chart_html} />
+                    {/*<InnerHTML html={this.state.test_chart_html} />*/}
 
                     {/*<div style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}><LineMultipleColorsChartCustom chart_id="signal_chart_id" chart_data={ this.state.signal_chart_data} highlighted_areas={this.state.signal_chart_highlighted_data}/></div>*/}
                     {/*<hr style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}/>*/}
