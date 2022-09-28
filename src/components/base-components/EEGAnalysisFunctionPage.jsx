@@ -361,7 +361,11 @@ class EEGAnalysisFunctionPage extends React.Component {
             notches_length: this.state.selected_notch_length,
             selection_channel: this.state.selected_part_channel,
             selection_start_time: start_time_seconds,
-            selection_end_time: end_time_seconds
+            selection_end_time: end_time_seconds,
+            repairing_artifacts_ica: false,
+            n_components: "",
+            list_exclude_ica: [],
+            ica_method: ""
         }
         console.log("data_to_send")
         console.log(data_to_send)
