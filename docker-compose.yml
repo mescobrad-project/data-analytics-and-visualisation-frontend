@@ -3,8 +3,8 @@ version: "3.4"
 services:
   analytics-frontend:
     build:
-      context: ".."
-      dockerfile: ./docker/Dockerfile
+      context: "."
+      dockerfile: ./Dockerfile
     container_name: analytics_frontend
     image: analytics_frontend
     restart: always
