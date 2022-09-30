@@ -34,12 +34,8 @@ class Normality_Tests extends React.Component {
             alpha:"",
             //Values selected currently on the form
             selected_column: "",
-            selected_method: "Shapiro-Wilk",
-            selected_alternative: "two-sided",
-            selected_nan_policy:"propagate",
+            selected_method: "Anderson-Darling",
             selected_axis:"0",
-            alternative_show:false,
-            nan_policy_show:false,
             axis_show:false,
             histogram_chart_show: false,
             stats_show:true
@@ -50,8 +46,6 @@ class Normality_Tests extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
-        this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
-        this.handleSelectNaNpolicyChange = this.handleSelectNaNpolicyChange.bind(this);
         this.handleSelectAxisChange = this.handleSelectAxisChange.bind(this);
         // // Initialise component
         // // - values of channels from the backend
@@ -79,8 +73,7 @@ class Normality_Tests extends React.Component {
         API.get("normality_tests",
                 {
                     params: {column: this.state.selected_column, name_test: this.state.selected_method,
-                        alternative: this.state.selected_alternative,
-                        nan_policy: this.state.selected_nan_policy, axis: this.state.selected_axis}
+                        axis: this.state.selected_axis}
                 }
         ).then(res => {
             this.setState({test_data: res.data})
@@ -144,34 +137,30 @@ class Normality_Tests extends React.Component {
     handleSelectColumnChange(event){
         this.setState( {selected_column: event.target.value})
     }
-    handleSelectAlternativeChange(event){
-        this.setState( {selected_alternative: event.target.value})
-    }
+
     handleSelectMethodChange(event){
         this.setState( {selected_method: event.target.value})
-        if (event.target.value=="Kolmogorov-Smirnov"){
-            this.setState({alternative_show: true});
-            this.setState({axis_show: false});
-            this.setState({nan_policy_show: false})
-            this.setState({stats_show: true})}
-        else if (event.target.value=="D’Agostino’s K^2"){
-            this.setState({alternative_show: false});
-            this.setState({axis_show: true});
-            this.setState({nan_policy_show: true})
-            this.setState({stats_show: true})}
+        // if (event.target.value=="Kolmogorov-Smirnov"){
+        //     this.setState({alternative_show: true});
+        //     this.setState({axis_show: false});
+        //     this.setState({nan_policy_show: false})
+        //     this.setState({stats_show: true})}
+        // else if (event.target.value=="D’Agostino’s K^2"){
+        //     this.setState({alternative_show: false});
+        //     this.setState({axis_show: true});
+        //     this.setState({nan_policy_show: true})
+        //     this.setState({stats_show: true})}
         // else if (event.target.value=="Anderson-Darling"){
         //     this.setState({alternative_show: false});
         //     this.setState({axis_show: false});
         //     this.setState({nan_policy_show: false})
         //     this.setState({stats_show: false})}
-        else {this.setState({alternative_show: false});
-            this.setState({axis_show: false});
-            this.setState({nan_policy_show: false})
-            this.setState({stats_show: true})}
+        // else {this.setState({alternative_show: false});
+        //     this.setState({axis_show: false});
+        //     this.setState({nan_policy_show: false})
+        //     this.setState({stats_show: true})}
     }
-    handleSelectNaNpolicyChange(event){
-        this.setState( {selected_nan_policy: event.target.value})
-    }
+
     handleSelectAxisChange(event){
         this.setState( {selected_axis: event.target.value})
     }
@@ -182,7 +171,7 @@ class Normality_Tests extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview - Available columns
+                            Data Preview
                         </Typography>
                         <hr/>
                         <List>
@@ -224,56 +213,9 @@ class Normality_Tests extends React.Component {
                                         label="Method"
                                         onChange={this.handleSelectMethodChange}
                                 >
-                                    {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
-                                    <MenuItem value={"Shapiro-Wilk"}><em>Shapiro-Wilk</em></MenuItem>
-                                    <MenuItem value={"Kolmogorov-Smirnov"}><em>Kolmogorov-Smirnov</em></MenuItem>
-                                    {/*<MenuItem value={"Anderson-Darling"}><em>Anderson-Darling</em></MenuItem>*/}
-                                    <MenuItem value={"D’Agostino’s K^2"}><em>D’Agostino’s K^2</em></MenuItem>
+                                    <MenuItem value={"Anderson-Darling"}><em>Anderson-Darling</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}
-                                         style={{ display: (this.state.nan_policy_show ? 'block' : 'none') }} noWrap>
-                                <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
-                                <Select
-                                        labelid="nanpolicy-selector-label"
-                                        id="nanpolicy-selector"
-                                        value= {this.state.selected_nan_policy}
-                                        label="Nan_policy"
-                                        onChange={this.handleSelectNaNpolicyChange}
-                                >
-                                    <MenuItem value={"propagate"}><em>propagate</em></MenuItem>
-                                    <MenuItem value={"raise"}><em>raise</em></MenuItem>
-                                    <MenuItem value={"omit"}><em>omit</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}
-                                         style={{ display: (this.state.alternative_show ? 'block' : 'none') }} noWrap>
-                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
-                                <Select
-                                        labelid="alternative-selector-label"
-                                        id="alternative-selector"
-                                        value= {this.state.selected_alternative}
-                                        label="Alternative parameter"
-                                        onChange={this.handleSelectAlternativeChange}
-                                >
-                                    <MenuItem value={"two-sided"}><em>two-sided</em></MenuItem>
-                                    <MenuItem value={"less"}><em>less</em></MenuItem>
-                                    <MenuItem value={"greater"}><em>greater</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}
-                                         style={{ display: (this.state.axis_show ? 'block' : 'none') }} noWrap>
-                                <TextField
-                                        labelid="axis-selector-label"
-                                        id="axis-selector"
-                                        value= {this.state.selected_axis}
-                                        label="axis parameter"
-                                        onChange={this.handleSelectAxisChange}
-                                />
-                                <FormHelperText>Axis along which to compute test.</FormHelperText>
                             </FormControl>
                             <hr/>
                             <Button variant="contained" color="primary" type="submit">
@@ -286,19 +228,22 @@ class Normality_Tests extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Normality test Results
-                        </Typography>
                         <div>
-                            <p className="result_texts" style={{ display: (this.state.stats_show ? 'block' : 'none') }} noWrap>
+                            <p className="result_texts">
                                 Test - Statistic :  { this.state.test_data.statistic}<br/>
-                                p-value : {this.state.test_data.p_value}<br/>
-                                Compared to significance level :    {this.state.alpha}<br/>
-                                <p style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>Description :    {this.state.test_data.Description}</p>
                             </p>
+                            <Typography className="result_texts" variant="h9" sx={{ flexGrow: 1}} noWrap>
+                                Significance level : Critical_values
+                            </Typography>
+                            <List>
+                                {this.state.test_data.Description.map((channel) => (
+                                        <ListItem> <ListItemText primary={channel}/></ListItem>
+                                ))}
+                            </List>
+                            {/*<p className="result_texts" style={{ color: (this.state.histogram_chart_show=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>Description :    {this.state.test_data.Description}</p>*/}
                         </div>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }} noWrap>
-                            Histogram of Selected data
+                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.histogram_chart_show ? 'block' : 'none')  }} noWrap>
+                            Normality test Results
                         </Typography>
                         <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
                             <HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/></div>

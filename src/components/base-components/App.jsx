@@ -27,6 +27,7 @@ import {CssBaseline} from "@mui/material";
 import '@fontsource/roboto/400.css';
 import Transform_data from "../../pages/hypothesis_testing/transform_data";
 import Normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
+import Normality_Tests_And from "../../pages/hypothesis_testing/Normality_Tests_And";
 import Pearson_correlation from "../../pages/hypothesis_testing/Pearson_correlation"
 import Spearman_correlation from "../../pages/hypothesis_testing/Spearman_correlation";
 import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation"
@@ -114,11 +115,13 @@ const App = () => {
                         <Route exact path="/Freesurfer_ReconAll_Results" element={(<LayoutMain><Freesurfer_ReconAll_ResultsPage/></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_Samseg_Results" element={(<LayoutMain><Freesurfer_Samseg_ResultsPage/></LayoutMain>)}/>
                         <Route exact path="/normality_Tests" element={(<LayoutMain><Normality_Tests/></LayoutMain>)}/>
+                        <Route exact path="/normality_Tests_And" element={(<LayoutMain><Normality_Tests_And/></LayoutMain>)}/>
                         <Route exact path="/transform_data" element={(<LayoutMain><Transform_data/></LayoutMain>)}/>
                         <Route exact path="/Pearson_correlation" element={(<LayoutMain><Pearson_correlation/></LayoutMain>)}/>
                         <Route exact path="/Spearman_correlation" element={(<LayoutMain><Spearman_correlation/></LayoutMain>)}/>
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
+                        <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Welch_t_test" element={(<LayoutMain><Welch_t_test/></LayoutMain>)}/>
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
                         <Route exact path="/Two_Related_samples_t_test" element={(<LayoutMain><Two_Related_samples_t_test/></LayoutMain>)}/>

@@ -14,6 +14,7 @@ import {
     Typography
 } from "@mui/material";
 import PointChartCustom from "../../components/ui-components/PointChartCustom"
+import ClusteredBoxPlot from "../../components/ui-components/ClusteredBoxPlot";
 // import PointChartCustom from "../../components/ui-components/PointChartCustom";
 
 class Transform_data extends React.Component {
@@ -153,9 +154,9 @@ class Transform_data extends React.Component {
                             ))}
                         </List>
                     </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select Normality Test
+                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center", minWidth: 120}} noWrap>
+                            Select Dataset for Transformation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -219,7 +220,7 @@ class Transform_data extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>
@@ -240,9 +241,17 @@ class Transform_data extends React.Component {
                         <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.transformation_chart_show ? 'block' : 'none')  }} noWrap>
                             Transformation test Results
                         </Typography>
-                        <div style={{ display: (this.state.transformation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="transformation_chart_id" chart_data={ this.state.transformation_chart_data}/></div>
-                        <hr style={{ display: (this.state.transformation_chart_show ? 'block' : 'none') }}/>
-
+                        <div style={{display:"flex"}}>
+                            <div style={{flex:2, width: "fit-content"}}>
+                                <div style={{display: (this.state.transformation_chart_show ? 'block' : 'none') }}>
+                                    <PointChartCustom chart_id="transformation_chart_id" chart_data={ this.state.transformation_chart_data}/>
+                                </div>
+                                <hr style={{display: (this.state.transformation_chart_show ? 'block' : 'none') }}/>
+                            </div>
+                            {/*<div style={{flex:2, width: "fit-content"}}>*/}
+                            {/*    <ClusteredBoxPlot chart_id="boxplot_chart_id" />*/}
+                            {/*</div>*/}
+                        </div>
                     </Grid>
                 </Grid>
         )
