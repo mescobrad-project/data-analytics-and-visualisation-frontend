@@ -70,27 +70,30 @@ function WelcomePage() {
                 <h1>MES-CoBraD | Analytics Engine</h1>
                 <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
                 <div class="list-container" style={{display: 'flex'}}>
-                    {/*<form onSubmit={async (event) => {*/}
-                    {/*    event.preventDefault();*/}
+                    <form onSubmit={async (event) => {
+                        event.preventDefault();
 
-                    {/*    // Send the request*/}
-                    {/*    API.put("function/navigation/",*/}
-                    {/*            {*/}
-                    {/*                run_id: "1",*/}
-                    {/*                step_id: "1",*/}
-                    {/*                metadata: [{"function" : "auto_correlation"}],*/}
-                    {/*            }*/}
-                    {/*    ).then(res => {*/}
-                    {/*        console.log("BACK_________________________")*/}
-                    {/*        console.log("BACK")*/}
-                    {/*        console.log(res.data.url)*/}
-                    {/*        navigate(res.data.url);*/}
-                    {/*    });*/}
-                    {/*}}>*/}
-                    {/*    <Button variant="contained" color="primary" type="submit">*/}
-                    {/*        Submit*/}
-                    {/*    </Button>*/}
-                    {/*</form>*/}
+                        // Send the request
+                        API.put("function/navigation/",
+                                {
+                                    run_id: "1",
+                                    step_id: "1",
+                                    metadata: {"function" : "normality",
+                                                "files" : ["file_download_id"]
+                                    },
+                                }
+                        ).then(res => {
+                            console.log("BACK_________________________")
+                            console.log("BACK")
+                            console.log(res.data.url)
+                            window.location.replace(res.data.url)
+                            // navigate(res.data.url);
+                        });
+                    }}>
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </form>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
@@ -190,6 +193,34 @@ function WelcomePage() {
                                 Alpha Delta Ratio>
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/predictions"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Predictions>
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/artifacts"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Artifacts >
+                            </ListItemButton>
+                        </Link>
+                    </List>
+                    <List
+                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    <h2>Existing EEG pages</h2>
+                                </ListSubheader>
+                            }>
                         <Link
                                 component={Link}
                                 variant="h6"
