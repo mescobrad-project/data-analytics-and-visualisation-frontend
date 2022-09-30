@@ -495,7 +495,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
         }
 
-        let to_send_to = "http://localhost:3000/" + send_page
+        let to_send_to = "http://10.129.150.120:3005/" + send_page
         console.log("PROCEEDING")
         console.log(to_send_to)
         // console.log(this.state.eeg_function)
@@ -1090,7 +1090,7 @@ class EEGAnalysisFunctionPage extends React.Component {
 
                             <Grid container direction="row">
                                 <Grid item xs={12} sx={{height: "82vh"}}>
-                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                                    <iframe src="http://10.129.150.120:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
                                 </Grid>
                             </Grid>
 
