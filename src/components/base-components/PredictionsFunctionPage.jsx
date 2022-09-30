@@ -64,9 +64,11 @@ class PredictionsFunctionPage extends React.Component {
         this.handleSelectMaxQChange = this.handleSelectMaxQChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectCriterionChange = this.handleSelectCriterionChange.bind(this);
+        this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchChannels();
+        this.handleGetChannelSignal();
 
     }
 
@@ -178,6 +180,58 @@ class PredictionsFunctionPage extends React.Component {
 
         // this.setState({correlation_results: resultJson.values_autocorrelation})
     }
+
+    async handleGetChannelSignal() {
+        if (this.state.selected_part_channel === "") {
+            return
+        }
+
+        API.get("return_signal",
+                {
+                    params: {
+                        input_name: this.state.selected_part_channel,
+                        // params: {input_name: this.state.selected_channel,
+                    }
+                }
+        ).then(res => {
+            const resultJson = res.data;
+            console.log(res.data)
+            console.log("ORIGINAL LENGTH")
+            console.log(resultJson.signal.length)
+            this.setState({signal_original_start_seconds: resultJson.start_date_time});
+
+            let temp_array_signal = []
+            for (let it = 0; it < resultJson.signal.length; it++) {
+                let temp_object = {}
+                let adjusted_time = ""
+                // First entry is 0 so no need to add any milliseconds
+                // Time added is as millisecond/100 so we multiply by 1000
+                if (it === 0) {
+                    adjusted_time = resultJson.start_date_time
+                } else {
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it] * 1000
+                }
+
+                let temp_date = new Date(adjusted_time)
+                temp_object["date"] = temp_date
+                temp_object["yValue"] = resultJson.signal[it]
+                //TODO
+                if(it > 10452 && it <10863 || it > 16546 && it <16832){
+                    temp_object["color"] = "red"
+                }else{
+                    temp_object["color"] = "blue"
+                }
+
+                temp_array_signal.push(temp_object)
+            }
+
+            this.setState({signal_chart_data: temp_array_signal})
+            this.setState({select_signal_chart_show: true});
+        });
+    }
+
+
+
 
     /**
      * Update state when selection changes in the form
@@ -372,7 +426,7 @@ class PredictionsFunctionPage extends React.Component {
 
                         {/*<div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="predictions_chart_id" chart_data={ this.state.predictions_chart_data}/>*/}
                         {/*    {this.state.data_2}</div>*/}
-
+                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
                         <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_1}} />
                         <hr style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}/>
                         <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_2}} />
