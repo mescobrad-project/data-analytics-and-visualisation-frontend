@@ -19,6 +19,7 @@ import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
 import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
+import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 
 
 // import {useHistory} from "react-router-dom";
@@ -338,6 +339,15 @@ function WelcomePage() {
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Normality test >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/normality_Tests_And"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Normality test Anderson>
                             </ListItemButton>
                         </Link>
                         <Link

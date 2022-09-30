@@ -21,9 +21,12 @@ class Multiple_comparisons extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
-            test_data: [],
+            test_data: {
+                rejected:[],
+                corrected_p_values:[]
+            },
             //Values selected currently on the form
-            selected_column: [0.025932, 0.000002569, 0.025698712, 0.0000593328, 0.000000015464125663849667],
+            selected_column: [0.025932, 0.034590009986, 0.0000456840, 0.000456389, 0.000002569, 0.025698712, 0.0000593328, 0.000000015464125663849667],
             selected_alpha: 0.05,
             selected_method: "Bonferroni",
 
@@ -175,13 +178,30 @@ class Multiple_comparisons extends React.Component {
                         {/*    Normality test Results*/}
                         {/*</Typography>*/}
 
-                        <div>
-                            <p className="result_texts">Reject hypothesis :  {
-                                this.state.test_data['true for hypothesis that can be rejected for given alpha']}
-                            </p>
-                            <p className="result_texts">p_value :    { this.state.test_data['corrected_p_values']}</p>
-                            {/*<p className="result_texts">Description :    {this.state.test_data.Description}</p>*/}
+                        {/*<div>*/}
+                        {/*    <p className="result_texts">Reject hypothesis :  {*/}
+                        {/*        this.state.test_data['true for hypothesis that can be rejected for given alpha']}*/}
+                        {/*    </p>*/}
+                        {/*    <p className="result_texts">p_value :    { this.state.test_data['corrected_p_values']}</p>*/}
+                        {/*    /!*<p className="result_texts">Description :    {this.state.test_data.Description}</p>*!/*/}
+                        {/*</div>*/}
+                        <div style={{display:"flex"}}>
+                            {/*<p className="result_texts">Transformed data 1 : { this.state.transformed_data_1}</p>*/}
+                            <List style={{flex:2, width: "fit-content"}}>
+                                Hypothesis that can be rejected:
+                                {this.state.test_data.rejected.map((channel) => (
+                                        <ListItem> <ListItemText primary={channel}/></ListItem>
+                                ))}
+                            </List>
+                            {/*<p className="result_texts">Transformed data 2 : { this.state.transformed_data_2}</p>*/}
+                            <List style={{flex:2, width: "fit-content"}}>
+                                corrected p-values:
+                                {this.state.test_data.corrected_p_values.map((channel) => (
+                                        <ListItem> <ListItemText primary={channel}/></ListItem>
+                                ))}
+                            </List>
                         </div>
+
                     </Grid>
                 </Grid>
         )
