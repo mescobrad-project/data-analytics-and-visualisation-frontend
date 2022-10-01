@@ -79,7 +79,7 @@ function WelcomePage() {
                                     run_id: "1",
                                     step_id: "1",
                                     metadata: {"function" : "normality",
-                                                "files" : ["file_download_id"]
+                                                "files" : ["FriSep302022182125.csv"]
                                     },
                                 }
                         ).then(res => {
@@ -546,7 +546,6 @@ function WelcomePage() {
                                 Multiple Comparisons >
                             </ListItemButton>
                         </Link>
-                        <p>calculate_SpO2 from eeg_router</p>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -576,15 +575,15 @@ function WelcomePage() {
                         {/*   2) Show the right eeg channels  */}
 
                     </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Pending pages</h2>
-                                </ListSubheader>
-                            }></List>
+                    {/*<List*/}
+                    {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
+                    {/*        component="nav"*/}
+                    {/*        aria-labelledby="nested-list-subheader"*/}
+                    {/*        subheader={*/}
+                    {/*            <ListSubheader component="div" id="nested-list-subheader">*/}
+                    {/*                <h2>Pending pages</h2>*/}
+                    {/*            </ListSubheader>*/}
+                    {/*        }></List>*/}
                 </div>
             </React.Fragment>
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import API from "../../axiosInstance";
 import "./normality_tests.scss"
 import {
@@ -20,6 +20,8 @@ import PointChartCustom from "../../components/ui-components/PointChartCustom";
 class Normality_Tests extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        const file_path = params.get("file_path");
         this.state = {
             // List of columns in dataset
             column_names: [],
@@ -42,8 +44,11 @@ class Normality_Tests extends React.Component {
             nan_policy_show:false,
             axis_show:false,
             histogram_chart_show: false,
-            stats_show:true
+            stats_show:true,
+            req_file: file_path
         };
+
+        console.log("1st-"+file_path)
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
 
@@ -62,11 +67,21 @@ class Normality_Tests extends React.Component {
     /**
      * Call backend endpoint to get column names
      */
+
     async fetchColumnNames(url, config) {
-        API.get("return_columns", {}).then(res => {
+        console.log("2nd- "+ this.state.req_file)
+        API.get("return_saved_object_columns",
+                {params: {file_name: this.state.req_file}}
+        ).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
+
+    // async fetchColumnNames(url, config) {
+    //     API.get("return_columns", {}).then(res => {
+    //         this.setState({column_names: res.data.columns})
+    //     });
+    // }
 
     /**
      * Process and send the request for auto correlation and handle the response
@@ -78,7 +93,9 @@ class Normality_Tests extends React.Component {
         // Send the request
         API.get("normality_tests",
                 {
-                    params: {column: this.state.selected_column, name_test: this.state.selected_method,
+                    params: {column: this.state.selected_column,
+                        file_name: this.state.req_file,
+                        name_test: this.state.selected_method,
                         alternative: this.state.selected_alternative,
                         nan_policy: this.state.selected_nan_policy, axis: this.state.selected_axis}
                 }
@@ -181,8 +198,8 @@ class Normality_Tests extends React.Component {
         return (
                 <Grid container direction="row">
                     <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview - Available columns
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
+                            Dataset  Preview
                         </Typography>
                         <hr/>
                         <List>
@@ -192,7 +209,7 @@ class Normality_Tests extends React.Component {
                         </List>
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Select Normality Test
                         </Typography>
                         <hr/>
@@ -233,7 +250,7 @@ class Normality_Tests extends React.Component {
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}
-                                         style={{ display: (this.state.nan_policy_show ? 'block' : 'none') }} noWrap>
+                                         style={{ display: (this.state.nan_policy_show ? 'block' : 'none') }}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
                                 <Select
                                         labelid="nanpolicy-selector-label"
@@ -249,7 +266,7 @@ class Normality_Tests extends React.Component {
                                 <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}
-                                         style={{ display: (this.state.alternative_show ? 'block' : 'none') }} noWrap>
+                                         style={{ display: (this.state.alternative_show ? 'block' : 'none') }}>
                                 <InputLabel id="alternative-selector-label">Alternative</InputLabel>
                                 <Select
                                         labelid="alternative-selector-label"
@@ -265,7 +282,7 @@ class Normality_Tests extends React.Component {
                                 <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}
-                                         style={{ display: (this.state.axis_show ? 'block' : 'none') }} noWrap>
+                                         style={{ display: (this.state.axis_show ? 'block' : 'none') }}>
                                 <TextField
                                         labelid="axis-selector-label"
                                         id="axis-selector"
@@ -282,22 +299,20 @@ class Normality_Tests extends React.Component {
                         </form>
                     </Grid>
                     <Grid item xs={5}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Normality test Results
                         </Typography>
-                        <div>
-                            <p className="result_texts" style={{ display: (this.state.stats_show ? 'block' : 'none') }} noWrap>
-                                Test - Statistic :  { this.state.test_data.statistic}<br/>
-                                p-value : {this.state.test_data.p_value}<br/>
-                                Compared to significance level :    {this.state.alpha}<br/>
-                                <p style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>Description :    {this.state.test_data.Description}</p>
-                            </p>
+                        <div className="result_texts" style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
+                            Test - Statistic :  { this.state.test_data.statistic}<br/>
+                            p-value : {this.state.test_data.p_value}<br/>
+                            Compared to significance level :    {this.state.alpha}<br/>
+                            <p style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>Description :    {this.state.test_data.Description}</p>
                         </div>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }} noWrap>
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
                             Histogram of Selected data
                         </Typography>
                         <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
