@@ -100,7 +100,7 @@ function WelcomePage() {
                             aria-labelledby="nested-list-subheader"
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing pages</h2>
+                                    <h2>EEG pages</h2>
                                 </ListSubheader>
                             }>
                         <Link
@@ -211,16 +211,16 @@ function WelcomePage() {
                                 Artifacts >
                             </ListItemButton>
                         </Link>
-                    </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing EEG pages</h2>
-                                </ListSubheader>
-                            }>
+                    {/*</List>*/}
+                    {/*<List*/}
+                    {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
+                    {/*        component="nav"*/}
+                    {/*        aria-labelledby="nested-list-subheader"*/}
+                    {/*        subheader={*/}
+                    {/*            <ListSubheader component="div" id="nested-list-subheader">*/}
+                    {/*                <h2>Existing EEG pages</h2>*/}
+                    {/*            </ListSubheader>*/}
+                    {/*        }>*/}
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -272,10 +272,10 @@ function WelcomePage() {
                                 {/*   3) Montage */}
                             </ListItemButton>
                         </Link>
-                        <p>alpha_variability</p>
-                        <p>Multitaper</p>
-                        <p>Predictions (ARIMA)</p>
-                        <p>Discrete Wavelet Transform</p>
+                        {/*<p>alpha_variability</p>*/}
+                        {/*<p>Multitaper</p>*/}
+                        {/*<p>Predictions (ARIMA)</p>*/}
+                        {/*<p>Discrete Wavelet Transform</p>*/}
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -311,7 +311,7 @@ function WelcomePage() {
                             aria-labelledby="nested-list-subheader"
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing MRI pages</h2>
+                                    <h2> MRI pages</h2>
                                 </ListSubheader>
                             }>
                         <Link
@@ -351,7 +351,7 @@ function WelcomePage() {
                             aria-labelledby="nested-list-subheader"
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing Hypothesis pages</h2>
+                                    <h2> Hypothesis pages</h2>
                                 </ListSubheader>
                             }>
                         <Link
