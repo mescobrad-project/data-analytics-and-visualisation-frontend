@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import "./normality_tests.scss"
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -264,8 +264,20 @@ class Normality_Tests extends React.Component {
                                 <FormHelperText>Axis along which to compute test.</FormHelperText>
                             </FormControl>
                             <hr/>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
+                            </Button>
+
+
+                        </form>
+                        {/*<Divider/>*/}
+                        <form onSubmit={async (event) => {
+                            event.preventDefault();
+                            window.location.replace("/")
+                            // Send the request
+                        }}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                                Proceed >
                             </Button>
                         </form>
                     </Grid>
