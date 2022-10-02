@@ -20,11 +20,15 @@ class DataTransformationForANOVA extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
-            test_data: [],
+            test_data: {
+                transformed_1:[],
+                transformed_2:[]
+            },
             //Values selected currently on the form
             selected_column: "",
             selected_column2: "",
-
+            transformed_data_1:[],
+            transformed_data_2:[]
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -155,9 +159,21 @@ class DataTransformationForANOVA extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <div>
-                            <p className="result_texts">Transformed data 1 : { this.state.transformed_data_1}</p>
-                            <p className="result_texts">Transformed data 2 : { this.state.transformed_data_2}</p>
+                        <div style={{display:"flex"}}>
+                            {/*<p className="result_texts">Transformed data 1 : { this.state.transformed_data_1}</p>*/}
+                            <List style={{flex:2, width: "fit-content"}}>
+                                Transformed column 1 data:
+                                {this.state.transformed_data_1.map((channel) => (
+                                        <ListItem> <ListItemText primary={channel}/></ListItem>
+                                ))}
+                            </List>
+                            {/*<p className="result_texts">Transformed data 2 : { this.state.transformed_data_2}</p>*/}
+                            <List style={{flex:2, width: "fit-content"}}>
+                                Transformed column 2 data:
+                                {this.state.transformed_data_2.map((channel) => (
+                                        <ListItem> <ListItemText primary={channel}/></ListItem>
+                                ))}
+                            </List>
                         </div>
                     </Grid>
                 </Grid>
