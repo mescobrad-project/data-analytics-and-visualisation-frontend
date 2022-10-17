@@ -70,37 +70,37 @@ function WelcomePage() {
                 <h1>MES-CoBraD | Analytics Engine</h1>
                 <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
                 <div class="list-container" style={{display: 'flex'}}>
-                    <form onSubmit={async (event) => {
-                        event.preventDefault();
+                    {/*<form onSubmit={async (event) => {*/}
+                    {/*    event.preventDefault();*/}
 
-                        // Send the request
-                        API.put("function/navigation/",
-                                {
-                                    run_id: "1",
-                                    step_id: "1",
-                                    metadata: {"function" : "normality",
-                                                "files" : ["file_download_id"]
-                                    },
-                                }
-                        ).then(res => {
-                            console.log("BACK_________________________")
-                            console.log("BACK")
-                            console.log(res.data.url)
-                            window.location.replace(res.data.url)
-                            // navigate(res.data.url);
-                        });
-                    }}>
-                        <Button variant="contained" color="primary" type="submit">
-                            Submit
-                        </Button>
-                    </form>
+                    {/*    // Send the request*/}
+                    {/*    API.put("function/navigation/",*/}
+                    {/*            {*/}
+                    {/*                run_id: "1",*/}
+                    {/*                step_id: "1",*/}
+                    {/*                metadata: {"function" : "normality",*/}
+                    {/*                            "files" : ["file_download_id"]*/}
+                    {/*                },*/}
+                    {/*            }*/}
+                    {/*    ).then(res => {*/}
+                    {/*        console.log("BACK_________________________")*/}
+                    {/*        console.log("BACK")*/}
+                    {/*        console.log(res.data.url)*/}
+                    {/*        window.location.replace(res.data.url)*/}
+                    {/*        // navigate(res.data.url);*/}
+                    {/*    });*/}
+                    {/*}}>*/}
+                    {/*    <Button variant="contained" color="primary" type="submit">*/}
+                    {/*        Submit*/}
+                    {/*    </Button>*/}
+                    {/*</form>*/}
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
                             aria-labelledby="nested-list-subheader"
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing pages</h2>
+                                    <h2>EEG pages</h2>
                                 </ListSubheader>
                             }>
                         <Link
@@ -211,16 +211,16 @@ function WelcomePage() {
                                 Artifacts >
                             </ListItemButton>
                         </Link>
-                    </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing EEG pages</h2>
-                                </ListSubheader>
-                            }>
+                        {/*</List>*/}
+                        {/*<List*/}
+                        {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
+                        {/*        component="nav"*/}
+                        {/*        aria-labelledby="nested-list-subheader"*/}
+                        {/*        subheader={*/}
+                        {/*            <ListSubheader component="div" id="nested-list-subheader">*/}
+                        {/*                <h2>Existing EEG pages</h2>*/}
+                        {/*            </ListSubheader>*/}
+                        {/*        }>*/}
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -230,7 +230,7 @@ function WelcomePage() {
                                 Alpha Variability>
                             </ListItemButton>
                         </Link>
-                      <Link
+                        <Link
                                 component={Link}
                                 variant="h6"
                                 href="/asymmetry_indices"
@@ -272,10 +272,10 @@ function WelcomePage() {
                                 {/*   3) Montage */}
                             </ListItemButton>
                         </Link>
-                        <p>alpha_variability</p>
-                        <p>Multitaper</p>
-                        <p>Predictions (ARIMA)</p>
-                        <p>Discrete Wavelet Transform</p>
+                        {/*<p>alpha_variability</p>*/}
+                        {/*<p>Multitaper</p>*/}
+                        {/*<p>Predictions (ARIMA)</p>*/}
+                        {/*<p>Discrete Wavelet Transform</p>*/}
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -311,7 +311,7 @@ function WelcomePage() {
                             aria-labelledby="nested-list-subheader"
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing MRI pages</h2>
+                                    <h2> MRI pages</h2>
                                 </ListSubheader>
                             }>
                         <Link
@@ -351,7 +351,7 @@ function WelcomePage() {
                             aria-labelledby="nested-list-subheader"
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Existing Hypothesis pages</h2>
+                                    <h2> Hypothesis pages</h2>
                                 </ListSubheader>
                             }>
                         <Link
@@ -546,7 +546,7 @@ function WelcomePage() {
                                 Multiple Comparisons >
                             </ListItemButton>
                         </Link>
-                        <p>calculate_SpO2 from eeg_router</p>
+                        {/*<p>calculate_SpO2 from eeg_router</p>*/}
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -576,15 +576,15 @@ function WelcomePage() {
                         {/*   2) Show the right eeg channels  */}
 
                     </List>
-                    <List
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                            subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                    <h2>Pending pages</h2>
-                                </ListSubheader>
-                            }></List>
+                    {/*<List*/}
+                    {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
+                    {/*        component="nav"*/}
+                    {/*        aria-labelledby="nested-list-subheader"*/}
+                    {/*        subheader={*/}
+                    {/*            <ListSubheader component="div" id="nested-list-subheader">*/}
+                    {/*                <h2>Pending pages</h2>*/}
+                    {/*            </ListSubheader>*/}
+                    {/*        }></List>*/}
                 </div>
             </React.Fragment>
     );
