@@ -197,7 +197,7 @@ class Kendalltau_correlation extends React.Component {
                                 <FormHelperText>Defines which variant of Kendall’s tau is returned.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="alternative-selector-label">Variant</InputLabel>
+                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
                                 <Select
                                         labelid="alternative-selector-label"
                                         id="alternative-selector"

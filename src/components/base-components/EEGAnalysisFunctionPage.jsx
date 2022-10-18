@@ -361,7 +361,11 @@ class EEGAnalysisFunctionPage extends React.Component {
             notches_length: this.state.selected_notch_length,
             selection_channel: this.state.selected_part_channel,
             selection_start_time: start_time_seconds,
-            selection_end_time: end_time_seconds
+            selection_end_time: end_time_seconds,
+            repairing_artifacts_ica: false,
+            n_components: "",
+            list_exclude_ica: [],
+            ica_method: ""
         }
         console.log("data_to_send")
         console.log(data_to_send)
@@ -678,7 +682,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 File Name:
                             </Typography>
                             <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                EDF_example
+                                trial_av.edf
                             </Typography>
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 File Type:
@@ -785,7 +789,7 @@ class EEGAnalysisFunctionPage extends React.Component {
                                     Notch Filter
                                 </Typography>
                                 <FormGroup>
-                                    <FormControlLabel control={<Checkbox onChange={this.handleSelectNotchSelectedChange} />} label="Enable Notche Filter" />
+                                    <FormControlLabel control={<Checkbox onChange={this.handleSelectNotchSelectedChange} />} label="Enable Notches Filter" />
                                     <FormControl sx={{m: 1, minWidth: 120}}>
                                         {/*<TextField*/}
                                         {/*        // labelId="nfft-selector-label"*/}

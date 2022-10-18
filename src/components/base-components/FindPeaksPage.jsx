@@ -1,14 +1,15 @@
 import React from 'react';
 import API from "../../axiosInstance";
-// import InnerHTML from 'dangerously-set-html-content'
+import InnerHTML from 'dangerously-set-html-content'
 
 // import PropTypes from 'prop-types';
 import {
+    Breadcrumbs,
     Button,
     FormControl,
     FormHelperText,
     Grid,
-    InputLabel,
+    InputLabel, Link,
     List,
     ListItem,
     ListItemText,
@@ -258,6 +259,8 @@ class FindPeaksPage extends React.Component {
                 temp_array_peaks.push(temp_object)
             }
 
+            console.log("temp_array_peaks")
+            console.log(temp_array_peaks)
             this.setState({peak_chart_data: temp_array_peaks})
             this.setState({peak_chart_show: true});
         });
@@ -329,6 +332,14 @@ class FindPeaksPage extends React.Component {
         return (
             <Grid container direction="row">
                 <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
+                    {/*<Breadcrumbs separator="›" aria-label="breadcrumb">*/}
+                    {/*    <Link underline="hover" key="1" color="inherit" href="/" >*/}
+                    {/*        EEG Preprocessing*/}
+                    {/*    </Link>,*/}
+                    {/*    <Typography key="2" color="text.primary">*/}
+                    {/*        Find Peaks*/}
+                    {/*    </Typography>,*/}
+                    {/*</Breadcrumbs>*/}
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Data Preview
                     </Typography>

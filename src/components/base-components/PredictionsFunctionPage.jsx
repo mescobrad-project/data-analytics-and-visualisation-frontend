@@ -22,6 +22,7 @@ import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom"
 
+
 class PredictionsFunctionPage extends React.Component {
     constructor(props){
         super(props);
@@ -45,6 +46,7 @@ class PredictionsFunctionPage extends React.Component {
             table_1: [],
             table_2: [],
             table_3: [],
+            data_2: [],
 
             // Visualisation Hide/Show values
             predictions_chart_show : false
@@ -70,6 +72,7 @@ class PredictionsFunctionPage extends React.Component {
         // - values of channels from the backend
         this.fetchChannels();
         this.handleGetChannelSignal();
+
 
     }
 
@@ -125,7 +128,6 @@ class PredictionsFunctionPage extends React.Component {
 
 
         // Send the request
-
         API.get("return_predictions",
                 {
                     params: {input_name: this.state.selected_channel,
@@ -178,7 +180,6 @@ class PredictionsFunctionPage extends React.Component {
         // })
         // // .then(response => updateResult(response.json()) )
         // const resultJson = await response.json()
-
         // this.setState({correlation_results: resultJson.values_autocorrelation})
     }
 
@@ -230,8 +231,6 @@ class PredictionsFunctionPage extends React.Component {
             this.setState({select_signal_chart_show: true});
         });
     }
-
-
 
 
     /**
@@ -391,6 +390,7 @@ class PredictionsFunctionPage extends React.Component {
                                     <MenuItem value={"ncg"}><em>Ncg</em></MenuItem>
                                     <MenuItem value={"basinhopping"}><em>Basinhopping</em></MenuItem>
                                     <MenuItem value={"powell"}><em>Powell</em></MenuItem>
+
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>

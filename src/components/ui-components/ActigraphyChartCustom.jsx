@@ -10,7 +10,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
  * Component returns an lollipop style am5chart
  * Intented to be used to show an array of data usually in linear order but can be used in different manners
  */
-class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
+class ActigraphyChartCustom extends React.Component {
     static propTypes = {
         /** Prop "chart_id" provides the id of the chart and needs to be unique in each page */
         chart_id: PropTypes.string,
@@ -58,32 +58,46 @@ class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
 
         let series = chart.series.push(new am4charts.LineSeries());
         series.dataFields.dateX  = "date";
-        series.dataFields.valueY = "yValue";
-        series.name = "Signal";
-        series.tooltipText = "{yValue}";
+        series.dataFields.valueY = "activity";
+        series.name = "Activity";
+        series.tooltipText = "{activity}";
         series.tooltip.pointerOrientation = "vertical";
         series.tooltip.background.fillOpacity = 1;
         series.fillOpacity = 0;
         // Apply different colour to peaks show it is visible from all zoom level but due to scaling currently disabled
-        series.propertyFields.stroke = "color"
-        series.propertyFields.fill = "color"
+        // series.propertyFields.stroke = "color"
+        // series.propertyFields.fill = "color"
 
         series.minBulletDistance = 1;
 
-        // Initialise bullets
-        let bullet = series.bullets.push(new am4charts.Bullet());
-        bullet.hidden = true
-        bullet.propertyFields.hidden = "show_peak"
+        // let series2 = chart.series.push(new am4charts.LineSeries());
+        // series2.dataFields.dateX  = "date";
+        // series2.dataFields.valueY = "whitelight";
+        // series2.name = "Signal";
+        // series2.tooltipText = "{yValue}";
+        // series2.tooltip.pointerOrientation = "vertical";
+        // series2.tooltip.background.fillOpacity = 1;
+        // series2.fillOpacity = 0;
+        // Apply different colour to peaks show it is visible from all zoom level but due to scaling currently disabled
+        // series.propertyFields.stroke = "color"
+        // series.propertyFields.fill = "color"
 
-        let square = bullet.createChild(am4core.Rectangle);
-        square.width = 10;
-        square.height = 10;
-        square.fill = am4core.color("#ff0000");
-        square.horizontalCenter = "middle";
-        square.verticalCenter = "middle";
+        // series2.minBulletDistance = 1;
 
-        chart.cursor = new am4charts.XYCursor();
-        chart.cursor.lineY.opacity = 0;
+        // // Initialise bullets
+        // let bullet = series.bullets.push(new am4charts.Bullet());
+        // bullet.hidden = true
+        // bullet.propertyFields.hidden = "show_peak"
+        //
+        // let square = bullet.createChild(am4core.Rectangle);
+        // square.width = 10;
+        // square.height = 10;
+        // square.fill = am4core.color("#ff0000");
+        // square.horizontalCenter = "middle";
+        // square.verticalCenter = "middle";
+        //
+        // chart.cursor = new am4charts.XYCursor();
+        // chart.cursor.lineY.opacity = 0;
 
         let scrollbarX = new am4core.Scrollbar();
         scrollbarX.marginBottom = 10;
@@ -96,7 +110,8 @@ class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
         let data = [];
         chart.data = data;
 
-
+        chart.legend = new am4charts.Legend();
+        chart.legend.position = "top";
 
         // Bind variables used outside this initialisation to this
         this.chart = chart;
@@ -117,17 +132,16 @@ class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
         //         { name: "50%", interval: { timeUnit: "day", count: 3 } }
         // );
 
-        console.log(selector.periods)
+        // console.log(selector.periods)
         // Trigger the initial zoom when new data is loaded
         chart.events.on("datavalidated",this.zoomOnUpdate)
     }
 
-    // Function that shows only the first half of chart on load
-    zoomOnUpdate() {
+     // Function that shows only the first half of chart on load
+     zoomOnUpdate() {
         // this.dateAxis.zoomToCategories("0",String(this.props.chart_data.length/2) )
-        this.dateAxis.start = 0;
-        this.dateAxis.end = 0.5;
-
+         this.dateAxis.start = 0;
+         this.dateAxis.end = 0.5;
     }
 
     componentDidUpdate(oldProps) {
@@ -136,25 +150,8 @@ class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
         // }
 
         if(this.props.chart_data !== this.chart.data){
-
-
-            // let tempdata =  this.props.chart_data
+            console.log("TESTRTEARAWR")
             this.chart.data = this.props.chart_data
-
-            // console.log("TESTRTEARAWR")
-            // console.log(this.chart.data)
-            // console.log("TESTRTEARAWR")
-            // for (let it=0 ; this.chart.data.length ; it++){
-            //     console.log(this.chart.data[it])
-            //     if (!this.chart.data[it]){
-            //         continue
-            //     }
-            //     if(it>1020 && it<1050){
-            //         this.chart.data[it].color = this.chart.colors.getIndex(5);
-            //     }else{
-            //         this.chart.data[it].color = this.chart.colors.getIndex(0);
-            //     }
-            // }
 
             // this.categoryAxis.zoomToCategories("1", "50")
             // this.xAxis.data.setAll(this.props.chart_data)
@@ -179,4 +176,4 @@ class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
     }
 }
 
-export default ChannelSignalSpindleSlowwaveChartCustom;
+export default ActigraphyChartCustom;

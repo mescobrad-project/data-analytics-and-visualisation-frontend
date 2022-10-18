@@ -27,12 +27,14 @@ import {CssBaseline} from "@mui/material";
 import '@fontsource/roboto/400.css';
 import Transform_data from "../../pages/hypothesis_testing/transform_data";
 import Normality_Tests from "../../pages/hypothesis_testing/Normality_Tests";
+import Normality_Tests_And from "../../pages/hypothesis_testing/Normality_Tests_And";
 import Pearson_correlation from "../../pages/hypothesis_testing/Pearson_correlation"
 import Spearman_correlation from "../../pages/hypothesis_testing/Spearman_correlation";
 import PointBiserialCorrelation from "../../pages/hypothesis_testing/PointBiserialCorrelation"
 import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 import Homoscedasticity from "../../pages/hypothesis_testing/Homoscedasticity";
 import AlphaDeltaRatioFunctionPage from "./AlphaDeltaRatioFunctionPage";
+import PredictionsFunctionPage from "./PredictionsFunctionPage";
 import AlphaVariabilityFunctionPage from "./AlphaVariabilityFunctionPage";
 import AsymmetryIndicesFunctionPage from "./AsymmetryIndicesFunctionPage";
 import Kendalltau_correlation from "../../pages/hypothesis_testing/Kendalltau_correlation"
@@ -48,7 +50,13 @@ import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
 import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 import PredictionsFunctionPage from "./PredictionsFunctionPage";
-
+import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
+import SpindleDetection from "./SpindleDetection";
+import SlowWaves from "./SlowWaves";
+import ActrigraphyViewer from "./ActrigraphyViewer";
+import Level from "./Level";
+import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
+import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
 
 
 // Theme Colors Declaration
@@ -96,16 +104,24 @@ const App = () => {
                         <Route exact path="/power_spectral_density" element={(<LayoutMain><PowerSpectralDensity/></LayoutMain>)}/>
                         <Route exact path="/freesurfer/recon" element={(<LayoutMain><FreesurferReconFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        {/*TODO*/}
+                        <Route exact path="/mri" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg/pre" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+
+                        <Route exact path="/spindles" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>
+                        <Route exact path="/slowwaves" element={(<LayoutMain><SlowWaves/></LayoutMain>)}/>
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_ReconAll_Results" element={(<LayoutMain><Freesurfer_ReconAll_ResultsPage/></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_Samseg_Results" element={(<LayoutMain><Freesurfer_Samseg_ResultsPage/></LayoutMain>)}/>
                         <Route exact path="/normality_Tests" element={(<LayoutMain><Normality_Tests/></LayoutMain>)}/>
+                        <Route exact path="/normality_Tests_And" element={(<LayoutMain><Normality_Tests_And/></LayoutMain>)}/>
                         <Route exact path="/transform_data" element={(<LayoutMain><Transform_data/></LayoutMain>)}/>
                         <Route exact path="/Pearson_correlation" element={(<LayoutMain><Pearson_correlation/></LayoutMain>)}/>
                         <Route exact path="/Spearman_correlation" element={(<LayoutMain><Spearman_correlation/></LayoutMain>)}/>
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
+                        <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Welch_t_test" element={(<LayoutMain><Welch_t_test/></LayoutMain>)}/>
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
                         <Route exact path="/Two_Related_samples_t_test" element={(<LayoutMain><Two_Related_samples_t_test/></LayoutMain>)}/>
@@ -116,12 +132,17 @@ const App = () => {
                         <Route exact path="/One_way_ANOVA" element={(<LayoutMain><One_way_ANOVA/></LayoutMain>)}/>
                         <Route exact path="/Wilcoxon_rank_sum_statistic" element={(<LayoutMain><Wilcoxon_rank_sum_statistic/></LayoutMain>)}/>
                         <Route exact path="/One_way_chi_square_test" element={(<LayoutMain><One_way_chi_square_test/></LayoutMain>)}/>
+                        <Route exact path="/Multiple_comparisons" element={(<LayoutMain><Multiple_comparisons/></LayoutMain>)}/>
                         <Route exact path="/Homoscedasticity" element={(<LayoutMain><Homoscedasticity/></LayoutMain>)}/>
                         <Route exact path="/alpha_delta_ratio" element={(<LayoutMain><AlphaDeltaRatioFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/alpha_variability" element={(<LayoutMain><AlphaVariabilityFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
+                        <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
                         <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/artifacts" element={(<LayoutMain><ArtifactsFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

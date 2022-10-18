@@ -107,7 +107,7 @@ class Mann_Whitney extends React.Component {
                     </Grid>
                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select TWO RELATED samples of scores for t-test
+                            Select samples of scores for Mann-Whitney U rank test
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>

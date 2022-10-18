@@ -272,7 +272,7 @@ class PowerSpectralDensity extends React.Component {
                             <TextField
                                     id="fmax-selector"
                                     value= {this.state.selected_fmax}
-                                    label="FMin"
+                                    label="FMax"
                                     onChange={this.handleSelectFMaxChange}
                             />
                             <FormHelperText> The upper  frequency of interest (Leave empty for infinity) </FormHelperText>
