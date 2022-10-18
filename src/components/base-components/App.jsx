@@ -49,6 +49,7 @@ import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis
 import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
 import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
+import PredictionsFunctionPage from "./PredictionsFunctionPage";
 import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
 import SpindleDetection from "./SpindleDetection";
 import SlowWaves from "./SlowWaves";
@@ -56,7 +57,6 @@ import ActrigraphyViewer from "./ActrigraphyViewer";
 import Level from "./Level";
 import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
-
 
 
 // Theme Colors Declaration
