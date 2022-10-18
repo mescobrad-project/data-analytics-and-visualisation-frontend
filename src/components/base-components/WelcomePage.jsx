@@ -140,7 +140,7 @@ function WelcomePage() {
                                 href="/eeg?eeg_function=welch"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Welch>
+                                Power Spectral Density - Welch>
                             </ListItemButton>
                         </Link>
                         <Link
@@ -160,7 +160,7 @@ function WelcomePage() {
                                 href="/eeg?eeg_function=periodogram"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Periodogram>
+                                Power Spectral Density - Periodogram>
                             </ListItemButton>
                         </Link>
                         <Link
@@ -180,7 +180,7 @@ function WelcomePage() {
                                 href="/eeg?eeg_function=power_spectral_density"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Power Spectral Density>
+                                Power Spectral Density - Multitaper>
                             </ListItemButton>
                         </Link>
                         <Link
@@ -272,9 +272,6 @@ function WelcomePage() {
                                 {/*   3) Montage */}
                             </ListItemButton>
                         </Link>
-                        <p>alpha_variability</p>
-                        <p>Multitaper</p>
-                        <p>Predictions (ARIMA)</p>
                         <p>Discrete Wavelet Transform</p>
                     </List>
                     <List
