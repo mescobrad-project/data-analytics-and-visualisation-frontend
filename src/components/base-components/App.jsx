@@ -49,7 +49,7 @@ import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis
 import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
 import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
-import PredictionsFunctionPage from "./PredictionsFunctionPage";
+// import PredictionsFunctionPage from "./PredictionsFunctionPage";
 import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
 import SpindleDetection from "./SpindleDetection";
 import SlowWaves from "./SlowWaves";
@@ -57,6 +57,7 @@ import ActrigraphyViewer from "./ActrigraphyViewer";
 import Level from "./Level";
 import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
+import EEGViewer from "./EEGViewer";
 
 
 // Theme Colors Declaration
@@ -103,7 +104,8 @@ const App = () => {
                         <Route exact path="/periodogram" element={(<LayoutMain><PeriodogramFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/power_spectral_density" element={(<LayoutMain><PowerSpectralDensity/></LayoutMain>)}/>
                         <Route exact path="/freesurfer/recon" element={(<LayoutMain><FreesurferReconFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg/old" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg" element={(<LayoutMain><EEGViewer/></LayoutMain>)}/>
                         {/*TODO*/}
                         <Route exact path="/mri" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/eeg/pre" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
