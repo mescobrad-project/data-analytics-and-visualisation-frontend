@@ -38,7 +38,6 @@ import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
-import { ReactSVG } from 'react-svg'
 const style = {
     position: 'absolute',
     top: '50%',
