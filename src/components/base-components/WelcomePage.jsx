@@ -106,8 +106,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/auto_correlation"
-                                href="/eeg?eeg_function=auto_correlation"
+                                href="/auto_correlation"
+                                // href="/eeg?eeg_function=auto_correlation"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Auto Correlation >
@@ -116,8 +116,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/partial_auto_correlation"
-                                href="/eeg?eeg_function=partial_auto_correlation"
+                                href="/partial_auto_correlation"
+                                // href="/eeg?eeg_function=partial_auto_correlation"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Partial Auto Correlation >
@@ -126,8 +126,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/filters"
-                                href="/eeg?eeg_function=filters"
+                                href="/filters"
+                                // href="/eeg?eeg_function=filters"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Filters>
@@ -136,8 +136,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/welch"
-                                href="/eeg?eeg_function=welch"
+                                href="/welch"
+                                // href="/eeg?eeg_function=welch"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Welch>
@@ -146,8 +146,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/find_peaks"
-                                href="/eeg?eeg_function=find_peaks"
+                                href="/find_peaks"
+                                // href="/eeg?eeg_function=find_peaks"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Find Peaks>
@@ -156,8 +156,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/periodogram"
-                                href="/eeg?eeg_function=periodogram"
+                                href="/periodogram"
+                                // href="/eeg?eeg_function=periodogram"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Periodogram>
@@ -166,8 +166,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/stft"
-                                href="/eeg?eeg_function=stft"
+                                href="/stft"
+                                // href="/eeg?eeg_function=stft"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
                                 Short Time Fourier Transform>
@@ -176,8 +176,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/power_spectral_density"
-                                href="/eeg?eeg_function=power_spectral_density"
+                                href="/power_spectral_density"
+                                // href="/eeg?eeg_function=power_spectral_density"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Power Spectral Density>
@@ -186,8 +186,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/alpha_delta_ratio"
-                                href="/eeg?eeg_function=alpha_delta_ratio"
+                                href="/alpha_delta_ratio"
+                                // href="/eeg?eeg_function=alpha_delta_ratio"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Alpha Delta Ratio>

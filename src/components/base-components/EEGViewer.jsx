@@ -25,58 +25,58 @@ const style = {
 const itemData = [
     {
         img: 'http://localhost:8000/static/1.png',
-        title: 'Breakfast',
+        title: '1',
     },
     {
         img: 'http://localhost:8000/static/1.png',
-        title: 'Burger',
-    },
-    {
-        img: 'http://localhost:8000/static/1.png',
-
-        title: 'Camera',
+        title: '2',
     },
     {
         img: 'http://localhost:8000/static/1.png',
 
-        title: 'Coffee',
+        title: '3',
     },
     {
         img: 'http://localhost:8000/static/1.png',
 
-        title: 'Hats',
+        title: '4',
     },
     {
         img: 'http://localhost:8000/static/1.png',
 
-        title: 'Honey',
+        title: '5',
     },
     {
         img: 'http://localhost:8000/static/1.png',
 
-        title: 'Basketball',
+        title: '6',
     },
     {
         img: 'http://localhost:8000/static/1.png',
 
-        title: 'Fern',
+        title: '7',
     },
     {
         img: 'http://localhost:8000/static/1.png',
 
-        title: 'Mushrooms',
+        title: '8',
     },
     {
         img: 'http://localhost:8000/static/1.png',
-        title: 'Tomato basil',
+
+        title: '9',
     },
     {
         img: 'http://localhost:8000/static/1.png',
-        title: 'Sea star',
+        title: '10',
     },
     {
         img: 'http://localhost:8000/static/1.png',
-        title: 'Bike',
+        title: '11',
+    },
+    {
+        img: 'http://localhost:8000/static/1.png',
+        title: '12',
     },
 ];
 
