@@ -49,7 +49,8 @@ class PredictionsFunctionPage extends React.Component {
             data_2: [],
 
             // Visualisation Hide/Show values
-            predictions_chart_show : false
+            predictions_chart_show : false,
+            selected_part_channel: "F8-AV"
 
 
         };
@@ -128,6 +129,7 @@ class PredictionsFunctionPage extends React.Component {
 
 
         // Send the request
+
         API.get("return_predictions",
                 {
                     params: {input_name: this.state.selected_channel,
@@ -180,6 +182,7 @@ class PredictionsFunctionPage extends React.Component {
         // })
         // // .then(response => updateResult(response.json()) )
         // const resultJson = await response.json()
+
         // this.setState({correlation_results: resultJson.values_autocorrelation})
     }
 
@@ -231,6 +234,58 @@ class PredictionsFunctionPage extends React.Component {
             this.setState({select_signal_chart_show: true});
         });
     }
+
+
+    async handleGetChannelSignal() {
+        if (this.state.selected_part_channel === "") {
+            return
+        }
+
+        API.get("return_signal",
+                {
+                    params: {
+                        input_name: this.state.selected_part_channel,
+                        // params: {input_name: this.state.selected_channel,
+                    }
+                }
+        ).then(res => {
+            const resultJson = res.data;
+            console.log(res.data)
+            console.log("ORIGINAL LENGTH")
+            console.log(resultJson.signal.length)
+            this.setState({signal_original_start_seconds: resultJson.start_date_time});
+
+            let temp_array_signal = []
+            for (let it = 0; it < resultJson.signal.length; it++) {
+                let temp_object = {}
+                let adjusted_time = ""
+                // First entry is 0 so no need to add any milliseconds
+                // Time added is as millisecond/100 so we multiply by 1000
+                if (it === 0) {
+                    adjusted_time = resultJson.start_date_time
+                } else {
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it] * 1000
+                }
+
+                let temp_date = new Date(adjusted_time)
+                temp_object["date"] = temp_date
+                temp_object["yValue"] = resultJson.signal[it]
+                //TODO
+                if(it > 10000){
+                    temp_object["color"] = "red"
+                }else{
+                    temp_object["color"] = "blue"
+                }
+
+                temp_array_signal.push(temp_object)
+            }
+
+            this.setState({signal_chart_data: temp_array_signal})
+            this.setState({select_signal_chart_show: true});
+        });
+    }
+
+
 
 
     /**
@@ -391,6 +446,7 @@ class PredictionsFunctionPage extends React.Component {
                                     <MenuItem value={"basinhopping"}><em>Basinhopping</em></MenuItem>
                                     <MenuItem value={"powell"}><em>Powell</em></MenuItem>
 
+                                    <MenuItem value={"powell"}><em>Powell</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>
