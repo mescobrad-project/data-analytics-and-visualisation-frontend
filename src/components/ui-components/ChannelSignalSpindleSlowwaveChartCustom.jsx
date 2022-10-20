@@ -122,11 +122,12 @@ class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
         chart.events.on("datavalidated",this.zoomOnUpdate)
     }
 
-     // Function that shows only the first half of chart on load
-     zoomOnUpdate() {
+    // Function that shows only the first half of chart on load
+    zoomOnUpdate() {
         // this.dateAxis.zoomToCategories("0",String(this.props.chart_data.length/2) )
-         this.dateAxis.start = 0;
-         this.dateAxis.end = 0.5;
+        this.dateAxis.start = 0;
+        this.dateAxis.end = 0.5;
+
     }
 
     componentDidUpdate(oldProps) {

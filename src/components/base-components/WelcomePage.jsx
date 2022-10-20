@@ -272,6 +272,15 @@ function WelcomePage() {
                                 {/*   3) Montage */}
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/predictions"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Predictions>
+                            </ListItemButton>
+                        </Link>
                         {/*<p>alpha_variability</p>*/}
                         {/*<p>Multitaper</p>*/}
                         {/*<p>Predictions (ARIMA)</p>*/}
