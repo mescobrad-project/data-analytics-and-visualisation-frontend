@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -10,7 +10,7 @@ import {
     List,
     ListItem,
     ListItemText,
-    MenuItem,
+    MenuItem, Modal,
     Select, TextField, Typography
 } from "@mui/material";
 
@@ -20,6 +20,23 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import EEGSelector from "./EEGSelector";
+import {Box} from "@mui/system";
+import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: "95%",
+    height: "95%",
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 class AutoCorrelationFunctionPage extends React.Component {
     constructor(props) {
@@ -67,6 +84,8 @@ class AutoCorrelationFunctionPage extends React.Component {
         this.handleSelectMissingChange = this.handleSelectMissingChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectNlagsChange = this.handleSelectNlagsChange.bind(this);
+        this.handleModalOpen = this.handleModalOpen.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchChannels();
@@ -237,6 +256,15 @@ class AutoCorrelationFunctionPage extends React.Component {
         this.setState( {selected_nlags: event.target.value})
     }
 
+    handleModalOpen(){
+        this.setState({open_modal: true})
+        this.handleGetChannelSignal()
+    }
+
+    handleModalClose(){
+        this.setState({open_modal: false})
+    }
+
     render() {
         return (
             <Grid container direction="row">
@@ -265,7 +293,24 @@ class AutoCorrelationFunctionPage extends React.Component {
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         AutoCorrelation Parameterisation
                     </Typography>
-                    <hr/>
+                    <Divider/>
+                    <EEGSelectModal/>
+                    {/*<Button variant="contained" color="primary" sx={{marginLeft: "25%"}} disabled={(this.state.selected_part_channel === "" ? true : false)} onClick={this.handleModalOpen}>Open modal</Button>*/}
+                    {/*<Modal*/}
+                    {/*        open={this.state.open_modal}*/}
+                    {/*        onClose={this.handleModalClose}*/}
+                    {/*        aria-labelledby="modal-modal-title"*/}
+                    {/*        aria-describedby="modal-modal-description"*/}
+                    {/*        // disableEnforceFocus={true}*/}
+                    {/*>*/}
+                    {/*    <Box sx={style}>*/}
+                    {/*        <Typography id="modal-modal-title" variant="h6" component="h2">*/}
+                    {/*            Select channels and time range | Print to EDF and Save*/}
+                    {/*        </Typography>*/}
+                    {/*        <EEGSelector/>*/}
+                    {/*    </Box>*/}
+                    {/*</Modal>*/}
+                    <Divider/>
                     <form onSubmit={this.handleSubmit}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
@@ -423,6 +468,9 @@ class AutoCorrelationFunctionPage extends React.Component {
                     <hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>
 
                 </Grid>
+                {/*<NewWindow>*/}
+                {/*    <EEGSelector/>*/}
+                {/*</NewWindow>*/}
             </Grid>
         )
     }
