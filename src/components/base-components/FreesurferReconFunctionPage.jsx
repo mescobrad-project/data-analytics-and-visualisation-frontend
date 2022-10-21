@@ -118,7 +118,7 @@ class FreesurferReconFunctionPage extends React.Component {
                 this.setState({
                     returned_status: "Process has commenced: \n" +
                             "Press  the \" Get Status \" button to get its logs and check its progress \n" +
-                            "When application is finished press on the \" Process Finished \" button to finalise the results "
+                            "When application is finished press on the \" Check Progress \" button to finalise the results "
                 })
             }
 
@@ -137,7 +137,7 @@ class FreesurferReconFunctionPage extends React.Component {
         this.setState({
             returned_status: "Process's status can be queried: \n" +
                     "Press  the \" Get Status \" button to get its logs and check its progress \n" +
-                    "When application is finished press on the \" Process Finished \" button to finalise the results "
+                    "When application is finished press on the \" Check Progress \" button to finalise the results "
         })
 
     }
@@ -237,7 +237,7 @@ class FreesurferReconFunctionPage extends React.Component {
     render() {
         return (
                 <Grid container direction="column">
-                    <Grid container direction="row">
+                    <Grid container direction="row" >
                         <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Data Preview
@@ -266,86 +266,127 @@ class FreesurferReconFunctionPage extends React.Component {
                             {/*    ))}*/}
                             {/*</List>*/}
                         </Grid>
-                        <Grid item xs={5} sx={{borderRight: "1px solid grey"}}>
+                        <Grid item xs={5} sx={{borderRight: "1px solid grey", align: "center"}}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Freesurfer recon all
+                                Freesurfer Recon-All
                             </Typography>
                             <hr/>
                             <div style={{display: (this.state.selected_page_function !== "Old" ? 'block' : 'none')}}>
-                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                    Create New Process
-                                </Typography>
+
                                 <form onSubmit={this.handleSubmit}>
-                                    <FormControl sx={{m: 1, minWidth: 120}}>
-                                        <TextField
-                                                id="test-name-selector"
-                                                value={this.state.selected_test_name}
-                                                label="Test Name Automatically Generated?"
-                                                onChange={this.handleSelectTestNameChange}
-                                                disabled={true}
-                                        />
-                                        <FormHelperText>The automatically generated? test name</FormHelperText>
-                                    </FormControl>
-                                    <FormControl sx={{m: 1, minWidth: 120}}>
-                                        <InputLabel id="slice-selector-label">Slice</InputLabel>
-                                        <Select
-                                                labelId="slice-selector-label"
-                                                id="slice-selector"
-                                                value={this.state.selected_slice}
-                                                label="Slice"
-                                                onChange={this.handleSelectSliceChange}
-                                        >
-                                            {this.state.slices.map((slice) => (
-                                                    <MenuItem value={slice}>{slice}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        <FormHelperText>Select slice to recon all</FormHelperText>
-                                    </FormControl>
+
 
                                     <Button variant="contained" color="primary" type="submit"
                                             sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
                                     >
-                                        Submit
+                                        Start Process
                                     </Button>
                                 </form>
                                 <hr/>
                             </div>
-                            <div style={{display: (this.state.selected_page_function !== "New" ? 'block' : 'none')}}>
-                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                    Check Old Process Status
-                                </Typography>
-                                <form onSubmit={this.handleSubmitCheck}>
-                                    <FormControl sx={{m: 1, minWidth: 120}}>
-                                        <TextField
-                                                id="test-name-selector"
-                                                value={this.state.selected_test_name_check}
-                                                label="Process Name to check"
-                                                onChange={this.handleSelectTestNameCheckChange}
-                                        />
-                                        <FormHelperText>The provided id of the process previously saved by the user</FormHelperText>
-                                    </FormControl>
-                                    <Button variant="contained" color="primary" type="submit"
-                                            sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
-                                    >
-                                        Submit
-                                    </Button>
-                                </form>
-                                <hr/>
-                            </div>
-                                <Typography variant="body2" sx={{flexGrow: 1, textAlign: "left"}}>
-                                    Process Information:
+                            {/*<div style={{display: (this.state.selected_page_function !== "New" ? 'block' : 'none')}}>*/}
+                            {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*        Check Old Process Status*/}
+                            {/*    </Typography>*/}
+                            {/*    <form onSubmit={this.handleSubmitCheck}>*/}
+                            {/*        <FormControl sx={{m: 1, minWidth: 120}}>*/}
+                            {/*            <TextField*/}
+                            {/*                    id="test-name-selector"*/}
+                            {/*                    value={this.state.selected_test_name_check}*/}
+                            {/*                    label="Process Name to check"*/}
+                            {/*                    onChange={this.handleSelectTestNameCheckChange}*/}
+                            {/*            />*/}
+                            {/*            <FormHelperText>The provided id of the process previously saved by the user</FormHelperText>*/}
+                            {/*        </FormControl>*/}
+                            {/*        <Button variant="contained" color="primary" type="submit"*/}
+                            {/*                sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}*/}
+                            {/*        >*/}
+                            {/*            Submit*/}
+                            {/*        </Button>*/}
+                            {/*    </form>*/}
+                            {/*    <hr/>*/}
+                            {/*</div>*/}
+                            {/*    <Typography variant="body2" sx={{flexGrow: 1, textAlign: "left"}}>*/}
+                            {/*        Process Information:*/}
 
-                                    Press  the "Get Status" button to get its logs and check its progress
-                                    When application is finished press on the "Process Finished" button to finalise the results
+                            {/*        Press  the "Get Status" button to get its logs and check its progress*/}
+                            {/*        When application is finished press on the "Process Finished" button to finalise the results*/}
 
-                                    The output will be sent to the datalake regardless of the output. If fore some reason
-                                    you believe the process has failed either no new logs for a significant amount of time
-                                    or logs have explicitly stated failure contact the administrators and send the logs
-                                </Typography>
+                            {/*        The output will be sent to the datalake regardless of the output. If for some reason*/}
+                            {/*        you believe the process has failed either no new logs for a significant amount of time*/}
+                            {/*        or logs have explicitly stated failure contact the administrators and send the logs*/}
+                            {/*    </Typography>*/}
                         </Grid>
                         <Grid item xs={5}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Output Status
+                                Freesurfer Samseg
+                            </Typography>
+                            <hr/>
+                            <div style={{display: (this.state.selected_page_function !== "Old" ? 'block' : 'none')}}>
+                                {/*<Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                                {/*    Create New Process*/}
+                                {/*</Typography>*/}
+                                <form onSubmit={this.handleSubmit}>
+
+
+                                    <Button variant="contained" color="primary" type="submit"
+                                            sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
+                                    >
+                                        Start Process
+                                    </Button>
+                                </form>
+                                <hr/>
+                            </div>
+                        </Grid>
+                        <Grid item xs={2} sx={{borderRight: "1px solid grey", align: "center"}}>
+                        </Grid>
+                        <Grid item xs={5} sx={{borderRight: "1px solid grey", align: "center"}}>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Recon-All Output Status
+                            </Typography>
+                            <hr/>
+                            <form onSubmit={this.handleProcessUpdate}>
+                                <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}
+                                        disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }>
+                                    Check progress
+                                </Button>
+                                <Button onClick={this.sendToBottom} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    Scroll down to latest log >
+                                </Button>
+                            </form>
+
+                            <br/>
+                            <TextareaAutosize
+                                    aria-label="Status Log"
+                                    placeholder="Status Log of recon function"
+                                    value={this.state.returned_status}
+                                    style={{
+                                        width: "90%",
+                                        backgroundColor: "black",
+                                        color: "white",
+                                        padding: "10px",
+                                        margin: "8px"
+                                    }}
+                            />
+                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
+                                Continue >
+                            </Button>
+                            <Button onClick={this.handleProcessFinished} variant="contained" color="primary"
+                                    disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }
+                                    sx={{margin: "8px"}}>
+                                Process Finished
+                            </Button>
+
+                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
+                                Back to Top >
+                            </Button>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Samseg Output Status
                             </Typography>
                             <hr/>
                             <form onSubmit={this.handleProcessUpdate}>
@@ -379,6 +420,10 @@ class FreesurferReconFunctionPage extends React.Component {
                             </Button>
                             <Button onClick={this.sendToTop} variant="contained" color="secondary"
                                     sx={{margin: "8px", float: "right"}}>
+                                Continue >
+                            </Button>
+                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
                                 Back to Top >
                             </Button>
                         </Grid>
@@ -398,8 +443,7 @@ class FreesurferReconFunctionPage extends React.Component {
                     {this.state.show_neurodesk ?
                     <Grid container direction="row">
                         <Grid item xs={12} sx={{height: "90vh"}}>
-                            {/*<iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "95%", height: "100%" , marginLeft: "2.5%"}}></iframe>*/}
-                            <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+                            <ImageList sx={{ width: 500, height: 200 }} cols={3} rowHeight={164}>
                                 {this.state.itemData.map((item) => (
                                         <ImageListItem key={item.img}>
                                             <img
@@ -411,6 +455,8 @@ class FreesurferReconFunctionPage extends React.Component {
                                         </ImageListItem>
                                 ))}
                             </ImageList>
+                            <iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "95%", height: "100%" , marginLeft: "2.5%"}}></iframe>
+
                         </Grid>
                     </Grid> : "a"
                     }

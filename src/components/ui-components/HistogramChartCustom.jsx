@@ -84,6 +84,7 @@ class HistogramChartCustom extends React.Component {
             valueYField: "yValue",
             categoryXField: "category",
             adjustBulletPosition: false,
+            lineThickness: 20,
             tooltip: am5.Tooltip.new(root, {
                 labelText: "{valueY}"
             })

@@ -1,0 +1,247 @@
+import React from 'react';
+import API from "../../axiosInstance";
+import {
+    Button,
+    FormControl,
+    FormHelperText,
+    Grid,
+    InputLabel,
+    List,
+    ListItem,
+    ListItemText,
+    MenuItem,
+    Select, TextField, Typography
+} from "@mui/material";
+
+import LineChart from "../ui-components/LineChart";
+
+class EnvelopeTrendAnalysis extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            // List of channels sent by the backend
+            channels: [],
+
+            // Results of the auto correlation stored in an array
+            // Might need to convert to object
+            envelope_results: [],
+
+            //Values selected currently on the form
+            selected_channel: "",
+            //input_name: str,
+            selected_window_size: 20,
+            selected_percent: 0.1,
+            selected_input_method: 'Simple',
+
+            // Values to pass to visualisations
+            envelope_chart_data : [],
+
+            // Visualisation Hide/Show values
+            envelope_chart_show : false,
+        };
+
+        //Binding functions of the class
+        this.fetchChannels = this.fetchChannels.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
+        this.handleSelectWindowChange = this.handleSelectWindowChange.bind(this);
+        this.handleSelectPercentChange = this.handleSelectPercentChange.bind(this);
+        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
+        // Initialise component
+        // - values of channels from the backend
+        this.fetchChannels();
+
+    }
+
+    /**
+     * Call backend endpoint to get channels of eeg
+     */
+    async fetchChannels(url, config) {
+        API.get("list/channels", {}).then(res => {
+            this.setState({channels: res.data.channels})
+        });
+    }
+
+    /**
+     * Process and send the request for auto correlation and handle the response
+     */
+    async handleSubmit(event) {
+        event.preventDefault();
+        // Convert alpha and nlags from string to int and float
+        let to_send_window_size = null;
+        let to_send_input_percent = null;
+
+        if (!!this.state.selected_percent){
+            to_send_input_percent = parseFloat(this.state.selected_percent)
+        }
+
+        if (!!this.state.selected_window_size){
+            to_send_window_size = parseInt(this.state.selected_window_size)
+        }
+
+        // Send the request
+        API.get("envelope_trend",
+            {
+                params: {input_name: this.state.selected_channel, window_size: this.state.selected_window_size,
+                    percent: this.state.selected_percent, input_method: this.state.selected_input_method}
+            }
+        ).then(res => {
+            const resultJson = res.data;
+
+            // Show only relevant visualisations and load their data
+            // Correlation chart always has results so should always be enabled
+            this.setState({envelope_results: resultJson})
+
+            let temp_array_correlation = []
+            for ( let it =0 ; it < resultJson.values_autocorrelation.length; it++){
+                let temp_object = {}
+                temp_object["category"] = it
+                temp_object["yValue"] = resultJson.values_autocorrelation[it]
+                temp_array_correlation.push(temp_object)
+            }
+            // console.log("")
+            // console.log(temp_array)
+            this.setState({correlation_chart_data: temp_array_correlation})
+            this.setState({correlation_chart_show: true})
+        });
+    }
+
+    /**
+     * Update state when selection changes in the form
+     */
+    handleSelectChannelChange(event){
+        this.setState( {selected_channel: event.target.value})
+    }
+    handleSelectWindowChange(event){
+        this.setState( {selected_window_size: event.target.value})
+    }
+    handleSelectPercentChange(event){
+        this.setState( {selected_percent: event.target.value})
+    }
+    handleSelectMethodChange(event){
+        this.setState( {selected_input_method: event.target.value})
+    }
+
+    render() {
+        return (
+            <Grid container direction="row">
+                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
+                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Data Preview
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        File Name:
+                    </Typography>
+                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        trial_av.edf
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Channels:
+                    </Typography>
+                    <List>
+                        {this.state.channels.map((channel) => (
+                            <ListItem> <ListItemText primary={channel}/></ListItem>
+                        ))}
+                    </List>
+                </Grid>
+                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Envelope Analyisis Parameterisation
+                    </Typography>
+                    <hr/>
+                    <form onSubmit={this.handleSubmit}>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <InputLabel id="channel-selector-label">Channel</InputLabel>
+                            <Select
+                                labelId="channel-selector-label"
+                                id="channel-selector"
+                                value= {this.state.selected_channel}
+                                label="Channel"
+                                onChange={this.handleSelectChannelChange}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {this.state.channels.map((channel) => (
+                                    <MenuItem value={channel}>{channel}</MenuItem>
+                                ))}
+                            </Select>
+                            <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="window-selector"
+                                    value= {this.state.selected_window_size}
+                                    label="window_size"
+                                    onChange={this.handleSelectWindowChange}
+                            />
+                            <FormHelperText>Select window</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <TextField
+                                    id="percent-selector"
+                                    value= {this.state.selected_percent}
+                                    label="Percent"
+                                    onChange={this.handleSelectPercentChange}
+                            />
+                            <FormHelperText>Select percent</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <InputLabel id="method-selector-label">FFT</InputLabel>
+                            <Select
+                                labelId="method-selector-label"
+                                id="method-selector"
+                                value= {this.state.selected_method}
+                                label="Method"
+                                onChange={this.handleSelectMethodChange}
+                            >
+                                <MenuItem value={"Simple"}><em>Simple</em></MenuItem>
+                                <MenuItem value={"Cumulative"}><em>Cumulative</em></MenuItem>
+                                <MenuItem value={"Exponential"}><em>Exponential</em></MenuItem>
+                            </Select>
+                            <FormHelperText>If True, computes the ACF via FFT</FormHelperText>
+                        </FormControl>
+
+                        <FormControl sx={{m: 1, minWidth: 120}}>
+                            <InputLabel id="missing-selector-label">Missing</InputLabel>
+                            <Select
+                                labelId="missing-selector-label"
+                                id="missing-selector"
+                                value= {this.state.selected_missing}
+                                label="Missing"
+                                onChange={this.handleSelectMissingChange}
+                            >
+                                <MenuItem value={"none"}><em>None</em></MenuItem>
+                                <MenuItem value={"raise"}><em>Raise</em></MenuItem>
+                                <MenuItem value={"conservative"}><em>Conservative</em></MenuItem>
+                                <MenuItem value={"drop"}><em>Drop</em></MenuItem>
+                            </Select>
+                            <FormHelperText>How should missing values be treated?</FormHelperText>
+                        </FormControl>
+
+
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </form>
+                </Grid>
+                <Grid item xs={5}>
+                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Result Visualisation
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.envelope_chart_show ? 'block' : 'none')  }} noWrap>
+                        Envelope Trend Analysis Results
+                    </Typography>
+                    <div style={{ display: (this.state.envelope_chart_show ? 'block' : 'none') }}><LineChart chart_id="envelope_chart_id" chart_data={ this.state.envelope_chart_data}/></div>
+                    <hr style={{ display: (this.state.envelope_chart_show ? 'block' : 'none') }}/>
+
+                </Grid>
+            </Grid>
+        )
+    }
+}
+
+export default EnvelopeTrendAnalysis;

@@ -106,8 +106,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/auto_correlation"
-                                href="/eeg?eeg_function=auto_correlation"
+                                href="/auto_correlation"
+                                // href="/eeg?eeg_function=auto_correlation"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Auto Correlation >
@@ -116,8 +116,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/partial_auto_correlation"
-                                href="/eeg?eeg_function=partial_auto_correlation"
+                                href="/partial_auto_correlation"
+                                // href="/eeg?eeg_function=partial_auto_correlation"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Partial Auto Correlation >
@@ -126,8 +126,8 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/filters"
-                                href="/eeg?eeg_function=filters"
+                                href="/filters"
+                                // href="/eeg?eeg_function=filters"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Filters>
@@ -136,18 +136,18 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/welch"
-                                href="/eeg?eeg_function=welch"
+                                href="/welch"
+                                // href="/eeg?eeg_function=welch"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Welch>
+                                Power Spectral Density - Welch>
                             </ListItemButton>
                         </Link>
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/find_peaks"
-                                href="/eeg?eeg_function=find_peaks"
+                                href="/find_peaks"
+                                // href="/eeg?eeg_function=find_peaks"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Find Peaks>
@@ -156,18 +156,18 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/periodogram"
-                                href="/eeg?eeg_function=periodogram"
+                                href="/periodogram"
+                                // href="/eeg?eeg_function=periodogram"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Periodogram>
+                                Power Spectral Density - Periodogram>
                             </ListItemButton>
                         </Link>
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/stft"
-                                href="/eeg?eeg_function=stft"
+                                href="/stft"
+                                // href="/eeg?eeg_function=stft"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
                                 Short Time Fourier Transform>
@@ -176,18 +176,18 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/power_spectral_density"
-                                href="/eeg?eeg_function=power_spectral_density"
+                                href="/power_spectral_density"
+                                // href="/eeg?eeg_function=power_spectral_density"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Power Spectral Density>
+                                Power Spectral Density - Multitaper>
                             </ListItemButton>
                         </Link>
                         <Link
                                 component={Link}
                                 variant="h6"
-                                // href="/alpha_delta_ratio"
-                                href="/eeg?eeg_function=alpha_delta_ratio"
+                                href="/alpha_delta_ratio"
+                                // href="/eeg?eeg_function=alpha_delta_ratio"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
                                 Alpha Delta Ratio>
@@ -211,16 +211,6 @@ function WelcomePage() {
                                 Artifacts >
                             </ListItemButton>
                         </Link>
-                    {/*</List>*/}
-                    {/*<List*/}
-                    {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
-                    {/*        component="nav"*/}
-                    {/*        aria-labelledby="nested-list-subheader"*/}
-                    {/*        subheader={*/}
-                    {/*            <ListSubheader component="div" id="nested-list-subheader">*/}
-                    {/*                <h2>Existing EEG pages</h2>*/}
-                    {/*            </ListSubheader>*/}
-                    {/*        }>*/}
                         <Link
                                 component={Link}
                                 variant="h6"
@@ -230,7 +220,7 @@ function WelcomePage() {
                                 Alpha Variability>
                             </ListItemButton>
                         </Link>
-                      <Link
+                        <Link
                                 component={Link}
                                 variant="h6"
                                 href="/asymmetry_indices"
@@ -263,7 +253,7 @@ function WelcomePage() {
                                 href="/eeg"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                EEG Analysis>
+                                EEG Viewer>
                                 {/*   0) Open File and see all channels*/}
                                 {/*   1)  List of annotations in our UI*/}
                                 {/*   2) New annotation */}
@@ -272,11 +262,45 @@ function WelcomePage() {
                                 {/*   3) Montage */}
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/eeg/old"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                EEG Viewer Old>
+                                {/*   0) Open File and see all channels*/}
+                                {/*   1)  List of annotations in our UI*/}
+                                {/*   2) New annotation */}
+                                {/*   2.1) Annotations by user*/}
+                                {/*   2) New aggregate channels */}
+                                {/*   3) Montage */}
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/predictions"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Predictions>
+                            </ListItemButton>
+                        </Link>
+                        
                         {/*<p>alpha_variability</p>*/}
                         {/*<p>Multitaper</p>*/}
                         {/*<p>Predictions (ARIMA)</p>*/}
                         {/*<p>Discrete Wavelet Transform</p>*/}
                     </List>
+                    <Link
+                            component={Link}
+                            variant="h6"
+                            href="/envelope_trend"
+                    >
+                        <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                            Envelope Trend Analysis>
+                        </ListItemButton>
+                    </Link>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
