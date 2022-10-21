@@ -9,4 +9,4 @@ services:
     image: analytics_frontend
     restart: always
     ports:
-      - "3000:3000"
+      - "3005:3000"

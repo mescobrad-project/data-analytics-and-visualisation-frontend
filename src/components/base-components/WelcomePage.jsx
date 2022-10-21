@@ -211,16 +211,6 @@ function WelcomePage() {
                                 Artifacts >
                             </ListItemButton>
                         </Link>
-                        {/*</List>*/}
-                        {/*<List*/}
-                        {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
-                        {/*        component="nav"*/}
-                        {/*        aria-labelledby="nested-list-subheader"*/}
-                        {/*        subheader={*/}
-                        {/*            <ListSubheader component="div" id="nested-list-subheader">*/}
-                        {/*                <h2>Existing EEG pages</h2>*/}
-                        {/*            </ListSubheader>*/}
-                        {/*        }>*/}
                         <Link
                                 component={Link}
                                 variant="h6"
