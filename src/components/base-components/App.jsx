@@ -56,6 +56,7 @@ import ActrigraphyViewer from "./ActrigraphyViewer";
 import Level from "./Level";
 import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
+import EEGViewer from "./EEGViewer";
 import EnvelopeTrendAnalysis from "./Envelope_Trend_Analysis";
 
 
@@ -104,7 +105,8 @@ const App = () => {
                         <Route exact path="/periodogram" element={(<LayoutMain><PeriodogramFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/power_spectral_density" element={(<LayoutMain><PowerSpectralDensity/></LayoutMain>)}/>
                         <Route exact path="/freesurfer/recon" element={(<LayoutMain><FreesurferReconFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/eeg" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg/old" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg" element={(<LayoutMain><EEGViewer/></LayoutMain>)}/>
                         {/*TODO*/}
                         <Route exact path="/mri" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/eeg/pre" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>

@@ -1,6 +1,6 @@
 import React from 'react';
 import API from "../../axiosInstance";
-// import InnerHTML from 'dangerously-set-html-content'
+import InnerHTML from 'dangerously-set-html-content'
 import PropTypes from 'prop-types';
 import {
     Button,
@@ -14,7 +14,7 @@ import {
     MenuItem,
     Select, TextField, Typography
 } from "@mui/material";
-
+import mpld3 from 'mpld3';
 // Amcharts
 // import * as am5 from "@amcharts/amcharts5";
 // import * as am5xy from "@amcharts/amcharts5/xy";
@@ -31,6 +31,8 @@ class StftFunctionPage extends React.Component {
 
             //Values selected currently on the form
             selected_channel: "",
+            // selected_tmin: "0",
+            // selected_tmax: "",
             selected_window: "hann",
             selected_nperseg: "256",
             selected_noverlap: "",
@@ -44,13 +46,15 @@ class StftFunctionPage extends React.Component {
             stft_chart_data : [],
 
             // Visualisation Hide/Show values
-            stft_chart_show : false
+            stft_chart_show : false,
 
-
+            test_chart_html: ""
         };
 
         //Binding functions of the class
         this.fetchChannels = this.fetchChannels.bind(this);
+        // this.handleSelectTMinChange = this.handleSelectTMinChange.bind(this);
+        // this.handleSelectTMaxChange = this.handleSelectTMaxChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectWindowChange = this.handleSelectWindowChange.bind(this);
@@ -85,6 +89,15 @@ class StftFunctionPage extends React.Component {
         let to_send_input_nperseg = null;
         let to_send_input_noverlap = null;
         let to_send_input_nfft = null;
+        // let to_send_tmin = null;
+        // let to_send_tmax = null;
+
+        // if (!!this.state.selected_tmin){
+        //     to_send_tmin = parseInt(this.state.selected_tmin)
+        // }
+        // if (!!this.state.selected_tmax){
+        //     to_send_tmax = parseInt(this.state.selected_tmax)
+        // }
 
         if (!!this.state.selected_nperseg){
             to_send_input_nperseg = parseInt(this.state.selected_nperseg)
@@ -117,19 +130,21 @@ class StftFunctionPage extends React.Component {
             const resultJson = res.data;
             this.setState({test_chart_html: resultJson.figure})
             console.log(resultJson)
+            console.log(resultJson.figure)
             console.log('Test')
-            let temp_array_stft = []
-            for ( let it =0 ; it < resultJson['frequencies'].length; it++){
-                let temp_object = {}
-                temp_object["category"] = resultJson['array of segment times'][it]
-                temp_object["yValue"] = resultJson['frequencies'][it]
-                temp_array_stft.push(temp_object)
-            }
+            console.log(this.state.test_chart_html)
+            // let temp_array_stft = []
+            // for ( let it =0 ; it < resultJson['frequencies'].length; it++){
+            //     let temp_object = {}
+            //     temp_object["category"] = resultJson['array of segment times'][it]
+            //     temp_object["yValue"] = resultJson['frequencies'][it]
+            //     temp_array_stft.push(temp_object)
+            // }
             // console.log("")
             // console.log(temp_array)
 
 
-            this.setState({stft_chart_data: temp_array_stft})
+            // this.setState({stft_chart_data: temp_array_stft})
             this.setState({stft_chart_show: true})
 
 
@@ -160,6 +175,12 @@ class StftFunctionPage extends React.Component {
     handleSelectChannelChange(event){
         this.setState( {selected_channel: event.target.value})
     }
+    // handleSelectTMinChange(event){
+    //     this.setState( {selected_tmin: event.target.value})
+    // }
+    // handleSelectTMaxChange(event){
+    //     this.setState( {selected_tmax: event.target.value})
+    // }
     handleSelectWindowChange(event){
         this.setState( {selected_window: event.target.value})
     }
@@ -226,6 +247,26 @@ class StftFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Channel for Stft</FormHelperText>
                             </FormControl>
+                            {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelId="tmin-selector-label"*/}
+                            {/*            id="tmin-selector"*/}
+                            {/*            value= {this.state.selected_tmin}*/}
+                            {/*            label="Tmin"*/}
+                            {/*            onChange={this.handleSelectTMinChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Select tmin</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelId="tmax-selector-label"*/}
+                            {/*            id="tmax-selector"*/}
+                            {/*            value= {this.state.selected_tmax}*/}
+                            {/*            label="Tmax"*/}
+                            {/*            onChange={this.handleSelectTMaxChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Select tmax</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="window-selector-label">Window</InputLabel>
                                 <Select
@@ -353,7 +394,7 @@ class StftFunctionPage extends React.Component {
                             Stft Results
                         </Typography>
                         {/*<div dangerouslySetInnerHTML={{__html:this.state.test_chart_html}}></div>*/}
-                        {/*<InnerHTML html={this.state.test_chart_html} />*/}
+                        <InnerHTML html={this.state.test_chart_html} />
                         {/*<div style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="stft_chart_id" chart_data={ this.state.stft_chart_data}/></div>*/}
                         {/*<hr style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}/>*/}
                     </Grid>

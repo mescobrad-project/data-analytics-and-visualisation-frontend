@@ -28,7 +28,7 @@ class ChannelSignalPeaksChartCustom extends React.Component {
 
     componentDidMount() {
         console.log("MOUNTED AGAIN")
-        am4core.options.minPolylineStep = 5;
+        am4core.options.minPolylineStep = 15;
         let chart = am4core.create(this.props.chart_id, am4charts.XYChart);
         chart.dateFormatter.dateFormat = "h-m-ss";
         // chart.dateFormatter.dateFormat = "yyyy-MM-dd";
