@@ -3,12 +3,12 @@ version: "3.4"
 services:
   analytics-frontend:
     build:
-      context: ".."
-      dockerfile: ./docker/Dockerfile
+      context: "../../"
+      dockerfile: ./docker/docker_production/Dockerfile
     container_name: analytics_frontend
     environment:
-      REACT_APP_BASEURL: http://localhost:8000/
+      REACT_APP_BASEURL: http://10.129.150.120:7000/
     image: analytics_frontend
     restart: always
     ports:
-      - "3000:3000"
+      - "3005:3000"
