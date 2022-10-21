@@ -15,7 +15,6 @@ import {
     Typography
 } from "@mui/material";
 import HistogramChartCustom from "../../components/ui-components/HistogramChartCustom";
-import PointChartCustom from "../../components/ui-components/PointChartCustom";
 
 class Normality_Tests extends React.Component {
     constructor(props){
