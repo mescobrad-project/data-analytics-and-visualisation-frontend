@@ -52,25 +52,25 @@ class LineChart extends React.Component {
         // Create series
         let series1 = chart.series.push(
                 am5xy.ColumnSeries.new(root, {
-                    name: "Series",
+                    name: "Series 1",
                     xAxis: xAxis,
                     yAxis: yAxis,
                     valueYField: "value1",
-                    categoryXField: "category",
+                    valueXField: "category",
                     tooltip: am5.Tooltip.new(root, {
                         labelText: "{valueY}"
                 })})
         );
         // series1.data.setAll(data);
         series1.data.setAll([]);
-        xAxis.data.setAll([]);
+        //xAxis.data.setAll([]);
         let series2 = chart.series.push(
                 am5xy.ColumnSeries.new(root, {
-                    name: "Series",
+                    name: "Series 2",
                     xAxis: xAxis,
                     yAxis: yAxis,
                     valueYField: "value2",
-                    categoryXField: "category",
+                    valueXField: "category",
                     tooltip: am5.Tooltip.new(root, {
                         labelText: "{valueY}"
                     })})
@@ -97,7 +97,8 @@ class LineChart extends React.Component {
     componentDidUpdate(oldProps) {
         if(this.props.chart_data){
             this.xAxis.data.setAll(this.props.chart_data)
-            this.series1.data.setAll(this.props.chart_data['upper'])
+            this.series1.data.setAll(this.props.chart_data)
+            // this.series2.data.setAll(this.props.chart_data['lower'])
         }
 
     }

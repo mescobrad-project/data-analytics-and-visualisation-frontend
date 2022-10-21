@@ -87,22 +87,28 @@ class EnvelopeTrendAnalysis extends React.Component {
             }
         ).then(res => {
             const resultJson = res.data;
+            this.setState({signal_original_start_seconds: resultJson.start_date_time});
 
-            // Show only relevant visualisations and load their data
-            // Correlation chart always has results so should always be enabled
-            this.setState({envelope_results: resultJson})
-
-            let temp_array_correlation = []
-            for ( let it =0 ; it < resultJson.values_autocorrelation.length; it++){
+            let temp_array_signal = []
+            for (let it = 0; it < resultJson.signal.length; it++) {
                 let temp_object = {}
-                temp_object["category"] = it
-                temp_object["yValue"] = resultJson.values_autocorrelation[it]
-                temp_array_correlation.push(temp_object)
+                let adjusted_time = ""
+                // First entry is 0 so no need to add any milliseconds
+                // Time added is as millisecond/100 so we multiply by 1000
+                if (it === 0) {
+                    adjusted_time = resultJson.start_date_time
+                } else {
+                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it] * 1000
+                }
+
+                let temp_date = new Date(adjusted_time)
+                temp_object["date"] = temp_date
+                temp_object["yValue"] = resultJson.signal[it]
+                temp_array_signal.push(temp_object)
             }
-            // console.log("")
-            // console.log(temp_array)
-            this.setState({correlation_chart_data: temp_array_correlation})
-            this.setState({correlation_chart_show: true})
+
+            this.setState({envelope_chart_data: temp_array_signal})
+            this.setState({envelope_chart_show: true});
         });
     }
 
@@ -189,7 +195,7 @@ class EnvelopeTrendAnalysis extends React.Component {
                             <FormHelperText>Select percent</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="method-selector-label">FFT</InputLabel>
+                            <InputLabel id="method-selector-label">Method</InputLabel>
                             <Select
                                 labelId="method-selector-label"
                                 id="method-selector"
@@ -201,26 +207,8 @@ class EnvelopeTrendAnalysis extends React.Component {
                                 <MenuItem value={"Cumulative"}><em>Cumulative</em></MenuItem>
                                 <MenuItem value={"Exponential"}><em>Exponential</em></MenuItem>
                             </Select>
-                            <FormHelperText>If True, computes the ACF via FFT</FormHelperText>
+                            <FormHelperText>Select moving average Method</FormHelperText>
                         </FormControl>
-
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="missing-selector-label">Missing</InputLabel>
-                            <Select
-                                labelId="missing-selector-label"
-                                id="missing-selector"
-                                value= {this.state.selected_missing}
-                                label="Missing"
-                                onChange={this.handleSelectMissingChange}
-                            >
-                                <MenuItem value={"none"}><em>None</em></MenuItem>
-                                <MenuItem value={"raise"}><em>Raise</em></MenuItem>
-                                <MenuItem value={"conservative"}><em>Conservative</em></MenuItem>
-                                <MenuItem value={"drop"}><em>Drop</em></MenuItem>
-                            </Select>
-                            <FormHelperText>How should missing values be treated?</FormHelperText>
-                        </FormControl>
-
 
                         <Button variant="contained" color="primary" type="submit">
                             Submit
@@ -235,7 +223,9 @@ class EnvelopeTrendAnalysis extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.envelope_chart_show ? 'block' : 'none')  }} noWrap>
                         Envelope Trend Analysis Results
                     </Typography>
-                    <div style={{ display: (this.state.envelope_chart_show ? 'block' : 'none') }}><LineChart chart_id="envelope_chart_id" chart_data={ this.state.envelope_chart_data}/></div>
+                    <div style={{ display: (this.state.envelope_chart_show ? 'block' : 'none') }}>
+                        {/*<LineChart chart_id="envelope_chart_id" chart_data={ this.state.envelope_chart_data}/>*/}
+                    </div>
                     <hr style={{ display: (this.state.envelope_chart_show ? 'block' : 'none') }}/>
 
                 </Grid>
