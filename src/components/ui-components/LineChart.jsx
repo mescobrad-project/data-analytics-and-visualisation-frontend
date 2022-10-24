@@ -27,57 +27,82 @@ class LineChart extends React.Component {
 
         let chart = root.container.children.push(
                 am5xy.XYChart.new(root, {
-                    panY: false,
-                    layout: root.verticalLayout
+                    panX: true,
+                    panY: true,
+                    wheelX: "panX",
+                    wheelY: "zoomX",
+                    pinchZoomX:true,
+                    // layout: root.verticalLayout
                 })
         );
+        let data = [];
+        chart.data = data;
+
         // Format numbers
         root.numberFormatter.set("numberFormat", "#a");
         // Create Y-axis
-        let yAxis = chart.yAxes.push(
-                am5xy.ValueAxis.new(root, {
-                    renderer: am5xy.AxisRendererY.new(root, {})
+        let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+            renderer: am5xy.AxisRendererY.new(root, {})
                 })
         );
 
         // Create X-Axis
-        let xAxis = chart.xAxes.push(
-                am5xy.CategoryAxis.new(root, {
-                    renderer: am5xy.AxisRendererX.new(root, {}),
-                    categoryField: "category"
+        let xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+            maxDeviation: 0.2,
+            baseInterval: {
+                timeUnit: "millisecond",
+                count: 1
+            },
+            renderer: am5xy.AxisRendererX.new(root, {}),
+            tooltip: am5.Tooltip.new(root, {})
                 })
         );
         // xAxis.data.setAll(data);
         xAxis.data.setAll([]);
         // Create series
         let series1 = chart.series.push(
-                am5xy.ColumnSeries.new(root, {
+                am5xy.LineSeries.new(root, {
                     name: "Series 1",
                     xAxis: xAxis,
                     yAxis: yAxis,
-                    valueYField: "value1",
-                    valueXField: "category",
+                    valueYField: "signal",
+                    valueXField: "date",
                     tooltip: am5.Tooltip.new(root, {
                         labelText: "{valueY}"
                 })})
         );
-        // series1.data.setAll(data);
         series1.data.setAll([]);
-        //xAxis.data.setAll([]);
+
         let series2 = chart.series.push(
-                am5xy.ColumnSeries.new(root, {
+                am5xy.LineSeries.new(root, {
                     name: "Series 2",
                     xAxis: xAxis,
                     yAxis: yAxis,
-                    valueYField: "value2",
-                    valueXField: "category",
+                    valueYField: "upper",
+                    valueXField: "date",
+                    fill: am5.color("#00ff00"),
+                    stroke: am5.color("#00ff00"),
                     tooltip: am5.Tooltip.new(root, {
                         labelText: "{valueY}"
                     })})
         );
-
         series2.data.setAll([]);
-        // series2.data.setAll(data);
+
+        let series3 = chart.series.push(
+                am5xy.LineSeries.new(root, {
+                    name: "Series 3",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "lower",
+                    valueXField: "date",
+                    fill: am5.color(0xff0000),
+                    stroke: am5.color(0xff0000),
+                    tooltip: am5.Tooltip.new(root, {
+                        labelText: "{valueY}"
+                    })})
+        );
+        series3.data.setAll([]);
+
         // Add legend
         let legend = chart.children.push(am5.Legend.new(root, {}));
         legend.data.setAll(chart.series.values);
@@ -88,16 +113,26 @@ class LineChart extends React.Component {
         }));
         cursor.lineY.set("visible", false);
 
+        // Add scrollbar
+        // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+        chart.set("scrollbarX", am5.Scrollbar.new(root, {
+            orientation: "horizontal"
+        }));
+
         this.chart = chart;
         this.root = root;
-        // this.series = series;
-        // this.xAxis = xAxis;
+        this.series1 = series1;
+        this.series2 = series2;
+        this.series3 = series3;
+        this.xAxis = xAxis;
     }
 
     componentDidUpdate(oldProps) {
         if(this.props.chart_data){
             this.xAxis.data.setAll(this.props.chart_data)
             this.series1.data.setAll(this.props.chart_data)
+            this.series2.data.setAll(this.props.chart_data)
+            this.series3.data.setAll(this.props.chart_data)
             // this.series2.data.setAll(this.props.chart_data['lower'])
         }
 
