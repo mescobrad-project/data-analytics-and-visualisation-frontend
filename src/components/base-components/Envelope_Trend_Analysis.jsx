@@ -87,6 +87,13 @@ class EnvelopeTrendAnalysis extends React.Component {
             }
         ).then(res => {
             const resultJson = res.data;
+            console.log(res.data)
+            console.log("ORIGINAL LENGTH")
+            console.log(resultJson.signal.length)
+            console.log(resultJson.signal_time.length)
+            console.log(resultJson.lower.length)
+            console.log(resultJson.upper.length)
+
             this.setState({signal_original_start_seconds: resultJson.start_date_time});
 
             let temp_array_signal = []
