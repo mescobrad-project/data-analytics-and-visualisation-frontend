@@ -87,30 +87,6 @@ class EnvelopeTrendAnalysis extends React.Component {
             }
         ).then(res => {
             const resultJson = res.data;
-            console.log("ORIGINAL LENGTH")
-            console.log(res.data.length)
-
-            // this.setState({signal_original_start_seconds: resultJson.start_date_time});
-
-            // let temp_array_signal = []
-            // for (let it = 0; it < resultJson.signal.length; it++) {
-            //     let temp_object = {}
-            //     let adjusted_time = ""
-            //     // First entry is 0 so no need to add any milliseconds
-            //     // Time added is as millisecond/100 so we multiply by 1000
-            //     if (it === 0) {
-            //         adjusted_time = resultJson.start_date_time
-            //     } else {
-            //         adjusted_time = resultJson.start_date_time + resultJson.signal_time[it] * 1000
-            //     }
-            //
-            //     let temp_date = new Date(adjusted_time)
-            //     temp_object["date"] = temp_date
-            //     temp_object["yValue"] = resultJson.signal[it]
-            //     temp_array_signal.push(temp_object)
-            // }
-
-            // this.setState({envelope_chart_data: temp_array_signal})
             this.setState({envelope_chart_data: resultJson})
             this.setState({envelope_chart_show: true});
         });
