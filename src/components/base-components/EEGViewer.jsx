@@ -2,15 +2,17 @@ import React from 'react';
 import API from "../../axiosInstance";
 import {
     Button, Divider,
-    Grid, Modal,
+    Grid, IconButton, ImageListItemBar, Modal,
     Typography
 } from "@mui/material";
-import {Box} from "@mui/system";
+import {Box, Stack} from "@mui/system";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageList from "@mui/material/ImageList";
+import * as PropTypes from "prop-types";
 
 const style = {
     position: 'absolute',
+    display: 'flex',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -19,7 +21,31 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
+    overflowX: 'scroll',
+    overflowY: 'visible',
     p: 4,
+};
+
+const root = {
+    display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            overflow: 'hidden',
+            // backgroundColor: theme.palette.background.paper,
+};
+
+const imageList = {
+    flexWrap: 'nowrap',
+            // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+            transform: 'translateZ(0)',
+};
+const title = {
+    // color: theme.palette.primary.light,
+};
+
+const titleBar= {
+    background:
+            'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
 };
 
 const itemData = [
@@ -79,6 +105,12 @@ const itemData = [
         title: '12',
     },
 ];
+
+function StarBorderIcon(props) {
+    return null;
+}
+
+StarBorderIcon.propTypes = {};
 
 class EEGViewer extends React.Component {
         constructor(props) {
@@ -163,21 +195,75 @@ class EEGViewer extends React.Component {
                                     <Typography id="modal-modal-title" variant="h6" component="h2">
                                         How to: Tutorial example
                                     </Typography>
-                                    <ImageList sx={{ width: '100%', height: '95%' }} cols={1} rowHeight={"100%"}>
+                                    <Stack direction="row" spacing={2}>
                                         {itemData.map((item) => (
-                                                <ImageListItem key={item.img}>
-                                                    <img
-                                                            src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                                            srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                                            // src={`${item.img}`}
-                                                            // srcSet={`${item.img}`}
-                                                            alt={item.title}
-                                                            loading="lazy"
-                                                    />
-                                                </ImageListItem>
-                                        ))}
-                                    </ImageList>
+                                        <React.Fragment>
+                                            <img src={`${item.img}?w=164&h=164&fit=crop&auto=format`} />
+                                            <Divider orientation="vertical"/>
+                                        </React.Fragment>
+                                            ))}
+                                    </Stack>
 
+                                    {/*<div sx={root}>*/}
+                                    {/*    <ImageList sx={imageList} cols={1.3}>*/}
+                                    {/*        {itemData.map((item) => (*/}
+                                    {/*                // <Typography id="modal-modal-title" variant="h6" component="h2">*/}
+                                    {/*                //     How to: Tutorial example*/}
+                                    {/*                // </Typography>*/}
+                                    {/*            <ImageListItem>*/}
+                                    {/*            <img src={`${item.img}?w=164&h=164&fit=crop&auto=format`} />*/}
+                                    {/*            <ImageListItemBar*/}
+                                    {/*                    title={item.title}*/}
+                                    {/*                    sx={*/}
+                                    {/*                        titleBar*/}
+                                    {/*                    }*/}
+                                    {/*            />*/}
+                                    {/*        </ImageListItem>*/}
+                                    {/*        ))}*/}
+                                    {/*    </ImageList>*/}
+                                    {/*</div>*/}
+                                    {/*<Grid container direction="row">*/}
+
+                                    {/*    /!*<Grid item xs={12} sx={{borderRight: "1px solid grey"}}>*!/*/}
+                                    {/*{itemData.map((item) => (*/}
+                                    {/*        <img*/}
+                                    {/*                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}*/}
+                                    {/*                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                    {/*                // src={`${item.img}`}*/}
+                                    {/*                // srcSet={`${item.img}`}*/}
+                                    {/*                alt={item.title}*/}
+                                    {/*                loading="lazy"*/}
+                                    {/*        />*/}
+                                    {/*// <ImageList sx={{ width: '100%', height: '95%' }} cols={1} rowHeight={"100%"}>*/}
+                                    {/*//             <ImageListItem key={item.img}>*/}
+                                    {/*//                 <img*/}
+                                    {/*//                         src={`${item.img}?w=164&h=164&fit=crop&auto=format`}*/}
+                                    {/*//                         srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                    {/*//                         // src={`${item.img}`}*/}
+                                    {/*//                         // srcSet={`${item.img}`}*/}
+                                    {/*//                         alt={item.title}*/}
+                                    {/*//                         loading="lazy"*/}
+                                    {/*//                 />*/}
+                                    {/*//             </ImageListItem>*/}
+                                    {/*//*/}
+                                    {/*// </ImageList>*/}
+                                    {/*))}*/}
+                                    {/*    /!*</Grid>*!/*/}
+                                    {/*</Grid>*/}
+                                    {/*<ImageList sx={{ width: '100%', height: '95%' }} cols={1} rowHeight={"100%"}>*/}
+                                    {/*    {itemData.map((item) => (*/}
+                                    {/*            <ImageListItem key={item.img}>*/}
+                                    {/*                <img*/}
+                                    {/*                        src={`${item.img}?w=164&h=164&fit=crop&auto=format`}*/}
+                                    {/*                        srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                    {/*                        // src={`${item.img}`}*/}
+                                    {/*                        // srcSet={`${item.img}`}*/}
+                                    {/*                        alt={item.title}*/}
+                                    {/*                        loading="lazy"*/}
+                                    {/*                />*/}
+                                    {/*            </ImageListItem>*/}
+                                    {/*    ))}*/}
+                                    {/*</ImageList>*/}
                                 </Box>
                             </Modal>
                             </Grid>
