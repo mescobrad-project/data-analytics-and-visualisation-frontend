@@ -981,11 +981,11 @@ class EEGAnalysisFunctionPage extends React.Component {
                                         </Typography>
                                         {/*<ReactSVG src="http://localhost:8000/static/test.svg" />*/}
                                         <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') , height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
-                                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none'), height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id1" chart_data={ this.state.signal_chart_data}/></div>
-                                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') , height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id2" chart_data={ this.state.signal_chart_data}/></div>
-                                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') ,  height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id3" chart_data={ this.state.signal_chart_data}/></div>
-                                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') ,  height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id4" chart_data={ this.state.signal_chart_data}/></div>
-                                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') ,  height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id5" chart_data={ this.state.signal_chart_data}/></div>
+                                        {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none'), height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id1" chart_data={ this.state.signal_chart_data}/></div>*/}
+                                        {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') , height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id2" chart_data={ this.state.signal_chart_data}/></div>*/}
+                                        {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') ,  height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id3" chart_data={ this.state.signal_chart_data}/></div>*/}
+                                        {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') ,  height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id4" chart_data={ this.state.signal_chart_data}/></div>*/}
+                                        {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') ,  height: 100}}><ChannelSignalPeaksChartCustom chart_id="singal_chart_id5" chart_data={ this.state.signal_chart_data}/></div>*/}
                                         <Button onClick={this.getSelectionOfSignal} variant="contained" color="primary"
                                                 sx={{marginLeft: "25%"}}>
                                             Get Selection
