@@ -498,7 +498,7 @@ class EEGAnalysisFunctionPage extends React.Component {
         console.log("PROCEEDING")
         console.log(to_send_to)
         // console.log(this.state.eeg_function)
-        window.location.replace(to_send_to);
+        window.location.href(to_send_to);
     }
 
     handleDeleteBipolarChip (anode, cathode) {

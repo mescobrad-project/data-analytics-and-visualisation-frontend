@@ -483,7 +483,7 @@ class PredictionsFunctionPage extends React.Component {
 
                         {/*<div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="predictions_chart_id" chart_data={ this.state.predictions_chart_data}/>*/}
                         {/*    {this.state.data_2}</div>*/}
-                        <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
+                        {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>*/}
                         <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_1}} />
                         <hr style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}/>
                         <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_2}} />

@@ -70,30 +70,31 @@ function WelcomePage() {
                 <h1>MES-CoBraD | Analytics Engine</h1>
                 <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
                 <div class="list-container" style={{display: 'flex'}}>
-                    {/*<form onSubmit={async (event) => {*/}
-                    {/*    event.preventDefault();*/}
+                    <form onSubmit={async (event) => {
+                        event.preventDefault();
 
-                    {/*    // Send the request*/}
-                    {/*    API.put("function/navigation/",*/}
-                    {/*            {*/}
-                    {/*                run_id: "1",*/}
-                    {/*                step_id: "1",*/}
-                    {/*                metadata: {"function" : "normality",*/}
-                    {/*                            "files" : ["file_download_id"]*/}
-                    {/*                },*/}
-                    {/*            }*/}
-                    {/*    ).then(res => {*/}
-                    {/*        console.log("BACK_________________________")*/}
-                    {/*        console.log("BACK")*/}
-                    {/*        console.log(res.data.url)*/}
-                    {/*        window.location.replace(res.data.url)*/}
-                    {/*        // navigate(res.data.url);*/}
-                    {/*    });*/}
-                    {/*}}>*/}
-                    {/*    <Button variant="contained" color="primary" type="submit">*/}
-                    {/*        Submit*/}
-                    {/*    </Button>*/}
-                    {/*</form>*/}
+                        // Send the request
+                        API.put("function/navigation/",
+                                {
+                                    run_id: "1",
+                                    step_id: "1",
+                                    function : "normality",
+                                    metadata: {
+                                        "files" : [["saved" , "demo_sample_questionnaire.csv"], ["saved" , "psg1 anonym2.edf"]]
+                                    },
+                                }
+                        ).then(res => {
+                            console.log("BACK_________________________")
+                            console.log("BACK")
+                            console.log(res.data.url)
+                            window.location.assign(res.data.url)
+                            // navigate(res.data.url);
+                        });
+                    }}>
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </form>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
