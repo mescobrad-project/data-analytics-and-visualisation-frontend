@@ -96,7 +96,13 @@ class AutoCorrelationFunctionPage extends React.Component {
      * Call backend endpoint to get channels of eeg
      */
     async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
+        API.get("list/channels", {
+            params: {
+                run_id: 1,
+                step_id: 1,
+                }
+
+        }).then(res => {
             this.setState({channels: res.data.channels})
         });
     }
