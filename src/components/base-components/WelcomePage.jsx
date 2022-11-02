@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import {
-    Button,
+    Button, Divider,
     Link,
     List,
     ListItem,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import {display} from "@mui/system";
 import API from "../../axiosInstance";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {withRouter} from '../withRouter';
 import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
 import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
@@ -41,20 +41,26 @@ function InboxIcon() {
     return null;
 }
 
-async function handleSubmit(event) {
-    event.preventDefault();
-
+async function redirectToPage(run_id, step_id, function_name, bucket, file) {
     // Send the request
+    let files_to_send = []
+    for (let it ; it< bucket.length;it++){
+        files_to_send.push([bucket[it], file[it]])
+    }
+    console.log(files_to_send)
+    console.log(function_name)
     API.put("function/navigation/",
             {
                 run_id: "1",
                 step_id: "1",
-                metadata: [{"function" : "auto_correlation"}],
+                function: function_name,
+                metadata: {
+                    // [["saved"] , "demo_sample_questionnaire.csv"],
+                    "files": files_to_send
+                },
             }
     ).then(res => {
-        console.log("BACK_________________________")
-        console.log("BACK")
-        console.log(res)
+        window.location.assign(res.data.url)
     });
 }
 
@@ -70,31 +76,32 @@ function WelcomePage() {
                 <h1>MES-CoBraD | Analytics Engine</h1>
                 <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
                 <div class="list-container" style={{display: 'flex'}}>
-                    <form onSubmit={async (event) => {
-                        event.preventDefault();
+                    {/*<form onSubmit={async (event) => {*/}
+                    {/*    event.preventDefault();*/}
 
-                        // Send the request
-                        API.put("function/navigation/",
-                                {
-                                    run_id: "1",
-                                    step_id: "1",
-                                    function : "normality",
-                                    metadata: {
-                                        "files" : [["saved" , "demo_sample_questionnaire.csv"], ["saved" , "psg1 anonym2.edf"]]
-                                    },
-                                }
-                        ).then(res => {
-                            console.log("BACK_________________________")
-                            console.log("BACK")
-                            console.log(res.data.url)
-                            window.location.assign(res.data.url)
-                            // navigate(res.data.url);
-                        });
-                    }}>
-                        <Button variant="contained" color="primary" type="submit">
-                            Submit
-                        </Button>
-                    </form>
+                    {/*    // Send the request*/}
+                    {/*    API.put("function/navigation/",*/}
+                    {/*            {*/}
+                    {/*                run_id: "1",*/}
+                    {/*                step_id: "1",*/}
+                    {/*                function : "normality",*/}
+                    {/*                metadata: {*/}
+                    {/*                    // [["saved"] , "demo_sample_questionnaire.csv"],*/}
+                    {/*                    "files" : [ [["saved"] , ["psg1 anonym2.edf"]]]*/}
+                    {/*                },*/}
+                    {/*            }*/}
+                    {/*    ).then(res => {*/}
+                    {/*        console.log("BACK_________________________")*/}
+                    {/*        console.log("BACK")*/}
+                    {/*        console.log(res.data.url)*/}
+                    {/*        window.location.assign(res.data.url)*/}
+                    {/*        // navigate(res.data.url);*/}
+                    {/*    });*/}
+                    {/*}}>*/}
+                    {/*    <Button variant="contained" color="primary" type="submit">*/}
+                    {/*        Submit*/}
+                    {/*    </Button>*/}
+                    {/*</form>*/}
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             component="nav"
@@ -104,203 +111,155 @@ function WelcomePage() {
                                     <h2>EEG pages</h2>
                                 </ListSubheader>
                             }>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/auto_correlation"
-                                // href="/eeg?eeg_function=auto_correlation"
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick= {redirectToPage.bind(this,1, 1, "auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Auto Correlation >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/partial_auto_correlation"
-                                // href="/eeg?eeg_function=partial_auto_correlation"
+                            Auto Correlation >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "partial_auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Partial Auto Correlation >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/filters"
-                                // href="/eeg?eeg_function=filters"
+                            Partial Auto Correlation >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "welch", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Filters>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/welch"
-                                // href="/eeg?eeg_function=welch"
+                            Welch >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "find_peaks", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Power Spectral Density - Welch>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/find_peaks"
-                                // href="/eeg?eeg_function=find_peaks"
+                            Find Peaks >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "power_spectral_density_periodogram", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Find Peaks>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/periodogram"
-                                // href="/eeg?eeg_function=periodogram"
+                            Power Spectral Density - Periodogram>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "stft", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Power Spectral Density - Periodogram>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/stft"
-                                // href="/eeg?eeg_function=stft"
+                            Short Time Fourier Transform>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "power_spectral_density_multitaper", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius:"10px"}} component={"a"}>
-                                Short Time Fourier Transform>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/power_spectral_density"
-                                // href="/eeg?eeg_function=power_spectral_density"
+                            Power Spectral Density - Multitaper>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "alpha_delta_ratio", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Power Spectral Density - Multitaper>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/alpha_delta_ratio"
-                                // href="/eeg?eeg_function=alpha_delta_ratio"
+                            Alpha Delta Ratio>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "predictions", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Alpha Delta Ratio>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/predictions"
+                            Predictions>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "artifacts", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Predictions>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/artifacts"
+                            Artifacts>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "alpha_variability", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Artifacts >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/alpha_variability"
+                            Alpha Variability>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "asymmetry_indices", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Alpha Variability>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/asymmetry_indices"
+                            Asymmetry Indices>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "slow_waves", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Asymmetry Indices>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/slowwaves"
+                            Slow waves>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "spindles", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Slowwaves>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/spindles"
+                            Spindles>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "eeg_viewer", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Spindles>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/eeg"
+                            EEG Viewer>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "eeg_viewer_old", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                EEG Viewer>
-                                {/*   0) Open File and see all channels*/}
-                                {/*   1)  List of annotations in our UI*/}
-                                {/*   2) New annotation */}
-                                {/*   2.1) Annotations by user*/}
-                                {/*   2) New aggregate channels */}
-                                {/*   3) Montage */}
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/eeg/old"
+                            EEG Viewer Old>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "envelop_trend_analysis", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                EEG Viewer Old>
-                                {/*   0) Open File and see all channels*/}
-                                {/*   1)  List of annotations in our UI*/}
-                                {/*   2) New annotation */}
-                                {/*   2.1) Annotations by user*/}
-                                {/*   2) New aggregate channels */}
-                                {/*   3) Montage */}
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/predictions"
-                        >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Predictions>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/envelope_trend"
-                        >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Envelope Trend Analysis>
-                            </ListItemButton>
-                        </Link>
-                        <p>Discrete Wavelet Transform</p>
-                        {/*<p>alpha_variability</p>*/}
+                            Envelope Trend Analysis>
+                        </Button>
+                        {/*<Link*/}
+                        {/*        component={Link}*/}
+                        {/*        variant="h6"*/}
+                        {/*        href="/periodogram"*/}
+                        {/*        // href="/eeg?eeg_function=periodogram"*/}
+                        {/*>*/}
+                        {/*    <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}}*/}
+                        {/*                    component={"a"}>*/}
+                        {/*        Power Spectral Density - Periodogram>*/}
+                        {/*    </ListItemButton>*/}
+                        {/*</Link>*/}
+
+
                         {/*<p>Multitaper</p>*/}
-                        {/*<p>Predictions (ARIMA)</p>*/}
-                        {/*<p>Discrete Wavelet Transform</p>*/}
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -311,24 +270,21 @@ function WelcomePage() {
                                     <h2>Actigraphy</h2>
                                 </ListSubheader>
                             }>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/actigraphy"
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Actigraphy Viewer>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/actigraphy/general/"
+                            Actigraphy Viewer>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Actigraphy General Viewer>
-                            </ListItemButton>
-                        </Link>
+                            Actigraphy General Viewer>
+                        </Button>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -339,36 +295,36 @@ function WelcomePage() {
                                     <h2> MRI pages</h2>
                                 </ListSubheader>
                             }>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/freesurfer/recon"
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "mri_viewer", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Free Surfer >
-                                {/*   1) Freeview screenshots*/}
-                                {/*   1.5) Altenrate MRI screenshots with nilearn*/}
-                                {/*   2) Other files produced by freesurfer */}
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Freesurfer_ReconAll_Results"
+                           MRI Viewer >
+                        </Button>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "freesurfer", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Recon-All Results >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Freesurfer_Samseg_Results"
+                            Free Surfer >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Samseg Results >
-                            </ListItemButton>
-                        </Link>
+                            Recon-All Results >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
+                        >
+                            Samseg Results >
+                        </Button>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -379,199 +335,175 @@ function WelcomePage() {
                                     <h2> Hypothesis pages</h2>
                                 </ListSubheader>
                             }>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Level"
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "level", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Level >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/normality_Tests"
+                            Level >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Normality test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/normality_Tests_And"
+                            Normality test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "normality_anderson", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Normality test Anderson>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/transform_data"
+                            Normality test Anderson>
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "data_transform", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Transform data >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Pearson_correlation"
+                            Transform data >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "data_transform", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Pearson Correlation >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/PointBiserialCorrelation"
+                            Pearson Correlation >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "point_biserial_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Point Biserial Correlation >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/DataTransformationForANOVA"
+                            Point Biserial Correlation >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "data_transform_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Data Transformation for use in ANOVA >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Homoscedasticity"
+                            Data Transformation for use in ANOVA >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "homoscedasticity", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Homoscedasticity check >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Spearman_correlation"
+                            Homoscedasticity check >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "spearman_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Spearman Correlation >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Kendalltau_correlation"
+                            Spearman Correlation >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "kendalltau_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Kendalltau Correlation >
-                            </ListItemButton>
-                        </Link>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left", padding: "10px" }} noWrap>
+                            Kendalltau Correlation >
+                        </Button>
+                        <Typography variant="h6" sx={{flexGrow: 1, textAlign: "left", padding: "10px"}} noWrap>
                             Statistical Tests
                         </Typography>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Welch_t_test"
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "welch_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Welch t-test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Independent_t_test"
+                            Welch t-test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "independent_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Independent t-test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Two_Related_samples_t_test"
+                            Independent t-test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "t_test_two_samples", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                t-test on TWO RELATED samples of scores >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Mann_Whitney"
+                            t-test on TWO RELATED samples of scores >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "mann_whitney_u_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Mann-Whitney U rank test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Wilcoxon_signed_rank_test"
+                            Mann-Whitney U rank test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "wilcoxon_signed_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Wilcoxon signed-rank test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Alexander_Govern_test"
+                            Wilcoxon signed-rank test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "alexander_govern", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Alexander Govern test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Kruskal_Wallis_H_test"
+                            Alexander Govern test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "kruskal_wallis_h", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Kruskal-Wallis H-test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/One_way_ANOVA"
+                            Kruskal-Wallis H-test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "one_way_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                one-way ANOVA >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Wilcoxon_rank_sum_statistic"
+                            one-way ANOVA >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "wilcoxon_rank_statistic", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Wilcoxon rank-sum statistic >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/One_way_chi_square_test"
+                            Wilcoxon rank-sum statistic >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "one_way_chi_square", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                One-way chi-square test >
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/Multiple_comparisons"
+                            One-way chi-square test >
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "mutliple_comparisons", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Multiple Comparisons >
-                            </ListItemButton>
-                        </Link>
-                        {/*<p>calculate_SpO2 from eeg_router</p>*/}
+                            Multiple Comparisons >
+                        </Button>
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
@@ -582,24 +514,14 @@ function WelcomePage() {
                                     <h2>Dashboard Pages</h2>
                                 </ListSubheader>
                             }>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/dashboard"
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 1, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Dashboard>
-                                {/*   0) Open File and see all channels*/}
-                                {/*   1)  List of annotations in our UI*/}
-                                {/*   2) New annotation */}
-                                {/*   2.1) Annotations by user*/}
-                                {/*   2) New aggregate channels */}
-                                {/*   3) Montage */}
-                            </ListItemButton>
-                        </Link>
-                        {/*   1) Find how to create and how different users act in neurodesk */}
-                        {/*   2) Show the right eeg channels  */}
-
+                            Dashboard >
+                        </Button>
+                        <Divider/>
                     </List>
                     {/*<List*/}
                     {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
