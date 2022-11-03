@@ -24,6 +24,7 @@ import EEGSelector from "./EEGSelector";
 import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import {useLocation} from "react-router-dom";
 
 const style = {
     position: 'absolute',
@@ -42,6 +43,8 @@ class AutoCorrelationFunctionPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            // Utils
+            url_params: "",
             // List of channels sent by the backend
             channels: [],
 
@@ -90,16 +93,31 @@ class AutoCorrelationFunctionPage extends React.Component {
         // - values of channels from the backend
         this.fetchChannels();
 
+        // this.setState({url_params: new URLSearchParams(window.location.search)})
+        // console.log(this.state.url_params)
+        // console.log(this.state.url_params.get("step_id"))
+        // const params = new URLSearchParams(window.location.search);
+        // const params1 = new URLSearchParams(window.location).get("step_id");
+        console.log("window.location.search")
+        console.log(window.location.search)
+        // console.log(this.state.url_params)
+        // console.log(this.state.url_params.get("step_id"))
+        // console.log(this.state.url_params.get("run_id"))
+        // console.log(params.toString())
+
+        // this.setState(url_params = URLSearchParams(window.location.pathname))
+        // const params = new URLSearchParams(window.location.pathname);
     }
 
     /**
      * Call backend endpoint to get channels of eeg
      */
     async fetchChannels(url, config) {
+        const params = new URLSearchParams(window.location.search);
         API.get("list/channels", {
             params: {
-                run_id: 1,
-                step_id: 1,
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
                 }
 
         }).then(res => {
@@ -146,18 +164,22 @@ class AutoCorrelationFunctionPage extends React.Component {
         }
 
 
-
+        const params = new URLSearchParams(window.location.search);
         // Send the request
         API.get("return_autocorrelation",
             {
-                params: {input_name: this.state.selected_channel, input_adjusted: this.state.selected_adjusted,
+                params: {
+                    run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
+                    input_name: this.state.selected_channel, input_adjusted: this.state.selected_adjusted,
                     input_qstat: this.state.selected_qstat, input_fft: this.state.selected_fft,
                     input_bartlett_confint: this.state.selected_bartlett_confint, input_missing: this.state.selected_missing,
                     input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}
             }
         ).then(res => {
             const resultJson = res.data;
-
+            console.log("resultJson")
+            console.log(resultJson)
             // Show only relevant visualisations and load their data
             // Correlation chart always has results so should always be enabled
             this.setState({correlation_results: resultJson.values_autocorrelation})

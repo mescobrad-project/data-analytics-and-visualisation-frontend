@@ -44,15 +44,14 @@ function InboxIcon() {
 async function redirectToPage(run_id, step_id, function_name, bucket, file) {
     // Send the request
     let files_to_send = []
-    for (let it ; it< bucket.length;it++){
+    for (let it=0 ; it< bucket.length;it++){
         files_to_send.push([bucket[it], file[it]])
     }
-    console.log(files_to_send)
-    console.log(function_name)
+
     API.put("function/navigation/",
             {
-                run_id: "1",
-                step_id: "1",
+                run_id: run_id,
+                step_id: step_id,
                 function: function_name,
                 metadata: {
                     // [["saved"] , "demo_sample_questionnaire.csv"],
@@ -338,7 +337,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "level", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "level", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Level >
                         </Button>
@@ -346,7 +345,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Normality test >
                         </Button>
@@ -354,7 +353,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "normality_anderson", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "normality_anderson", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Normality test Anderson>
                         </Button>
@@ -362,7 +361,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "data_transform", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "data_transform", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Transform data >
                         </Button>
@@ -370,7 +369,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "data_transform", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "pearson_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Pearson Correlation >
                         </Button>
@@ -378,7 +377,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "point_biserial_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "point_biserial_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Point Biserial Correlation >
                         </Button>
@@ -386,7 +385,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "data_transform_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "data_transform_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Data Transformation for use in ANOVA >
                         </Button>
@@ -394,7 +393,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "homoscedasticity", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "homoscedasticity", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Homoscedasticity check >
                         </Button>
@@ -402,7 +401,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "spearman_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "spearman_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Spearman Correlation >
                         </Button>
@@ -410,7 +409,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "kendalltau_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "kendalltau_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Kendalltau Correlation >
                         </Button>
@@ -420,7 +419,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "welch_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "welch_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Welch t-test >
                         </Button>
@@ -428,7 +427,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "independent_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "independent_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Independent t-test >
                         </Button>
@@ -436,7 +435,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "t_test_two_samples", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "t_test_two_samples", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             t-test on TWO RELATED samples of scores >
                         </Button>
@@ -444,7 +443,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "mann_whitney_u_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "mann_whitney_u_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Mann-Whitney U rank test >
                         </Button>
@@ -452,7 +451,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "wilcoxon_signed_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "wilcoxon_signed_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Wilcoxon signed-rank test >
                         </Button>
@@ -460,7 +459,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "alexander_govern", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "alexander_govern", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Alexander Govern test >
                         </Button>
@@ -468,7 +467,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "kruskal_wallis_h", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "kruskal_wallis_h", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Kruskal-Wallis H-test >
                         </Button>
@@ -476,7 +475,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "one_way_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "one_way_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             one-way ANOVA >
                         </Button>
@@ -484,7 +483,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "wilcoxon_rank_statistic", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "wilcoxon_rank_statistic", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Wilcoxon rank-sum statistic >
                         </Button>
@@ -492,7 +491,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "one_way_chi_square", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "one_way_chi_square", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             One-way chi-square test >
                         </Button>
@@ -500,7 +499,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "mutliple_comparisons", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 2, "mutliple_comparisons", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Multiple Comparisons >
                         </Button>
@@ -517,7 +516,7 @@ function WelcomePage() {
                         <Button
                                 // variant="outlined"
                                 size="large"
-                                onClick={redirectToPage.bind(this,1, 1, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1, 3, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Dashboard >
                         </Button>
