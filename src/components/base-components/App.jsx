@@ -58,6 +58,7 @@ import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
 import EEGViewer from "./EEGViewer";
 import EnvelopeTrendAnalysis from "./Envelope_Trend_Analysis";
+import LDAFunctionPage from "./LDAFunctionPage";
 
 
 
@@ -147,6 +148,7 @@ const App = () => {
                         <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/artifacts" element={(<LayoutMain><ArtifactsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/envelope_trend" element={(<LayoutMain><EnvelopeTrendAnalysis/></LayoutMain>)}/>
+                        <Route exact path="/LDA" element={(<LayoutMain><LDAFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
