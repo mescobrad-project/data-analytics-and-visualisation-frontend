@@ -60,7 +60,7 @@ import EEGViewer from "./EEGViewer";
 import EnvelopeTrendAnalysis from "./Envelope_Trend_Analysis";
 import LDAFunctionPage from "./LDAFunctionPage";
 import SVCFunctionPage from "./SVCFunctionPage";
-
+import PCAFunctionPage from "./PCAFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -150,6 +150,7 @@ const App = () => {
                         <Route exact path="/envelope_trend" element={(<LayoutMain><EnvelopeTrendAnalysis/></LayoutMain>)}/>
                         <Route exact path="/LDA" element={(<LayoutMain><LDAFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SVC" element={(<LayoutMain><SVCFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/PCA" element={(<LayoutMain><PCAFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
