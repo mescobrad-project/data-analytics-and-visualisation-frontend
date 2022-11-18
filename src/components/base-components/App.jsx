@@ -59,7 +59,7 @@ import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
 import EEGViewer from "./EEGViewer";
 import EnvelopeTrendAnalysis from "./Envelope_Trend_Analysis";
 import LDAFunctionPage from "./LDAFunctionPage";
-
+import SVCFunctionPage from "./SVCFunctionPage";
 
 
 // Theme Colors Declaration
@@ -149,6 +149,7 @@ const App = () => {
                         <Route exact path="/artifacts" element={(<LayoutMain><ArtifactsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/envelope_trend" element={(<LayoutMain><EnvelopeTrendAnalysis/></LayoutMain>)}/>
                         <Route exact path="/LDA" element={(<LayoutMain><LDAFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/SVC" element={(<LayoutMain><SVCFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

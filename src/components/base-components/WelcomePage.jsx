@@ -580,6 +580,15 @@ function WelcomePage() {
                                 LDA >
                             </ListItemButton>
                         </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/SVC"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                SVC >
+                            </ListItemButton>
+                        </Link>
                         {/*<p>calculate_SpO2 from eeg_router</p>*/}
 
                     </List>
