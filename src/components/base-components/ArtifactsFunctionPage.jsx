@@ -93,8 +93,8 @@ class ArtifactsFunctionPage extends React.Component {
         API.get("/mne/open/eeg",
                 {
                     params: {
-                        input_run_id: "a",
-                        input_step_id: "b"
+                        run_id: "a",
+                        step_id: "b"
                     }
                 }
         ).then(res => {
@@ -135,8 +135,8 @@ class ArtifactsFunctionPage extends React.Component {
             API.get("/mne/open/eeg",
                     {
                         params: {
-                            input_run_id: "a",
-                            input_step_id: "b"
+                            run_id: "a",
+                            step_id: "b"
                         }
                     }
             ).then(res => {

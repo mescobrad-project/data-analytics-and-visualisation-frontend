@@ -74,6 +74,8 @@ class AutoCorrelationFunctionPage extends React.Component {
             qstat_chart_show : false,
             pvalues_chart_show : false,
 
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
@@ -89,17 +91,19 @@ class AutoCorrelationFunctionPage extends React.Component {
         this.handleSelectNlagsChange = this.handleSelectNlagsChange.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
+        // this.fetchChannels();
 
         // this.setState({url_params: new URLSearchParams(window.location.search)})
         // console.log(this.state.url_params)
         // console.log(this.state.url_params.get("step_id"))
         // const params = new URLSearchParams(window.location.search);
         // const params1 = new URLSearchParams(window.location).get("step_id");
-        console.log("window.location.search")
-        console.log(window.location.search)
+        // console.log("window.location.search")
+        // console.log(window.location.search)
         // console.log(this.state.url_params)
         // console.log(this.state.url_params.get("step_id"))
         // console.log(this.state.url_params.get("run_id"))
@@ -112,7 +116,7 @@ class AutoCorrelationFunctionPage extends React.Component {
     /**
      * Call backend endpoint to get channels of eeg
      */
-    async fetchChannels(url, config) {
+    async fetchChannels() {
         const params = new URLSearchParams(window.location.search);
         API.get("list/channels", {
             params: {
@@ -166,11 +170,14 @@ class AutoCorrelationFunctionPage extends React.Component {
 
         const params = new URLSearchParams(window.location.search);
         // Send the request
+        console.log("STUFF")
+        console.log(this.state.file_used)
         API.get("return_autocorrelation",
             {
                 params: {
                     run_id: params.get("run_id"),
                     step_id: params.get("step_id"),
+                    file_used: this.state.file_used,
                     input_name: this.state.selected_channel, input_adjusted: this.state.selected_adjusted,
                     input_qstat: this.state.selected_qstat, input_fft: this.state.selected_fft,
                     input_bartlett_confint: this.state.selected_bartlett_confint, input_missing: this.state.selected_missing,
@@ -291,6 +298,18 @@ class AutoCorrelationFunctionPage extends React.Component {
 
     handleModalClose(){
         this.setState({open_modal: false})
+        this.fetchChannels()
+        // console.log("CLOSE MODAL")
+    }
+
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
     }
 
     render() {
@@ -322,7 +341,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                         AutoCorrelation Parameterisation
                     </Typography>
                     <Divider/>
-                    <EEGSelectModal/>
+                    <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                     {/*<Button variant="contained" color="primary" sx={{marginLeft: "25%"}} disabled={(this.state.selected_part_channel === "" ? true : false)} onClick={this.handleModalOpen}>Open modal</Button>*/}
                     {/*<Modal*/}
                     {/*        open={this.state.open_modal}*/}
@@ -339,7 +358,9 @@ class AutoCorrelationFunctionPage extends React.Component {
                     {/*    </Box>*/}
                     {/*</Modal>*/}
                     <Divider/>
-                    <form onSubmit={this.handleSubmit}>
+                    {/* The form only appears when this.state.channels has any value which happens only when the forms
+                    knows what file to access*/}
+                    <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
