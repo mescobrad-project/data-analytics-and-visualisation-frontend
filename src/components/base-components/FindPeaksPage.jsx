@@ -5,7 +5,7 @@ import API from "../../axiosInstance";
 // import PropTypes from 'prop-types';
 import {
     Breadcrumbs,
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 
 class FindPeaksPage extends React.Component {
     constructor(props){
@@ -78,10 +79,12 @@ class FindPeaksPage extends React.Component {
             // peak_chart_show : false,
             // peak_chart_show : false,
             // peak_chart_show : false,
+
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectHeightTypeChange = this.handleSelectHeightTypeChange.bind(this);
@@ -102,19 +105,10 @@ class FindPeaksPage extends React.Component {
         this.handleSelectPlateauSizeTypeChange = this.handleSelectPlateauSizeTypeChange.bind(this);
         this.handleSelectPlateauSize1Change = this.handleSelectPlateauSize1Change.bind(this);
         this.handleSelectPlateauSize2Change = this.handleSelectPlateauSize2Change.bind(this);
-
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
-    }
-
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
     }
     
     /**
@@ -201,9 +195,14 @@ class FindPeaksPage extends React.Component {
         console.log("--------")
         console.log(to_send_input_height)
         // Send the request
+        const params = new URLSearchParams(window.location.search);
+
         API.get("return_peaks",
             {
-                params: {input_name: this.state.selected_channel,
+                params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        input_name: this.state.selected_channel,
                         input_height: to_send_input_height,
                         input_threshold:to_send_input_threshold ,
                         input_distance: to_send_input_distance,
@@ -211,7 +210,8 @@ class FindPeaksPage extends React.Component {
                         input_width: to_send_input_width,
                         input_wlen: to_send_input_wlen,
                         input_rel_height: to_send_input_rel_height,
-                        input_plateau: to_send_input_plateau
+                        input_plateau: to_send_input_plateau,
+                        file_used: this.state.file_used,
                 }
             }
         ).then(res => {
@@ -328,6 +328,16 @@ class FindPeaksPage extends React.Component {
     }
 
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
+
     render() {
         return (
             <Grid container direction="row">
@@ -364,8 +374,10 @@ class FindPeaksPage extends React.Component {
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Detection of peaks
                     </Typography>
-                    <hr/>
-                    <form onSubmit={this.handleSubmit}>
+                    <Divider/>
+                    <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                    <Divider/>
+                    <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select

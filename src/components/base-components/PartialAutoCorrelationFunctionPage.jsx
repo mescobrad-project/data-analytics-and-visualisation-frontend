@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -20,6 +20,7 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 
 class PartialAutoCorrelationFunctionPage extends React.Component {
     constructor(props){
@@ -46,30 +47,23 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
             correlation_chart_show : false,
             confint_chart_show : false,
 
-
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectNlagsChange = this.handleSelectNlagsChange.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
-
+        // this.fetchChannels();
     }
 
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
-    }
     
     /**
      * Process and send the request for auto correlation and handle the response
@@ -103,12 +97,16 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
             flag_alpha = true;
         }
 
+        const params = new URLSearchParams(window.location.search);
+
         console.log("METHOD VALUE")
         console.log( this.state.selected_method)
         // Send the request
         API.get("return_partial_autocorrelation",
             {
-                params: {input_name: this.state.selected_channel, input_method: this.state.selected_method,
+                params: {run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
+                    input_name: this.state.selected_channel, input_method: this.state.selected_method,
                     input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}
             }
         ).then(res => {
@@ -183,6 +181,16 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
         this.setState( {selected_nlags: event.target.value})
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
+
     render() {
         return (
             <Grid container direction="row">
@@ -211,8 +219,10 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Partial AutoCorrelation Parameterisation
                     </Typography>
-                    <hr/>
-                    <form onSubmit={this.handleSubmit}>
+                    <Divider/>
+                    <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                    <Divider/>
+                    <form onSubmit={this.handleSubmit}  style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select

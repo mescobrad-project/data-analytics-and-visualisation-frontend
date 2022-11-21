@@ -89,12 +89,12 @@ class ArtifactsFunctionPage extends React.Component {
 
     async handleProcessOpenEEG() {
         //Parameter are only placeholder
-
+        const params = new URLSearchParams(window.location.search);
         API.get("/mne/open/eeg",
                 {
                     params: {
-                        run_id: "a",
-                        step_id: "b"
+                        rrun_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
                     }
                 }
         ).then(res => {
@@ -105,8 +105,11 @@ class ArtifactsFunctionPage extends React.Component {
 
 
     async handleSendNotebookAndSelectionConfig() {
+        const params = new URLSearchParams(window.location.search);
 
         let data_to_send = {
+            run_id: params.get("run_id"),
+            step_id: params.get("step_id"),
             bipolar_references: [],
             type_of_reference: "",
             channels_reference: [],
@@ -118,7 +121,8 @@ class ArtifactsFunctionPage extends React.Component {
             repairing_artifacts_ica: true,
             n_components: this.state.selected_components,
             list_exclude_ica: this.state.right,
-            ica_method: this.state.selected_repair_method
+            ica_method: this.state.selected_repair_method,
+            file_used: "original",
         }
 
         console.log("SEND DATA")
@@ -132,11 +136,12 @@ class ArtifactsFunctionPage extends React.Component {
                 }
         ).then(res => {
         //   Must reload the notebook from the frontend or trigger it here otherwise
+            const params = new URLSearchParams(window.location.search);
             API.get("/mne/open/eeg",
                     {
                         params: {
-                            run_id: "a",
-                            step_id: "b"
+                            run_id: params.get("run_id"),
+                            step_id: params.get("step_id")
                         }
                     }
             ).then(res => {
@@ -479,7 +484,8 @@ class ArtifactsFunctionPage extends React.Component {
 
                             <Grid container direction="row">
                                 <Grid item xs={12} sx={{height: "82vh"}}>
-                                    <iframe src="http://10.129.150.120:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "80%", height: "97%" , marginLeft: "0%"}}></iframe>
+                                    {/*<iframe src="http://10.129.150.120:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>*/}
                                 </Grid>
                             </Grid>
 

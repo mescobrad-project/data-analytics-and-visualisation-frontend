@@ -9,6 +9,7 @@ import {Box, Stack} from "@mui/system";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageList from "@mui/material/ImageList";
 import * as PropTypes from "prop-types";
+import EEGSelector from "./EEGSelector";
 
 const style = {
     position: 'absolute',
@@ -126,18 +127,19 @@ class EEGViewer extends React.Component {
         this.handleModalClose = this.handleModalClose.bind(this);
 
         // Initialise component
-        this.handleProcessOpenEEG();
+        // this.handleProcessOpenEEG();
     }
 
 
     async handleProcessOpenEEG() {
         //Parameter are only placeholder
 
+        const params = new URLSearchParams(window.location.search);
         API.get("/mne/open/eeg",
                 {
                     params: {
-                        run_id: "a",
-                        step_id: "b"
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
                     }
                 }
         ).then(res => {
@@ -270,7 +272,8 @@ class EEGViewer extends React.Component {
                         </Grid>
 
                         <Grid item xs={10} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black", height: "92vh"}}>
-                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                            <EEGSelector/>
+                                    {/*<iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>*/}
                         </Grid>
 
                     </Grid>

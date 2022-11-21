@@ -163,7 +163,7 @@ function WelcomePage() {
                                 size="large"
                                 onClick={redirectToPage.bind(this,1, 1, "power_spectral_density_multitaper", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Power Spectral Density - Multitaper>
+                            Power Spectral Density - Multitaper> Is this Welch?
                         </Button>
                         <Divider/>
                         <Button

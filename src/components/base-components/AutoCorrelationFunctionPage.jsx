@@ -79,7 +79,6 @@ class AutoCorrelationFunctionPage extends React.Component {
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectAdjustedChange = this.handleSelectAdjustedChange.bind(this);
@@ -89,8 +88,6 @@ class AutoCorrelationFunctionPage extends React.Component {
         this.handleSelectMissingChange = this.handleSelectMissingChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectNlagsChange = this.handleSelectNlagsChange.bind(this);
-        this.handleModalOpen = this.handleModalOpen.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
         this.handleChannelChange = this.handleChannelChange.bind(this);
         this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
@@ -111,22 +108,6 @@ class AutoCorrelationFunctionPage extends React.Component {
 
         // this.setState(url_params = URLSearchParams(window.location.pathname))
         // const params = new URLSearchParams(window.location.pathname);
-    }
-
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels() {
-        const params = new URLSearchParams(window.location.search);
-        API.get("list/channels", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-                }
-
-        }).then(res => {
-            this.setState({channels: res.data.channels})
-        });
     }
 
     /**
@@ -289,17 +270,6 @@ class AutoCorrelationFunctionPage extends React.Component {
     }
     handleSelectNlagsChange(event){
         this.setState( {selected_nlags: event.target.value})
-    }
-
-    handleModalOpen(){
-        this.setState({open_modal: true})
-        this.handleGetChannelSignal()
-    }
-
-    handleModalClose(){
-        this.setState({open_modal: false})
-        this.fetchChannels()
-        // console.log("CLOSE MODAL")
     }
 
     handleChannelChange(channel_new_value){
