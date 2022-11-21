@@ -3,7 +3,7 @@ import API from "../../axiosInstance";
 import InnerHTML from 'dangerously-set-html-content'
 import PropTypes from 'prop-types';
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -21,6 +21,7 @@ import mpld3 from 'mpld3';
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 
 class StftFunctionPage extends React.Component {
     constructor(props){
@@ -48,11 +49,13 @@ class StftFunctionPage extends React.Component {
             // Visualisation Hide/Show values
             stft_chart_show : false,
 
-            test_chart_html: ""
+            test_chart_html: "",
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
+        // this.fetchChannels = this.fetchChannels.bind(this);
         // this.handleSelectTMinChange = this.handleSelectTMinChange.bind(this);
         // this.handleSelectTMaxChange = this.handleSelectTMaxChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -65,19 +68,13 @@ class StftFunctionPage extends React.Component {
         this.handleSelectBoundaryChange = this.handleSelectBoundaryChange.bind(this);
         this.handleSelectPaddedChange = this.handleSelectPaddedChange.bind(this);
         this.handleSelectAxisChange = this.handleSelectAxisChange.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
+
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
+        // this.fetchChannels();
 
-    }
-
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
     }
 
     /**
@@ -116,15 +113,19 @@ class StftFunctionPage extends React.Component {
 
 
 
-
+        const params = new URLSearchParams(window.location.search);
         // Send the request
         API.get("return_stft",
                 {
-                    params: {input_name: this.state.selected_channel, input_window: this.state.selected_window,
+                    params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        input_name: this.state.selected_channel, input_window: this.state.selected_window,
                         input_nperseg: to_send_input_nperseg, input_noverlap: to_send_input_noverlap,
                         input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,
                         input_boundary: this.state.selected_boundary, input_axis: this.state.selected_axis,
-                        input_average: this.state.selected_average}
+                        input_average: this.state.selected_average,file_used: this.state.file_used,
+                    }
                 }
         ).then(res => {
             const resultJson = res.data;
@@ -206,7 +207,15 @@ class StftFunctionPage extends React.Component {
         this.setState( {selected_axis: event.target.value})
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
 
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
 
 
     render() {
@@ -227,8 +236,10 @@ class StftFunctionPage extends React.Component {
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Stft Parameterisation
                         </Typography>
-                        <hr/>
-                        <form onSubmit={this.handleSubmit}>
+                        <Divider/>
+                        <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                        <Divider/>
+                        <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select

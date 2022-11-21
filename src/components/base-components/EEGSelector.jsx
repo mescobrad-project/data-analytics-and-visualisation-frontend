@@ -8,6 +8,7 @@ import {
 import {Box} from "@mui/system";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageList from "@mui/material/ImageList";
+import PropTypes from "prop-types";
 
 const style = {
     position: 'absolute',
@@ -23,6 +24,11 @@ const style = {
 };
 
 class EEGSelector extends React.Component {
+        // static propTypes = {
+        //     step_id: PropTypes.string,
+        //     run_id: PropTypes.string
+        // }
+
         constructor(props) {
         super(props);
         this.state = {
@@ -39,11 +45,12 @@ class EEGSelector extends React.Component {
     async handleProcessOpenEEG() {
         //Parameter are only placeholder
 
+        const params = new URLSearchParams(window.location.search);
         API.get("/mne/open/eeg",
                 {
                     params: {
-                        input_run_id: "a",
-                        input_step_id: "b"
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
                     }
                 }
         ).then(res => {
