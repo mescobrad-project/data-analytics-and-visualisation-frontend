@@ -38,7 +38,8 @@ class Normality_Tests extends React.Component {
             selected_axis:"0",
             axis_show:false,
             histogram_chart_show: false,
-            stats_show:true
+            stats_show:true,
+            req_file: ""
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -72,8 +73,11 @@ class Normality_Tests extends React.Component {
         // Send the request
         API.get("normality_tests",
                 {
-                    params: {column: this.state.selected_column, name_test: this.state.selected_method,
-                        axis: this.state.selected_axis}
+                    params: {column: this.state.selected_column,
+                        file_name: this.state.req_file,
+                        name_test: this.state.selected_method,
+                        alternative: this.state.selected_alternative,
+                        nan_policy: this.state.selected_nan_policy, axis: this.state.selected_axis}
                 }
         ).then(res => {
             this.setState({test_data: res.data})

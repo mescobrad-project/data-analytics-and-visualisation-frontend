@@ -14,6 +14,7 @@ import {
     Select, TextField,
     Typography
 } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 import HistogramChartCustom from "../../components/ui-components/HistogramChartCustom";
 
 class Normality_Tests extends React.Component {
@@ -44,7 +45,10 @@ class Normality_Tests extends React.Component {
             axis_show:false,
             histogram_chart_show: false,
             stats_show:true,
-            req_file: file_path
+            req_file: "",
+            loading: false,
+            finished: false
+            // req_file: file_path
         };
 
         console.log("1st-"+file_path)
@@ -67,20 +71,20 @@ class Normality_Tests extends React.Component {
      * Call backend endpoint to get column names
      */
 
-    async fetchColumnNames(url, config) {
-        console.log("2nd- "+ this.state.req_file)
-        API.get("return_saved_object_columns",
-                {params: {file_name: this.state.req_file}}
-        ).then(res => {
-            this.setState({column_names: res.data.columns})
-        });
-    }
-
     // async fetchColumnNames(url, config) {
-    //     API.get("return_columns", {}).then(res => {
+    //     console.log("2nd- "+ this.state.req_file)
+    //     API.get("return_saved_object_columns",
+    //             {params: {file_name: this.state.req_file}}
+    //     ).then(res => {
     //         this.setState({column_names: res.data.columns})
     //     });
     // }
+
+    async fetchColumnNames(url, config) {
+        API.get("return_columns", {}).then(res => {
+            this.setState({column_names: res.data.columns})
+        });
+    }
 
     /**
      * Process and send the request for auto correlation and handle the response
@@ -175,11 +179,6 @@ class Normality_Tests extends React.Component {
             this.setState({axis_show: true});
             this.setState({nan_policy_show: true})
             this.setState({stats_show: true})}
-        // else if (event.target.value=="Anderson-Darling"){
-        //     this.setState({alternative_show: false});
-        //     this.setState({axis_show: false});
-        //     this.setState({nan_policy_show: false})
-        //     this.setState({stats_show: false})}
         else {this.setState({alternative_show: false});
             this.setState({axis_show: false});
             this.setState({nan_policy_show: false})
@@ -194,6 +193,8 @@ class Normality_Tests extends React.Component {
 
 
     render() {
+        const { loading, finished } = this.state;
+        const setLoading = !finished && loading;
         return (
                 <Grid container direction="row">
                     <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
@@ -295,7 +296,21 @@ class Normality_Tests extends React.Component {
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
+                            <LoadingButton sx={{float: "left"}} variant="contained" color="primary" type="submit"
+                                           loading={setLoading}
+                                           loadingIndicator="Loading…"
+                                           variant="outlined"
+                                           done={finished}
+                                           onClick={() => {
+                                               // Clicked, so show the progress dialog
+                                               this.setState({ loading: true });
 
+                                               // In a 1.5 seconds, end the progress to show that it's done
+                                               setTimeout(() => { this.setState({ finished: true })}, 1500);
+                                           }}
+                            >
+                                Submit
+                            </LoadingButton>
 
                         </form>
                         {/*<Divider/>*/}
