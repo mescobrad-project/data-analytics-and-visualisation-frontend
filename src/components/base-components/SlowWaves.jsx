@@ -23,6 +23,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import LineMultipleColorsChartCustom from "../ui-components/LineMultipleColorsChartCustom";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class SlowWaves extends React.Component {
@@ -67,15 +68,18 @@ class SlowWaves extends React.Component {
 
             // Visualisation Hide/Show values
             signal_chart_show : false,
-            selected_part_channel: "F8-AV"
+            selected_part_channel: "F8-Ref",
             // peak_chart_show : false,
             // peak_chart_show : false,
             // peak_chart_show : false,
             // peak_chart_show : false,
+
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
+        // this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
@@ -92,21 +96,14 @@ class SlowWaves extends React.Component {
         this.handleSelectedMultiOnly = this.handleSelectedMultiOnly.bind(this);
         this.handleSelectedRemoveOutliers = this.handleSelectedRemoveOutliers.bind(this);
         this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
+        // this.fetchChannels();
         this.handleGetChannelSignal();
     }
 
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
-    }
-    
     /**
      * Process and send the request for auto correlation and handle the response
      */
@@ -167,10 +164,12 @@ class SlowWaves extends React.Component {
             to_send_input_thresh_rms = parseFloat(this.state.selected_thresh_rms)
         }
 
+        const params = new URLSearchParams(window.location.search);
         // Send the request
         API.get("slow_waves_detection",
             {
-                params: {name: this.state.selected_channel,
+                params: {run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),name: this.state.selected_channel,file_used: this.state.file_used
                     // input_freq_sp_low: to_send_input_freq_sp_low,
                     // input_freq_sp_high: to_send_input_freq_sp_high,
                     // input_freq_broad_low: to_send_input_freq_broad_low,
@@ -218,11 +217,15 @@ class SlowWaves extends React.Component {
         if (this.state.selected_part_channel === "") {
             return
         }
+        const params = new URLSearchParams(window.location.search);
 
         API.get("return_signal",
                 {
                     params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
                         input_name: this.state.selected_part_channel,
+                        // file_used: "original",
                         // params: {input_name: this.state.selected_channel,
                     }
                 }
@@ -305,6 +308,15 @@ class SlowWaves extends React.Component {
             this.setState( {selected_remove_outliers: event.target.value})
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
 
     render() {
         return (
@@ -334,8 +346,10 @@ class SlowWaves extends React.Component {
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Slow Waves
                     </Typography>
-                    <hr/>
-                    <form onSubmit={this.handleSubmit}>
+                    <Divider/>
+                    <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                    <Divider/>
+                    <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select

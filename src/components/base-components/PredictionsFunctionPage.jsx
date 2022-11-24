@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -21,6 +21,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom"
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 
 
 class PredictionsFunctionPage extends React.Component {
@@ -50,13 +51,14 @@ class PredictionsFunctionPage extends React.Component {
 
             // Visualisation Hide/Show values
             predictions_chart_show : false,
-            selected_part_channel: "F8-AV"
+            selected_part_channel: "F8-AV",
 
-
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
+        // this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectTestSizeChange = this.handleSelectTestSizeChange.bind(this);
@@ -69,21 +71,15 @@ class PredictionsFunctionPage extends React.Component {
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectCriterionChange = this.handleSelectCriterionChange.bind(this);
         this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
+
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
+        // this.fetchChannels();
         this.handleGetChannelSignal();
 
 
-    }
-
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
     }
 
     /**
@@ -125,14 +121,13 @@ class PredictionsFunctionPage extends React.Component {
         //Reset view of optional visualisations preview
         this.setState({welch_chart_show: false})
 
-
-
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
-
         API.get("return_predictions",
                 {
-                    params: {input_name: this.state.selected_channel,
+                    params: {run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),input_name: this.state.selected_channel,
                         input_test_size: to_send_input_test_size,
                         input_future_seconds: to_send_input_future_seconds,
                         input_start_p: to_send_input_start_p,
@@ -140,7 +135,9 @@ class PredictionsFunctionPage extends React.Component {
                         input_max_p: to_send_input_max_p,
                         input_max_q: to_send_input_max_q,
                         input_method: this.state.selected_method,
-                        input_criterion: this.state.selected_criterion}
+                        input_criterion: this.state.selected_criterion,
+                        file_used: this.state.file_used,
+                    }
                 }
         ).then(res => {
             const resultJson = res.data;
@@ -319,6 +316,15 @@ class PredictionsFunctionPage extends React.Component {
         this.setState( {selected_criterion: event.target.value})
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
 
 
     render() {
@@ -339,8 +345,10 @@ class PredictionsFunctionPage extends React.Component {
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Predictions Parameterisation
                         </Typography>
-                        <hr/>
-                        <form onSubmit={this.handleSubmit}>
+                        <Divider/>
+                        <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                        <Divider/>
+                        <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select

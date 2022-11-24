@@ -42,7 +42,14 @@ class Pearson_correlation extends React.Component {
      * Call backend endpoint to get column names
      */
     async fetchColumnNames() {
-        API.get("return_columns", {}).then(res => {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_columns",
+    {
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id")
+        }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
@@ -52,11 +59,17 @@ class Pearson_correlation extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("compute_pearson_correlation",
                 {
-                    params: {column_1: this.state.selected_column, column_2: this.state.selected_column2}
+                    params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        column_1: this.state.selected_column,
+                        column_2: this.state.selected_column2
+                    }
                 }
         ).then(res => {
             this.setState({test_data: res.data})

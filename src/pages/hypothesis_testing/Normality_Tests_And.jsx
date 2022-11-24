@@ -57,8 +57,15 @@ class Normality_Tests extends React.Component {
     /**
      * Call backend endpoint to get column names
      */
-    async fetchColumnNames(url, config) {
-        API.get("return_columns", {}).then(res => {
+    async fetchColumnNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_columns",
+                {
+                    params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
@@ -68,16 +75,20 @@ class Normality_Tests extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
 
         this.setState({histogram_chart_show: false})
         // Send the request
         API.get("normality_tests",
                 {
-                    params: {column: this.state.selected_column,
+                    params: {run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
                         file_name: this.state.req_file,
+                        column: this.state.selected_column,
                         name_test: this.state.selected_method,
                         alternative: this.state.selected_alternative,
-                        nan_policy: this.state.selected_nan_policy, axis: this.state.selected_axis}
+                        nan_policy: this.state.selected_nan_policy,
+                        axis: this.state.selected_axis}
                 }
         ).then(res => {
             this.setState({test_data: res.data})
