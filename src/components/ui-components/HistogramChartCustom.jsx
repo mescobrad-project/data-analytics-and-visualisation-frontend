@@ -38,11 +38,11 @@ class HistogramChartCustom extends React.Component {
             am5xy.XYChart.new(root, {
                 panX: true,
                 panY: true,
-                wheelX: "panX",
-                wheelY: "zoomX",
-                scrollbarX: am5.Scrollbar.new(root, { orientation: "horizontal" }),
-                scrollbarY: am5.Scrollbar.new(root, { orientation: "vertical" }),
-                pinchZoomX:true,
+                // wheelX: "zoomX",
+                // wheelY: "zoomX",
+                // scrollbarX: am5.Scrollbar.new(root, { orientation: "horizontal" }),
+                // scrollbarY: am5.Scrollbar.new(root, { orientation: "vertical" }),
+                // pinchZoomX:true,
             })
         );
         // Format numbers
@@ -64,6 +64,7 @@ class HistogramChartCustom extends React.Component {
             renderer: xRenderer,
             tooltip: am5.Tooltip.new(root, {})
         }));
+xAxis.fontSize = 8;
 
         let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
             // maxDeviation: 0.3,
@@ -110,6 +111,7 @@ class HistogramChartCustom extends React.Component {
         if(this.props.chart_data){
             this.xAxis.data.setAll(this.props.chart_data)
             this.series.data.setAll(this.props.chart_data)
+            console.log(this.props.chart_data)
         }
 
     }
@@ -122,7 +124,7 @@ class HistogramChartCustom extends React.Component {
 
     render() {
         return (
-                    <div id={this.props.chart_id} style={{ width: "100%", height: "400px" }}></div>
+                    <div id={this.props.chart_id} style={{ width: "100%", height: "240px" }}></div>
         )
     }
 }

@@ -16,6 +16,9 @@ import {
 } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import HistogramChartCustom from "../../components/ui-components/HistogramChartCustom";
+import ClusteredBoxPlot from "../../components/ui-components/ClusteredBoxPlot";
+import LineMultipleColorsChartCustom from "../../components/ui-components/LineMultipleColorsChartCustom";
+import InnerHTML from "dangerously-set-html-content";
 
 class Normality_Tests extends React.Component {
     constructor(props){
@@ -26,13 +29,25 @@ class Normality_Tests extends React.Component {
             // List of columns in dataset
             column_names: [],
             test_data: {
-                statistic: "",
+                statistic: 0,
                 critical_values:[],
                 significance_level:[],
+                p_value: 0,
                 Description:[],
-                data:[]
+                data:[],
+                skew: "",
+                kurtosis: "",
+                standard_deviation: "",
+                median:"",
+                mean:"",
+                sample_N:"",
+                top_5:[],
+                last_5:[]
+                // boxplot_data: []
             },
             test_chart_data : [],
+            test_boxplot_chart_data: [],
+            test_qqplot_chart_data : [],
             alpha:"",
             //Values selected currently on the form
             selected_column: "",
@@ -44,8 +59,9 @@ class Normality_Tests extends React.Component {
             nan_policy_show:false,
             axis_show:false,
             histogram_chart_show: false,
+            boxplot_chart_show: false,
+            qqplot_chart_show: false,
             stats_show:true,
-            req_file: "",
             loading: false,
             finished: false
             // req_file: file_path
@@ -81,7 +97,12 @@ class Normality_Tests extends React.Component {
     // }
 
     async fetchColumnNames(url, config) {
-        API.get("return_columns", {}).then(res => {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
@@ -91,13 +112,17 @@ class Normality_Tests extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
-
+        const params = new URLSearchParams(window.location.search);
         this.setState({histogram_chart_show: false})
+        this.setState({boxplot_chart_show: false})
+        this.setState({qqplot_chart_show: false})
         // Send the request
         API.get("normality_tests",
                 {
-                    params: {column: this.state.selected_column,
-                        file_name: this.state.req_file,
+                    params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        column: this.state.selected_column,
                         name_test: this.state.selected_method,
                         alternative: this.state.selected_alternative,
                         nan_policy: this.state.selected_nan_policy, axis: this.state.selected_axis}
@@ -111,6 +136,8 @@ class Normality_Tests extends React.Component {
 
             // this.setState({test_chart_data: temp_array_chart})
             this.setState({histogram_chart_show: true})
+            this.setState({boxplot_chart_show: true})
+            this.setState({qqplot_chart_show: true})
 
             var maxCols = 10;
             function getHistogramData(source) {
@@ -151,16 +178,33 @@ class Normality_Tests extends React.Component {
                     temp_array_histograme.push(temp_object)
                 }
                 this.setState({test_chart_data: temp_array_histograme})
-                // this.setState({test_chart_data: getHistogramData(resultJson['data'])})
             }
+            const temp_boxplot_array_chart = resultJson['boxplot_data']
+            // const arr = []
+            // Object.keys(temp_boxplot_array_chart).forEach(key => arr.push({name: key, value: temp_boxplot_array_chart[key]}))
+            let temp_array_boxplot = []
+            if (temp_boxplot_array_chart.length){
+                for (let it = 0; it < temp_boxplot_array_chart.length; it++) {
+                    let temp_object = {}
+                    temp_object["date"] = temp_boxplot_array_chart[it]['date']
+                    temp_object["min"] = temp_boxplot_array_chart[it]['min']
+                    temp_object["q1"] = temp_boxplot_array_chart[it]['q1']
+                    temp_object["q2"] = temp_boxplot_array_chart[it]['q2']
+                    temp_object["q3"] = temp_boxplot_array_chart[it]['q3']
+                    temp_object["max"] = temp_boxplot_array_chart[it]['max']
+                    // temp_object["name"] = temp_boxplot_array_chart[it]['name']
+                    temp_array_boxplot.push(temp_object)
+                }
+            }
+            // this.setState({test_boxplot_chart_data: temp_array_boxplot})
+
+            this.setState({test_qqplot_chart_data: resultJson['qqplot']})
+            this.setState({test_Hplot_chart_data: resultJson['histogramplot']})
+            this.setState({test_boxplot_chart_data: resultJson['boxplot']})
 
         });
     }
 
-
-    /**
-     * Update state when selection changes in the form
-     */
     handleSelectColumnChange(event){
         this.setState( {selected_column: event.target.value})
     }
@@ -197,24 +241,24 @@ class Normality_Tests extends React.Component {
         const setLoading = !finished && loading;
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
-                            Dataset  Preview
-                        </Typography>
-                        <hr/>
-                        <List>
-                            {this.state.column_names.map((column) => (
-                                    <ListItem> <ListItemText primary={column}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                    {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>*/}
+                    {/*        Dataset  Preview*/}
+                    {/*    </Typography>*/}
+                    {/*    <hr/>*/}
+                    {/*    <List>*/}
+                    {/*        {this.state.column_names.map((column) => (*/}
+                    {/*                <ListItem> <ListItemText primary={column}/></ListItem>*/}
+                    {/*        ))}*/}
+                    {/*    </List>*/}
+                    {/*</Grid>*/}
+                    <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Select Normality Test
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Column</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
@@ -232,7 +276,7 @@ class Normality_Tests extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Column for Normality test</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="method-selector-label">Test</InputLabel>
                                 <Select
                                         labelId="method-selector-label"
@@ -249,7 +293,7 @@ class Normality_Tests extends React.Component {
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}
                                          style={{ display: (this.state.nan_policy_show ? 'block' : 'none') }}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
                                 <Select
@@ -265,7 +309,7 @@ class Normality_Tests extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}
                                          style={{ display: (this.state.alternative_show ? 'block' : 'none') }}>
                                 <InputLabel id="alternative-selector-label">Alternative</InputLabel>
                                 <Select
@@ -281,7 +325,7 @@ class Normality_Tests extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}
                                          style={{ display: (this.state.axis_show ? 'block' : 'none') }}>
                                 <TextField
                                         labelid="axis-selector-label"
@@ -324,7 +368,7 @@ class Normality_Tests extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Result Visualisation
                         </Typography>
@@ -332,18 +376,156 @@ class Normality_Tests extends React.Component {
                         <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Normality test Results
                         </Typography>
-                        <div className="result_texts" style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
-                            Test - Statistic :  { this.state.test_data.statistic}<br/>
-                            p-value : {this.state.test_data.p_value}<br/>
-                            Compared to significance level :    {this.state.alpha}<br/>
-                            <p style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>Description :    {this.state.test_data.Description}</p>
-                        </div>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
-                            Histogram of Selected data
+                        <table style={{width:'80%', fontSize:'12px', textAlign:'center'}}>
+                            <tr>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'22%'}}>Name</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>N</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Mean</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Median</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Std. Deviation</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Skewness</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Kurtosis</th>
+                            </tr>
+                            <tr>
+                                <td>{this.state.selected_column}</td>
+                                <td>{this.state.test_data.sample_N}</td>
+                                <td>{ this.state.test_data.mean}</td>
+                                <td>{ this.state.test_data.median}</td>
+                                <td>{ this.state.test_data.standard_deviation}</td>
+                                <td>{ this.state.test_data.skew}</td>
+                                <td>{ this.state.test_data.kurtosis}</td>
+                            </tr>
+                        </table>
+<br/>
+<br/>
+                        <hr/>
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
+                            Extreme Values
                         </Typography>
-                        <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
-                            <HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/></div>
-                        <hr style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
+                        <table style={{width:'80%', fontSize:'12px', textAlign:'center'}}>
+                            <tr>
+                                <th style={{borderBottom: '1px solid black', borderCollapse: 'collapse', width:'20%'}}></th>
+                                <th style={{borderBottom: '1px solid black', borderCollapse: 'collapse', width:'20%'}}></th>
+                                <th style={{borderBottom: '1px solid black', borderCollapse: 'collapse', width:'20%'}}></th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'20%'}}>Value</th>
+                            </tr>
+                            {this.state.test_data.top_5.map((item, index) => {
+                                if (index == 0) {
+                                    return (
+                                            <tr>
+                                                <td>{this.state.selected_column}</td>
+                                                <td>Highest</td>
+                                                <td>{index + 1}</td>
+                                                <td>{item}</td>
+                                            </tr>
+                                    )
+                                } else {
+                                    return (
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td>{index + 1}</td>
+                                                <td>{item}</td>
+                                            </tr>
+                                )}
+                            })}
+                            {this.state.test_data.last_5.reverse().map((item, index) => {
+                                if (index == 0) {
+                                    return (
+                                            <tr>
+                                                <td>{this.state.selected_column}</td>
+                                                <td>Lowest</td>
+                                                <td style={{borderTop: '1px solid black'}}>{index + 1}</td>
+                                                <td style={{borderTop: '1px solid black'}}>{item}</td>
+                                            </tr>
+                                    )
+                                } else {
+                                    return (
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td>{index + 1}</td>
+                                                <td>{item}</td>
+                                            </tr>
+                                    )}
+                            })}
+
+                        </table>
+
+<br/>
+                        {/*<div><ul>*/}
+                        {/*    {this.state.test_data.top_5.map(item => {*/}
+                        {/*        return <li>{item}</li>;*/}
+                        {/*    })}*/}
+                        {/*    {this.state.test_data.last_5.map(item => {*/}
+                        {/*        return <li>{item}</li>;*/}
+                        {/*    })}*/}
+                        {/*</ul></div>*/}
+<br/>
+<br/>
+
+                        <hr/>
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
+                            Test of Normality
+                        </Typography>
+                        <table style={{width:'80%', fontSize:'12px', textAlign:'center'}}>
+                            <tr>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'22%'}}>Sample Name</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Statistic</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>df</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Compared to significance level</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Significance</th>
+                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Description</th>
+                            </tr>
+                            <tr>
+                                <td>{this.state.selected_column}</td>
+                                <td>{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</td>
+                                {/*Number.parseFloat(x).toFixed(2)*/}
+                                <td>{ this.state.test_data.sample_N}</td>
+                                <td>{ Number.parseFloat(this.state.alpha).toFixed(5)}</td>
+                                <td>{ Number.parseFloat(this.state.test_data.p_value).toFixed(5)}</td>
+                                <td style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>{this.state.test_data.Description}</td>
+                            </tr>
+                        </table>
+<br/>
+
+                        <hr/>
+                        {/*<div className="result_texts" style={{ display: (this.state.stats_show ? 'block' : 'none') }}>*/}
+                        {/*    Test - Statistic :  { this.state.test_data.statistic}<br/>*/}
+                        {/*    p-value : {this.state.test_data.p_value}<br/>*/}
+                        {/*    Compared to significance level :    {this.state.alpha}<br/>*/}
+                        {/*    <p style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>Description :    {this.state.test_data.Description}</p>*/}
+                        {/*</div>*/}
+                        <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
+                                Histogram of Selected data
+                            </Typography>
+                            <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
+                                <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
+                                {/*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*/}
+                            </div>
+                            <hr style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
+                        </Grid>
+                        <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.boxplot_chart_show ? 'block' : 'none')  }}>
+                                Box Plot of Selected data
+                            </Typography>
+                            <div style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
+                                <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
+                                {/*<ClusteredBoxPlot chart_id="boxplot_chart_id" chart_data={ this.state.test_boxplot_chart_data}/>*/}
+                            </div>
+                            <hr style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
+                        </Grid>
+                        <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
+                                Q-Q Plot of Selected data
+                            </Typography>
+                            <div style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }} >
+                                <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
+
+                            </div>
+                            <hr style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
+                        </Grid>
                     </Grid>
                 </Grid>
         )
