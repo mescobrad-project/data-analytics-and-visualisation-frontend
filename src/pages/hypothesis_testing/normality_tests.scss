@@ -1,3 +1,54 @@
 .result_texts{
     padding: 10px;
 }
+
+hr.result{
+    border: 5px solid #1c87c9;
+    border-radius: 5px
+}
+.SampleCharacteristics{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    .tableHeadCell {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        border-collapse: collapse;
+        width: 13%;
+        font-size:12px;
+        text-align: center;
+        font-weight: bold;
+        padding: 5px;
+    }
+    .tableCell{
+        font-size:12px;
+        text-align: center
+    }
+}
+
+.ExtremeValues{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    .tableHeadCell {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        border-collapse: collapse;
+        width: 13%;
+        font-size:12px;
+        text-align: center;
+        font-weight: bold;
+        padding: 5px;
+    }
+    .tableCell, .tableCell2{
+        font-size:12px;
+        text-align: center;
+        border: none;
+        padding: 3px;
+    }
+    .tableCell2{
+        border-top: 1px solid black
+    }
+}

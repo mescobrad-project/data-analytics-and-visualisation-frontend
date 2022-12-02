@@ -12,20 +12,18 @@ import {
     ListItemText,
     MenuItem,
     Select, TextField,
-    Typography
+    Typography,
+        Table, TableHead, TableRow, TableBody, TableCell, TableContainer
 } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
-import HistogramChartCustom from "../../components/ui-components/HistogramChartCustom";
-import ClusteredBoxPlot from "../../components/ui-components/ClusteredBoxPlot";
-import LineMultipleColorsChartCustom from "../../components/ui-components/LineMultipleColorsChartCustom";
 import InnerHTML from "dangerously-set-html-content";
+import Paper from "@mui/material/Paper";
 
 class Normality_Tests extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
-        const file_path = params.get("file_path");
-        this.state = {
+        const empty_state = {
             // List of columns in dataset
             column_names: [],
             test_data: {
@@ -35,19 +33,21 @@ class Normality_Tests extends React.Component {
                 p_value: 0,
                 Description:[],
                 data:[],
-                skew: "",
-                kurtosis: "",
-                standard_deviation: "",
-                median:"",
-                mean:"",
-                sample_N:"",
-                top_5:[],
-                last_5:[]
-                // boxplot_data: []
+                results: {
+                    skew: "",
+                    kurtosis: "",
+                    standard_deviation: "",
+                    median:"",
+                    mean:"",
+                    sample_N:"",
+                    top_5:[],
+                    last_5:[]
+                }
             },
             test_chart_data : [],
             test_boxplot_chart_data: [],
             test_qqplot_chart_data : [],
+            test_Hplot_chart_data: [],
             alpha:"",
             //Values selected currently on the form
             selected_column: "",
@@ -61,16 +61,13 @@ class Normality_Tests extends React.Component {
             histogram_chart_show: false,
             boxplot_chart_show: false,
             qqplot_chart_show: false,
-            stats_show:true,
+            stats_show:false,
             loading: false,
             finished: false
-            // req_file: file_path
         };
-
-        console.log("1st-"+file_path)
+        this.state = empty_state
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
@@ -80,21 +77,11 @@ class Normality_Tests extends React.Component {
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
-
     }
 
     /**
      * Call backend endpoint to get column names
      */
-
-    // async fetchColumnNames(url, config) {
-    //     console.log("2nd- "+ this.state.req_file)
-    //     API.get("return_saved_object_columns",
-    //             {params: {file_name: this.state.req_file}}
-    //     ).then(res => {
-    //         this.setState({column_names: res.data.columns})
-    //     });
-    // }
 
     async fetchColumnNames(url, config) {
         const params = new URLSearchParams(window.location.search);
@@ -116,6 +103,7 @@ class Normality_Tests extends React.Component {
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
         this.setState({qqplot_chart_show: false})
+        this.setState({stats_show: false})
         // Send the request
         API.get("normality_tests",
                 {
@@ -132,126 +120,59 @@ class Normality_Tests extends React.Component {
             this.setState( {alpha:0.05})
 
             const resultJson = res.data;
-            // console.log(resultJson)
-
-            // this.setState({test_chart_data: temp_array_chart})
             this.setState({histogram_chart_show: true})
             this.setState({boxplot_chart_show: true})
             this.setState({qqplot_chart_show: true})
+            this.setState({stats_show: true})
 
-            var maxCols = 10;
-            function getHistogramData(source) {
-                // Init
-                var data = [];
-                var min = Math.min.apply(null, source);
-                var max = Math.max.apply(null, source);
-                var range = max - min;
-                var step = range / maxCols;
-                // console.log(min, max, range, step, source)
-                // Create items
-                for(var i = 0; i < maxCols; i++) {
-                    var from = min + i * step;
-                    var to = min + (i + 1) * step;
-                    data.push({
-                        from: from,
-                        to: to,
-                        count: 0
-                    });
-                }
-                // Calculate range of the values
-                for(var i = 0; i < source.length; i++) {
-                    var value = source[i];
-                    var item = data.find(function(el) {
-                        return (value >= el.from) && (value <= el.to);
-                    });
-                    item.count++;
-                }
-                return data;
-            }
-            let temp_array_chart = getHistogramData(resultJson['data'])
-            let temp_array_histograme = []
-            if (temp_array_chart.length) {
-                for (let it = 0; it < temp_array_chart.length; it++) {
-                    let temp_object = {}
-                    temp_object["category"] = [it]
-                    temp_object["yValue"] = temp_array_chart[it]['count']
-                    temp_array_histograme.push(temp_object)
-                }
-                this.setState({test_chart_data: temp_array_histograme})
-            }
-            const temp_boxplot_array_chart = resultJson['boxplot_data']
-            // const arr = []
-            // Object.keys(temp_boxplot_array_chart).forEach(key => arr.push({name: key, value: temp_boxplot_array_chart[key]}))
-            let temp_array_boxplot = []
-            if (temp_boxplot_array_chart.length){
-                for (let it = 0; it < temp_boxplot_array_chart.length; it++) {
-                    let temp_object = {}
-                    temp_object["date"] = temp_boxplot_array_chart[it]['date']
-                    temp_object["min"] = temp_boxplot_array_chart[it]['min']
-                    temp_object["q1"] = temp_boxplot_array_chart[it]['q1']
-                    temp_object["q2"] = temp_boxplot_array_chart[it]['q2']
-                    temp_object["q3"] = temp_boxplot_array_chart[it]['q3']
-                    temp_object["max"] = temp_boxplot_array_chart[it]['max']
-                    // temp_object["name"] = temp_boxplot_array_chart[it]['name']
-                    temp_array_boxplot.push(temp_object)
-                }
-            }
-            // this.setState({test_boxplot_chart_data: temp_array_boxplot})
-
-            this.setState({test_qqplot_chart_data: resultJson['qqplot']})
-            this.setState({test_Hplot_chart_data: resultJson['histogramplot']})
-            this.setState({test_boxplot_chart_data: resultJson['boxplot']})
-
+            this.setState({test_qqplot_chart_data: resultJson['results']['qqplot']})
+            this.setState({test_Hplot_chart_data: resultJson['results']['histogramplot']})
+            this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
         });
     }
-
+    resetResultArea(){
+        this.setState({histogram_chart_show: false})
+        this.setState({boxplot_chart_show: false})
+        this.setState({qqplot_chart_show: false})
+        this.setState({stats_show: false})
+    }
     handleSelectColumnChange(event){
         this.setState( {selected_column: event.target.value})
+        this.resetResultArea()
     }
     handleSelectAlternativeChange(event){
         this.setState( {selected_alternative: event.target.value})
+        this.resetResultArea()
     }
     handleSelectMethodChange(event){
         this.setState( {selected_method: event.target.value})
+        this.resetResultArea()
         if (event.target.value=="Kolmogorov-Smirnov"){
             this.setState({alternative_show: true});
             this.setState({axis_show: false});
-            this.setState({nan_policy_show: false})
-            this.setState({stats_show: true})}
+            this.setState({nan_policy_show: false})}
         else if (event.target.value=="D’Agostino’s K^2"){
             this.setState({alternative_show: false});
             this.setState({axis_show: true});
-            this.setState({nan_policy_show: true})
-            this.setState({stats_show: true})}
+            this.setState({nan_policy_show: true})}
         else {this.setState({alternative_show: false});
             this.setState({axis_show: false});
-            this.setState({nan_policy_show: false})
-            this.setState({stats_show: true})}
+            this.setState({nan_policy_show: false})}
     }
     handleSelectNaNpolicyChange(event){
         this.setState( {selected_nan_policy: event.target.value})
+        this.resetResultArea()
     }
     handleSelectAxisChange(event){
         this.setState( {selected_axis: event.target.value})
+        this.resetResultArea()
     }
-
 
     render() {
         const { loading, finished } = this.state;
         const setLoading = !finished && loading;
         return (
                 <Grid container direction="row">
-                    {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
-                    {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>*/}
-                    {/*        Dataset  Preview*/}
-                    {/*    </Typography>*/}
-                    {/*    <hr/>*/}
-                    {/*    <List>*/}
-                    {/*        {this.state.column_names.map((column) => (*/}
-                    {/*                <ListItem> <ListItemText primary={column}/></ListItem>*/}
-                    {/*        ))}*/}
-                    {/*    </List>*/}
-                    {/*</Grid>*/}
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Select Normality Test
@@ -355,9 +276,7 @@ class Normality_Tests extends React.Component {
                             >
                                 Submit
                             </LoadingButton>
-
                         </form>
-                        {/*<Divider/>*/}
                         <form onSubmit={async (event) => {
                             event.preventDefault();
                             window.location.replace("/")
@@ -372,130 +291,129 @@ class Normality_Tests extends React.Component {
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Result Visualisation
                         </Typography>
-                        <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
-                            Normality test Results
-                        </Typography>
-                        <table style={{width:'80%', fontSize:'12px', textAlign:'center'}}>
-                            <tr>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'22%'}}>Name</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>N</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Mean</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Median</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Std. Deviation</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Skewness</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Kurtosis</th>
-                            </tr>
-                            <tr>
-                                <td>{this.state.selected_column}</td>
-                                <td>{this.state.test_data.sample_N}</td>
-                                <td>{ this.state.test_data.mean}</td>
-                                <td>{ this.state.test_data.median}</td>
-                                <td>{ this.state.test_data.standard_deviation}</td>
-                                <td>{ this.state.test_data.skew}</td>
-                                <td>{ this.state.test_data.kurtosis}</td>
-                            </tr>
-                        </table>
-<br/>
-<br/>
-                        <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
-                            Extreme Values
-                        </Typography>
-                        <table style={{width:'80%', fontSize:'12px', textAlign:'center'}}>
-                            <tr>
-                                <th style={{borderBottom: '1px solid black', borderCollapse: 'collapse', width:'20%'}}></th>
-                                <th style={{borderBottom: '1px solid black', borderCollapse: 'collapse', width:'20%'}}></th>
-                                <th style={{borderBottom: '1px solid black', borderCollapse: 'collapse', width:'20%'}}></th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'20%'}}>Value</th>
-                            </tr>
-                            {this.state.test_data.top_5.map((item, index) => {
-                                if (index == 0) {
-                                    return (
-                                            <tr>
-                                                <td>{this.state.selected_column}</td>
-                                                <td>Highest</td>
-                                                <td>{index + 1}</td>
-                                                <td>{item}</td>
-                                            </tr>
-                                    )
-                                } else {
-                                    return (
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td>{index + 1}</td>
-                                                <td>{item}</td>
-                                            </tr>
-                                )}
-                            })}
-                            {this.state.test_data.last_5.reverse().map((item, index) => {
-                                if (index == 0) {
-                                    return (
-                                            <tr>
-                                                <td>{this.state.selected_column}</td>
-                                                <td>Lowest</td>
-                                                <td style={{borderTop: '1px solid black'}}>{index + 1}</td>
-                                                <td style={{borderTop: '1px solid black'}}>{item}</td>
-                                            </tr>
-                                    )
-                                } else {
-                                    return (
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td>{index + 1}</td>
-                                                <td>{item}</td>
-                                            </tr>
-                                    )}
-                            })}
+                        <hr class="result"/>
+                        <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
+                                Sample characteristics
+                            </Typography>
+                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell className="tableHeadCell">Name</TableCell>
+                                            <TableCell className="tableHeadCell">N</TableCell>
+                                            <TableCell className="tableHeadCell">Mean</TableCell>
+                                            <TableCell className="tableHeadCell">Median</TableCell>
+                                            <TableCell className="tableHeadCell">Std. Deviation</TableCell>
+                                            <TableCell className="tableHeadCell">Skewness</TableCell>
+                                            <TableCell className="tableHeadCell">Kurtosis</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell className="tableCell" >{this.state.selected_column}</TableCell>
+                                            <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        <hr class="result" style={{display: (this.state.stats_show ? 'block' : 'none') }}/>
+                        <div style={{display: (this.state.stats_show ? 'block' : 'none') }}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
+                                Extreme Values
+                            </Typography>
+                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell className="tableHeadCell" sx={{width:'40%'}}></TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}></TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}></TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Value</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    {this.state.test_data.results.top_5.map((item, index) => {
+                                        if (index == 0) {
+                                            return (
+                                                    <TableRow>
+                                                        <TableCell className="tableCell">{this.state.selected_column}</TableCell>
+                                                        <TableCell className="tableCell">Highest</TableCell>
+                                                        <TableCell className="tableCell">{index + 1}</TableCell>
+                                                        <TableCell className="tableCell">{item}</TableCell>
+                                                    </TableRow>
+                                            )
+                                        } else {
+                                            return (
+                                                    <TableRow>
+                                                        <TableCell className="tableCell"></TableCell>
+                                                        <TableCell className="tableCell"></TableCell>
+                                                        <TableCell className="tableCell">{index + 1}</TableCell>
+                                                        <TableCell className="tableCell">{item}</TableCell>
+                                                    </TableRow>
+                                        )}
+                                    })}
+                                    {this.state.test_data.results.last_5.reverse().map((item, index) => {
+                                        if (index == 0) {
+                                            return (
+                                                    <TableRow>
+                                                        <TableCell className="tableCell">{this.state.selected_column}</TableCell>
+                                                        <TableCell className="tableCell2">Lowest</TableCell>
+                                                        <TableCell className="tableCell2">{index + 1}</TableCell>
+                                                        <TableCell className="tableCell2">{item}</TableCell>
+                                                    </TableRow>
+                                            )
+                                        } else {
+                                            return (
+                                                    <TableRow>
+                                                        <TableCell className="tableCell"></TableCell>
+                                                        <TableCell className="tableCell"></TableCell>
+                                                        <TableCell className="tableCell">{index + 1}</TableCell>
+                                                        <TableCell className="tableCell">{item}</TableCell>
+                                                    </TableRow>
+                                            )}
+                                    })}
 
-                        </table>
-
-<br/>
-                        {/*<div><ul>*/}
-                        {/*    {this.state.test_data.top_5.map(item => {*/}
-                        {/*        return <li>{item}</li>;*/}
-                        {/*    })}*/}
-                        {/*    {this.state.test_data.last_5.map(item => {*/}
-                        {/*        return <li>{item}</li>;*/}
-                        {/*    })}*/}
-                        {/*</ul></div>*/}
-<br/>
-<br/>
-
-                        <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
-                            Test of Normality
-                        </Typography>
-                        <table style={{width:'80%', fontSize:'12px', textAlign:'center'}}>
-                            <tr>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'22%'}}>Sample Name</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Statistic</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>df</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Compared to significance level</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Significance</th>
-                                <th style={{borderBottom: '1px solid black', borderTop: '1px solid black',borderCollapse: 'collapse', width:'13%'}}>Description</th>
-                            </tr>
-                            <tr>
-                                <td>{this.state.selected_column}</td>
-                                <td>{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</td>
-                                {/*Number.parseFloat(x).toFixed(2)*/}
-                                <td>{ this.state.test_data.sample_N}</td>
-                                <td>{ Number.parseFloat(this.state.alpha).toFixed(5)}</td>
-                                <td>{ Number.parseFloat(this.state.test_data.p_value).toFixed(5)}</td>
-                                <td style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>{this.state.test_data.Description}</td>
-                            </tr>
-                        </table>
-<br/>
-
-                        <hr/>
-                        {/*<div className="result_texts" style={{ display: (this.state.stats_show ? 'block' : 'none') }}>*/}
-                        {/*    Test - Statistic :  { this.state.test_data.statistic}<br/>*/}
-                        {/*    p-value : {this.state.test_data.p_value}<br/>*/}
-                        {/*    Compared to significance level :    {this.state.alpha}<br/>*/}
-                        {/*    <p style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>Description :    {this.state.test_data.Description}</p>*/}
-                        {/*</div>*/}
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        <hr class="result" style={{display: (this.state.stats_show ? 'block' : 'none') }}/>
+                        <div style={{display: (this.state.stats_show ? 'block' : 'none') }}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
+                                Test of Normality
+                            </Typography>
+                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell className="tableHeadCell">Sample Name</TableCell>
+                                        <TableCell className="tableHeadCell">Statistic</TableCell>
+                                        <TableCell className="tableHeadCell">df</TableCell>
+                                        <TableCell className="tableHeadCell">Compared to significance level</TableCell>
+                                        <TableCell className="tableHeadCell">Significance</TableCell>
+                                        <TableCell className="tableHeadCell">Description</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell className="tableCell" >{this.state.selected_column}</TableCell>
+                                        <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>
+                                        {/*Number.parseFloat(x).toFixed(2)*/}
+                                        <TableCell className="tableCell" >{ this.state.test_data.results.sample_N}</TableCell>
+                                        <TableCell className="tableCell" >{ Number.parseFloat(this.state.alpha).toFixed(5)}</TableCell>
+                                        <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.p_value).toFixed(5)}</TableCell>
+                                        <TableCell className="tableCell"  style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>{this.state.test_data.Description}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                        </div>
+                        <hr class="result" style={{ display: (this.state.stats_show ? 'block' : 'none')}}/>
                         <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
                                 Histogram of Selected data
@@ -504,7 +422,7 @@ class Normality_Tests extends React.Component {
                                 <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
                                 {/*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*/}
                             </div>
-                            <hr style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
+                            <hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
                         </Grid>
                         <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.boxplot_chart_show ? 'block' : 'none')  }}>
@@ -514,7 +432,7 @@ class Normality_Tests extends React.Component {
                                 <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
                                 {/*<ClusteredBoxPlot chart_id="boxplot_chart_id" chart_data={ this.state.test_boxplot_chart_data}/>*/}
                             </div>
-                            <hr style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
+                            <hr  class="result" style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
                         </Grid>
                         <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
@@ -524,12 +442,85 @@ class Normality_Tests extends React.Component {
                                 <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
 
                             </div>
-                            <hr style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
+                            <hr  class="result" style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
                         </Grid>
                     </Grid>
                 </Grid>
         )
     }
 }
-
 export default Normality_Tests;
+
+{/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+{/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>*/}
+{/*        Dataset  Preview*/}
+{/*    </Typography>*/}
+{/*    <hr/>*/}
+{/*    <List>*/}
+{/*        {this.state.column_names.map((column) => (*/}
+{/*                <ListItem> <ListItemText primary={column}/></ListItem>*/}
+{/*        ))}*/}
+{/*    </List>*/}
+{/*</Grid>*/}
+
+
+//region functionality for AmCharts
+// var maxCols = 10;
+// function getHistogramData(source) {
+//     // Init
+//     var data = [];
+//     var min = Math.min.apply(null, source);
+//     var max = Math.max.apply(null, source);
+//     var range = max - min;
+//     var step = range / maxCols;
+//     // console.log(min, max, range, step, source)
+//     // Create items
+//     for(var i = 0; i < maxCols; i++) {
+//         var from = min + i * step;
+//         var to = min + (i + 1) * step;
+//         data.push({
+//             from: from,
+//             to: to,
+//             count: 0
+//         });
+//     }
+//     // Calculate range of the values
+//     for(var i = 0; i < source.length; i++) {
+//         var value = source[i];
+//         var item = data.find(function(el) {
+//             return (value >= el.from) && (value <= el.to);
+//         });
+//         item.count++;
+//     }
+//     return data;
+// }
+// let temp_array_chart = getHistogramData(resultJson['data'])
+// let temp_array_histograme = []
+// if (temp_array_chart.length) {
+//     for (let it = 0; it < temp_array_chart.length; it++) {
+//         let temp_object = {}
+//         temp_object["category"] = [it]
+//         temp_object["yValue"] = temp_array_chart[it]['count']
+//         temp_array_histograme.push(temp_object)
+//     }
+//     this.setState({test_chart_data: temp_array_histograme})
+// }
+// const temp_boxplot_array_chart = resultJson['boxplot_data']
+// // const arr = []
+// // Object.keys(temp_boxplot_array_chart).forEach(key => arr.push({name: key, value: temp_boxplot_array_chart[key]}))
+// let temp_array_boxplot = []
+// if (temp_boxplot_array_chart.length){
+//     for (let it = 0; it < temp_boxplot_array_chart.length; it++) {
+//         let temp_object = {}
+//         temp_object["date"] = temp_boxplot_array_chart[it]['date']
+//         temp_object["min"] = temp_boxplot_array_chart[it]['min']
+//         temp_object["q1"] = temp_boxplot_array_chart[it]['q1']
+//         temp_object["q2"] = temp_boxplot_array_chart[it]['q2']
+//         temp_object["q3"] = temp_boxplot_array_chart[it]['q3']
+//         temp_object["max"] = temp_boxplot_array_chart[it]['max']
+//         // temp_object["name"] = temp_boxplot_array_chart[it]['name']
+//         temp_array_boxplot.push(temp_object)
+//     }
+// }
+// // this.setState({test_boxplot_chart_data: temp_array_boxplot})
+//endregion
