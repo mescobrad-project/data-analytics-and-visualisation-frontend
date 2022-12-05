@@ -204,7 +204,7 @@ class Normality_Tests extends React.Component {
                                     {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
                                     <MenuItem value={"Shapiro-Wilk"}><em>Shapiro-Wilk</em></MenuItem>
                                     <MenuItem value={"Kolmogorov-Smirnov"}><em>Kolmogorov-Smirnov</em></MenuItem>
-                                    {/*<MenuItem value={"Anderson-Darling"}><em>Anderson-Darling</em></MenuItem>*/}
+                                    <MenuItem value={"Jarque-Bera"}><em>Jarque-Bera</em></MenuItem>
                                     <MenuItem value={"D’Agostino’s K^2"}><em>D’Agostino’s K^2</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
