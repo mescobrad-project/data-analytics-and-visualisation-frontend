@@ -39,12 +39,8 @@ class SlowWaves extends React.Component {
 
             //Values selected currently on the form
             selected_channel: "",
-            selected_freq_sp_low: "0.3",
-            selected_freq_sp_high: "1.5",
-            selected_freq_broad_low : "1",
-            selected_freq_broad_high : "30",
-            selected_duration_low : "0.5",
-            selected_duration_high : "2",
+            selected_freq_sw_low: "0.3",
+            selected_freq_sw_high: "1.5",
             duration_negative_low : "0.5",
             duration_negative_high : "1.5",
             selected_duration_positive_low : "0.1",
@@ -56,10 +52,7 @@ class SlowWaves extends React.Component {
             selected_amplitude_p2p_low : "75",
             selected_amplitude_p2p_high : "350",
             selected_min_distance : "500",
-            selected_thresh_rel_pow : "0.2",
-            selected_thresh_corr : "1",
-            selected_thresh_rms : "1",
-            selected_multi_only : false,
+            selected_coupling: false,
             selected_remove_outliers : false,
 
             // Values to pass to visualisations
@@ -83,17 +76,27 @@ class SlowWaves extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
-        this.handleSelectedFreqSpLow = this.handleSelectedFreqSpLow.bind(this);
-        this.handleSelectedFreqSpHigh = this.handleSelectedFreqSpHigh.bind(this);
-        this.handleSelectedFreqBroadLow = this.handleSelectedFreqBroadLow.bind(this);
-        this.handleSelectedFreqBroadHigh = this.handleSelectedFreqBroadHigh.bind(this);
-        this.handleSelectedDurationLow = this.handleSelectedDurationLow.bind(this);
-        this.handleSelectedDurationHigh = this.handleSelectedDurationHigh.bind(this);
-        this.handleSelectedMinDistance = this.handleSelectedMinDistance.bind(this);
-        this.handleSelectedThreshRelPow = this.handleSelectedThreshRelPow.bind(this);
-        this.handleSelectedThreshRelCorr = this.handleSelectedThreshRelCorr.bind(this);
-        this.handleSelectedThreshRelRms = this.handleSelectedThreshRelRms.bind(this);
-        this.handleSelectedMultiOnly = this.handleSelectedMultiOnly.bind(this);
+        this.handleSelectedFreqSWLow = this.handleSelectedFreqSWLow.bind(this);
+        this.handleSelectedFreqSWHigh = this.handleSelectedFreqSWHigh.bind(this);
+
+        this.handleSelectedDurationNegativeLow = this.handleSelectedDurationNegativeLow.bind(this);
+        this.handleSelectedDurationNegativeHigh = this.handleSelectedDurationNegativeHigh.bind(this);
+
+        this.handleSelectedDurationPositiveLow = this.handleSelectedDurationPositiveLow.bind(this);
+        this.handleSelectedDurationPositiveHigh = this.handleSelectedDurationPositiveHigh.bind(this);
+
+        this.handleSelectedAmplitudePositiveLow = this.handleSelectedAmplitudePositiveLow.bind(this);
+        this.handleSelectedAmplitudePositiveHigh = this.handleSelectedAmplitudePositiveHigh.bind(this);
+
+        this.handleSelectedAmplitudeNegativeLow = this.handleSelectedAmplitudeNegativeLow.bind(this);
+        this.handleSelectedAmplitudeNegativeHigh = this.handleSelectedAmplitudeNegativeHigh.bind(this);
+
+        this.handleSelectedAmplitudeP2PLow = this.handleSelectedAmplitudeP2PLow.bind(this);
+        this.handleSelectedAmplitudeP2PHigh = this.handleSelectedAmplitudeP2PHigh.bind(this);
+
+        this.handleSelectedRemoveOutliers = this.handleSelectedRemoveOutliers.bind(this);
+        this.handleSelectedCoupling = this.handleSelectedCoupling.bind(this);
+
         this.handleSelectedRemoveOutliers = this.handleSelectedRemoveOutliers.bind(this);
         this.handleGetChannelSignal = this.handleGetChannelSignal.bind(this);
         this.handleChannelChange = this.handleChannelChange.bind(this);
@@ -101,7 +104,8 @@ class SlowWaves extends React.Component {
         // Initialise component
         // - values of channels from the backend
         // this.fetchChannels();
-        this.handleGetChannelSignal();
+
+        // this.handleGetChannelSignal();
     }
 
     /**
@@ -110,78 +114,98 @@ class SlowWaves extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
         // Convert alpha and nlags from string to int and float
-        let to_send_input_freq_sp_low = null;     //float
-        let to_send_input_freq_sp_high = null;     //float
-        let to_send_input_freq_broad_low = null;     //float
-        let to_send_input_freq_broad_high = null;     //float
-        let to_send_input_duration_low = null;     //float
-        let to_send_input_duration_high = null;     //float
-        let to_send_input_min_distance = null;     //float
-        let to_send_input_thresh_rel_pow = null;     //float
-        let to_send_input_thresh_corr = null;     //float
-        let to_send_input_thresh_rms = null;     //float
+        let to_send_freq_sw_low = null;     //int
+        let to_send_freq_sw_high = null;     //int
+
+        let to_send_duration_negative_low = null;     //int
+        let to_send_duration_negative_high = null;     //int
+
+        let to_send_duration_positive_low = null;     //int
+        let to_send_duration_positive_high = null;     //int
+
+        let to_send_amplitude_positive_low = null;     //int
+        let to_send_amplitude_positive_high = null;     //int
+
+        let to_send_amplitude_negative_low = null;     //int
+        let to_send_amplitude_negative_high = null;     //int
+
+        let to_send_amplitude_ptp_low = null;     //int
+        let to_send_amplitude_ptp_high = null;     //int
 
         // let to_send_input_verbose = null;  //bool|str|int
-
-
-        if (!!this.state.selected_freq_sp_low){
-            to_send_input_freq_sp_low = parseFloat(this.state.selected_freq_sp_low)
+        if (!!this.state.selected_freq_sw_low){
+            to_send_freq_sw_low = parseInt(this.state.selected_freq_sw_low)
         }
 
-        if (!!this.state.selected_freq_sp_high){
-            to_send_input_freq_sp_high = parseFloat(this.state.selected_freq_sp_high)
+        if (!!this.state.selected_freq_sw_high){
+            to_send_freq_sw_high = parseInt(this.state.selected_freq_sw_high)
         }
 
-        if (!!this.state.selected_freq_broad_low){
-            to_send_input_freq_broad_low = parseFloat(this.state.selected_freq_broad_low)
+        if (!!this.state.duration_negative_low){
+            to_send_duration_negative_low = parseInt(this.state.duration_negative_low)
         }
 
-        if (!!this.state.selected_freq_broad_high){
-            to_send_input_freq_broad_high = parseFloat(this.state.selected_freq_broad_high)
+        if (!!this.state.duration_negative_high){
+            to_send_duration_negative_high = parseInt(this.state.duration_negative_high)
         }
 
-        if (!!this.state.selected_duration_low){
-            to_send_input_duration_low = parseFloat(this.state.selected_duration_low)
+        if (!!this.state.selected_duration_positive_low){
+            to_send_duration_positive_low = parseInt(this.state.selected_duration_positive_low)
         }
 
-        if (!!this.state.selected_duration_high){
-            to_send_input_duration_high = parseFloat(this.state.selected_duration_high)
+        if (!!this.state.selected_duration_positive_high){
+            to_send_duration_positive_high = parseInt(this.state.selected_duration_positive_high)
         }
 
-        if (!!this.state.selected_min_distance){
-            to_send_input_min_distance = parseInt(this.state.selected_min_distance)
+
+        if (!!this.state.selected_duration_positive_low){
+            to_send_amplitude_positive_low = parseInt(this.state.selected_duration_positive_low)
         }
 
-        if (!!this.state.selected_thresh_rel_pow){
-            to_send_input_thresh_rel_pow = parseFloat(this.state.selected_thresh_rel_pow)
+        if (!!this.state.selected_duration_positive_high){
+            to_send_amplitude_positive_high = parseInt(this.state.selected_duration_positive_high)
         }
 
-        if (!!this.state.selected_thresh_corr){
-            to_send_input_thresh_corr = parseFloat(this.state.selected_thresh_corr)
+        if (!!this.state.selected_amplitude_negative_low){
+            to_send_amplitude_negative_low = parseInt(this.state.selected_amplitude_negative_low)
         }
 
-        if (!!this.state.selected_thresh_rms){
-            to_send_input_thresh_rms = parseFloat(this.state.selected_thresh_rms)
+        if (!!this.state.selected_amplitude_negative_high){
+            to_send_amplitude_negative_high = parseInt(this.state.selected_amplitude_negative_high)
         }
+
+        if (!!this.state.selected_amplitude_p2p_low){
+            to_send_amplitude_ptp_low = parseInt(this.state.selected_amplitude_p2p_low)
+        }
+
+        if (!!this.state.selected_amplitude_p2p_high){
+            to_send_amplitude_ptp_high = parseInt(this.state.selected_amplitude_p2p_high)
+        }
+
+
 
         const params = new URLSearchParams(window.location.search);
         // Send the request
         API.get("slow_waves_detection",
             {
                 params: {run_id: params.get("run_id"),
-                    step_id: params.get("step_id"),name: this.state.selected_channel,file_used: this.state.file_used
-                    // input_freq_sp_low: to_send_input_freq_sp_low,
-                    // input_freq_sp_high: to_send_input_freq_sp_high,
-                    // input_freq_broad_low: to_send_input_freq_broad_low,
-                    // input_freq_broad_high: to_send_input_freq_broad_high,
-                    // input_duration_low: to_send_input_duration_low,
-                    // input_duration_high: to_send_input_duration_high,
-                    // input_min_distance: to_send_input_min_distance,
-                    // input_thresh_rel_pow: to_send_input_thresh_rel_pow,
-                    // input_thresh_corr: to_send_input_thresh_corr,
-                    // input_thresh_rms: to_send_input_thresh_rms,
-                    // input_multi_only: this.state.selected_multi_only,
-                    // input_remove_outliers: this.state.selected_remove_outliers
+                    step_id: params.get("step_id"),
+                    name: this.state.selected_channel,
+                    freq_sw_low: to_send_freq_sw_low,
+                    freq_sw_high: to_send_freq_sw_high,
+                    duration_negative_low: to_send_duration_negative_low,
+                    duration_negative_high: to_send_duration_negative_high,
+                    duration_positive_low: to_send_duration_positive_low,
+                    duration_positive_high: to_send_duration_positive_high,
+                    amplitude_positive_low: to_send_amplitude_positive_low,
+                    amplitude_positive_high: to_send_amplitude_positive_high,
+                    amplitude_negative_low: to_send_amplitude_negative_low,
+                    amplitude_negative_high: to_send_amplitude_negative_high,
+                    amplitude_ptp_low: to_send_amplitude_ptp_low,
+                    amplitude_ptp_high: to_send_amplitude_ptp_high,
+                    coupling: this.state.selected_coupling,
+                    remove_outliers: this.state.selected_remove_outliers,
+                    file_used: this.state.file_used,
                 }
             }
         ).then(res => {
@@ -271,50 +295,61 @@ class SlowWaves extends React.Component {
     handleSelectChannelChange(event){
         this.setState( {selected_channel: event.target.value})
     }
-    handleSelectedFreqSpLow(event){
-        this.setState( {selected_freq_sp_low: event.target.value})
+    handleSelectedFreqSWLow(event){
+        this.setState( {selected_freq_sw_low: event.target.value})
     }
-    handleSelectedFreqSpHigh(event){
-        this.setState( {selected_freq_sp_high: event.target.value})
+    handleSelectedFreqSWHigh(event){
+        this.setState( {selected_freq_sw_high: event.target.value})
     }
-    handleSelectedFreqBroadLow(event){
-        this.setState( {selected_freq_broad_low: event.target.value})
+
+
+    handleSelectedDurationNegativeLow(event){
+        this.setState( {duration_negative_low: event.target.value})
     }
-    handleSelectedFreqBroadHigh(event){
-        this.setState( {selected_freq_broad_high: event.target.value})
+    handleSelectedDurationNegativeHigh(event){
+        this.setState( {duration_negative_high: event.target.value})
     }
-    handleSelectedDurationLow(event){
-        this.setState( {selected_duration_low: event.target.value})
+
+    handleSelectedDurationPositiveLow(event){
+        this.setState( {selected_duration_positive_low: event.target.value})
     }
-    handleSelectedDurationHigh(event){
-        this.setState( {selected_duration_high: event.target.value})
+    handleSelectedDurationPositiveHigh(event){
+        this.setState( {selected_duration_positive_high: event.target.value})
     }
-    handleSelectedMinDistance(event){
-        this.setState( {selected_min_distance: event.target.value})
+
+    handleSelectedAmplitudePositiveLow(event){
+        this.setState( {selected_amplitude_positive_low: event.target.value})
     }
-    handleSelectedThreshRelPow(event){
-        this.setState( {selected_thresh_rel_pow: event.target.value})
+    handleSelectedAmplitudePositiveHigh(event){
+        this.setState( {selected_amplitude_positive_high: event.target.value})
     }
-    handleSelectedThreshRelCorr(event){
-        this.setState( {selected_thresh_corr: event.target.value})
+
+    handleSelectedAmplitudeNegativeLow(event){
+        this.setState( {selected_amplitude_negative_low: event.target.value})
     }
-    handleSelectedThreshRelRms(event){
-            this.setState( {selected_thresh_rms: event.target.value})
+    handleSelectedAmplitudeNegativeHigh(event){
+        this.setState( {selected_amplitude_negative_high: event.target.value})
     }
-    handleSelectedMultiOnly(event){
-            this.setState( {selected_multi_only: event.target.value})
+
+    handleSelectedAmplitudeP2PLow(event){
+        this.setState( {selected_amplitude_p2p_low: event.target.value})
     }
+    handleSelectedAmplitudeP2PHigh(event){
+        this.setState( {selected_amplitude_p2p_high: event.target.value})
+    }
+
     handleSelectedRemoveOutliers(event){
-            this.setState( {selected_remove_outliers: event.target.value})
+        this.setState( {selected_remove_outliers: event.target.value})
+    }
+
+    handleSelectedCoupling(event){
+        this.setState( {selected_coupling: event.target.value})
     }
 
     handleChannelChange(channel_new_value){
-        // console.log("CHANNELS")
         this.setState({channels: channel_new_value})
     }
-
     handleFileUsedChange(file_used_new_value){
-        // console.log("CHANNELS")
         this.setState({file_used: file_used_new_value})
     }
 
@@ -372,18 +407,18 @@ class SlowWaves extends React.Component {
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
                                     id="freq-sp-low-selector"
-                                    value= {this.state.selected_freq_sp_low}
+                                    value= {this.state.selected_freq_sw_low}
                                     label="Freq SW Low"
-                                    onChange={this.handleSelectedFreqSpLow}
+                                    onChange={this.handleSelectedFreqSWLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <TextField
                                     id="freq-sp-high-selector"
-                                    value= {this.state.selected_freq_sp_high}
+                                    value= {this.state.selected_freq_sw_high}
                                     label="Freq SW High"
-                                    onChange={this.handleSelectedFreqSpHigh}
+                                    onChange={this.handleSelectedFreqSWHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -393,7 +428,7 @@ class SlowWaves extends React.Component {
                                     id="duration-low-selector"
                                     value= {this.state.duration_negative_low}
                                     label="Duration Negative Low"
-                                    onChange={this.handleSelectedDurationLow}
+                                    onChange={this.handleSelectedDurationNegativeLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -402,7 +437,7 @@ class SlowWaves extends React.Component {
                                     id="duration-high-selector"
                                     value= {this.state.duration_negative_high}
                                     label="Duration Negative High"
-                                    onChange={this.handleSelectedDurationHigh}
+                                    onChange={this.handleSelectedDurationNegativeHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -412,7 +447,7 @@ class SlowWaves extends React.Component {
                                     id="duration-low-selector"
                                     value= {this.state.selected_duration_positive_low}
                                     label="Duration Positive Low"
-                                    onChange={this.handleSelectedDurationLow}
+                                    onChange={this.handleSelectedDurationPositiveLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -421,7 +456,7 @@ class SlowWaves extends React.Component {
                                     id="duration-high-selector"
                                     value= {this.state.selected_duration_positive_high}
                                     label="Duration Positive High"
-                                    onChange={this.handleSelectedDurationHigh}
+                                    onChange={this.handleSelectedDurationPositiveHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -431,7 +466,7 @@ class SlowWaves extends React.Component {
                                     id="duration-low-selector"
                                     value= {this.state.selected_amplitude_positive_low}
                                     label="Amplitude Positive Low"
-                                    onChange={this.handleSelectedDurationLow}
+                                    onChange={this.handleSelectedAmplitudePositiveLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -440,7 +475,7 @@ class SlowWaves extends React.Component {
                                     id="duration-high-selector"
                                     value= {this.state.selected_amplitude_positive_high}
                                     label="Amplitude  Positive High"
-                                    onChange={this.handleSelectedDurationHigh}
+                                    onChange={this.handleSelectedAmplitudePositiveHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -450,7 +485,7 @@ class SlowWaves extends React.Component {
                                     id="duration-low-selector"
                                     value= {this.state.selected_amplitude_negative_low}
                                     label="Amplitude Negative Low"
-                                    onChange={this.handleSelectedDurationLow}
+                                    onChange={this.handleSelectedAmplitudeNegativeLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -459,7 +494,7 @@ class SlowWaves extends React.Component {
                                     id="duration-high-selector"
                                     value= {this.state.selected_amplitude_negative_high}
                                     label="Amplitude  Negative High"
-                                    onChange={this.handleSelectedDurationHigh}
+                                    onChange={this.handleSelectedAmplitudeNegativeHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -469,7 +504,7 @@ class SlowWaves extends React.Component {
                                     id="duration-low-selector"
                                     value= {this.state.selected_amplitude_p2p_low}
                                     label="Amplitude Peak to Peak Low"
-                                    onChange={this.handleSelectedDurationLow}
+                                    onChange={this.handleSelectedAmplitudeP2PLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -478,7 +513,7 @@ class SlowWaves extends React.Component {
                                     id="duration-high-selector"
                                     value= {this.state.selected_amplitude_p2p_high}
                                     label="Amplitude Peak to Peak High"
-                                    onChange={this.handleSelectedDurationHigh}
+                                    onChange={this.handleSelectedAmplitudeP2PHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
@@ -488,43 +523,16 @@ class SlowWaves extends React.Component {
                             <Select
                                     labelId="multi-only-label"
                                     id="multi-only-selector"
-                                    value= {this.state.selected_multi_only}
+                                    value= {this.state.selected_coupling}
                                     label="Coupling"
-                                    onChange={this.handleSelectedMultiOnly}
+                                    onChange={this.handleSelectedCoupling}
                             >
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        {/*<Divider> Coupling Settings</Divider>*/}
-                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
-                        {/*    <TextField*/}
-                        {/*            id="thresh-rel-pow-selector"*/}
-                        {/*            value= {this.state.selected_thresh_rel_pow}*/}
-                        {/*            label="Time"*/}
-                        {/*            onChange={this.handleSelectedThreshRelPow}*/}
-                        {/*    />*/}
-                        {/*    <FormHelperText>  </FormHelperText>*/}
-                        {/*</FormControl>*/}
-                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
-                        {/*    <TextField*/}
-                        {/*            id="thresh-corr-selector"*/}
-                        {/*            value= {this.state.selected_thresh_corr}*/}
-                        {/*            label="Frequency spindles"*/}
-                        {/*            onChange={this.handleSelectedThreshRelCorr}*/}
-                        {/*    />*/}
-                        {/*    <FormHelperText>  </FormHelperText>*/}
-                        {/*</FormControl>*/}
-                        {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
-                        {/*    <TextField*/}
-                        {/*            id="thresh-rms-selector"*/}
-                        {/*            value= {this.state.selected_thresh_rms}*/}
-                        {/*            label="P"*/}
-                        {/*            onChange={this.handleSelectedThreshRelRms}*/}
-                        {/*    />*/}
-                        {/*    <FormHelperText>  </FormHelperText>*/}
-                        {/*</FormControl>*/}
+
                         <hr/>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="remove-outliers-selector-label">Remove Outliers</InputLabel>
