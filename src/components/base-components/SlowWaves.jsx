@@ -134,27 +134,27 @@ class SlowWaves extends React.Component {
 
         // let to_send_input_verbose = null;  //bool|str|int
         if (!!this.state.selected_freq_sw_low){
-            to_send_freq_sw_low = parseInt(this.state.selected_freq_sw_low)
+            to_send_freq_sw_low = parseFloat(this.state.selected_freq_sw_low)
         }
 
         if (!!this.state.selected_freq_sw_high){
-            to_send_freq_sw_high = parseInt(this.state.selected_freq_sw_high)
+            to_send_freq_sw_high = parseFloat(this.state.selected_freq_sw_high)
         }
 
         if (!!this.state.duration_negative_low){
-            to_send_duration_negative_low = parseInt(this.state.duration_negative_low)
+            to_send_duration_negative_low = parseFloat(this.state.duration_negative_low)
         }
 
         if (!!this.state.duration_negative_high){
-            to_send_duration_negative_high = parseInt(this.state.duration_negative_high)
+            to_send_duration_negative_high = parseFloat(this.state.duration_negative_high)
         }
 
         if (!!this.state.selected_duration_positive_low){
-            to_send_duration_positive_low = parseInt(this.state.selected_duration_positive_low)
+            to_send_duration_positive_low = parseFloat(this.state.selected_duration_positive_low)
         }
 
         if (!!this.state.selected_duration_positive_high){
-            to_send_duration_positive_high = parseInt(this.state.selected_duration_positive_high)
+            to_send_duration_positive_high = parseFloat(this.state.selected_duration_positive_high)
         }
 
 
