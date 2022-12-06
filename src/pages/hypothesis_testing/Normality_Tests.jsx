@@ -15,7 +15,6 @@ import {
     Typography,
         Table, TableHead, TableRow, TableBody, TableCell, TableContainer
 } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
 import InnerHTML from "dangerously-set-html-content";
 import Paper from "@mui/material/Paper";
 
@@ -62,8 +61,6 @@ class Normality_Tests extends React.Component {
             boxplot_chart_show: false,
             qqplot_chart_show: false,
             stats_show:false,
-            loading: false,
-            finished: false
         };
         this.state = empty_state
         //Binding functions of the class
@@ -169,8 +166,6 @@ class Normality_Tests extends React.Component {
     }
 
     render() {
-        const { loading, finished } = this.state;
-        const setLoading = !finished && loading;
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
@@ -209,7 +204,7 @@ class Normality_Tests extends React.Component {
                                     {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
                                     <MenuItem value={"Shapiro-Wilk"}><em>Shapiro-Wilk</em></MenuItem>
                                     <MenuItem value={"Kolmogorov-Smirnov"}><em>Kolmogorov-Smirnov</em></MenuItem>
-                                    {/*<MenuItem value={"Anderson-Darling"}><em>Anderson-Darling</em></MenuItem>*/}
+                                    <MenuItem value={"Jarque-Bera"}><em>Jarque-Bera</em></MenuItem>
                                     <MenuItem value={"D’Agostino’s K^2"}><em>D’Agostino’s K^2</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
@@ -258,24 +253,11 @@ class Normality_Tests extends React.Component {
                                 <FormHelperText>Axis along which to compute test.</FormHelperText>
                             </FormControl>
                             <hr/>
-                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_column}>
+                                {/*|| !this.state.selected_method*/}
                                 Submit
                             </Button>
-                            <LoadingButton sx={{float: "left"}} variant="contained" color="primary" type="submit"
-                                           loading={setLoading}
-                                           loadingIndicator="Loading…"
-                                           variant="outlined"
-                                           done={finished}
-                                           onClick={() => {
-                                               // Clicked, so show the progress dialog
-                                               this.setState({ loading: true });
-
-                                               // In a 1.5 seconds, end the progress to show that it's done
-                                               setTimeout(() => { this.setState({ finished: true })}, 1500);
-                                           }}
-                            >
-                                Submit
-                            </LoadingButton>
                         </form>
                         <form onSubmit={async (event) => {
                             event.preventDefault();
