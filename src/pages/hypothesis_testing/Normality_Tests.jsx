@@ -13,8 +13,9 @@ import {
     MenuItem,
     Select, TextField,
     Typography,
-        Table, TableHead, TableRow, TableBody, TableCell, TableContainer
+        Table, TableHead, TableRow, TableBody, TableCell, TableContainer, Accordion, AccordionDetails, AccordionSummary
 } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import InnerHTML from "dangerously-set-html-content";
 import Paper from "@mui/material/Paper";
 
@@ -46,6 +47,7 @@ class Normality_Tests extends React.Component {
             test_chart_data : [],
             test_boxplot_chart_data: [],
             test_qqplot_chart_data : [],
+            test_probplot_chart_data : [],
             test_Hplot_chart_data: [],
             alpha:"",
             //Values selected currently on the form
@@ -60,6 +62,7 @@ class Normality_Tests extends React.Component {
             histogram_chart_show: false,
             boxplot_chart_show: false,
             qqplot_chart_show: false,
+            probplot_chart_show: false,
             stats_show:false,
         };
         this.state = empty_state
@@ -100,6 +103,7 @@ class Normality_Tests extends React.Component {
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
         this.setState({qqplot_chart_show: false})
+        this.setState({probplot_chart_show: false})
         this.setState({stats_show: false})
         // Send the request
         API.get("normality_tests",
@@ -120,17 +124,20 @@ class Normality_Tests extends React.Component {
             this.setState({histogram_chart_show: true})
             this.setState({boxplot_chart_show: true})
             this.setState({qqplot_chart_show: true})
+            this.setState({probplot_chart_show: true})
             this.setState({stats_show: true})
 
             this.setState({test_qqplot_chart_data: resultJson['results']['qqplot']})
             this.setState({test_Hplot_chart_data: resultJson['results']['histogramplot']})
             this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
+            this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
         });
     }
     resetResultArea(){
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
         this.setState({qqplot_chart_show: false})
+        this.setState({probplot_chart_show: false})
         this.setState({stats_show: false})
     }
     handleSelectColumnChange(event){
@@ -396,36 +403,68 @@ class Normality_Tests extends React.Component {
                             </TableContainer>
                         </div>
                         <hr class="result" style={{ display: (this.state.stats_show ? 'block' : 'none')}}/>
-                        <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
-                                Histogram of Selected data
-                            </Typography>
-                            <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
-                                <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
-                                {/*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*/}
-                            </div>
-                            <hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
+                        <Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
+                                    Histogram of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
+                                    <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
+                                    {/*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*/}
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
+                            </Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.boxplot_chart_show ? 'block' : 'none')  }}>
+                                    Box Plot of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
+                                    <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
+                                    {/*<ClusteredBoxPlot chart_id="boxplot_chart_id" chart_data={ this.state.test_boxplot_chart_data}/>*/}
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.boxplot_chart_show ? 'block' : 'none')  }}>
-                                Box Plot of Selected data
-                            </Typography>
-                            <div style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
-                                <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
-                                {/*<ClusteredBoxPlot chart_id="boxplot_chart_id" chart_data={ this.state.test_boxplot_chart_data}/>*/}
-                            </div>
-                            <hr  class="result" style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
-                        </Grid>
-                        <Grid item xs={4} style={{ display: 'inline-block', padding:'20px'}}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
-                                Q-Q Plot of Selected data
-                            </Typography>
-                            <div style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }} >
-                                <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
+                        <Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
+                                    Q-Q Plot of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }} >
+                                    <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
 
-                            </div>
-                            <hr  class="result" style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
+                            </Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
+                                    Probability Plot of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }} >
+                                    <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
+
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }}/>
+                            </Grid>
                         </Grid>
+                        <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
+                        <Grid>
+                            <div style={{display: (this.state.stats_show ? 'block' : 'none') }}>
+                                <Accordion className="AccordionDataframe" sx={{width:'80%'}}>
+                                    <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                    >
+                                        <Typography>Selected Dataframe Values</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <InnerHTML html={this.state.test_data.data} style={{fontSize:'10px', wordWrap: 'break-word'}}/>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </div>
+                        </Grid>
+                        <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
                     </Grid>
                 </Grid>
         )

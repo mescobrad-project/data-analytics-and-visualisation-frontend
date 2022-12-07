@@ -20,6 +20,7 @@ import ClusteredBoxPlot from "../../components/ui-components/ClusteredBoxPlot";
 class Transform_data extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
             column_names: [],
@@ -50,8 +51,13 @@ class Transform_data extends React.Component {
     /**
      * Call backend endpoint to get column names
      */
-    async fetchColumnNames() {
-        API.get("return_columns", {}).then(res => {
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
@@ -76,14 +82,15 @@ class Transform_data extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
         let to_send_input_lmbda = null;
         let to_send_input_alpha = null;
 
         if (!!this.state.selected_lmbda){
-            to_send_input_lmbda = parseInt(this.state.selected_lmbda)
+            to_send_input_lmbda = parseFloat(this.state.selected_lmbda)
         }
         if (!!this.state.selected_alpha){
-            to_send_input_alpha = parseInt(this.state.selected_alpha)
+            to_send_input_alpha = parseFloat(this.state.selected_alpha)
         }
 
         //Reset view of optional visualisations preview
@@ -92,8 +99,13 @@ class Transform_data extends React.Component {
         // Send the request
         API.get("transform_data",
                 {
-                    params: {column: this.state.selected_column, name_test: this.state.selected_method,
-                        lmbd: to_send_input_lmbda, alpha: to_send_input_alpha}
+                    params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        column: this.state.selected_column,
+                        name_test: this.state.selected_method,
+                        lmbd: to_send_input_lmbda,
+                        alpha: to_send_input_alpha}
                 }
         ).then(res => {
             this.setState({test_data: res.data})
@@ -143,24 +155,24 @@ class Transform_data extends React.Component {
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview
-                        </Typography>
-                        <hr/>
-                        <List>
-                            {this.state.column_names.map((column) => (
-                                    <ListItem> <ListItemText primary={column}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
+                    {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                    {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                    {/*        Data Preview*/}
+                    {/*    </Typography>*/}
+                    {/*    <hr/>*/}
+                    {/*    <List>*/}
+                    {/*        {this.state.column_names.map((column) => (*/}
+                    {/*                <ListItem> <ListItemText primary={column}/></ListItem>*/}
+                    {/*        ))}*/}
+                    {/*    </List>*/}
+                    {/*</Grid>*/}
+                    <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center", minWidth: 120}} noWrap>
                             Select Dataset for Transformation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Column</InputLabel>
                                 <Select
                                         labelid="column-selector-label"
@@ -178,7 +190,7 @@ class Transform_data extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Column for Transformation</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="method-selector-label">Method</InputLabel>
                                 <Select
                                         labelid="method-selector-label"
@@ -193,7 +205,7 @@ class Transform_data extends React.Component {
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelid="lmbda-selector-label"
                                         id="lmbda-selector"
@@ -204,7 +216,7 @@ class Transform_data extends React.Component {
                                 <FormHelperText>If lmbda is None (default), find the value of lmbda that maximizes the log-likelihood function and return it as the second output argument.
                                     If lmbda is not None, do the transformation for that value.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelid="alpha-selector-label"
                                         id="alpha-selector"
@@ -220,8 +232,8 @@ class Transform_data extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                    <Grid item xs={9}>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Result Visualisation
                         </Typography>
                         <hr/>
