@@ -60,7 +60,7 @@ class SpindleDetection extends React.Component {
 
             // Visualisation Hide/Show values
             signal_chart_show : false,
-            test_chart_html: "",
+            test_chart_html: [],
             selected_part_channel: "F8-Ref",
             // peak_chart_show : false,
             // peak_chart_show : false,
@@ -95,7 +95,7 @@ class SpindleDetection extends React.Component {
         // Initialise component
         // - values of channels from the backend
         // this.fetchChannels();
-        this.handleGetChannelSignal();
+        // this.handleGetChannelSignal();
     }
 
 
@@ -155,7 +155,8 @@ class SpindleDetection extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
-        // Convert alpha and nlags from string to int and float
+        const params = new URLSearchParams(window.location.search);
+
         let to_send_input_freq_sp_low = null;     //float
         let to_send_input_freq_sp_high = null;     //float
         let to_send_input_freq_broad_low = null;     //float
@@ -168,7 +169,6 @@ class SpindleDetection extends React.Component {
         let to_send_input_thresh_rms = null;     //float
 
         // let to_send_input_verbose = null;  //bool|str|int
-
 
         if (!!this.state.selected_freq_sp_low){
             to_send_input_freq_sp_low = parseFloat(this.state.selected_freq_sp_low)
@@ -210,59 +210,47 @@ class SpindleDetection extends React.Component {
             to_send_input_thresh_rms = parseFloat(this.state.selected_thresh_rms)
         }
 
-
-
-        const params = new URLSearchParams(window.location.search);
-
         // Send the request
         API.get("spindles_detection",
-            {
-                params: {run_id: params.get("run_id"),
-                    step_id: params.get("step_id"),name: this.state.selected_channel,file_used: this.state.file_used
-                    // input_freq_sp_low: to_send_input_freq_sp_low,
-                    // input_freq_sp_high: to_send_input_freq_sp_high,
-                    // input_freq_broad_low: to_send_input_freq_broad_low,
-                    // input_freq_broad_high: to_send_input_freq_broad_high,
-                    // input_duration_low: to_send_input_duration_low,
-                    // input_duration_high: to_send_input_duration_high,
-                    // input_min_distance: to_send_input_min_distance,
-                    // input_thresh_rel_pow: to_send_input_thresh_rel_pow,
-                    // input_thresh_corr: to_send_input_thresh_corr,
-                    // input_thresh_rms: to_send_input_thresh_rms,
-                    // input_multi_only: this.state.selected_multi_only,
-                    // input_remove_outliers: this.state.selected_remove_outliers
+                {
+                    params: {run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        name: this.state.selected_channel,
+                        freq_sp_low: to_send_input_freq_sp_low,
+                        freq_sp_high: to_send_input_freq_sp_high,
+                        freq_broad_low: to_send_input_freq_broad_low,
+                        freq_broad_high: to_send_input_freq_broad_high,
+                        duration_low: to_send_input_duration_low,
+                        duration_high: to_send_input_duration_high,
+                        min_distance: to_send_input_min_distance,
+                        rel_pow: to_send_input_thresh_rel_pow,
+                        corr: to_send_input_thresh_corr,
+                        rms: to_send_input_thresh_rms,
+                        multi_only: this.state.multi_only,
+                        remove_outliers: this.state.remove_outliers,
+                        file_used: this.state.file_used
+                    }
                 }
-            }
         ).then(res => {
             const resultJson = res.data;
             console.log("--- Results ---")
             console.log(resultJson)
 
-            // We do this just once inside the chart compoennt to avoid multiple for loops
-            // let temp_array_singal = []
-            // for ( let it =0 ; it < resultJson['signal'].length; it++){
-            //     if(it > 1000){
-            //         break;
-            //     }
-            //     let temp_object = {}
-            //     temp_object["category"] = it
-            //     temp_object["yValue"] = resultJson['signal'][it]
-            //     // temp_object["strokeSettings"] = {stroke: colorSet.getIndex(0)}
-            //     // temp_object["fillSettings"] = {fill: colorSet.getIndex(0)}
-            //     // temp_object["bulletSettings"] = {fill: colorSet.getIndex(0)}
-            //     temp_array_singal.push(temp_object)
-            // }
-            // console.log("")
-            // console.log(temp_array)
-
-
-            this.setState({signal_chart_data: resultJson['signal']})
-            this.setState({signal_chart_highlighted_data: resultJson['detected_spindles']})
-            this.setState({signal_chart_show: true})
-
-
-            this.setState({test_chart_html: resultJson.figure})
-
+            // Send the request
+            API.get("save_annotation_to_file",
+                    {
+                        params: {
+                            run_id: params.get("run_id"),
+                            step_id: params.get("step_id"),
+                            name: this.state.selected_channel,
+                            annotations_to_add: "",
+                            file_used: this.state.file_used
+                        }
+                    }
+            ).then(res => {
+                console.log(res.data)
+                console.log("ANNOTATED")
+            })
         });
     }
 
@@ -512,7 +500,7 @@ class SpindleDetection extends React.Component {
                     <Typography variant="h6" sx={{ flexGrow: 1,   }} noWrap>
                         Spindle Results
                     </Typography>
-                    {/*<InnerHTML html={this.state.test_chart_html} />*/}
+                    {/*<InnerHTML html={this.state.test_chart_html} style={{zoom:'50%'}} />*/}
                     <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
 
                     {/*<div style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}><LineMultipleColorsChartCustom chart_id="signal_chart_id" chart_data={ this.state.signal_chart_data} highlighted_areas={this.state.signal_chart_highlighted_data}/></div>*/}
