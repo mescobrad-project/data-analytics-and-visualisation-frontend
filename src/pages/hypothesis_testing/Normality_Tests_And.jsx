@@ -33,6 +33,7 @@ class Normality_Tests_And extends React.Component {
                 Description:[],
                 data:[],
                 results: {
+                    plot_column:"",
                     skew: "",
                     kurtosis: "",
                     standard_deviation: "",
@@ -283,7 +284,7 @@ class Normality_Tests_And extends React.Component {
                                     </TableHead>
                                     <TableBody>
                                         <TableRow>
-                                            <TableCell className="tableCell" >{this.state.selected_column}</TableCell>
+                                            <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
                                             <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
                                             <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
                                             <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
@@ -316,7 +317,7 @@ class Normality_Tests_And extends React.Component {
                                             return (
                                                     <TableRow>
                                                         <TableCell
-                                                                className="tableCell">{this.state.selected_column}</TableCell>
+                                                                className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
                                                         <TableCell className="tableCell">Highest</TableCell>
                                                         <TableCell className="tableCell">{index + 1}</TableCell>
                                                         <TableCell className="tableCell">{item}</TableCell>
@@ -338,7 +339,7 @@ class Normality_Tests_And extends React.Component {
                                             return (
                                                     <TableRow>
                                                         <TableCell
-                                                                className="tableCell">{this.state.selected_column}</TableCell>
+                                                                className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
                                                         <TableCell className="tableCell2">Lowest</TableCell>
                                                         <TableCell className="tableCell2">{index + 1}</TableCell>
                                                         <TableCell className="tableCell2">{item}</TableCell>
@@ -364,36 +365,7 @@ class Normality_Tests_And extends React.Component {
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center", padding: "15px"}}>
                                 Test of Normality
                             </Typography>
-                            {/*<TableContainer component={Paper} className="SampleCharacteristics" sx={{width: '80%'}}>*/}
-                            {/*    <Table>*/}
-                            {/*        <TableHead>*/}
-                            {/*            <TableRow>*/}
-                            {/*                <TableCell className="tableHeadCell">Sample Name</TableCell>*/}
-                            {/*                <TableCell className="tableHeadCell">Statistic</TableCell>*/}
-                            {/*                <TableCell className="tableHeadCell">df</TableCell>*/}
-                            {/*                <TableCell className="tableHeadCell">Critical Values</TableCell>*/}
-                            {/*                <TableCell className="tableHeadCell">Significance level</TableCell>*/}
-                            {/*                <TableCell className="tableHeadCell">Description</TableCell>*/}
-                            {/*            </TableRow>*/}
-                            {/*        </TableHead>*/}
-                            {/*        <TableBody>*/}
-                            {/*            <TableRow>*/}
-                            {/*                <TableCell className="tableCell">{this.state.selected_column}</TableCell>*/}
-                            {/*                <TableCell*/}
-                            {/*                        className="tableCell">{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>*/}
-                            {/*                /!*Number.parseFloat(x).toFixed(2)*!/*/}
-                            {/*                <TableCell*/}
-                            {/*                        className="tableCell">{this.state.test_data.results.sample_N}</TableCell>*/}
-                            {/*                <TableCell*/}
-                            {/*                        className="tableCell">{Number.parseFloat(this.state.alpha).toFixed(5)}</TableCell>*/}
-                            {/*                <TableCell*/}
-                            {/*                        className="tableCell">{Number.parseFloat(this.state.test_data.p_value).toFixed(5)}</TableCell>*/}
-                            {/*                <TableCell className="tableCell"*/}
-                            {/*                           style={{color: (this.state.test_data.Description == "Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green')}}>{this.state.test_data.Description}</TableCell>*/}
-                            {/*            </TableRow>*/}
-                            {/*        </TableBody>*/}
-                            {/*    </Table>*/}
-                            {/*</TableContainer>*/}
+
                             <TableContainer component={Paper} className="ExtremeValues" sx={{width: '80%'}}>
                                 <Table>
                                     <TableHead>
@@ -416,7 +388,7 @@ class Normality_Tests_And extends React.Component {
                                                 return (
                                                         <TableRow>
                                                             <TableCell
-                                                                    className="tableCell">{this.state.selected_column}</TableCell>
+                                                                    className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
                                                             <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>
                                                             <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
                                                             <TableCell className="tableCell">{Number.parseFloat(s_level/100).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2})}</TableCell>
@@ -512,3 +484,34 @@ class Normality_Tests_And extends React.Component {
 }
 
 export default Normality_Tests_And;
+
+{/*<TableContainer component={Paper} className="SampleCharacteristics" sx={{width: '80%'}}>*/}
+{/*    <Table>*/}
+{/*        <TableHead>*/}
+{/*            <TableRow>*/}
+{/*                <TableCell className="tableHeadCell">Sample Name</TableCell>*/}
+{/*                <TableCell className="tableHeadCell">Statistic</TableCell>*/}
+{/*                <TableCell className="tableHeadCell">df</TableCell>*/}
+{/*                <TableCell className="tableHeadCell">Critical Values</TableCell>*/}
+{/*                <TableCell className="tableHeadCell">Significance level</TableCell>*/}
+{/*                <TableCell className="tableHeadCell">Description</TableCell>*/}
+{/*            </TableRow>*/}
+{/*        </TableHead>*/}
+{/*        <TableBody>*/}
+{/*            <TableRow>*/}
+{/*                <TableCell className="tableCell">{this.state.selected_column}</TableCell>*/}
+{/*                <TableCell*/}
+{/*                        className="tableCell">{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>*/}
+{/*                /!*Number.parseFloat(x).toFixed(2)*!/*/}
+{/*                <TableCell*/}
+{/*                        className="tableCell">{this.state.test_data.results.sample_N}</TableCell>*/}
+{/*                <TableCell*/}
+{/*                        className="tableCell">{Number.parseFloat(this.state.alpha).toFixed(5)}</TableCell>*/}
+{/*                <TableCell*/}
+{/*                        className="tableCell">{Number.parseFloat(this.state.test_data.p_value).toFixed(5)}</TableCell>*/}
+{/*                <TableCell className="tableCell"*/}
+{/*                           style={{color: (this.state.test_data.Description == "Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green')}}>{this.state.test_data.Description}</TableCell>*/}
+{/*            </TableRow>*/}
+{/*        </TableBody>*/}
+{/*    </Table>*/}
+{/*</TableContainer>*/}
