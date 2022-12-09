@@ -68,7 +68,6 @@ import LassoRegressionFunctionPage from "./LassoRegressionFunctionPage";
 import RidgeRegressionFunctionPage from "./RidgeRegressionFunctionPage";
 import SGDRegressionFunctionPage from "./SGDRegressionFunctionPage";
 import HuberRegressionFunctionPage from "./HuberRegressionFunctionPage";
-import LinearRegressionFunctionPage2 from "./LinearRegressionFunctionPage2";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -166,7 +165,6 @@ const App = () => {
                         <Route exact path="/RidgeRegression" element={(<LayoutMain><RidgeRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SGDRegression" element={(<LayoutMain><SGDRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/LinearRegression2" element={(<LayoutMain><LinearRegressionFunctionPage2/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

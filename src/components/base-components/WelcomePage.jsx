@@ -619,15 +619,6 @@ function WelcomePage() {
                         <Link
                                 component={Link}
                                 variant="h6"
-                                href="/LinearRegression2"
-                        >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Linear Regression 2>
-                            </ListItemButton>
-                        </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
                                 href="/ElasticNet"
                         >
                             <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
