@@ -14,6 +14,22 @@ import {
     Typography
 } from "@mui/material";
 import qs from "qs";
+import {DataGrid} from "@mui/x-data-grid";
+
+const userColumns = [
+    { field: "Variable", headerName: "Variable", width: '50%',
+        align: "left",
+        headerAlign: "left",
+        flex:2,
+        sortable: true},
+    {
+        field: "Variance",
+        headerName: "Variance",
+        width: '50%',
+        align: "left",
+        headerAlign: "left",
+        flex:2
+    }];
 
 class Homoscedasticity extends React.Component {
     constructor(props){
@@ -21,13 +37,18 @@ class Homoscedasticity extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
-            test_data: [],
+            test_data: {
+                statistic: "",
+                p_value: "",
+                variance: []
+            },
             //Values selected currently on the form
             selected_column: "",
             selected_method: "Bartlett",
             selected_center: "median",
             selected_independent_variables: [],
-            center_show:false
+            center_show:false,
+            stats_show:false
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -59,6 +80,7 @@ class Homoscedasticity extends React.Component {
                     step_id: params.get("step_id")
                 }}).then(res => {
             this.setState({column_names: res.data.columns})
+
         });
     }
 
@@ -83,6 +105,7 @@ class Homoscedasticity extends React.Component {
                 }}
         ).then(res => {
             this.setState({test_data: res.data})
+            this.setState({stats_show: true})
         });
     }
 
@@ -110,9 +133,11 @@ class Homoscedasticity extends React.Component {
         else {
             this.setState({center_show:true});
         }
+        this.setState({stats_show: false})
     }
     handleSelectCenterChange(event){
         this.setState( {selected_center: event.target.value})
+        this.setState({stats_show: false})
     }
 
     handleSelectIndependentVariableChange(event){
@@ -136,7 +161,7 @@ class Homoscedasticity extends React.Component {
                         <hr/>
                         <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                             <FormHelperText>Selected Variables</FormHelperText>
-                            <List style={{fontSize:'9px', backgroundColor:"lightgreen"}}>
+                            <List style={{fontSize:'9px', backgroundColor:"powderblue"}}>
                                 {this.state.selected_independent_variables.map((column) => (
                                         <ListItem disablePadding
                                                   >
@@ -218,9 +243,28 @@ class Homoscedasticity extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <div>
-                            <p className="result_texts">Statistic :  { this.state.test_data['statistic']}</p>
-                            <p className="result_texts">p value :    { this.state.test_data['p-value']}</p>
+                        <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
+                            <div className="datatable">
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} >
+                                    Variance of Selected Variables
+                                </Typography>
+                                <DataGrid sx={{width:'80%', height:'210px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
+                                        rowHeight={30}
+                                        className="datagrid"
+                                        rows= {this.state.test_data.variance}
+                                        columns= {userColumns}
+                                        pageSize= {12}
+                                        rowsPerPageOptions={[5]}
+                                />
+                                <hr className="result"
+                                    />
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >{this.state.selected_method}{"'s test statistic:"}  { this.state.test_data.statistic}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >P-value: {this.state.test_data.p_value}</Typography>
+                        </div>
+
+                            {/*{this.state.test_data.variance(key='Variable').map((index, item) =>(*/}
+                            {/*        <p className="result_texts">{item}</p>*/}
+                            {/*))}*/}
                         </div>
                     </Grid>
                 </Grid>
