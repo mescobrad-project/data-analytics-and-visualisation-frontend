@@ -34,6 +34,7 @@ class Normality_Tests extends React.Component {
                 Description:[],
                 data:[],
                 results: {
+                    plot_column:"",
                     skew: "",
                     kurtosis: "",
                     standard_deviation: "",
@@ -300,7 +301,7 @@ class Normality_Tests extends React.Component {
                                     </TableHead>
                                     <TableBody>
                                         <TableRow>
-                                            <TableCell className="tableCell" >{this.state.selected_column}</TableCell>
+                                            <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
                                             <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
                                             <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
                                             <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
@@ -331,7 +332,7 @@ class Normality_Tests extends React.Component {
                                         if (index == 0) {
                                             return (
                                                     <TableRow>
-                                                        <TableCell className="tableCell">{this.state.selected_column}</TableCell>
+                                                        <TableCell className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
                                                         <TableCell className="tableCell">Highest</TableCell>
                                                         <TableCell className="tableCell">{index + 1}</TableCell>
                                                         <TableCell className="tableCell">{item}</TableCell>
@@ -351,7 +352,7 @@ class Normality_Tests extends React.Component {
                                         if (index == 0) {
                                             return (
                                                     <TableRow>
-                                                        <TableCell className="tableCell">{this.state.selected_column}</TableCell>
+                                                        <TableCell className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
                                                         <TableCell className="tableCell2">Lowest</TableCell>
                                                         <TableCell className="tableCell2">{index + 1}</TableCell>
                                                         <TableCell className="tableCell2">{item}</TableCell>
@@ -390,7 +391,7 @@ class Normality_Tests extends React.Component {
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell className="tableCell" >{this.state.selected_column}</TableCell>
+                                        <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
                                         <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>
                                         {/*Number.parseFloat(x).toFixed(2)*/}
                                         <TableCell className="tableCell" >{ this.state.test_data.results.sample_N}</TableCell>
