@@ -501,8 +501,104 @@ function WelcomePage() {
                                 size="large"
                                 onClick={redirectToPage.bind(this,1, 2, "mutliple_comparisons", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            Multiple Comparisons >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Multiple Comparisons >
+                            </ListItemButton>
                         </Button>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/LDA"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                LDA >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/SVC"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                SVC >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/PCA"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                PCA >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/KMeans"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                KMeans >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/LinearRegression"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Linear Regression >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/ElasticNet"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Elastic Net >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/LassoRegression"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Lasso Regression >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/RidgeRegression"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Ridge Regression >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/SGDRegression"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                SGD Regression >
+                            </ListItemButton>
+                        </Link>
+                        <Link
+                                component={Link}
+                                variant="h6"
+                                href="/HuberRegression"
+                        >
+                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
+                                Huber Regression >
+                            </ListItemButton>
+                        </Link>
+
+
+                        {/*<p>calculate_SpO2 from eeg_router</p>*/}
+
                     </List>
                     <List
                             sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
