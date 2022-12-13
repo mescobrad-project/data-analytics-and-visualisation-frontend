@@ -38,11 +38,11 @@ class HistogramChartCustom extends React.Component {
             am5xy.XYChart.new(root, {
                 panX: true,
                 panY: true,
-                wheelX: "panX",
-                wheelY: "zoomX",
-                scrollbarX: am5.Scrollbar.new(root, { orientation: "horizontal" }),
-                scrollbarY: am5.Scrollbar.new(root, { orientation: "vertical" }),
-                pinchZoomX:true,
+                // wheelX: "zoomX",
+                // wheelY: "zoomX",
+                // scrollbarX: am5.Scrollbar.new(root, { orientation: "horizontal" }),
+                // scrollbarY: am5.Scrollbar.new(root, { orientation: "vertical" }),
+                // pinchZoomX:true,
             })
         );
         // Format numbers
@@ -50,30 +50,24 @@ class HistogramChartCustom extends React.Component {
 // Create axes
 // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
         let xRenderer = am5xy.AxisRendererX.new(root, {
-            minGridDistance: 30
-        });
 
-        // xRenderer.labels.template.setAll({
-        //     rotation: -90,
-        //     centerY: am5.p50,
-        //     centerX: 0
-        // });
-        //
+        });
         xRenderer.grid.template.setAll({
             location: 0,
+            minGridDistance: 30,
             strokeDasharray: [1, 3]
         });
 
 
         let xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-            maxDeviation: 0.3,
             categoryField: "category",
             renderer: xRenderer,
             tooltip: am5.Tooltip.new(root, {})
         }));
+xAxis.fontSize = 8;
 
         let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-            maxDeviation: 0.3,
+            // maxDeviation: 0.3,
             renderer: am5xy.AxisRendererY.new(root, {})
         }));
 
@@ -84,24 +78,14 @@ class HistogramChartCustom extends React.Component {
             valueYField: "yValue",
             categoryXField: "category",
             adjustBulletPosition: false,
-            lineThickness: 20,
+            // lineThickness: 20,
             tooltip: am5.Tooltip.new(root, {
                 labelText: "{valueY}"
             })
         }));
         series.columns.template.setAll({
-            width: 1
+            width: am5.percent(90)
         });
-
-        // series.bullets.push(function() {
-        //     return am5.Bullet.new(root, {
-        //         locationY: 1,
-        //         sprite: am5.Circle.new(root, {
-        //             radius: 5,
-        //             fill: series.get("fill")
-        //         })
-        //     })
-        // })
 
         // Add cursor
         chart.set("cursor", am5xy.XYCursor.new(root, {}));
@@ -127,6 +111,7 @@ class HistogramChartCustom extends React.Component {
         if(this.props.chart_data){
             this.xAxis.data.setAll(this.props.chart_data)
             this.series.data.setAll(this.props.chart_data)
+            console.log(this.props.chart_data)
         }
 
     }
@@ -139,7 +124,7 @@ class HistogramChartCustom extends React.Component {
 
     render() {
         return (
-                    <div id={this.props.chart_id} style={{ width: "100%", height: "400px" }}></div>
+                    <div id={this.props.chart_id} style={{ width: "100%", height: "240px" }}></div>
         )
     }
 }

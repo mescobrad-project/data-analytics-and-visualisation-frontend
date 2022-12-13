@@ -149,6 +149,7 @@ const App = () => {
                         <Route exact path="/alpha_variability" element={(<LayoutMain><AlphaVariabilityFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
+                        {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
                         <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>

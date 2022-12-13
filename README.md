@@ -61,6 +61,32 @@ WIP
 npm run build
 ```
 
+## Deployment (Kubernetes) WIP
+    - Prerequisites
+        ```
+        Kuberenetes : Recommended enable through docker desktop
+        ```
+    - kubectl create -f .\analytics-frontend-service.yaml
+    - kubectl create -f .\analytics-frontend-deployment.yaml
+
+    - Misc 
+        ```
+        kubectl get services -o wide
+        kubectl get pods -o wide
+        kubectl get nodes -o wide
+        kubectl describe services
+        kubectl describe services/analytics-frontend
+        
+        To stop the nodes:
+        kubectl get deployments
+        kubectl delete deployment analytics-frontend
+        
+
+        To clear:  kubectl delete all --all --namespace default 
+
+        To see logs, can be done through docker-desktop
+        ```
+
 ## Built With
 WIP 
 

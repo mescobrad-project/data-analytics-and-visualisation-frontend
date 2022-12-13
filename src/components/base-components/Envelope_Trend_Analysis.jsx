@@ -1,7 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import LineChart from "../ui-components/LineChart";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 
 class EnvelopeTrendAnalysis extends React.Component {
     constructor(props) {
@@ -38,28 +39,25 @@ class EnvelopeTrendAnalysis extends React.Component {
 
             // Visualisation Hide/Show values
             envelope_chart_show : false,
+
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
+        // this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectWindowChange = this.handleSelectWindowChange.bind(this);
         this.handleSelectPercentChange = this.handleSelectPercentChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
+
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
+        // this.fetchChannels();
 
-    }
-
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
     }
 
     /**
@@ -79,11 +77,15 @@ class EnvelopeTrendAnalysis extends React.Component {
             to_send_window_size = parseInt(this.state.selected_window_size)
         }
 
+        const params = new URLSearchParams(window.location.search);
+
         // Send the request
         API.get("envelope_trend",
             {
-                params: {input_name: this.state.selected_channel, window_size: this.state.selected_window_size,
-                    percent: this.state.selected_percent, input_method: this.state.selected_input_method}
+                params: {run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),input_name: this.state.selected_channel, window_size: this.state.selected_window_size,
+                    percent: this.state.selected_percent, input_method: this.state.selected_input_method,
+                    file_used: this.state.file_used}
             }
         ).then(res => {
             const resultJson = res.data;
@@ -106,6 +108,16 @@ class EnvelopeTrendAnalysis extends React.Component {
     }
     handleSelectMethodChange(event){
         this.setState( {selected_input_method: event.target.value})
+    }
+
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
     }
 
     render() {
@@ -136,8 +148,10 @@ class EnvelopeTrendAnalysis extends React.Component {
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Envelope Analyisis Parameterisation
                     </Typography>
-                    <hr/>
-                    <form onSubmit={this.handleSubmit}>
+                    <Divider/>
+                    <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                    <Divider/>
+                    <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select

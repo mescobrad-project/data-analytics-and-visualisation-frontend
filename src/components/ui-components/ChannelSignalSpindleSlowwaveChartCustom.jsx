@@ -137,7 +137,7 @@ class ChannelSignalSpindleSlowwaveChartCustom extends React.Component {
 
         if(this.props.chart_data !== this.chart.data){
 
-
+            console.log("HEYIMHERE CHART")
             // let tempdata =  this.props.chart_data
             this.chart.data = this.props.chart_data
 

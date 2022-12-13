@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -20,6 +20,7 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 
 class WelchFunctionPage extends React.Component {
     constructor(props){
@@ -43,13 +44,13 @@ class WelchFunctionPage extends React.Component {
             welch_chart_data : [],
 
             // Visualisation Hide/Show values
-            welch_chart_show : false
+            welch_chart_show : false,
 
-
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectWindowChange = this.handleSelectWindowChange.bind(this);
@@ -60,20 +61,13 @@ class WelchFunctionPage extends React.Component {
         this.handleSelectScalingChange = this.handleSelectScalingChange.bind(this);
         this.handleSelectAxisChange = this.handleSelectAxisChange.bind(this);
         this.handleSelectAverageChange = this.handleSelectAverageChange.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
 
     }
 
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
-    }
 
     /**
      * Process and send the request for auto correlation and handle the response
@@ -102,15 +96,21 @@ class WelchFunctionPage extends React.Component {
 
 
 
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("return_welch",
                 {
-                    params: {input_name: this.state.selected_channel, input_window: this.state.selected_window,
+                    params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        input_name: this.state.selected_channel, input_window: this.state.selected_window,
                         input_nperseg: to_send_input_nperseg, input_noverlap: to_send_input_noverlap,
                         input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,
                         input_scaling: this.state.selected_scaling, input_axis: this.state.selected_axis,
-                        input_average: this.state.selected_average}
+                        input_average: this.state.selected_average,
+                        file_used: this.state.file_used
+                    }
                 }
         ).then(res => {
             const resultJson = res.data;
@@ -183,7 +183,15 @@ class WelchFunctionPage extends React.Component {
         this.setState( {selected_average: event.target.value})
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
 
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
 
     render() {
         return (
@@ -203,8 +211,10 @@ class WelchFunctionPage extends React.Component {
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Welch Parameterisation
                         </Typography>
-                        <hr/>
-                        <form onSubmit={this.handleSubmit}>
+                        <Divider/>
+                        <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                        <Divider/>
+                        <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select

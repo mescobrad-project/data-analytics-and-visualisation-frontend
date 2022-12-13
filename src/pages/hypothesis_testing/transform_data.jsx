@@ -1,6 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
+    Accordion, AccordionDetails, AccordionSummary,
     Button,
     FormControl,
     FormHelperText,
@@ -10,30 +11,53 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, TextField,
+    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField,
     Typography
 } from "@mui/material";
-import PointChartCustom from "../../components/ui-components/PointChartCustom"
-import ClusteredBoxPlot from "../../components/ui-components/ClusteredBoxPlot";
-// import PointChartCustom from "../../components/ui-components/PointChartCustom";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InnerHTML from "dangerously-set-html-content";
+import Paper from "@mui/material/Paper";
 
 class Transform_data extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
             column_names: [],
-            test_data: [],
+            test_data: {
+                statistic: 0,
+                min_confidence:"",
+                max_confidence:"",
+                lamda_value:"",
+                data:[],
+                results: {
+                    plot_column:"",
+                    skew: "",
+                    kurtosis: "",
+                    standard_deviation: "",
+                    median:"",
+                    mean:"",
+                    sample_N:"",
+                    top_5:[],
+                    last_5:[]
+                }
+            },
+            // Values to pass to visualisations
+            test_boxplot_chart_data: [],
+            test_qqplot_chart_data : [],
+            test_probplot_chart_data : [],
+            test_Hplot_chart_data: [],
+            test_transf_plot_chart_data: [],
             //Values selected currently on the form
             selected_column: "",
             selected_method: "Box-Cox",
             selected_lmbda: "",
             selected_alpha: "",
-            // Values to pass to visualisations
-            transformation_chart_data : [],
-
             // Visualisation Hide/Show values
-            transformation_chart_show : false
+            lmbda_show:true,
+            alpha_show:true,
+            stats_show:false
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -50,8 +74,13 @@ class Transform_data extends React.Component {
     /**
      * Call backend endpoint to get column names
      */
-    async fetchColumnNames() {
-        API.get("return_columns", {}).then(res => {
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
@@ -76,14 +105,15 @@ class Transform_data extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
         let to_send_input_lmbda = null;
         let to_send_input_alpha = null;
 
         if (!!this.state.selected_lmbda){
-            to_send_input_lmbda = parseInt(this.state.selected_lmbda)
+            to_send_input_lmbda = parseFloat(this.state.selected_lmbda)
         }
         if (!!this.state.selected_alpha){
-            to_send_input_alpha = parseInt(this.state.selected_alpha)
+            to_send_input_alpha = parseFloat(this.state.selected_alpha)
         }
 
         //Reset view of optional visualisations preview
@@ -92,8 +122,13 @@ class Transform_data extends React.Component {
         // Send the request
         API.get("transform_data",
                 {
-                    params: {column: this.state.selected_column, name_test: this.state.selected_method,
-                        lmbd: to_send_input_lmbda, alpha: to_send_input_alpha}
+                    params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        column: this.state.selected_column,
+                        name_transform: this.state.selected_method,
+                        lmbd: to_send_input_lmbda,
+                        alpha: to_send_input_alpha}
                 }
         ).then(res => {
             this.setState({test_data: res.data})
@@ -101,25 +136,29 @@ class Transform_data extends React.Component {
             // console.log(resultJson)
             // console.log('Test')
             // let temp_array = []
-            let temp_array_chart = []
-            for ( let it =0 ; it < resultJson['Box-Cox power transformed array'].length; it++){
-                // for testing
-                // -----------
-                // temp_array.push(resultJson['Box-Cox power transformed array'][it])
-                let temp_object = {}
-                temp_object["category"] = it
-                temp_object["yValue"] = resultJson['Box-Cox power transformed array'][it]
-                temp_array_chart.push(temp_object)
-            }
-            // for testing
-            // -----------
-            // this.setState({transformation_data: temp_array})
+            // let temp_array_chart = []
+            // for ( let it =0 ; it < resultJson['Box-Cox power transformed array'].length; it++){
+            //     // for testing
+            //     // -----------
+            //     // temp_array.push(resultJson['Box-Cox power transformed array'][it])
+            //     let temp_object = {}
+            //     temp_object["category"] = it
+            //     temp_object["yValue"] = resultJson['Box-Cox power transformed array'][it]
+            //     temp_array_chart.push(temp_object)
+            // }
+            // // for testing
+            // // -----------
+            // // this.setState({transformation_data: temp_array})
             this.setState({lamda_value: resultJson['lambda that maximizes the log-likelihood function']})
             this.setState({min_confidence: resultJson['minimum confidence limit']})
             this.setState({max_confidence: resultJson['maximum confidence limit']})
 
-            this.setState({transformation_chart_data: temp_array_chart})
-            this.setState({transformation_chart_show: true})
+            this.setState({stats_show: true})
+            this.setState({test_qqplot_chart_data: resultJson['results']['qqplot']})
+            this.setState({test_Hplot_chart_data: resultJson['results']['histogramplot']})
+            this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
+            this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
+            this.setState({test_transf_plot_chart_data: resultJson['results']['transf_plot']})
         });
     }
 
@@ -129,38 +168,43 @@ class Transform_data extends React.Component {
      */
     handleSelectColumnChange(event){
         this.setState( {selected_column: event.target.value})
+        this.setState({stats_show: false})
     }
     handleSelectMethodChange(event){
         this.setState( {selected_method: event.target.value})
+        this.setState({stats_show: false})
+        if (event.target.value=="Box-Cox"){
+            this.setState({alpha_show:true});
+            this.setState({lmbda_show:true});
+        }
+        else if (event.target.value=="Yeo-Johnson") {
+            this.setState({alpha_show:false});
+            this.setState({lmbda_show:true});
+        }
+        else {
+            this.setState({alpha_show:false});
+            this.setState({lmbda_show:false});
+        }
     }
     handleSelectLmbdaChange(event){
         this.setState( {selected_lmbda: event.target.value})
+        this.setState({stats_show: false})
     }
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
+        this.setState({stats_show: false})
     }
 
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview
-                        </Typography>
-                        <hr/>
-                        <List>
-                            {this.state.column_names.map((column) => (
-                                    <ListItem> <ListItemText primary={column}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
+                    <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center", minWidth: 120}} noWrap>
                             Select Dataset for Transformation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Column</InputLabel>
                                 <Select
                                         labelid="column-selector-label"
@@ -178,7 +222,7 @@ class Transform_data extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Column for Transformation</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="method-selector-label">Method</InputLabel>
                                 <Select
                                         labelid="method-selector-label"
@@ -190,11 +234,14 @@ class Transform_data extends React.Component {
                                     {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
                                     <MenuItem value={"Box-Cox"}><em>Box-Cox</em></MenuItem>
                                     <MenuItem value={"Yeo-Johnson"}><em>Yeo-Johnson</em></MenuItem>
+                                    <MenuItem value={"Log"}><em>Log</em></MenuItem>
+                                    <MenuItem value={"Squared-root"}><em>Squared-root</em></MenuItem>
+                                    <MenuItem value={"Cube-root"}><em>Cube-root</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <TextField
+                            <FormControl style={{ display: (this.state.lmbda_show ? 'block' : 'none') }}>
+                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
                                         labelid="lmbda-selector-label"
                                         id="lmbda-selector"
                                         value= {this.state.selected_lmbda}
@@ -204,9 +251,9 @@ class Transform_data extends React.Component {
                                 <FormHelperText>If lmbda is None (default), find the value of lmbda that maximizes the log-likelihood function and return it as the second output argument.
                                     If lmbda is not None, do the transformation for that value.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <TextField
-                                        labelid="alpha-selector-label"
+                            <FormControl style={{ display: (this.state.alpha_show ? 'block' : 'none') }}>
+                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                                           labelid="alpha-selector-label"
                                         id="alpha-selector"
                                         value= {this.state.selected_alpha}
                                         label="Alpha parameter"
@@ -220,38 +267,117 @@ class Transform_data extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                    <Grid item xs={9}>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <div>
-                            <p className="result_texts"> Lamda parameter: {this.state.lamda_value}</p>
-                            <p className="result_texts"> Minimum confidence limit: {this.state.min_confidence}</p>
-                            <p className="result_texts"> Maximum confidence limit: {this.state.max_confidence}</p>
-                            {/*/!*For testing*!/*/}
-                            {/*------------*/}
-                            {/*<p className="result_texts"> Box-Cox power transformed array:*/}
-                            {/*    {this.state.transformation_data}*/}
-                            {/*</p>*/}
-                            {/*<p>Values:</p>*/}
-                            {/*<p>{this.renderArrayValues(this.state.transformation_data)}</p>*/}
-
+                        <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                            <p className="result_texts" style={{display: (this.state.lamda_value ? 'block' : 'none')}}> Lamda parameter: {this.state.lamda_value}</p>
+                            <p className="result_texts" style={{display: (this.state.min_confidence ? 'block' : 'none')}}> Minimum confidence limit: {this.state.min_confidence}</p>
+                            <p className="result_texts" style={{display: (this.state.max_confidence ? 'block' : 'none')}}> Maximum confidence limit: {this.state.max_confidence}</p>
                         </div>
-                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.transformation_chart_show ? 'block' : 'none')  }} noWrap>
-                            Transformation test Results
-                        </Typography>
-                        <div style={{display:"flex"}}>
-                            <div style={{flex:2, width: "fit-content"}}>
-                                <div style={{display: (this.state.transformation_chart_show ? 'block' : 'none') }}>
-                                    <PointChartCustom chart_id="transformation_chart_id" chart_data={ this.state.transformation_chart_data}/>
+                        <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
+                                Sample characteristics
+                            </Typography>
+                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell className="tableHeadCell">Name</TableCell>
+                                            <TableCell className="tableHeadCell">N</TableCell>
+                                            <TableCell className="tableHeadCell">Mean</TableCell>
+                                            <TableCell className="tableHeadCell">Median</TableCell>
+                                            <TableCell className="tableHeadCell">Std. Deviation</TableCell>
+                                            <TableCell className="tableHeadCell">Skewness</TableCell>
+                                            <TableCell className="tableHeadCell">Kurtosis</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
+                                            <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
+                                            <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
+                        <Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                    Histogram of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
+                                    <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
                                 </div>
-                                <hr style={{display: (this.state.transformation_chart_show ? 'block' : 'none') }}/>
+                                <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                            </Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                    Box Plot of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
+                                    <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                            </Grid>
+                        </Grid>
+                        <Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                    Q-Q Plot of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
+                                    <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
+
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                            </Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                    Probability Plot of Selected data
+                                </Typography>
+                                <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
+                                    <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
+
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                            </Grid>
+                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                    Comparison of Data Transformation
+                                </Typography>
+                                <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
+                                    <InnerHTML html={this.state.test_transf_plot_chart_data} style={{zoom:'50%'}}/>
+                                </div>
+                                <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                            </Grid>
+                        </Grid>
+                        <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
+                        <Grid>
+                            <div style={{display: (this.state.stats_show ? 'block' : 'none') }}>
+                                <Accordion className="AccordionDataframe" sx={{width:'80%'}}>
+                                    <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                    >
+                                        <Typography>Selected Dataframe Values</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <InnerHTML html={this.state.test_data.data} style={{fontSize:'10px', wordWrap: 'break-word'}}/>
+                                    </AccordionDetails>
+                                </Accordion>
                             </div>
-                            {/*<div style={{flex:2, width: "fit-content"}}>*/}
-                            {/*    <ClusteredBoxPlot chart_id="boxplot_chart_id" />*/}
-                            {/*</div>*/}
-                        </div>
+                        </Grid>
+                        <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
                     </Grid>
                 </Grid>
         )

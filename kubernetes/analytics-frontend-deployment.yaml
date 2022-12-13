@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\mkont\WebstormProjects\data-analytics-and-visualisation-frontend\docker\kompose.exe convert
+    kompose.version: 1.27.0 (b0ed6a2c9)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: analytics-frontend
+  name: analytics-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: analytics-frontend
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\mkont\WebstormProjects\data-analytics-and-visualisation-frontend\docker\kompose.exe convert
+        kompose.version: 1.27.0 (b0ed6a2c9)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: analytics-frontend
+    spec:
+      type: LoadBalancer
+      containers:
+        - env:
+            - name: REACT_APP_BASEURL
+              value: http://localhost:8000/
+          image: analytics_frontend
+          imagePullPolicy: Never
+          name: analytics-frontend
+          ports:
+            - containerPort: 3000
+          resources: {}
+      restartPolicy: Always
+status: {}
