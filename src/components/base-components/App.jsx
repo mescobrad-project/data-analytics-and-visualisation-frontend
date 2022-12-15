@@ -160,7 +160,7 @@ const App = () => {
                         <Route exact path="/SVC" element={(<LayoutMain><SVCFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/PCA" element={(<LayoutMain><PCAFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/KMeans" element={(<LayoutMain><KMeansFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/LinearRegressionFunctionPage" element={(<LayoutMain><LinearRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/linear_regression" element={(<LayoutMain><LinearRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/ElasticNet" element={(<LayoutMain><ElasticNetFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/LassoRegression" element={(<LayoutMain><LassoRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/RidgeRegression" element={(<LayoutMain><RidgeRegressionFunctionPage/></LayoutMain>)}/>
