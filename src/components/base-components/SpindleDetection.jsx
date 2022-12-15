@@ -1,6 +1,6 @@
 import React from 'react';
 import API from "../../axiosInstance";
-// import InnerHTML from 'dangerously-set-html-content'
+import "../../pages/hypothesis_testing/normality_tests.scss"
 
 // import PropTypes from 'prop-types';
 import {
@@ -116,38 +116,43 @@ class SpindleDetection extends React.Component {
                 }
         ).then(res => {
             const resultJson = res.data;
-            console.log(res.data)
-            console.log("ORIGINAL LENGTH")
-            console.log(resultJson.signal.length)
-            this.setState({signal_original_start_seconds: resultJson.start_date_time});
+            // console.log("resultJson.figure")
+            // console.log(resultJson.figure)
+            // this.setState({"test_chart_html": resultJson.figure})
 
-            let temp_array_signal = []
-            for (let it = 0; it < resultJson.signal.length; it++) {
-                let temp_object = {}
-                let adjusted_time = ""
-                // First entry is 0 so no need to add any milliseconds
-                // Time added is as millisecond/100 so we multiply by 1000
-                if (it === 0) {
-                    adjusted_time = resultJson.start_date_time
-                } else {
-                    adjusted_time = resultJson.start_date_time + resultJson.signal_time[it] * 1000
-                }
-
-                let temp_date = new Date(adjusted_time)
-                temp_object["date"] = temp_date
-                temp_object["yValue"] = resultJson.signal[it]
-                //TODO
-                if(it > 12579 && it <12793){
-                    temp_object["color"] = "red"
-                }else{
-                    temp_object["color"] = "blue"
-                }
-
-                temp_array_signal.push(temp_object)
-            }
-
-            this.setState({signal_chart_data: temp_array_signal})
-            this.setState({select_signal_chart_show: true});
+            // const resultJson = res.data;
+            // console.log(res.data)
+            // console.log("ORIGINAL LENGTH")
+            // console.log(resultJson.signal.length)
+            // this.setState({signal_original_start_seconds: resultJson.start_date_time});
+            //
+            // let temp_array_signal = []
+            // for (let it = 0; it < resultJson.signal.length; it++) {
+            //     let temp_object = {}
+            //     let adjusted_time = ""
+            //     // First entry is 0 so no need to add any milliseconds
+            //     // Time added is as millisecond/100 so we multiply by 1000
+            //     if (it === 0) {
+            //         adjusted_time = resultJson.start_date_time
+            //     } else {
+            //         adjusted_time = resultJson.start_date_time + resultJson.signal_time[it] * 1000
+            //     }
+            //
+            //     let temp_date = new Date(adjusted_time)
+            //     temp_object["date"] = temp_date
+            //     temp_object["yValue"] = resultJson.signal[it]
+            //     //TODO
+            //     if(it > 12579 && it <12793){
+            //         temp_object["color"] = "red"
+            //     }else{
+            //         temp_object["color"] = "blue"
+            //     }
+            //
+            //     temp_array_signal.push(temp_object)
+            // }
+            //
+            // this.setState({signal_chart_data: temp_array_signal})
+            // this.setState({select_signal_chart_show: true});
         });
     }
     /**
@@ -236,6 +241,10 @@ class SpindleDetection extends React.Component {
             console.log("--- Results ---")
             console.log(resultJson)
 
+            console.log("resultJson.figure")
+            console.log(resultJson.figure)
+            this.setState({"test_chart_html": resultJson.figure})
+
             // Send the request
             API.get("save_annotation_to_file",
                     {
@@ -310,49 +319,27 @@ class SpindleDetection extends React.Component {
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Data Preview
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        trial_av.edf
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Channels:
-                    </Typography>
-                    <List>
-                        {this.state.channels.map((channel) => (
-                                <ListItem> <ListItemText primary={channel}/></ListItem>
-                        ))}
-                    </List>
-                </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                <Grid item xs={3}  sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Spindle Detection
                     </Typography>
                     <Divider/>
                     <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
-                    <Divider/>
                     <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
                         <FormControl sx={{m: 1, minWidth: 120}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
-                                labelId="channel-selector-label"
-                                id="channel-selector"
-                                value= {this.state.selected_channel}
-                                label="Channel"
-                                onChange={this.handleSelectChannelChange}
+                                    labelId="channel-selector-label"
+                                    id="channel-selector"
+                                    value= {this.state.selected_channel}
+                                    label="Channel"
+                                    onChange={this.handleSelectChannelChange}
                             >
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
                                 {this.state.channels.map((channel) => (
-                                    <MenuItem value={channel}>{channel}</MenuItem>
+                                        <MenuItem value={channel}>{channel}</MenuItem>
                                 ))}
                             </Select>
                             <FormHelperText>Select Channel</FormHelperText>
@@ -483,25 +470,40 @@ class SpindleDetection extends React.Component {
                         </FormControl>
 
 
-                       <br/>
+                        <br/>
                         <Button variant="contained" color="primary" type="submit">
                             Submit
                         </Button>
                     </form>
+                    <form onSubmit={async (event) => {
+                        event.preventDefault();
+                        window.location.replace("/")
+                        // Send the request
+                    }}>
+                        <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                            Proceed >
+                        </Button>
+                    </form>
                 </Grid>
-                <Grid item xs={5} sx={{overflow:"auto"}}>
+                {/*<Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Spindle Detection*/}
+                {/*    </Typography>*/}
+                {/*  <Divider/>*/}
+                {/*</Grid>*/}
+                <Grid item xs={9} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>
-                    <hr/>
+                    <hr class="result"/>
                     {/*<Typography variant="p" sx={{ flexGrow: 1, display: (this.state.psd_chart_show ? 'block' : 'none')  }} noWrap>*/}
                     {/*    Showing first 1000 entries*/}
                     {/*</Typography>*/}
                     <Typography variant="h6" sx={{ flexGrow: 1,   }} noWrap>
                         Spindle Results
                     </Typography>
-                    {/*<InnerHTML html={this.state.test_chart_html} style={{zoom:'50%'}} />*/}
-                    <div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>
+                    <InnerHTML html={this.state.test_chart_html} style={{zoom:'50%'}} />
+                    {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>*/}
 
                     {/*<div style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}><LineMultipleColorsChartCustom chart_id="signal_chart_id" chart_data={ this.state.signal_chart_data} highlighted_areas={this.state.signal_chart_highlighted_data}/></div>*/}
                     {/*<hr style={{ display: (this.state.signal_chart_show ? 'block' : 'none') }}/>*/}

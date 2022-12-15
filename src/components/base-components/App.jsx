@@ -68,6 +68,7 @@ import LassoRegressionFunctionPage from "./LassoRegressionFunctionPage";
 import RidgeRegressionFunctionPage from "./RidgeRegressionFunctionPage";
 import SGDRegressionFunctionPage from "./SGDRegressionFunctionPage";
 import HuberRegressionFunctionPage from "./HuberRegressionFunctionPage";
+import MRIViewer from "./MRIViewer";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -116,7 +117,7 @@ const App = () => {
                         <Route exact path="/eeg/old" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/eeg" element={(<LayoutMain><EEGViewer/></LayoutMain>)}/>
                         {/*TODO*/}
-                        <Route exact path="/mri" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/mri" element={(<LayoutMain><MRIViewer/></LayoutMain>)}/>
                         <Route exact path="/eeg/pre" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
 
                         <Route exact path="/spindles" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>

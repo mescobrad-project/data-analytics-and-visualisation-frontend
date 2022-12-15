@@ -98,9 +98,10 @@ class LinearRegressionFunctionPage extends React.Component {
 
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchColumns();
+        this.fetchColumnNames();
 
     }
 
@@ -131,11 +132,13 @@ class LinearRegressionFunctionPage extends React.Component {
 
 
 
-
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("linear_regressor_statsmodels", {
-            params: {dependent_variable: this.state.selected_dependent_variable,
+            params: {run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                dependent_variable: this.state.selected_dependent_variable,
                 independent_variables: this.state.selected_independent_variables,
                 regularization: this.state.selected_regularization},
             paramsSerializer : params => {
@@ -238,12 +241,15 @@ class LinearRegressionFunctionPage extends React.Component {
      * Update state when selection changes in the form
      */
 
-    async fetchColumns(url, config) {
-        console.log("Hello")
-        API.get("return_columns", {}).then(res =>{
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({columns: res.data.columns})
-        })
-
+        });
     }
 
 

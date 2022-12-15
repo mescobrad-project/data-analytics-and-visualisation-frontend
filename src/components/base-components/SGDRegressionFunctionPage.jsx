@@ -99,11 +99,13 @@ class SGDRegressionFunctionPage extends React.Component {
 
 
 
-
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("sgd_regression", {
-            params: {dependent_variable: this.state.selected_dependent_variable,
+            params: {run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                dependent_variable: this.state.selected_dependent_variable,
                 alpha: this.state.selected_alpha,
                 max_iter: this.state.max_iter,
                 epsilon: this.state.selected_epsilon,
