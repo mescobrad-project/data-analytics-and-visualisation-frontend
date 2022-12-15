@@ -128,14 +128,14 @@ class LinearRegressionFunctionPage extends React.Component {
         // }
 
         this.setState({LinearRegression_show: false})
-
-
-
-
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("linear_regressor_statsmodels", {
-            params: {dependent_variable: this.state.selected_dependent_variable,
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                dependent_variable: this.state.selected_dependent_variable,
                 independent_variables: this.state.selected_independent_variables,
                 regularization: this.state.selected_regularization},
             paramsSerializer : params => {
@@ -239,8 +239,12 @@ class LinearRegressionFunctionPage extends React.Component {
      */
 
     async fetchColumns(url, config) {
-        console.log("Hello")
-        API.get("return_columns", {}).then(res =>{
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_columns", {params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id")
+            }}).then(res =>{
             this.setState({columns: res.data.columns})
         })
 

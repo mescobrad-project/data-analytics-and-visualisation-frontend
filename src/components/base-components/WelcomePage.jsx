@@ -14,12 +14,6 @@ import {display} from "@mui/system";
 import API from "../../axiosInstance";
 import {useNavigate} from "react-router-dom";
 import {withRouter} from '../withRouter';
-import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
-import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
-import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
-import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
-import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
-import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
 
 
 // import {useHistory} from "react-router-dom";
@@ -501,9 +495,7 @@ function WelcomePage() {
                                 size="large"
                                 onClick={redirectToPage.bind(this,1, 2, "mutliple_comparisons", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Multiple Comparisons >
-                            </ListItemButton>
+                            Multiple Comparisons >
                         </Button>
                         <Link
                                 component={Link}
@@ -541,15 +533,22 @@ function WelcomePage() {
                                 KMeans >
                             </ListItemButton>
                         </Link>
-                        <Link
-                                component={Link}
-                                variant="h6"
-                                href="/LinearRegression"
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                onClick={redirectToPage.bind(this,1, 2, "LinearRegressionFunctionPage", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
-                            <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>
-                                Linear Regression >
-                            </ListItemButton>
-                        </Link>
+                            Linear Regression >
+                        </Button>
+                        {/*<Link*/}
+                        {/*        component={Link}*/}
+                        {/*        variant="h6"*/}
+                        {/*        href="/LinearRegression"*/}
+                        {/*>*/}
+                        {/*    <ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                        {/*        Linear Regression >*/}
+                        {/*    </ListItemButton>*/}
+                        {/*</Link>*/}
                         <Link
                                 component={Link}
                                 variant="h6"
