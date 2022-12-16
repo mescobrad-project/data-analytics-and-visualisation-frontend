@@ -1,6 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
+import "../../pages/hypothesis_testing/normality_tests.scss"
 import {
     Button,
     FormControl,
@@ -24,6 +25,9 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 import ScatterPlot from "../ui-components/ScatterPlot";
+import {DataGrid} from "@mui/x-data-grid";
+import {display} from "@mui/system";
+
 
 class LinearRegressionFunctionPage extends React.Component {
     constructor(props){
@@ -289,7 +293,7 @@ class LinearRegressionFunctionPage extends React.Component {
                     {/*        ))}*/}
                     {/*    </List>*/}
                     {/*</Grid>*/}
-                    <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
+                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Linear Regression Parameterisation
                         </Typography>
@@ -422,11 +426,11 @@ class LinearRegressionFunctionPage extends React.Component {
                             <div style={{ display: (this.state.linear_regression_step2_show ? 'block' : 'none') }}><ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/></div>
                         </div>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Linear Regression Result
                         </Typography>
-                        <hr/>
+                        <hr className="result"/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
                         {/*    Welch Results*/}
                         {/*</Typography>*/}
@@ -503,7 +507,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                 </Table>
                             </TableContainer>
                         </div>
-                        <hr style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                        <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
                         <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
                             <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
                                 <Table>
@@ -542,7 +546,9 @@ class LinearRegressionFunctionPage extends React.Component {
                                 </Table>
                             </TableContainer>
                         </div>
-                        <hr style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                        <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                        <div dangerouslySetInnerHTML={{__html: this.state.second_table}}/>
+                        <hr className="result"/>
                         <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                 White test (test for heteroscedasticity)
@@ -567,7 +573,14 @@ class LinearRegressionFunctionPage extends React.Component {
                                     </TableRow>
                                 </Table>
                             </TableContainer>
-                        <hr/>
+                        <hr className="result"/>
+                            <div>
+                                <Typography>
+                                    Goldfeld-Quandt (test for heteroscedasticity)
+                                    ........
+                                </Typography>
+                            </div>
+                            <hr className="result"/>
                         <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Breusch-Pagan test (test for heteroscedasticity)
                         </Typography>
@@ -591,10 +604,9 @@ class LinearRegressionFunctionPage extends React.Component {
                                     </TableRow>
                                 </Table>
                             </TableContainer>
-                        <div dangerouslySetInnerHTML={{__html: this.state.bresuch_test}} />
-                        <hr/>
-                        <div dangerouslySetInnerHTML={{__html: this.state.second_table}} />
-                        <hr/>
+                        <div dangerouslySetInnerHTML={{__html: this.state.bresuch_test}}/>
+                        <hr className="result"/>
+
                         <div dangerouslySetInnerHTML={{__html: this.state.influence_points}} />
                         <hr/>
                         </div>
