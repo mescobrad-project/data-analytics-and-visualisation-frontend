@@ -305,8 +305,9 @@ function WelcomePage() {
                            MRI Viewer
                         </Button>
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="large"
+
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, "freesurfer", ["saved"], ["psg1 anonym2.edf"])}
                         >
@@ -323,7 +324,7 @@ function WelcomePage() {
                         </Button>
                         {/*<Divider/>*/}
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="large"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
@@ -337,7 +338,7 @@ function WelcomePage() {
                             >
                         <h2> Hypothesis pages</h2>
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="large"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 2, "level", ["saved"], ["demo_sample_questionnaire.csv"])}
@@ -357,7 +358,7 @@ function WelcomePage() {
                         </Button>
                         {/*<Divider/>*/}
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="large"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
@@ -379,7 +380,7 @@ function WelcomePage() {
                         </Button>
                         {/*<Divider/>*/}
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="large"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
@@ -399,7 +400,7 @@ function WelcomePage() {
                         </Button>
                         {/*<Divider/>*/}
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="large"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
@@ -611,7 +612,7 @@ function WelcomePage() {
                                 size="large"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 // onClick={redirectToPage.bind(this,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "Linear_regression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linear_regression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
