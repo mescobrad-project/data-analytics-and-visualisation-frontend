@@ -83,7 +83,9 @@ class LinearRegressionFunctionPage extends React.Component {
             bresuch_p_value: "",
             bresuch_f_value: "",
             bresuch_f_p_value: "",
-
+            goldfeld_p_value:"",
+            goldfeld_f_value:"",
+            goldfeld_order:"",
             // Hide/show results
             LinearRegression_show : false,
             linear_regression_step2_show: false
@@ -195,6 +197,9 @@ class LinearRegressionFunctionPage extends React.Component {
             this.setState({bresuch_p_value: resultJson['bresuch_p_value']})
             this.setState({bresuch_f_value: resultJson['bresuch_f_value']})
             this.setState({bresuch_f_p_value: resultJson['bresuch_f_p_value']})
+            this.setState({goldfeld_p_value: resultJson['Goldfeld-Quandt p-value']})
+            this.setState({goldfeld_f_value: resultJson['Goldfeld-Quandt F-value']})
+            this.setState({goldfeld_order: resultJson['Goldfeld-Quandt ordering used in the alternative']})
 
             this.setState({LinearRegression_show: true})
 
@@ -299,7 +304,7 @@ class LinearRegressionFunctionPage extends React.Component {
                         </Typography>
                         <hr/>
                         <Grid container justifyContent = "center">
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextareaAutosize
                                         area-label="textarea"
                                         placeholder="Selected Independent Variables"
@@ -314,7 +319,7 @@ class LinearRegressionFunctionPage extends React.Component {
                         </Grid>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Dependent Variable</InputLabel>
                                 <Select
                                         labelId="dependent-variable-selector-label"
@@ -332,7 +337,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Dependent Variable (Categorical)</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
@@ -357,7 +362,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                     Clear Selections
                                 </Button>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="regularization-label">Regularization</InputLabel>
                                 <Select
                                         labelId="regularization-label"
@@ -383,7 +388,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                 Available Variables
                             </Typography>
                             <form onSubmit={this.handleScatter}>
-                                <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                     <InputLabel id="x-axis-selector-label">Select X-axis</InputLabel>
                                     <Select
                                             labelId="x-axis-selector-label"
@@ -401,7 +406,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                     </Select>
                                     <FormHelperText>Select Variable for X axis of scatterplot</FormHelperText>
                                 </FormControl>
-                                <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                     <InputLabel id="y-axis-selector-label">Select Y-axis</InputLabel>
                                     <Select
                                             labelId="y-axis-selector-label"
@@ -547,8 +552,10 @@ class LinearRegressionFunctionPage extends React.Component {
                             </TableContainer>
                         </div>
                         <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
-                        <div dangerouslySetInnerHTML={{__html: this.state.second_table}}/>
-                        <hr className="result"/>
+                        <br/>
+                        <div className="first_table" dangerouslySetInnerHTML={{__html: this.state.second_table}}/>
+                        <br/>
+                        <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
                         <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                 White test (test for heteroscedasticity)
@@ -575,10 +582,25 @@ class LinearRegressionFunctionPage extends React.Component {
                             </TableContainer>
                         <hr className="result"/>
                             <div>
-                                <Typography>
+                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                     Goldfeld-Quandt (test for heteroscedasticity)
-                                    ........
                                 </Typography>
+                                <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                    <Table>
+                                        <TableRow>
+                                            <TableCell><strong>Goldfeld-Quandt p-value:</strong></TableCell>
+                                            <TableCell>{Number.parseFloat(this.state.goldfeld_p_value).toFixed(5)}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell><strong>Goldfeld-Quandt F-Statistic:</strong></TableCell>
+                                            <TableCell>{Number.parseFloat(this.state.goldfeld_f_value).toFixed(5)}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell><strong>Goldfeld-Quandt ordering used in the alternative</strong></TableCell>
+                                            <TableCell>{this.state.goldfeld_order}</TableCell>
+                                        </TableRow>
+                                    </Table>
+                                </TableContainer>
                             </div>
                             <hr className="result"/>
                         <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

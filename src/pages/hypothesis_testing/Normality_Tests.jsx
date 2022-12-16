@@ -65,6 +65,7 @@ class Normality_Tests extends React.Component {
             qqplot_chart_show: false,
             probplot_chart_show: false,
             stats_show:false,
+            output_return_data:''
         };
         this.state = empty_state
         //Binding functions of the class
@@ -133,7 +134,34 @@ class Normality_Tests extends React.Component {
             this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
             this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
         });
+        const productInfo = {
+            method: this.state.selected_method,
+            variable: this.state.selected_column,
+            name_test: this.state.selected_method,
+            alternative: this.state.selected_alternative,
+            nan_policy: this.state.selected_nan_policy,
+            test_data:this.state.test_data
+        };
+        localStorage.setItem('MY_APP_STATE', JSON.stringify(productInfo));
+        // alert('Product: ' + method + ' edited!');
     }
+
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        const file_to_output= window.localStorage.getItem('MY_APP_STATE');
+        console.log(file_to_output)
+        API.put("save_hypothesis_output",
+                {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file: file_to_output,
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+    }
+
     resetResultArea(){
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
@@ -267,12 +295,9 @@ class Normality_Tests extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_column}>
                                 Proceed >
                             </Button>
                         </form>
@@ -460,7 +485,7 @@ class Normality_Tests extends React.Component {
                                         <Typography>Selected Dataframe Values</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <InnerHTML html={this.state.test_data.data} style={{fontSize:'10px', wordWrap: 'break-word'}}/>
+                                        <InnerHTML html={this.state.test_data.data} style={{fontSize:'11px', wordWrap: 'break-word'}}/>
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
