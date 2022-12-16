@@ -106,13 +106,13 @@ function WelcomePage() {
 
                     <ButtonGroup
                             orientation="vertical"
-                            // sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
                             // component="nav"
                             aria-label="vertical outlined button group"
                             // aria-labelledby="nested-list-subheader"
                            >
                         <h2 sx= {{color: "grey"}}>
-                            EEG pages
+                            Timeseries Techniques
                         </h2>
                         <Button
                                 // variant="outlined"
@@ -284,21 +284,38 @@ function WelcomePage() {
                         {/*</Link>*/}
 
 
-                        {/*<p>Multitaper</p>*/}
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"])}
+                        >
+                            Actigraphy Viewer
+                        </Button>
+                        <Divider/>
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"])}
+                        >
+                            Actigraphy General Viewer
+                        </Button>
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
+                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
 
                             // sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
                             // component="nav"
                             // aria-labelledby="nested-list-subheader"
                             >
                         <h2 sx= {{color: "grey"}}>
-                            MRI pages
+                            MRI Techniques
                         </h2>
                         <Button
                                 // variant="outlined"
-                                size="large"
+                                size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 3, "mri_viewer", ["saved"], ["ucl_test.nii"])}
                         >
@@ -306,7 +323,7 @@ function WelcomePage() {
                         </Button>
                         <Button
                                 variant="contained"
-                                size="large"
+                                size="medium"
 
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, "freesurfer", ["saved"], ["psg1 anonym2.edf"])}
@@ -316,7 +333,7 @@ function WelcomePage() {
                         {/*<Divider/>*/}
                         <Button
                                 // variant="outlined"
-                                size="large"
+                                size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
                         >
@@ -325,7 +342,7 @@ function WelcomePage() {
                         {/*<Divider/>*/}
                         <Button
                                 variant="contained"
-                                size="large"
+                                size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
                         >
@@ -334,17 +351,17 @@ function WelcomePage() {
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
-                            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
                             >
-                        <h2> Hypothesis pages</h2>
-                        <Button
-                                variant="contained"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "level", ["saved"], ["demo_sample_questionnaire.csv"])}
-                        >
-                            Level >
-                        </Button>
+                        <h2> Hypothesis Testing</h2>
+                        {/*<Button*/}
+                        {/*        variant="contained"*/}
+                        {/*        size="large"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 2, "level", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*>*/}
+                        {/*    Level >*/}
+                        {/*</Button>*/}
                         {/*<Divider/>*/}
                         <Button
                                 // variant="outlined"
@@ -379,25 +396,7 @@ function WelcomePage() {
                             Transform data
                         </Button>
                         {/*<Divider/>*/}
-                        <Button
-                                variant="contained"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "pearson_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
-                        >
-                            Pearson Correlation
-                        </Button>
-                        {/*<Divider/>*/}
-                        <Button
-                                // variant="outlined"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-
-                                onClick={redirectToPage.bind(this,1, 2, "point_biserial_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
-                        >
-                            Point Biserial Correlation
-                        </Button>
                         {/*<Divider/>*/}
                         <Button
                                 variant="contained"
@@ -429,6 +428,25 @@ function WelcomePage() {
                         >
                             Spearman Correlation
                         </Button>
+                        <Button
+                                variant="contained"
+                                size="large"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+
+                                onClick={redirectToPage.bind(this,1, 2, "pearson_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        >
+                            Pearson Correlation
+                        </Button>
+                        {/*<Divider/>*/}
+                        <Button
+                                // variant="outlined"
+                                size="large"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+
+                                onClick={redirectToPage.bind(this,1, 2, "point_biserial_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        >
+                            Point Biserial Correlation
+                        </Button>
                         {/*<Divider/>*/}
                         <Button
                                 // variant="outlined"
@@ -439,9 +457,9 @@ function WelcomePage() {
                         >
                             Kendalltau Correlation
                         </Button>
-                        <h3 variant="h6" sx={{flexGrow: 1, textAlign: "left", padding: "10px"}} noWrap>
-                            Statistical Tests
-                        </h3>
+                        {/*<h3 variant="h6" sx={{flexGrow: 1, textAlign: "left", padding: "10px"}} noWrap>*/}
+                        {/*    Statistical Tests*/}
+                        {/*</h3>*/}
                         <Button
                                 // variant="outlined"
                                 size="large"
@@ -563,22 +581,22 @@ function WelcomePage() {
 
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                LDA
+                            Classification analysis (LDA)
                             {/*</ListItemButton>*/}
                         </Button>
-                        <Button
-                                // component={Link}
-                                // variant="h6"
-                                // href="/SVC"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "SVC", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        {/*<Button*/}
+                        {/*        // component={Link}*/}
+                        {/*        // variant="h6"*/}
+                        {/*        // href="/SVC"*/}
+                        {/*        size="large"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 2, "SVC", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
-                        >
-                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                SVC
-                            {/*</ListItemButton>/*/}
-                        </Button>
+                        {/*>*/}
+                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
+                        {/*        SVC*/}
+                        {/*    /!*</ListItemButton>/*!/*/}
+                        {/*</Button>*/}
                         <Button
                                 // component={Link}
                                 // variant="h6"
@@ -589,7 +607,7 @@ function WelcomePage() {
 
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                PCA
+                            Principal Component Analysis
                             {/*</ListItemButton>*/}
                         </Button>
                         <Button
@@ -619,71 +637,71 @@ function WelcomePage() {
                                 Linear Regression
                             {/*</ListItemButton>*/}
                         </Button>
-                        <Button
-                                // component={Link}
-                                // variant="h6"
-                                // href="/ElasticNet"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "ElasticNet", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        {/*<Button*/}
+                        {/*        // component={Link}*/}
+                        {/*        // variant="h6"*/}
+                        {/*        // href="/ElasticNet"*/}
+                        {/*        size="large"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 2, "ElasticNet", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
-                        >
-                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                Elastic Net
-                            {/*</ListItemButton>*/}
-                        </Button>
-                        <Button
-                                // component={Link}
-                                // variant="h6"
-                                // href="/LassoRegression"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "LassoRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        {/*>*/}
+                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
+                        {/*        Elastic Net*/}
+                        {/*    /!*</ListItemButton>*!/*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        // component={Link}*/}
+                        {/*        // variant="h6"*/}
+                        {/*        // href="/LassoRegression"*/}
+                        {/*        size="large"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 2, "LassoRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
-                        >
-                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                Lasso Regression
-                            {/*</ListItemButton>*/}
-                        </Button>
-                        <Button
-                                // component={Link}
-                                // variant="h6"
-                                // href="/RidgeRegression"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "RidgeRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        {/*>*/}
+                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
+                        {/*        Lasso Regression*/}
+                        {/*    /!*</ListItemButton>*!/*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        // component={Link}*/}
+                        {/*        // variant="h6"*/}
+                        {/*        // href="/RidgeRegression"*/}
+                        {/*        size="large"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 2, "RidgeRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
-                        >
-                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                Ridge Regression
-                            {/*</ListItemButton>*/}
-                        </Button>
-                        <Button
-                                // component={Link}
-                                // variant="h6"
-                                // href="/SGDRegression"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "SGDRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        {/*>*/}
+                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
+                        {/*        Ridge Regression*/}
+                        {/*    /!*</ListItemButton>*!/*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        // component={Link}*/}
+                        {/*        // variant="h6"*/}
+                        {/*        // href="/SGDRegression"*/}
+                        {/*        size="large"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 2, "SGDRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
-                        >
-                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                SGD Regression
-                            {/*</ListItemButton>*/}
-                        </Button>
-                        <Button
-                                // component={Link}
-                                // variant="h6"
-                                // href="/HuberRegression"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "HuberRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        {/*>*/}
+                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
+                        {/*        SGD Regression*/}
+                        {/*    /!*</ListItemButton>*!/*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        // component={Link}*/}
+                        {/*        // variant="h6"*/}
+                        {/*        // href="/HuberRegression"*/}
+                        {/*        size="large"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 2, "HuberRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
-                        >
-                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                                Huber Regression
-                            {/*</ListItemButton>*/}
-                        </Button>
+                        {/*>*/}
+                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
+                        {/*        Huber Regression*/}
+                        {/*    /!*</ListItemButton>*!/*/}
+                        {/*</Button>*/}
 
 
                         {/*<p>calculate_SpO2 from eeg_router</p>*/}
@@ -691,12 +709,12 @@ function WelcomePage() {
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
-                            // sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
                             component="nav"
                             aria-labelledby="nested-list-subheader"
                     >
                         <h2 sx= {{color: "grey"}}>
-                            Misc pages
+                            Miscellaneous
                         </h2>
                         <Button
                                 // variant="outlined"
@@ -705,23 +723,6 @@ function WelcomePage() {
                                 onClick={redirectToPage.bind(this,1, 3, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Dashboard
-                        </Button>
-                        <Button
-                                // variant="outlined"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"])}
-                        >
-                            Actigraphy Viewer
-                        </Button>
-                        <Divider/>
-                        <Button
-                                // variant="outlined"
-                                size="large"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"])}
-                        >
-                            Actigraphy General Viewer
                         </Button>
                     </ButtonGroup>
 

@@ -25,6 +25,7 @@ import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {useLocation} from "react-router-dom";
+import {GridCell} from "@mui/x-data-grid";
 
 const style = {
     position: 'absolute',
@@ -285,28 +286,28 @@ class AutoCorrelationFunctionPage extends React.Component {
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Data Preview
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        trial_av.edf
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Channels:
-                    </Typography>
-                    <List>
-                        {this.state.channels.map((channel) => (
-                            <ListItem> <ListItemText primary={channel}/></ListItem>
-                        ))}
-                    </List>
-                </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Data Preview*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        File Name:*/}
+                {/*    </Typography>*/}
+                {/*    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        trial_av.edf*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Channels:*/}
+                {/*    </Typography>*/}
+                {/*    <List>*/}
+                {/*        {this.state.channels.map((channel) => (*/}
+                {/*            <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                {/*        ))}*/}
+                {/*    </List>*/}
+                {/*</Grid>*/}
+                <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         AutoCorrelation Parameterisation
                     </Typography>
@@ -451,42 +452,46 @@ class AutoCorrelationFunctionPage extends React.Component {
                         </Button>
                     </form>
                 </Grid>
-                <Grid item xs={5}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Result Visualisation
-                    </Typography>
-                    <hr/>
+                <Grid item xs={8} container direction='row'>
+                    {/*<Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                    {/*    Result Visualisation*/}
+                    {/*</Typography>*/}
+                    {/*<hr/>*/}
                     {/*<List>*/}
                     {/*{this.state.correlation_results.map((result) => (*/}
                     {/*    <ListItem> <ListItemText primary={result}/></ListItem>*/}
                     {/*))}*/}
                     {/*</List>*/}
                     {/*// Probably should be removed to a new component !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
-                        Correlation Results
-                    </Typography>
-                    <div style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>
-                    <hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>
-
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>
-                        Confidence Interval
-                    </Typography>
-                    <div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
-                    <hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>
-
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.qstat_chart_show ? 'block' : 'none')  }} noWrap>
-                        Qstat
-                    </Typography>
-                    <div style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="qstat_chart_id" chart_data={ this.state.qstat_chart_data}/></div>
-                    <hr style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}/>
-
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.pvalues_chart_show ? 'block' : 'none')  }} noWrap>
-                        Pvalues
-                    </Typography>
-                    <div style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="pvalues_chart_id" chart_data={ this.state.pvalues_chart_data}/></div>
-                    <hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>
-
-                </Grid>
+                        <Grid item xs={6}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
+                                Correlation Results
+                            </Typography>
+                            <div style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>
+                            {/*<hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>*/}
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>
+                                Confidence Interval
+                            </Typography>
+                            <div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
+                            <hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.qstat_chart_show ? 'block' : 'none')  }} noWrap>
+                                Qstat
+                            </Typography>
+                            <div style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="qstat_chart_id" chart_data={ this.state.qstat_chart_data}/></div>
+                            <hr style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}/>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.pvalues_chart_show ? 'block' : 'none')  }} noWrap>
+                                Pvalues
+                            </Typography>
+                            <div style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="pvalues_chart_id" chart_data={ this.state.pvalues_chart_data}/></div>
+                            <hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>
+                        </Grid>
+                    </Grid>
                 {/*<NewWindow>*/}
                 {/*    <EEGSelector/>*/}
                 {/*</NewWindow>*/}
