@@ -83,12 +83,14 @@ class EnvelopeTrendAnalysis extends React.Component {
         API.get("envelope_trend",
             {
                 params: {run_id: params.get("run_id"),
-                    step_id: params.get("step_id"),input_name: this.state.selected_channel, window_size: this.state.selected_window_size,
+                    step_id: params.get("step_id"),
+                    input_name: this.state.selected_channel, window_size: this.state.selected_window_size,
                     percent: this.state.selected_percent, input_method: this.state.selected_input_method,
                     file_used: this.state.file_used}
             }
         ).then(res => {
             const resultJson = res.data;
+            console.log(resultJson)
             this.setState({envelope_chart_data: resultJson})
             this.setState({envelope_chart_show: true});
         });

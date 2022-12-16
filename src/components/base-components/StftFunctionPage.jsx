@@ -49,7 +49,7 @@ class StftFunctionPage extends React.Component {
             // Visualisation Hide/Show values
             stft_chart_show : false,
 
-            test_chart_html: "",
+            test_chart_html: [],
             //Info from selector
             file_used: null
         };

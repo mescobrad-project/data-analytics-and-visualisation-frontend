@@ -49,9 +49,10 @@ class KMeansFunctionPage extends React.Component {
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchColumns();
+        this.fetchColumnNames();
 
     }
 
@@ -82,11 +83,13 @@ class KMeansFunctionPage extends React.Component {
 
 
 
-
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("kmeans_clustering", {
-            params: {n_clusters: this.state.selected_n_clusters,
+            params: {run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                n_clusters: this.state.selected_n_clusters,
                 independent_variables: this.state.selected_independent_variables},
             paramsSerializer : params => {
                 return qs.stringify(params, { arrayFormat: "repeat" })
@@ -133,12 +136,15 @@ class KMeansFunctionPage extends React.Component {
      * Update state when selection changes in the form
      */
 
-    async fetchColumns(url, config) {
-        console.log("Hello")
-        API.get("return_columns", {}).then(res =>{
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({columns: res.data.columns})
-        })
-
+        });
     }
 
 

@@ -56,13 +56,14 @@ class LDAFunctionPage extends React.Component {
         this.handleSelectShrinkage2Change = this.handleSelectShrinkage2Change.bind(this);
         this.handleSelectShrinkage3Change = this.handleSelectShrinkage3Change.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.debug = this.debug.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchColumns();
+        this.fetchColumnNames();
 
     }
 
@@ -94,10 +95,13 @@ class LDAFunctionPage extends React.Component {
 
 
 
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("return_LDA", {
-                    params: {dependent_variable: this.state.selected_dependent_variable, solver: this.state.selected_solver,
+                    params: {run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        dependent_variable: this.state.selected_dependent_variable, solver: this.state.selected_solver,
                         shrinkage_1: this.state.selected_shrinkage_1,
                         // shrinkage_2: to_send_shrinkage_2, shrinkage_3: to_send_shrinkage_3,
                         independent_variables: this.state.selected_independent_variables},
@@ -146,14 +150,26 @@ class LDAFunctionPage extends React.Component {
      * Update state when selection changes in the form
      */
 
-    async fetchColumns(url, config) {
-        console.log("Hello")
-        API.get("return_columns", {}).then(res =>{
+    // async fetchColumns(url, config) {
+    //     console.log("Hello")
+    //     API.get("return_columns", {}).then(res =>{
+    //         this.setState({columns: res.data.columns})
+    //     })
+    //     console.log(this.state.selected_solver)
+    //     console.log("First")
+    //     console.log(this.state)
+    // }
+
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+                        console.log(res.data.columns)
             this.setState({columns: res.data.columns})
-        })
-        console.log(this.state.selected_solver)
-        console.log("First")
-        console.log(this.state)
+        });
     }
 
     handleSelectDependentVariableChange(event){

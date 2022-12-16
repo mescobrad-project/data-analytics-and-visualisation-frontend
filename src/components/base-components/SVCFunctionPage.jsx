@@ -62,9 +62,10 @@ class SVCFunctionPage extends React.Component {
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchColumns();
+        this.fetchColumnNames();
 
     }
 
@@ -95,11 +96,13 @@ class SVCFunctionPage extends React.Component {
 
 
 
-
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("SVC_function", {
-            params: {dependent_variable: this.state.selected_dependent_variable, degree: this.state.selected_degree,
+            params: {run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                dependent_variable: this.state.selected_dependent_variable, degree: this.state.selected_degree,
                 max_iter: this.state.selected_max_iter, C: this.state.selected_C, coef0: this.state.selected_coef0,
                 gamma: this.state.selected_gamma, kernel: this.state.selected_kernel,
                 independent_variables: this.state.selected_independent_variables},
@@ -147,14 +150,25 @@ class SVCFunctionPage extends React.Component {
      * Update state when selection changes in the form
      */
 
-    async fetchColumns(url, config) {
-        console.log("Hello")
-        API.get("return_columns", {}).then(res =>{
+    // async fetchColumns(url, config) {
+    //     console.log("Hello")
+    //     API.get("return_columns", {}).then(res =>{
+    //         this.setState({columns: res.data.columns})
+    //     })
+    //     console.log(this.state.selected_solver)
+    //     console.log("First")
+    //     console.log(this.state)
+    // }
+
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({columns: res.data.columns})
-        })
-        console.log(this.state.selected_solver)
-        console.log("First")
-        console.log(this.state)
+        });
     }
 
     handleSelectDependentVariableChange(event){

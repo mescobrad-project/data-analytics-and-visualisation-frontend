@@ -55,9 +55,10 @@ class RidgeRegressionFunctionPage extends React.Component {
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchColumns();
+        this.fetchColumnNames();
 
     }
 
@@ -88,11 +89,13 @@ class RidgeRegressionFunctionPage extends React.Component {
 
 
 
-
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
         API.get("ridge_regression", {
-            params: {dependent_variable: this.state.selected_dependent_variable,
+            params: {run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                dependent_variable: this.state.selected_dependent_variable,
                 alpha: this.state.selected_alpha,
                 max_iter: this.state.max_iter,
                 solver: this.state.solver,
@@ -142,12 +145,15 @@ class RidgeRegressionFunctionPage extends React.Component {
      * Update state when selection changes in the form
      */
 
-    async fetchColumns(url, config) {
-        console.log("Hello")
-        API.get("return_columns", {}).then(res =>{
-            this.setState({columns: res.data.columns})
-        })
-
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({column_names: res.data.columns})
+        });
     }
 
 
