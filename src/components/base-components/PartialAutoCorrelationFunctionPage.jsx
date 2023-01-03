@@ -104,7 +104,7 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
         // Send the request
         API.get("return_partial_autocorrelation",
             {
-                params: {run_id: params.get("run_id"),
+                params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                     step_id: params.get("step_id"),
                     input_name: this.state.selected_channel, input_method: this.state.selected_method,
                     input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}

@@ -78,7 +78,7 @@ class Transform_data extends React.Component {
         const params = new URLSearchParams(window.location.search);
         API.get("return_columns",
                 {params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
@@ -123,7 +123,7 @@ class Transform_data extends React.Component {
         API.get("transform_data",
                 {
                     params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         column: this.state.selected_column,
                         name_transform: this.state.selected_method,

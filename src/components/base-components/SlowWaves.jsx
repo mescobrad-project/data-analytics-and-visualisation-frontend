@@ -188,7 +188,7 @@ class SlowWaves extends React.Component {
         // Send the request
         API.get("slow_waves_detection",
             {
-                params: {run_id: params.get("run_id"),
+                params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                     step_id: params.get("step_id"),
                     name: this.state.selected_channel,
                     freq_sw_low: to_send_freq_sw_low,
@@ -246,7 +246,7 @@ class SlowWaves extends React.Component {
         API.get("return_signal",
                 {
                     params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         input_name: this.state.selected_part_channel,
                         // file_used: "original",

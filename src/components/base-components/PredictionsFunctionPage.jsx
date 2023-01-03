@@ -126,7 +126,7 @@ class PredictionsFunctionPage extends React.Component {
         // Send the request
         API.get("return_predictions",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),input_name: this.state.selected_channel,
                         input_test_size: to_send_input_test_size,
                         input_future_seconds: to_send_input_future_seconds,

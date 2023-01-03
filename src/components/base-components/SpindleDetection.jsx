@@ -108,7 +108,7 @@ class SpindleDetection extends React.Component {
 
         API.get("return_signal",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         input_name: this.state.selected_part_channel,
                         // params: {input_name: this.state.selected_channel,
@@ -218,7 +218,7 @@ class SpindleDetection extends React.Component {
         // Send the request
         API.get("spindles_detection",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         name: this.state.selected_channel,
                         freq_sp_low: to_send_input_freq_sp_low,
@@ -249,7 +249,7 @@ class SpindleDetection extends React.Component {
             API.get("save_annotation_to_file",
                     {
                         params: {
-                            run_id: params.get("run_id"),
+                            workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                             step_id: params.get("step_id"),
                             name: this.state.selected_channel,
                             annotations_to_add: "",

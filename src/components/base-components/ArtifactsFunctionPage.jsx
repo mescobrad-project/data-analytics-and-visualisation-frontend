@@ -93,7 +93,7 @@ class ArtifactsFunctionPage extends React.Component {
         API.get("/mne/open/eeg",
                 {
                     params: {
-                        rrun_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                     }
                 }
@@ -108,7 +108,7 @@ class ArtifactsFunctionPage extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         let data_to_send = {
-            run_id: params.get("run_id"),
+            workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
             step_id: params.get("step_id"),
             bipolar_references: [],
             type_of_reference: "",
@@ -140,7 +140,7 @@ class ArtifactsFunctionPage extends React.Component {
             API.get("/mne/open/eeg",
                     {
                         params: {
-                            run_id: params.get("run_id"),
+                            workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                             step_id: params.get("step_id")
                         }
                     }

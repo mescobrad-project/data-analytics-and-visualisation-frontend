@@ -47,7 +47,7 @@ class Pearson_correlation extends React.Component {
         API.get("return_columns",
     {
             params: {
-                run_id: params.get("run_id"),
+                workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id")
         }}).then(res => {
             this.setState({column_names: res.data.columns})
@@ -65,7 +65,7 @@ class Pearson_correlation extends React.Component {
         API.get("compute_pearson_correlation",
                 {
                     params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         column_1: this.state.selected_column,
                         column_2: this.state.selected_column2

@@ -109,7 +109,7 @@ class FreesurferReconFunctionPage extends React.Component {
         API.get("free_surfer/recon",
                 {
                     params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         input_test_name: this.state.selected_test_name,
                         // input_slices: this.state.selected_slice

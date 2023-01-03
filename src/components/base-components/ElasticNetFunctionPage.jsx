@@ -93,7 +93,7 @@ class ElasticNetFunctionPage extends React.Component {
 
         // Send the request
         API.get("elastic_net", {
-            params: {run_id: params.get("run_id"),
+            params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 dependent_variable: this.state.selected_dependent_variable,
                 alpha: this.state.selected_alpha,
@@ -149,7 +149,7 @@ class ElasticNetFunctionPage extends React.Component {
         const params = new URLSearchParams(window.location.search);
         API.get("return_columns",
                 {params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({columns: res.data.columns})

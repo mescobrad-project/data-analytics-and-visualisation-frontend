@@ -99,7 +99,7 @@ class AsymmetryIndicesFunctionPage extends React.Component {
         // Send the request
         API.get("return_asymmetry_indices",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),input_name_1: this.state.selected_channel_1, input_name_2: this.state.selected_channel_2, input_window: this.state.selected_window,
                         input_nperseg: to_send_input_nperseg, input_noverlap: to_send_input_noverlap,
                         input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,

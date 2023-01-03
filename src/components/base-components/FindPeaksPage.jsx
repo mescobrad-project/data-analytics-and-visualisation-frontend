@@ -200,7 +200,7 @@ class FindPeaksPage extends React.Component {
         API.get("return_peaks",
             {
                 params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         input_name: this.state.selected_channel,
                         input_height: to_send_input_height,

@@ -118,7 +118,7 @@ class StftFunctionPage extends React.Component {
         API.get("return_stft",
                 {
                     params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         input_name: this.state.selected_channel, input_window: this.state.selected_window,
                         input_nperseg: to_send_input_nperseg, input_noverlap: to_send_input_noverlap,

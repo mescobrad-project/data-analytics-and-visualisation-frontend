@@ -83,7 +83,7 @@ class Normality_Tests_And extends React.Component {
         API.get("return_columns",
                 {
                     params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
@@ -105,7 +105,7 @@ class Normality_Tests_And extends React.Component {
         // Send the request
         API.get("normality_tests",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         column: this.state.selected_column,
                         name_test: this.state.selected_method,

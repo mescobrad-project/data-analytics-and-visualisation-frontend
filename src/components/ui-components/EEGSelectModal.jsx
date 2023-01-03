@@ -102,7 +102,7 @@ class EEGSelectModal extends React.Component {
         const params = new URLSearchParams(window.location.search);
         API.get("list/channels", {
             params: {
-                run_id: params.get("run_id"),
+                workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 file_used: this.state.file_used_visual
             }

@@ -87,7 +87,7 @@ class KMeansFunctionPage extends React.Component {
 
         // Send the request
         API.get("kmeans_clustering", {
-            params: {run_id: params.get("run_id"),
+            params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 n_clusters: this.state.selected_n_clusters,
                 independent_variables: this.state.selected_independent_variables},
@@ -140,7 +140,7 @@ class KMeansFunctionPage extends React.Component {
         const params = new URLSearchParams(window.location.search);
         API.get("return_columns",
                 {params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({columns: res.data.columns})
