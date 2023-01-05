@@ -330,18 +330,18 @@ class PredictionsFunctionPage extends React.Component {
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview
-                        </Typography>
-                        <hr/>
-                        <List>
-                            {this.state.channels.map((channel) => (
-                                    <ListItem> <ListItemText primary={channel}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                    {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                    {/*        Data Preview*/}
+                    {/*    </Typography>*/}
+                    {/*    <hr/>*/}
+                    {/*    <List>*/}
+                    {/*        {this.state.channels.map((channel) => (*/}
+                    {/*                <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                    {/*        ))}*/}
+                    {/*    </List>*/}
+                    {/*</Grid>*/}
+                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Predictions Parameterisation
                         </Typography>
@@ -349,7 +349,7 @@ class PredictionsFunctionPage extends React.Component {
                         <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                         <Divider/>
                         <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select
                                         labelId="channel-selector-label"
@@ -367,75 +367,81 @@ class PredictionsFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Channel for Predictions</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
                                 <TextField
                                         labelId="test-size-selector-label"
                                         id="test-size-selector"
                                         value= {this.state.selected_test_size}
                                         label="Test Size"
+                                        size={"small"}
                                         onChange={this.handleSelectTestSizeChange}
                                 />
                                 <FormHelperText>Select Test Size</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
                                 <TextField
                                         labelId="future-seconds-selector-label"
                                         id="future-seconds-selector"
                                         value= {this.state.selected_future_seconds}
                                         label="Future Seconds"
+                                        size={"small"}
                                         onChange={this.handleSelectFutureSecondsChange}
                                 />
                                 <FormHelperText>Select Future Seconds</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
                                 <TextField
                                         labelId="startp-selector-label"
                                         id="startp-selector"
                                         value= {this.state.selected_start_p}
                                         label="Start P"
+                                        size={"small"}
                                         onChange={this.handleSelectStartPChange}
                                 />
                                 <FormHelperText>Select start_p</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
                                 <TextField
                                         labelId="startq-selector-label"
                                         id="startq-selector"
                                         value= {this.state.selected_start_q}
                                         label="Start Q"
+                                        size={"small"}
                                         onChange={this.handleSelectStartQChange}
                                 />
                                 <FormHelperText>Select start_q</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
                                 <TextField
                                         labelId="maxp-selector-label"
                                         id="maxp-selector"
                                         value= {this.state.selected_max_p}
                                         label="Max P"
+                                        size={"small"}
                                         onChange={this.handleSelectMaxPChange}
                                 />
                                 <FormHelperText>Select max_p</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
                                 <TextField
                                         labelId="maxq-selector-label"
                                         id="maxq-selector"
                                         value= {this.state.selected_max_q}
                                         label="Max Q"
+                                        size={"small"}
                                         onChange={this.handleSelectMaxQChange}
                                 />
                                 <FormHelperText>Select max_q</FormHelperText>
                             </FormControl>
 
 
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="method-selector-label">Method</InputLabel>
                                 <Select
                                         labelId="method-selector-label"
@@ -458,7 +464,7 @@ class PredictionsFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Specify which method to use.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="information-criterion-selector-label">Information Criterion</InputLabel>
                                 <Select
                                         labelId="information-criterion-selector-label"
@@ -480,7 +486,7 @@ class PredictionsFunctionPage extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>

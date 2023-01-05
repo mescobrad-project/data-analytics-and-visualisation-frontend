@@ -356,28 +356,28 @@ class SlowWaves extends React.Component {
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Data Preview
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        trial_av.edf
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Channels:
-                    </Typography>
-                    <List>
-                        {this.state.channels.map((channel) => (
-                                <ListItem> <ListItemText primary={channel}/></ListItem>
-                        ))}
-                    </List>
-                </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Data Preview*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        File Name:*/}
+                {/*    </Typography>*/}
+                {/*    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        trial_av.edf*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Channels:*/}
+                {/*    </Typography>*/}
+                {/*    <List>*/}
+                {/*        {this.state.channels.map((channel) => (*/}
+                {/*                <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                {/*        ))}*/}
+                {/*    </List>*/}
+                {/*</Grid>*/}
+                <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Slow Waves
                     </Typography>
@@ -385,7 +385,7 @@ class SlowWaves extends React.Component {
                     <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                     <Divider/>
                     <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
                                 labelId="channel-selector-label"
@@ -404,121 +404,133 @@ class SlowWaves extends React.Component {
                             <FormHelperText>Select Channel</FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="freq-sp-low-selector"
                                     value= {this.state.selected_freq_sw_low}
                                     label="Freq SW Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedFreqSWLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="freq-sp-high-selector"
                                     value= {this.state.selected_freq_sw_high}
                                     label="Freq SW High"
+                                    size={"small"}
                                     onChange={this.handleSelectedFreqSWHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-low-selector"
                                     value= {this.state.duration_negative_low}
                                     label="Duration Negative Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedDurationNegativeLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-high-selector"
                                     value= {this.state.duration_negative_high}
                                     label="Duration Negative High"
+                                    size={"small"}
                                     onChange={this.handleSelectedDurationNegativeHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-low-selector"
                                     value= {this.state.selected_duration_positive_low}
                                     label="Duration Positive Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedDurationPositiveLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-high-selector"
                                     value= {this.state.selected_duration_positive_high}
                                     label="Duration Positive High"
+                                    size={"small"}
                                     onChange={this.handleSelectedDurationPositiveHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-low-selector"
                                     value= {this.state.selected_amplitude_positive_low}
                                     label="Amplitude Positive Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedAmplitudePositiveLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-high-selector"
                                     value= {this.state.selected_amplitude_positive_high}
                                     label="Amplitude  Positive High"
+                                    size={"small"}
                                     onChange={this.handleSelectedAmplitudePositiveHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-low-selector"
                                     value= {this.state.selected_amplitude_negative_low}
                                     label="Amplitude Negative Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedAmplitudeNegativeLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-high-selector"
                                     value= {this.state.selected_amplitude_negative_high}
                                     label="Amplitude  Negative High"
+                                    size={"small"}
                                     onChange={this.handleSelectedAmplitudeNegativeHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-low-selector"
                                     value= {this.state.selected_amplitude_p2p_low}
                                     label="Amplitude Peak to Peak Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedAmplitudeP2PLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="duration-high-selector"
                                     value= {this.state.selected_amplitude_p2p_high}
                                     label="Amplitude Peak to Peak High"
+                                    size={"small"}
                                     onChange={this.handleSelectedAmplitudeP2PHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="multi-only-label">Coupling</InputLabel>
                             <Select
                                     labelId="multi-only-label"
@@ -534,7 +546,7 @@ class SlowWaves extends React.Component {
                         </FormControl>
 
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="remove-outliers-selector-label">Remove Outliers</InputLabel>
                             <Select
                                     labelId="remove-outliers-selector-label"
@@ -556,7 +568,7 @@ class SlowWaves extends React.Component {
                         </Button>
                     </form>
                 </Grid>
-                <Grid item xs={5} sx={{overflow:"auto"}}>
+                <Grid item xs={8} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>

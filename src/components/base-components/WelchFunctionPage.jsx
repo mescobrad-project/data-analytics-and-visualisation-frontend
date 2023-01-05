@@ -196,18 +196,18 @@ class WelchFunctionPage extends React.Component {
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview
-                        </Typography>
-                        <hr/>
-                        <List>
-                            {this.state.channels.map((channel) => (
-                                    <ListItem> <ListItemText primary={channel}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                    {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                    {/*        Data Preview*/}
+                    {/*    </Typography>*/}
+                    {/*    <hr/>*/}
+                    {/*    <List>*/}
+                    {/*        {this.state.channels.map((channel) => (*/}
+                    {/*                <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                    {/*        ))}*/}
+                    {/*    </List>*/}
+                    {/*</Grid>*/}
+                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Welch Parameterisation
                         </Typography>
@@ -215,7 +215,7 @@ class WelchFunctionPage extends React.Component {
                         <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                         <Divider/>
                         <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select
                                         labelId="channel-selector-label"
@@ -233,7 +233,7 @@ class WelchFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Channel for Welch</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="window-selector-label">Window</InputLabel>
                                 <Select
                                         labelId="window-selector-label"
@@ -260,38 +260,41 @@ class WelchFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Specify which window to use.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="nperseg-selector-label"
                                         id="nperseg-selector"
                                         value= {this.state.selected_nperseg}
                                         label="Nperseg"
+                                        size={"small"}
                                         onChange={this.handleSelectNpersegChange}
                                 />
                                 <FormHelperText>Length of each segment</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 {/*<InputLabel id="noverlap-selector-label">Alpha</InputLabel>*/}
                                 <TextField
                                         labelId="noverlap-selector-label"
                                         id="noverlap-selector"
                                         value= {this.state.selected_noverlap}
                                         label="Noverlap"
+                                        size={"small"}
                                         onChange={this.handleSelectNoverlapChange}
                                 />
                                 <FormHelperText>Number of points to overlap between segments</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         // labelId="nfft-selector-label"
                                         id="nfft-selector"
                                         value= {this.state.selected_nfft}
                                         label="Nfft"
+                                        size={"small"}
                                         onChange={this.handleSelectNfftChange}
                                 />
                                 <FormHelperText>Length of the FFT used, Nfft must be equal or higher than Nperseg</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="return-onesided-selector-label">Return Onesided</InputLabel>
                                 <Select
                                         labelId="return-onesided-selector-label"
@@ -305,13 +308,14 @@ class WelchFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>If True, return a one-sided spectrum</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="scaling-selector-label">Scaling</InputLabel>
                                 <Select
                                         // labelId="scaling-selector-label"
                                         id="scaling-selector"
                                         value= {this.state.selected_scaling}
                                         label="Scaling"
+                                        size={"small"}
                                         onChange={this.handleSelectScalingChange}
                                 >
                                     <MenuItem value={"density"}><em>Density</em></MenuItem>
@@ -319,17 +323,18 @@ class WelchFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Selects between computing the power spectral density or the power spectrum</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         // labelId="nfft-selector-label"
                                         id="axis-selector"
                                         value= {this.state.selected_axis}
                                         label="Axis"
+                                        size={"small"}
                                         onChange={this.handleSelectAxisChange}
                                 />
                                 <FormHelperText>Axis along which the periodogram is computed</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="average-selector-label">Average</InputLabel>
                                 <Select
                                         // labelId="nfft-selector-label"
@@ -348,7 +353,7 @@ class WelchFunctionPage extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>

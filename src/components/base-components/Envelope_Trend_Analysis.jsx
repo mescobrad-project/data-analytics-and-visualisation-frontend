@@ -125,28 +125,28 @@ class EnvelopeTrendAnalysis extends React.Component {
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Data Preview
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        trial_av.edf
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Channels:
-                    </Typography>
-                    <List>
-                        {this.state.channels.map((channel) => (
-                            <ListItem> <ListItemText primary={channel}/></ListItem>
-                        ))}
-                    </List>
-                </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Data Preview*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        File Name:*/}
+                {/*    </Typography>*/}
+                {/*    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        trial_av.edf*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Channels:*/}
+                {/*    </Typography>*/}
+                {/*    <List>*/}
+                {/*        {this.state.channels.map((channel) => (*/}
+                {/*            <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                {/*        ))}*/}
+                {/*    </List>*/}
+                {/*</Grid>*/}
+                <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Envelope Analyisis Parameterisation
                     </Typography>
@@ -154,13 +154,14 @@ class EnvelopeTrendAnalysis extends React.Component {
                     <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                     <Divider/>
                     <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
                                 labelId="channel-selector-label"
                                 id="channel-selector"
                                 value= {this.state.selected_channel}
                                 label="Channel"
+                                size={"small"}
                                 onChange={this.handleSelectChannelChange}
                             >
                                 <MenuItem value="">
@@ -172,25 +173,27 @@ class EnvelopeTrendAnalysis extends React.Component {
                             </Select>
                             <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="window-selector"
                                     value= {this.state.selected_window_size}
                                     label="window_size"
+                                    size={"small"}
                                     onChange={this.handleSelectWindowChange}
                             />
                             <FormHelperText>Select window</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="percent-selector"
                                     value= {this.state.selected_percent}
                                     label="Percent"
+                                    size={"small"}
                                     onChange={this.handleSelectPercentChange}
                             />
                             <FormHelperText>Select percent</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}} size={"small"}>
                             <InputLabel id="method-selector-label">Method</InputLabel>
                             <Select
                                 labelId="method-selector-label"
@@ -211,7 +214,7 @@ class EnvelopeTrendAnalysis extends React.Component {
                         </Button>
                     </form>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={8}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>

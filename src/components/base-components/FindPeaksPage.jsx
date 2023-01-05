@@ -341,36 +341,36 @@ class FindPeaksPage extends React.Component {
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                    {/*<Breadcrumbs separator="›" aria-label="breadcrumb">*/}
-                    {/*    <Link underline="hover" key="1" color="inherit" href="/" >*/}
-                    {/*        EEG Preprocessing*/}
-                    {/*    </Link>,*/}
-                    {/*    <Typography key="2" color="text.primary">*/}
-                    {/*        Find Peaks*/}
-                    {/*    </Typography>,*/}
-                    {/*</Breadcrumbs>*/}
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Data Preview
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        trial_av.edf
-                    </Typography>
-                    <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Channels:
-                    </Typography>
-                    <List>
-                        {this.state.channels.map((channel) => (
-                                <ListItem> <ListItemText primary={channel}/></ListItem>
-                        ))}
-                    </List>
-                </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                {/*    /!*<Breadcrumbs separator="›" aria-label="breadcrumb">*!/*/}
+                {/*    /!*    <Link underline="hover" key="1" color="inherit" href="/" >*!/*/}
+                {/*    /!*        EEG Preprocessing*!/*/}
+                {/*    /!*    </Link>,*!/*/}
+                {/*    /!*    <Typography key="2" color="text.primary">*!/*/}
+                {/*    /!*        Find Peaks*!/*/}
+                {/*    /!*    </Typography>,*!/*/}
+                {/*    /!*</Breadcrumbs>*!/*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Data Preview*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        File Name:*/}
+                {/*    </Typography>*/}
+                {/*    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        trial_av.edf*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Channels:*/}
+                {/*    </Typography>*/}
+                {/*    <List>*/}
+                {/*        {this.state.channels.map((channel) => (*/}
+                {/*                <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                {/*        ))}*/}
+                {/*    </List>*/}
+                {/*</Grid>*/}
+                <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Detection of peaks
                     </Typography>
@@ -378,13 +378,14 @@ class FindPeaksPage extends React.Component {
                     <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                     <Divider/>
                     <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
                                 labelId="channel-selector-label"
                                 id="channel-selector"
                                 value= {this.state.selected_channel}
                                 label="Channel"
+                                size={"small"}
                                 onChange={this.handleSelectChannelChange}
                             >
                                 <MenuItem value="">
@@ -396,14 +397,14 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
                         </FormControl>
-                        <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <InputLabel id="height-type-selector-label">Height Input Type</InputLabel>
                             <Select
                                     labelId="height-type-selector-label"
                                     id="height-type-selector"
                                     value= {this.state.selected_height_type}
                                     label="Height Type"
+                                    size={"small"}
                                     onChange={this.handleSelectHeightTypeChange}
                             >
                                 <MenuItem value={"none"}><em>No specific </em></MenuItem>
@@ -412,28 +413,29 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_height_type !== "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_height_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="height-1-selector"
                                     value= {this.state.selected_height_1}
                                     label="Height Min"
+                                    size={"small"}
                                     onChange={this.handleSelectHeight1Change}
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_height_type === "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_height_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="height-2-selector"
                                     value= {this.state.selected_height_2}
                                     label="Height Max"
+                                    size={"small"}
                                     onChange={this.handleSelectHeight2Change}
                             />
                             <FormHelperText> The maximum number</FormHelperText>
                         </FormControl>
-                        <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="threshold-type-selector-label">Threshold Input Type</InputLabel>
                             <Select
                                     labelId="threshold-type-selector-label"
@@ -448,28 +450,29 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_threshold_type !== "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_threshold_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="threshold-1-selector"
                                     value= {this.state.selected_threshold_1}
                                     label="Threshold Min"
+                                    size={"small"}
                                     onChange={this.handleSelectThreshold1Change}
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_threshold_type === "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_threshold_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="threshold-2-selector"
                                     value= {this.state.selected_threshold_2}
                                     label="Threshold Max"
+                                    size={"small"}
                                     onChange={this.handleSelectThreshold2Change}
                             />
                             <FormHelperText> The maximum number</FormHelperText>
                         </FormControl>
-                        <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="prominence-type-selector-label">Prominence Input Type</InputLabel>
                             <Select
                                     labelId="prominence-type-selector-label"
@@ -484,34 +487,36 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_prominence_type !== "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_prominence_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="prominence-1-selector"
                                     value= {this.state.selected_prominence_1}
                                     label="Prominence Min"
+                                    size={"small"}
                                     onChange={this.handleSelectProminence1Change}
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_prominence_type === "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_prominence_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="prominence-2-selector"
                                     value= {this.state.selected_prominence_2}
                                     label="Prominence Max"
+                                    size={"small"}
                                     onChange={this.handleSelectProminence2Change}
                             />
                             <FormHelperText> The maximum number</FormHelperText>
                         </FormControl>
-                        <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <InputLabel id="width-type-selector-label">Width Input Type</InputLabel>
                             <Select
                                     labelId="width-type-selector-label"
                                     id="width-type-selector"
                                     value= {this.state.selected_width_type}
                                     label="Width Type"
+                                    size={"small"}
                                     onChange={this.handleSelectWidthTypeChange}
                             >
                                 <MenuItem value={"none"}><em>No specific </em></MenuItem>
@@ -520,34 +525,36 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_width_type !== "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_width_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="width-1-selector"
                                     value= {this.state.selected_width_1}
                                     label="Width Min"
+                                    size={"small"}
                                     onChange={this.handleSelectWidth1Change}
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_width_type === "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_width_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="width-2-selector"
                                     value= {this.state.selected_width_2}
                                     label="Width Max"
+                                    size={"small"}
                                     onChange={this.handleSelectWidth2Change}
                             />
                             <FormHelperText> The maximum number</FormHelperText>
                         </FormControl>
-                        <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <InputLabel id="plateau-size-type-selector-label">Plateau size Input Type</InputLabel>
                             <Select
                                     labelId="plateau-size-type-selector-label"
                                     id="plateau-size-type-selector"
                                     value= {this.state.selected_plateau_size_type}
-                                    label="Plateau Size Type"
+                                    label="Plateau Size Type"size={"small"}
+
                                     onChange={this.handleSelectPlateauSizeTypeChange}
                             >
                                 <MenuItem value={"none"}><em>No specific </em></MenuItem>
@@ -556,50 +563,54 @@ class FindPeaksPage extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_plateau_size_type !== "none" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_plateau_size_type !== "none" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type isn't none */}
                             <TextField
                                     id="plateau-size-1-selector"
                                     value= {this.state.selected_plateau_size_1}
                                     label="Width Min"
+                                    size={"small"}
                                     onChange={this.handleSelectPlateauSize1Change}
                             />
                             <FormHelperText> The minimum number</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120, display: (this.state.selected_plateau_size_type === "min-max" ? 'block' : 'none')  }}>
+                        <FormControl sx={{m: 1, width:'90%', display: (this.state.selected_plateau_size_type === "min-max" ? 'block' : 'none')  }}>
                             {/* This field currently appears if the type reqruies both fields */}
                             <TextField
                                     id="plateau-size-2-selector"
                                     value= {this.state.selected_plateau_size_2}
                                     label="Width Max"
+                                    size={"small"}
                                     onChange={this.handleSelectPlateauSize2Change}
                             />
                             <FormHelperText> The maximum number</FormHelperText>
                         </FormControl>
-                        <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="distance-selector"
                                     value= {this.state.selected_distance}
                                     label="Distance"
+                                    size={"small"}
                                     onChange={this.handleSelectDistanceChange}
                             />
                             <FormHelperText> The Distance (Number not int)</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="wLen-selector"
                                     value= {this.state.selected_wlen}
                                     label="WLen"
+                                    size={"small"}
                                     onChange={this.handleSelectWlenChange}
                             />
                             <FormHelperText> The WLen (int)</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}}>
                             <TextField
                                     id="rel-height-selector"
                                     value= {this.state.selected_rel_height}
                                     label="Rel Height"
+                                    size={"small"}
                                     onChange={this.handleSelectRelHeightChange}
                             />
                             <FormHelperText> The Rel height (float)</FormHelperText>
@@ -610,7 +621,7 @@ class FindPeaksPage extends React.Component {
                         </Button>
                     </form>
                 </Grid>
-                <Grid item xs={5} sx={{overflow:"auto"}}>
+                <Grid item xs={8} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>
