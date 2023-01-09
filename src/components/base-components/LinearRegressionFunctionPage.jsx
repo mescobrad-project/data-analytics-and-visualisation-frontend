@@ -377,12 +377,22 @@ class LinearRegressionFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select if you want to add regularization</FormHelperText>
                             </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
                         </form>
-
-                        <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
+                        <form onSubmit={async (event) => {
+                            event.preventDefault();
+                            window.location.replace("/")
+                            // Send the request
+                        }}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                                Proceed >
+                            </Button>
+                        </form>
+                        <br/>
+                        <br/>
+                        <div  style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
                             <hr style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
                             <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                 Available Variables
@@ -428,7 +438,9 @@ class LinearRegressionFunctionPage extends React.Component {
                                     Submit
                                 </Button>
                             </form>
-                            <div style={{ display: (this.state.linear_regression_step2_show ? 'block' : 'none') }}><ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/></div>
+                            <div style={{ display: (this.state.linear_regression_step2_show ? 'block' : 'none') }}>
+                                <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
+                            </div>
                         </div>
                     </Grid>
                     <Grid item xs={8}>

@@ -133,17 +133,46 @@ class Normality_Tests extends React.Component {
             this.setState({test_Hplot_chart_data: resultJson['results']['histogramplot']})
             this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
             this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
+
+            const output_info = {
+                date_created: new Date().toLocaleString(),
+                workflow_id: params.get("run_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                test_name: 'Normality test',
+                test_params: {
+                    selected_method: this.state.selected_method,
+                    selected_variable: this.state.selected_column,
+                    selected_alternative: this.state.selected_alternative,
+                    selected_nan_policy: this.state.selected_nan_policy
+                },
+                test_results: {
+                    statistic: res.data.statistic,
+                    critical_values: res.data.critical_values,
+                    significance_level: res.data.significance_level,
+                    p_value: res.data.p_value,
+                    skew: res.data.results.skew,
+                    kurtosis: res.data.results.kurtosis,
+                    standard_deviation: res.data.results.standard_deviation,
+                    median: res.data.results.median,
+                    mean: res.data.results.mean,
+                    sample_N: res.data.results.sample_N,
+                    top_5: res.data.results.top_5,
+                    last_5: res.data.results.last_5,
+                    Description: res.data.results.description,
+                },
+                selected_dataset:{
+                    bucket:"demo",
+                    object: "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"
+                },
+                output_dataset:{
+                    bucket:"",
+                    object:""
+                }
+            };
+            localStorage.setItem('MY_APP_STATE', JSON.stringify(output_info));
+            // alert('Params to output: ' + JSON.stringify(output_info));
         });
-        const productInfo = {
-            method: this.state.selected_method,
-            variable: this.state.selected_column,
-            name_test: this.state.selected_method,
-            alternative: this.state.selected_alternative,
-            nan_policy: this.state.selected_nan_policy,
-            test_data:this.state.test_data
-        };
-        localStorage.setItem('MY_APP_STATE', JSON.stringify(productInfo));
-        // alert('Product: ' + method + ' edited!');
     }
 
     async handleProceed(event) {
@@ -160,6 +189,7 @@ class Normality_Tests extends React.Component {
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
+        window.location.replace("/")
     }
 
     resetResultArea(){
@@ -419,7 +449,7 @@ class Normality_Tests extends React.Component {
                                         <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
                                         <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>
                                         {/*Number.parseFloat(x).toFixed(2)*/}
-                                        <TableCell className="tableCell" >{ this.state.test_data.results.sample_N}</TableCell>
+                                        <TableCell className="tableCell" >{ this.state.test_data.results.sample_N - 1}</TableCell>
                                         <TableCell className="tableCell" >{ Number.parseFloat(this.state.alpha).toFixed(5)}</TableCell>
                                         <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.p_value).toFixed(5)}</TableCell>
                                         <TableCell className="tableCell"  style={{ color: (this.state.test_data.Description=="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>{this.state.test_data.Description}</TableCell>
