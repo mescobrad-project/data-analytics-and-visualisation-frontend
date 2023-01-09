@@ -157,7 +157,7 @@ class AutoCorrelationFunctionPage extends React.Component {
         API.get("return_autocorrelation",
             {
                 params: {
-                    run_id: params.get("run_id"),
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                     step_id: params.get("step_id"),
                     file_used: this.state.file_used,
                     input_name: this.state.selected_channel, input_adjusted: this.state.selected_adjusted,
@@ -311,7 +311,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         AutoCorrelation Parameterisation
                     </Typography>
-                    <Divider/>
+                    <Divider sx={{bgcolor: "black"}}/>
                     <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                     {/*<Button variant="contained" color="primary" sx={{marginLeft: "25%"}} disabled={(this.state.selected_part_channel === "" ? true : false)} onClick={this.handleModalOpen}>Open modal</Button>*/}
                     {/*<Modal*/}
@@ -332,7 +332,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                     {/* The form only appears when this.state.channels has any value which happens only when the forms
                     knows what file to access*/}
                     <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
                                 labelId="channel-selector-label"
@@ -350,7 +350,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="adjusted-selector-label">Adjusted</InputLabel>
                             <Select
                                 labelId="adjusted-selector-label"
@@ -365,7 +365,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>If True, then denominators for autocovariance are n-k, otherwise n</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="qstat-selector-label">Qstat</InputLabel>
                             <Select
                                 labelId="qstat-selector-label"
@@ -380,7 +380,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                             <FormHelperText>If True, returns the Ljung-Box q statistic for each autocorrelation
                                 coefficient</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="fft-selector-label">FFT</InputLabel>
                             <Select
                                 labelId="fft-selector-label"
@@ -394,7 +394,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>If True, computes the ACF via FFT</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="bartlett-confint-selector-label">Bartlet</InputLabel>
                             <Select
                                 labelId="bartlett-confint-selector-label"
@@ -408,7 +408,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>Should confidence intervals be generated using Bartlett's formula?</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="missing-selector-label">Missing</InputLabel>
                             <Select
                                 labelId="missing-selector-label"
@@ -424,7 +424,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>How should missing values be treated?</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             {/*<InputLabel id="alpha-selector-label">Alpha</InputLabel>*/}
                             <TextField
                                 // labelId="alpha-selector-label"
@@ -432,31 +432,47 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 value= {this.state.selected_alpha}
                                 label="Alpha"
                                 onChange={this.handleSelectAlphaChange}
+                                size={"small"}
                             />
                             <FormHelperText>The confidence intervals for the given level are
                                 returned</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             {/*<InputLabel id="nlags-selector-label">Nlags</InputLabel>*/}
                             <TextField
                                 // labelId="nlags-selector-label"
                                 id="nlags-selector"
                                 value= {this.state.selected_nlags}
                                 label="Nlags"
+                                size={"small"}
                                 onChange={this.handleSelectNlagsChange}
                             />
                             <FormHelperText>Number of lags to return autocorrelation for</FormHelperText>
                         </FormControl>
-                        <Button variant="contained" color="primary" type="submit">
+                        <hr/>
+                        <Button sx={{float: "left",marginLeft: "2px"}}  variant="contained" color="primary" type="submit">
                             Submit
                         </Button>
                     </form>
+                    <form onSubmit={async (event) => {
+                        event.preventDefault();
+                        window.location.replace("/")
+                        // Send the request
+                    }}>
+                        <Button sx={{float: "right",marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                            Proceed >
+                        </Button>
+                    </form>
                 </Grid>
-                <Grid item xs={8} container direction='row'>
-                    {/*<Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
-                    {/*    Result Visualisation*/}
-                    {/*</Typography>*/}
-                    {/*<hr/>*/}
+
+                {/*<Divider/>*/}
+                <Grid xs={8}  direction='column'>
+                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                    Result Visualisation
+                </Typography>
+                    <Divider sx={{bgcolor: "black"}}/>
+                <Grid item xs={12} container direction='row'>
+
                     {/*<List>*/}
                     {/*{this.state.correlation_results.map((result) => (*/}
                     {/*    <ListItem> <ListItemText primary={result}/></ListItem>*/}
@@ -464,34 +480,38 @@ class AutoCorrelationFunctionPage extends React.Component {
                     {/*</List>*/}
                     {/*// Probably should be removed to a new component !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
                         <Grid item xs={6}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
+                            <Typography variant="h6" sx={{ textAlign: "center", borderRight: "1px solid black", flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
                                 Correlation Results
                             </Typography>
-                            <div style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>
+                            <div style={{ borderBottom: "1px solid black", borderRight: "1px solid black", display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>
                             {/*<hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>*/}
+                            {/*<Divider sx={{bgcolor: "black"}}/>*/}
+                            {/*<Divider orientation="vertical" variant="" sx={{bgcolor: "black"}}/>*/}
                         </Grid>
                         <Grid item xs={6}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>
+                            <Typography variant="h6" sx={{ textAlign: "center", borderLeft: "1px solid black", flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>
                                 Confidence Interval
                             </Typography>
-                            <div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
-                            <hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>
+                            <div style={{  borderBottom: "1px solid black", borderLeft: "1px solid black", display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
+
+                            {/*<hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>*/}
                         </Grid>
                         <Grid item xs={6}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.qstat_chart_show ? 'block' : 'none')  }} noWrap>
+                            <Typography variant="h6" sx={{ textAlign: "center", flexGrow: 1, borderRight: "1px solid black",  display: (this.state.qstat_chart_show ? 'block' : 'none')  }} noWrap>
                                 Qstat
                             </Typography>
-                            <div style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="qstat_chart_id" chart_data={ this.state.qstat_chart_data}/></div>
-                            <hr style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}/>
+                            <div style={{  borderTop: "1px solid black", borderRight: "1px solid black", display: (this.state.qstat_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="qstat_chart_id" chart_data={ this.state.qstat_chart_data}/></div>
+                            {/*<hr style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}/>*/}
                         </Grid>
                         <Grid item xs={6}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.pvalues_chart_show ? 'block' : 'none')  }} noWrap>
+                            <Typography variant="h6" sx={{ textAlign: "center", borderLeft: "1px solid black", flexGrow: 1, display: (this.state.pvalues_chart_show ? 'block' : 'none')  }} noWrap>
                                 Pvalues
                             </Typography>
-                            <div style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="pvalues_chart_id" chart_data={ this.state.pvalues_chart_data}/></div>
-                            <hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>
+                            <div style={{  borderTop: "1px solid black", borderLeft: "1px solid black", display: (this.state.pvalues_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="pvalues_chart_id" chart_data={ this.state.pvalues_chart_data}/></div>
+                            {/*<hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>*/}
                         </Grid>
                     </Grid>
+                </Grid>
                 {/*<NewWindow>*/}
                 {/*    <EEGSelector/>*/}
                 {/*</NewWindow>*/}

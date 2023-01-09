@@ -100,7 +100,7 @@ class SVCFunctionPage extends React.Component {
 
         // Send the request
         API.get("SVC_function", {
-            params: {run_id: params.get("run_id"),
+            params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 dependent_variable: this.state.selected_dependent_variable, degree: this.state.selected_degree,
                 max_iter: this.state.selected_max_iter, C: this.state.selected_C, coef0: this.state.selected_coef0,
@@ -164,7 +164,7 @@ class SVCFunctionPage extends React.Component {
         const params = new URLSearchParams(window.location.search);
         API.get("return_columns",
                 {params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({columns: res.data.columns})

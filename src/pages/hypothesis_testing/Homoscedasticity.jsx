@@ -76,7 +76,7 @@ class Homoscedasticity extends React.Component {
         const params = new URLSearchParams(window.location.search);
         API.get("return_columns",
                 {params: {
-                    run_id: params.get("run_id"),
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                     step_id: params.get("step_id")
                 }}).then(res => {
             this.setState({column_names: res.data.columns})
@@ -95,7 +95,7 @@ class Homoscedasticity extends React.Component {
         API.get("check_homoscedasticity",
                 {
                     params: {
-                        run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         columns: this.state.selected_independent_variables,
                         name_of_test: this.state.selected_method,

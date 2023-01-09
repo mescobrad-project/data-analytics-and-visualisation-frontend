@@ -108,7 +108,7 @@ class SpindleDetection extends React.Component {
 
         API.get("return_signal",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         input_name: this.state.selected_part_channel,
                         // params: {input_name: this.state.selected_channel,
@@ -218,7 +218,7 @@ class SpindleDetection extends React.Component {
         // Send the request
         API.get("spindles_detection",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         name: this.state.selected_channel,
                         freq_sp_low: to_send_input_freq_sp_low,
@@ -249,7 +249,7 @@ class SpindleDetection extends React.Component {
             API.get("save_annotation_to_file",
                     {
                         params: {
-                            run_id: params.get("run_id"),
+                            workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                             step_id: params.get("step_id"),
                             name: this.state.selected_channel,
                             annotations_to_add: "",
@@ -319,14 +319,14 @@ class SpindleDetection extends React.Component {
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={3}  sx={{ borderRight: "1px solid grey"}}>
+                <Grid item xs={4}  sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Spindle Detection
                     </Typography>
                     <Divider/>
                     <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                     <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}} size={"small"}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
                                     labelId="channel-selector-label"
@@ -345,108 +345,119 @@ class SpindleDetection extends React.Component {
                             <FormHelperText>Select Channel</FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="freq-sp-low-selector"
                                     value= {this.state.selected_freq_sp_low}
                                     label="Freq Sp Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedFreqSpLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="freq-sp-high-selector"
                                     value= {this.state.selected_freq_sp_high}
                                     label="Freq Sp High"
+                                    size={"small"}
                                     onChange={this.handleSelectedFreqSpHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="freq-broad-low-selector"
                                     value= {this.state.selected_freq_broad_low}
                                     label="Freq Broad Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedFreqBroadLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="freq-broad-high-selector"
                                     value= {this.state.selected_freq_broad_high}
                                     label="Freq Broad High"
+                                    size={"small"}
                                     onChange={this.handleSelectedFreqBroadHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="duration-low-selector"
                                     value= {this.state.selected_duration_low}
                                     label="Duration Low"
+                                    size={"small"}
                                     onChange={this.handleSelectedDurationLow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="duration-high-selector"
                                     value= {this.state.selected_duration_high}
                                     label="Duration High"
+                                    size={"small"}
                                     onChange={this.handleSelectedDurationHigh}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="min-distance-selector"
                                     value= {this.state.selected_min_distance}
                                     label="Min Distance"
+                                    size={"small"}
                                     onChange={this.handleSelectedMinDistance}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="thresh-rel-pow-selector"
                                     value= {this.state.selected_thresh_rel_pow}
                                     label="Threshold Rel Pow"
+                                    size={"small"}
                                     onChange={this.handleSelectedThreshRelPow}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="thresh-corr-selector"
                                     value= {this.state.selected_thresh_corr}
                                     label="Thresh Corr"
+                                    size={"small"}
                                     onChange={this.handleSelectedThreshRelCorr}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <TextField
                                     id="thresh-rms-selector"
                                     value= {this.state.selected_thresh_rms}
                                     label="Thresh rms"
+                                    size={"small"}
                                     onChange={this.handleSelectedThreshRelRms}
                             />
                             <FormHelperText>  </FormHelperText>
                         </FormControl>
                         <hr/>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}}>
                             <InputLabel id="multi-only-label">Multi Only</InputLabel>
                             <Select
                                     labelId="multi-only-label"
                                     id="multi-only-selector"
                                     value= {this.state.selected_multi_only}
                                     label="Multi Only"
+                                    size={"small"}
                                     onChange={this.handleSelectedMultiOnly}
                             >
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
@@ -454,7 +465,7 @@ class SpindleDetection extends React.Component {
                             </Select>
                             <FormHelperText> </FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1,  width:'90%'}} size={"small"}>
                             <InputLabel id="remove-outliers-selector-label">Remove Outliers</InputLabel>
                             <Select
                                     labelId="remove-outliers-selector-label"
@@ -491,7 +502,7 @@ class SpindleDetection extends React.Component {
                 {/*    </Typography>*/}
                 {/*  <Divider/>*/}
                 {/*</Grid>*/}
-                <Grid item xs={9} sx={{overflow:"auto"}}>
+                <Grid item xs={8} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>

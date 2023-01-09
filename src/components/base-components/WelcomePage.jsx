@@ -43,7 +43,7 @@ function InboxIcon() {
     return null;
 }
 
-async function redirectToPage(run_id, step_id, function_name, bucket, file) {
+async function redirectToPage(workflow_id, run_id, step_id, function_name, bucket, file) {
     // Send the request
     let files_to_send = []
     for (let it=0 ; it< bucket.length;it++){
@@ -52,6 +52,7 @@ async function redirectToPage(run_id, step_id, function_name, bucket, file) {
 
     API.put("function/navigation/",
             {
+                workflow_id: workflow_id,
                 run_id: run_id,
                 step_id: step_id,
                 function: function_name,
@@ -119,7 +120,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 // endIcon={}
-                                onClick= {redirectToPage.bind(this,1, 1, "auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick= {redirectToPage.bind(this,1, 1, 1, "auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Auto Correlation
                             {/*<SendIcon/>*/}
@@ -130,7 +131,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 1, "partial_auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "partial_auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Partial Auto Correlation
                         </Button>
@@ -140,7 +141,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 1, "welch", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "welch", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Welch
                         </Button>
@@ -150,7 +151,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 1, "find_peaks", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "find_peaks", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Find Peaks
                         </Button>
@@ -159,7 +160,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "power_spectral_density_periodogram", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "power_spectral_density_periodogram", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Power Spectral Density - Periodogram
                         </Button>
@@ -168,7 +169,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "stft", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "stft", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Short Time Fourier Transform
                         </Button>
@@ -177,7 +178,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "power_spectral_density_multitaper", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "power_spectral_density_multitaper", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Power Spectral Density - Multitaper> Is this Welch?
                         </Button>
@@ -186,7 +187,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "alpha_delta_ratio", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "alpha_delta_ratio", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Alpha Delta Ratio
                         </Button>
@@ -195,7 +196,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "predictions", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "predictions", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Predictions
                         </Button>
@@ -204,7 +205,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "artifacts", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "artifacts", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Artifacts
                         </Button>
@@ -213,7 +214,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "alpha_variability", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "alpha_variability", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Alpha Variability
                         </Button>
@@ -222,7 +223,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "asymmetry_indices", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "asymmetry_indices", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Asymmetry Indices
                         </Button>
@@ -231,7 +232,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "slow_waves", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "slow_waves", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Slow waves
                         </Button>
@@ -240,7 +241,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "spindles", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "spindles", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Spindles
                         </Button>
@@ -249,7 +250,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "eeg_viewer", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "eeg_viewer", ["saved"], ["ps_case_edf.edf"])}
                         >
                             EEG Viewer
                         </Button>
@@ -258,7 +259,7 @@ function WelcomePage() {
                         {/*        // variant="outlined"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 1, "eeg_viewer_old", ["saved"], ["psg1 anonym2.edf"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "eeg_viewer_old", ["saved"], ["psg1 anonym2.edf"])}*/}
                         {/*>*/}
                         {/*    EEG Viewer Old*/}
                         {/*</Button>*/}
@@ -267,7 +268,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "envelop_trend_analysis", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "envelop_trend_analysis", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Envelope Trend Analysis
                         </Button>
@@ -288,7 +289,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Actigraphy Viewer
                         </Button>
@@ -297,7 +298,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Actigraphy General Viewer
                         </Button>
@@ -317,7 +318,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 3, "mri_viewer", ["saved"], ["ucl_test.nii"])}
+                                onClick={redirectToPage.bind(this,1,1, 3, "mri_viewer", ["saved"], ["ucl_test.nii"])}
                         >
                            MRI Viewer
                         </Button>
@@ -325,7 +326,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "freesurfer", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "free_surfer", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Free Surfer
                         </Button>
@@ -334,7 +335,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Recon-All Results
                         </Button>
@@ -343,7 +344,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Samseg Results
                         </Button>
@@ -357,7 +358,7 @@ function WelcomePage() {
                         {/*        variant="contained"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 2, "level", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "level", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
                         {/*>*/}
                         {/*    Level >*/}
                         {/*</Button>*/}
@@ -367,8 +368,8 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                // onClick={redirectToPage.bind(this,1, 2, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "normality", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"])}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "normality", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                         >
                             Normality test
                         </Button>
@@ -378,8 +379,8 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                // onClick={redirectToPage.bind(this,1, 2, "normality_anderson", ["saved"], ["demo_sample_questionnaire.csv"])}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "normality_anderson", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"])}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "normality_anderson", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "normality_anderson", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                         >
                             Normality test Anderson
                         </Button>
@@ -389,8 +390,8 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                // onClick={redirectToPage.bind(this,1, 2, "data_transform", ["saved"], ["demo_sample_questionnaire.csv"])}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "data_transform", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"])}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "data_transform", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "data_transform", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                         >
                             Transform data
                         </Button>
@@ -402,7 +403,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "data_transform_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "data_transform_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Data Transformation for use in ANOVA
                         </Button>
@@ -412,8 +413,8 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                // onClick={redirectToPage.bind(this,1, 2, "homoscedasticity", ["saved"], ["demo_sample_questionnaire.csv"])}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "homoscedasticity", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"])}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "homoscedasticity", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "homoscedasticity", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                         >
                             Homoscedasticity check
                         </Button>
@@ -423,7 +424,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "spearman_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "spearman_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Spearman Correlation
                         </Button>
@@ -432,7 +433,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "pearson_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "pearson_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Pearson Correlation
                         </Button>
@@ -442,7 +443,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "point_biserial_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "point_biserial_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Point Biserial Correlation
                         </Button>
@@ -452,7 +453,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "kendalltau_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "kendalltau_correlation", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Kendalltau Correlation
                         </Button>
@@ -464,7 +465,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "welch_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "welch_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Welch t-test
                         </Button>
@@ -474,7 +475,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "independent_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "independent_t_test", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Independent t-test
                         </Button>
@@ -484,7 +485,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "t_test_two_samples", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "t_test_two_samples", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             t-test on TWO RELATED samples of scores
                         </Button>
@@ -494,7 +495,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "mann_whitney_u_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "mann_whitney_u_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Mann-Whitney U rank test
                         </Button>
@@ -504,7 +505,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "wilcoxon_signed_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "wilcoxon_signed_rank", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Wilcoxon signed-rank test
                         </Button>
@@ -514,7 +515,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "alexander_govern", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "alexander_govern", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Alexander Govern test
                         </Button>
@@ -524,7 +525,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "kruskal_wallis_h", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "kruskal_wallis_h", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Kruskal-Wallis H-test
                         </Button>
@@ -534,7 +535,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "one_way_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "one_way_anova", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             one-way ANOVA
                         </Button>
@@ -544,7 +545,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "wilcoxon_rank_statistic", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "wilcoxon_rank_statistic", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Wilcoxon rank-sum statistic
                         </Button>
@@ -554,7 +555,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "one_way_chi_square", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "one_way_chi_square", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             One-way chi-square test
                         </Button>
@@ -564,7 +565,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
 
-                                onClick={redirectToPage.bind(this,1, 2, "mutliple_comparisons", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "mutliple_comparisons", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
                                 Multiple Comparisons
@@ -577,7 +578,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "LDA", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "LDA", ["saved"], ["demo_sample_questionnaire.csv"])}
 
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
@@ -590,7 +591,7 @@ function WelcomePage() {
                         {/*        // href="/SVC"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 2, "SVC", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "SVC", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
                         {/*>*/}
                         {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
@@ -603,7 +604,7 @@ function WelcomePage() {
                                 size="medium"
                                 // href="/PCA"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "PCA", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "PCA", ["saved"], ["demo_sample_questionnaire.csv"])}
 
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
@@ -618,7 +619,7 @@ function WelcomePage() {
                                 variant="contained"
 
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 2, "KMeans", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 2, "KMeans", ["saved"], ["demo_sample_questionnaire.csv"])}
 
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
@@ -631,8 +632,8 @@ function WelcomePage() {
                                 // href="/LinearRegression"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                // onClick={redirectToPage.bind(this,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linear_regression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"])}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linear_regression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
                         >
                             {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
@@ -645,7 +646,7 @@ function WelcomePage() {
                         {/*        // href="/ElasticNet"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 2, "ElasticNet", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "ElasticNet", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
                         {/*>*/}
                         {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
@@ -658,7 +659,7 @@ function WelcomePage() {
                         {/*        // href="/LassoRegression"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 2, "LassoRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "LassoRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
                         {/*>*/}
                         {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
@@ -671,7 +672,7 @@ function WelcomePage() {
                         {/*        // href="/RidgeRegression"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 2, "RidgeRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "RidgeRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
                         {/*>*/}
                         {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
@@ -684,7 +685,7 @@ function WelcomePage() {
                         {/*        // href="/SGDRegression"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 2, "SGDRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "SGDRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
                         {/*>*/}
                         {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
@@ -697,7 +698,7 @@ function WelcomePage() {
                         {/*        // href="/HuberRegression"*/}
                         {/*        size="medium"*/}
                         {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 2, "HuberRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "HuberRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
                         {/*>*/}
                         {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
@@ -722,7 +723,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 3, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,1,1, 3, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Dashboard
                         </Button>

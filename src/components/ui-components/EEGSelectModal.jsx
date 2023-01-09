@@ -102,7 +102,7 @@ class EEGSelectModal extends React.Component {
         const params = new URLSearchParams(window.location.search);
         API.get("list/channels", {
             params: {
-                run_id: params.get("run_id"),
+                workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 file_used: this.state.file_used_visual
             }
@@ -125,11 +125,11 @@ class EEGSelectModal extends React.Component {
                                 sx={{width: "100%"}}
                                 aria-label="text alignment"
                         >
-                            <ToggleButton value="original"  sx={{width: "50%"}} aria-label="left aligned">
+                            <ToggleButton value="original"  sx={{width: "50%"}} aria-label="left aligned" size={"small"}>
                                 <DescriptionIcon/>
                                 Use original file
                             </ToggleButton>
-                            <ToggleButton value="printed" sx={{width: "50%"}} aria-label="right aligned">
+                            <ToggleButton value="printed" sx={{width: "50%"}} aria-label="right aligned" size={"small"}>
                                 <EditIcon/>
                                 Select specific timeframe/channels
                             </ToggleButton>
@@ -151,11 +151,11 @@ class EEGSelectModal extends React.Component {
                     <Divider/>
                     <Divider/>
                     <Grid container direction="row">
-                        <Button variant="contained" color="primary"
+                        <Button variant="contained" color="primary" size={"small"}
                                 disabled={(this.state.file_used_visual === "printed" ? null : true)}
                                 // style={{ disa: (this.state.file_used_visual === "printed" ? 'block' : 'none') }}
                                 onClick={this.handleModalOpen}>Open EDF File Editor</Button>
-                        <Button variant="contained" color="primary"
+                        <Button variant="contained" color="primary" size={"small"}
                                 disabled={(this.state.file_used_visual === "printed" ? null : true)}
                                 // style={{ display: (this.state.file_used_visual === "printed" ? 'block' : 'none') }}
                                 onClick={this.handleModalOpenHelp}><HelpOutlineIcon/> </Button>

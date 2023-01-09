@@ -88,7 +88,7 @@ class PeriodogramFunctionPage extends React.Component {
         // Send the request
         API.get("return_periodogram",
                 {
-                    params: {run_id: params.get("run_id"),
+                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         input_name: this.state.selected_channel, input_window: this.state.selected_window,
                         input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,
@@ -171,18 +171,18 @@ class PeriodogramFunctionPage extends React.Component {
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview
-                        </Typography>
-                        <hr/>
-                        <List>
-                            {this.state.channels.map((channel) => (
-                                    <ListItem> <ListItemText primary={channel}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                    {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                    {/*        Data Preview*/}
+                    {/*    </Typography>*/}
+                    {/*    <hr/>*/}
+                    {/*    <List>*/}
+                    {/*        {this.state.channels.map((channel) => (*/}
+                    {/*                <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                    {/*        ))}*/}
+                    {/*    </List>*/}
+                    {/*</Grid>*/}
+                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Periodogram Parameterisation
                         </Typography>
@@ -190,7 +190,7 @@ class PeriodogramFunctionPage extends React.Component {
                         <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                         <Divider/>
                         <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select
                                         labelId="channel-selector-label"
@@ -208,7 +208,7 @@ class PeriodogramFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Channel for Periodogram</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="window-selector-label">Window</InputLabel>
                                 <Select
                                         labelId="window-selector-label"
@@ -235,17 +235,18 @@ class PeriodogramFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Specify which window to use.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 <TextField
                                         // labelId="nfft-selector-label"
                                         id="nfft-selector"
                                         value= {this.state.selected_nfft}
                                         label="Nfft"
+                                        size={"small"}
                                         onChange={this.handleSelectNfftChange}
                                 />
                                 <FormHelperText>Nfft </FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="return-onesided-selector-label">Return Onesided</InputLabel>
                                 <Select
                                         labelId="return-onesided-selector-label"
@@ -259,7 +260,7 @@ class PeriodogramFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>If True, return a one-sided spectrum</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="scaling-selector-label">Scaling</InputLabel>
                                 <Select
                                         // labelId="scaling-selector-label"
@@ -273,12 +274,13 @@ class PeriodogramFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Selects between computing the power spectral density or the power spectrum</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}}>
                                 <TextField
                                         // labelId="nfft-selector-label"
                                         id="axis-selector"
                                         value= {this.state.selected_axis}
                                         label="Axis"
+                                        size={"small"}
                                         onChange={this.handleSelectAxisChange}
                                 />
                                 <FormHelperText>Axis along which the periodogram is computed</FormHelperText>
@@ -288,7 +290,7 @@ class PeriodogramFunctionPage extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>

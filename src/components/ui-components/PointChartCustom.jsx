@@ -11,13 +11,11 @@ import * as am5xy from "@amcharts/amcharts5/xy";
  */
 class PointChartCustom extends React.Component {
     static propTypes = {
-        /** Prop "chart_id" provides the id of the chart and needs to be unique in each page */
-        chart_id: PropTypes.string,
-        /** Prop "chart_data" provides the data of the chart, inside the array there should be an object with two keys
-         * yValue
-         * category
-         * */
-        chart_data: PropTypes.array
+        /** Provides the id of the chart and needs to be unique in each page. */
+        chart_id: { type: String, required: true },
+
+        /** Provides the data of the chart, inside the array there should be an object with two keys: yValue and category. */
+        chart_data: { type: Array, required: true }
     }
 
     constructor(props) {
