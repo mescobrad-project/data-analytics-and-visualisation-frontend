@@ -66,7 +66,7 @@ class ArtifactsFunctionPage extends React.Component {
         // this.handleSubmit = this.handleSubmit.bind(this);
         this.sendToBottom = this.sendToBottom.bind(this);
         this.sendToTop = this.sendToTop.bind(this);
-        this.handleProcessOpenEEG = this.handleProcessOpenEEG.bind(this);
+        this.handleProcessOpenMNE = this.handleProcessOpenMNE.bind(this);
         this.handleSendNotebookAndSelectionConfig = this.handleSendNotebookAndSelectionConfig.bind(this);
         this.handleSelectComponentsChange = this.handleSelectComponentsChange.bind(this);
         this.handleSelectComponentsTypeChange = this.handleSelectComponentsTypeChange.bind(this);
@@ -82,18 +82,19 @@ class ArtifactsFunctionPage extends React.Component {
         this.debug = this.debug.bind(this);
 
         // Initialise component
-        this.handleProcessOpenEEG();
+        // this.handleProcessOpenMNE();
         setInterval(this.handleGetAnnotations, 5000);
         this.fetchChannels();
     }
 
-    async handleProcessOpenEEG() {
+    async handleProcessOpenMNE() {
         //Parameter are only placeholder
         const params = new URLSearchParams(window.location.search);
-        API.get("/mne/open/eeg",
+        API.get("/mne/open/mne",
                 {
                     params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                     }
                 }
@@ -108,8 +109,6 @@ class ArtifactsFunctionPage extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         let data_to_send = {
-            workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-            step_id: params.get("step_id"),
             bipolar_references: [],
             type_of_reference: "",
             channels_reference: [],
@@ -122,7 +121,6 @@ class ArtifactsFunctionPage extends React.Component {
             n_components: this.state.selected_components,
             list_exclude_ica: this.state.right,
             ica_method: this.state.selected_repair_method,
-            file_used: "original",
         }
 
         console.log("SEND DATA")
@@ -132,15 +130,22 @@ class ArtifactsFunctionPage extends React.Component {
                 , {
                     headers: {
                         'Content-Type': 'application/json'
+                    },
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_used: "original",
                     }
                 }
         ).then(res => {
         //   Must reload the notebook from the frontend or trigger it here otherwise
             const params = new URLSearchParams(window.location.search);
-            API.get("/mne/open/eeg",
+            API.get("/mne/open/mne",
                     {
                         params: {
-                            workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                            workflow_id: params.get("workflow_id"),
+                            run_id: params.get("run_id"),
                             step_id: params.get("step_id")
                         }
                     }
@@ -149,9 +154,18 @@ class ArtifactsFunctionPage extends React.Component {
         });
     }
 
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels_cathode: res.data.channels})
+    async fetchChannels() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("list/channels", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                file_used: "original"
+            }
+        }).then(res => {
+            this.setState({
+                channels_cathode: res.data.channels})
             // this.setState({left: res.data.channels})
         });
     }
@@ -304,28 +318,28 @@ class ArtifactsFunctionPage extends React.Component {
         return (
                 <Grid container direction="column">
                     <Grid container direction="row">
-                        <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
-                            <Grid container direction="column">
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File preview
-                            </Typography>
-                            <Divider sx={{bgcolor: "black"}}/>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File Name:
-                            </Typography>
-                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                trial_av.edf
-                            </Typography>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File Type:
-                            </Typography>
-                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                EDF
-                            </Typography>
-                            <Divider sx={{bgcolor: "black"}}/>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={3} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
+                        {/*<Grid item xs={2} sx={{borderRight: "1px solid grey"}}>*/}
+                        {/*    <Grid container direction="column">*/}
+                        {/*    <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        File preview*/}
+                        {/*    </Typography>*/}
+                        {/*    <Divider sx={{bgcolor: "black"}}/>*/}
+                        {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        File Name:*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        trial_av.edf*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        File Type:*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        EDF*/}
+                        {/*    </Typography>*/}
+                        {/*    <Divider sx={{bgcolor: "black"}}/>*/}
+                        {/*    </Grid>*/}
+                        {/*</Grid>*/}
+                        <Grid item xs={4} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             <form>
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     EEG Artifact Repair
@@ -462,17 +476,16 @@ class ArtifactsFunctionPage extends React.Component {
                                 Apply Changes>
                             </Button>
                         </Grid>
-                        <Grid item xs={7} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
+                        <Grid item xs={8} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             <Grid container direction="row">
-                                <Grid item xs={12}
-                                      sx={{height: "10vh", borderTop: "2px solid black", backgroundColor: "#0099cc"}}>
+                                <Grid item xs={12} sx={{height: "auto", borderTop: "2px solid black"}}>
                                     <AppBar position="relative">
                                         <Toolbar>
                                             <Button onClick={this.handleGetAnnotations} variant="contained" color="secondary"
                                                     sx={{margin: "8px", float: "center"}}>
                                                 Get Annotations>
                                             </Button>
-                                            <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
+                                            <Button onClick={this.handleProcessOpenMNE} variant="contained" color="secondary"
                                                     sx={{margin: "8px", float: "right"}}>
                                                 Restart View App >
                                             </Button>
@@ -483,8 +496,8 @@ class ArtifactsFunctionPage extends React.Component {
                             </Grid>
 
                             <Grid container direction="row">
-                                <Grid item xs={12} sx={{height: "82vh"}}>
-                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "80%", height: "97%" , marginLeft: "0%"}}></iframe>
+                                <Grid item xs={12} sx={{height: "85vh"}}>
+                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
                                     {/*<iframe src="http://10.129.150.120:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>*/}
                                 </Grid>
                             </Grid>
