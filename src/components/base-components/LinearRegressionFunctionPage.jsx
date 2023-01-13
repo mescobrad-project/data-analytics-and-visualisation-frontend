@@ -309,7 +309,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                         area-label="textarea"
                                         placeholder="Selected Independent Variables"
                                         style={{ width: 200 }}
-                                        value={this.state.selected_independent_variables}
+                                        value={this.state.selected_column}
                                         inputProps={
                                             { readOnly: true, }
                                         }
