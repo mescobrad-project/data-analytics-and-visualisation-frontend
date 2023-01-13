@@ -254,6 +254,7 @@ class Spearman_correlation extends React.Component {
                             <Box
                                     sx={{
                                         display: 'flex',
+                                        flexDirection: 'row',
                                         flexWrap: 'wrap',
                                         alignContent: 'center',
                                         justifyContent: 'flex-start',
@@ -267,7 +268,7 @@ class Spearman_correlation extends React.Component {
                             >
                                 {this.state.test_data.DataFrame.map((item)=>{
                                     return (
-                                            <Card sx={{ minWidth: 100, borderRadius: 2, maxWidth:'33%'}} variant="outlined">
+                                            <Card sx={{ minWidth: 100, borderRadius: 2, maxWidth:'33%', m:2}} variant="outlined">
                                                 <CardContent>
                                                     <Typography variant="h5" color="text.secondary" gutterBottom>
                                                         {item.Cor.split("-")[0]}
