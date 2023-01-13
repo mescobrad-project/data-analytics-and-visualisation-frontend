@@ -8,11 +8,65 @@ import {
     InputLabel,
     List,
     ListItem,
+    Card,
+    Box,
+    CardContent,
     ListItemText,
     MenuItem,
-    Select, TextField,
+    Select,
     Typography
 } from "@mui/material";
+import qs from "qs";
+
+const userColumns = [
+    { field: "Cor",
+        headerName: "Variables",
+        // width: '15%',
+        align: "left",
+        headerAlign: "left",
+        flex:2,
+        sortable: true,
+    },
+    {
+        field: "n",
+        headerName: "n",
+        width: '5%',
+        align: "center",
+        headerAlign: "center",
+        flex:1
+    },
+    {
+        field: "r",
+        headerName: "r",
+        width: '15%',
+        align: "right",
+        headerAlign: "center",
+        flex:2
+    },
+    {
+        field: "CI95%",
+        headerName: "CI95%",
+        width: '15%',
+        align: "center",
+        headerAlign: "center",
+        flex:2
+    },
+    {
+        field: "p-val",
+        headerName: "p-val",
+        width: '15%',
+        align: "right",
+        headerAlign: "center",
+        flex:2
+    },
+    {
+        field: "power",
+        headerName: "power",
+        width: '20%',
+        align: "right",
+        headerAlign: "center",
+        flex:2
+    }];
 
 class Kendalltau_correlation extends React.Component {
     constructor(props){
@@ -20,25 +74,22 @@ class Kendalltau_correlation extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
-            test_data: [],
+            test_data: {
+                DataFrame:[]
+            },
             //Values selected currently on the form
-            selected_column: "",
-            selected_column2: "",
-            selected_method: "auto",
+            selected_method: "spearman",
             selected_alternative: "two-sided",
-            selected_variant: "b",
-            selected_nan_policy:"propagate"
+            selected_independent_variables: []
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
-        this.handleSelectColumn2Change = this.handleSelectColumn2Change.bind(this);
-        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
+        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
-        this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
-        this.handleSelectVariantChange = this.handleSelectVariantChange.bind(this);
+        this.clear = this.clear.bind(this);
+        this.selectAll = this.selectAll.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
@@ -49,7 +100,15 @@ class Kendalltau_correlation extends React.Component {
      * Call backend endpoint to get column names
      */
     async fetchColumnNames(url, config) {
-        API.get("return_columns", {}).then(res => {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_columns",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
@@ -59,13 +118,22 @@ class Kendalltau_correlation extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("compute_kendalltau_correlation",
+        API.get("correlations_pingouin",
                 {
-                    params: {column_1: this.state.selected_column, column_2:this.state.selected_column2,
-                        method: this.state.selected_method, alternative: this.state.selected_alternative,
-                        variant: this.state.selected_variant, nan_policy: this.state.selected_nan_policy}
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        column_2: this.state.selected_independent_variables,
+                        alternative: this.state.selected_alternative,
+                        method: this.state.selected_method
+                    },
+                    paramsSerializer : params => {
+                        return qs.stringify(params, { arrayFormat: "repeat" })
+                    }
                 }
         ).then(res => {
             this.setState({test_data: res.data})
@@ -76,127 +144,67 @@ class Kendalltau_correlation extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectColumnChange(event){
-        this.setState( {selected_column: event.target.value})
-    }
-    handleSelectColumn2Change(event){
-        this.setState( {selected_column2: event.target.value})
-    }
-    handleSelectMethodChange(event){
-        this.setState( {selected_method: event.target.value})
+    handleSelectIndependentVariableChange(event){
+        this.setState( {selected_independent_variables: event.target.value})
     }
     handleSelectAlternativeChange(event){
         this.setState( {selected_alternative: event.target.value})
     }
-    handleSelectNanPolicyChange(event){
-        this.setState( {selected_nan_policy: event.target.value})
+    clear(){
+        this.setState({selected_independent_variables: []})
     }
-    handleSelectVariantChange(event){
-        this.setState( {selected_variant: event.target.value})
+    selectAll(){
+        this.setState({selected_independent_variables: this.state.column_names})
     }
 
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
+                    <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Data Preview
+                            Kendall’s Correlation Parameterisation
                         </Typography>
                         <hr/>
-                        <List>
-                            {this.state.column_names.map((column) => (
-                                    <ListItem> <ListItemText primary={column}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select method for Kendall’s tau correlation measure
-                        </Typography>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                            <FormHelperText>Selected Variables</FormHelperText>
+                            <List style={{fontSize:'9px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                                {this.state.selected_independent_variables.map((column) => (
+                                        <ListItem disablePadding
+                                        >
+                                            <ListItemText
+                                                    primaryTypographyProps={{fontSize: '10px'}}
+                                                    primary={'•  ' + column}
+                                            />
+
+                                        </ListItem>
+                                ))}
+                            </List>
+                        </FormControl>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="column-selector-label">Column</InputLabel>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column-selector-label">Variables</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_column}
+                                        value= {this.state.selected_independent_variables}
+                                        multiple
                                         label="Column"
-                                        onChange={this.handleSelectColumnChange}
+                                        onChange={this.handleSelectIndependentVariableChange}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
+                                <FormHelperText>Select variables for correlation test</FormHelperText>
+                                <Button onClick={this.selectAll}>
+                                    Select All Variables
+                                </Button>
+                                <Button onClick={this.clear}>
+                                    Clear Selections
+                                </Button>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="column2-selector-label">Column</InputLabel>
-                                <Select
-                                        labelId="column2-selector-label"
-                                        id="column2-selector"
-                                        value= {this.state.selected_column2}
-                                        label="Column"
-                                        onChange={this.handleSelectColumn2Change}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select Column 02 for correlation check</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
-                                <Select
-                                        labelid="nanpolicy-selector-label"
-                                        id="nanpolicy-selector"
-                                        value= {this.state.selected_nan_policy}
-                                        label="Nan_policy"
-                                        onChange={this.handleSelectNanPolicyChange}
-                                >
-                                    <MenuItem value={"propagate"}><em>propagate</em></MenuItem>
-                                    <MenuItem value={"raise"}><em>raise</em></MenuItem>
-                                    <MenuItem value={"omit"}><em>omit</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines how to handle when input contains nan.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="method-selector-label">Method</InputLabel>
-                                <Select
-                                        labelId="method-selector-label"
-                                        id="method-selector"
-                                        value= {this.state.selected_method}
-                                        label="Method"
-                                        onChange={this.handleSelectMethodChange}
-                                >
-                                    {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
-                                    <MenuItem value={"auto"}><em>auto</em></MenuItem>
-                                    <MenuItem value={"asymptotic"}><em>asymptotic</em></MenuItem>
-                                    <MenuItem value={"exact"}><em>exact</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines which method is used to calculate the p-value.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="variant-selector-label">Variant</InputLabel>
-                                <Select
-                                        labelid="variant-selector-label"
-                                        id="variant-selector"
-                                        value= {this.state.selected_variant}
-                                        label="Variant"
-                                        onChange={this.handleSelectVariantChange}
-                                >
-                                    <MenuItem value={"b"}><em>b</em></MenuItem>
-                                    <MenuItem value={"c"}><em>c</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines which variant of Kendall’s tau is returned.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="alternative-selector-label">Alternative</InputLabel>
                                 <Select
                                         labelid="alternative-selector-label"
@@ -216,14 +224,49 @@ class Kendalltau_correlation extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={9} >
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>
                         <hr/>
                         <div>
-                            <p className="result_texts">Kendall's tau correlation coefficient :  { this.state.test_data['kendalltau correlation coefficient']}</p>
-                            <p className="result_texts">p value :    { this.state.test_data['p-value']}</p>
+                            <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        flexWrap: 'wrap',
+                                        alignContent: 'center',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'center',
+                                        p: 1,
+                                        m: 1,
+                                        bgcolor: 'background.paper',
+                                        Width: '95%',
+                                        borderRadius: 1,
+                                    }}
+                            >
+                                {this.state.test_data.DataFrame.map((item)=>{
+                                    return (
+                                            <Card sx={{ minWidth: 100, borderRadius: 2, maxWidth:'33%', m:2}} variant="outlined">
+                                                <CardContent>
+                                                    <Typography variant="h5" color="text.secondary" gutterBottom>
+                                                        {item.Cor.split("-")[0]}
+                                                        <br/>---Vs---
+                                                        <br/>{item.Cor.split("-")[1]}
+                                                        <br/>
+                                                        <hr/>
+                                                    </Typography>
+                                                    <Typography variant="body1">
+                                                        n = {item.n}<br/>
+                                                        r = {item.r}<br/>
+                                                        CI95% = {item['CI95%']}<br/>
+                                                        p-val = {item['p-val']}<br/>
+                                                        power = {item.power}<br/>
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                    )})}
+                            </Box>
                         </div>
                     </Grid>
                 </Grid>

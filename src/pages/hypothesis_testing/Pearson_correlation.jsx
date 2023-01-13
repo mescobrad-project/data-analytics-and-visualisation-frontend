@@ -168,7 +168,7 @@ class Pearson_correlation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Corellation Parameterisation
+                            Pearson Correlation Parameterisation
                         </Typography>
                         <hr/>
                         <FormControl sx={{m: 1, width:'90%'}} size={"small"} >

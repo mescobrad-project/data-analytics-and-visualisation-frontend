@@ -17,7 +17,6 @@ import {
     Typography
 } from "@mui/material";
 import qs from "qs";
-import {DataGrid} from "@mui/x-data-grid";
 
 const userColumns = [
     { field: "Cor",
@@ -60,15 +59,6 @@ const userColumns = [
         headerAlign: "center",
         flex:2
     },
-    // {
-    //     field: "BF10",
-    //     headerName: "BF10",
-    //     width: '15%',
-    //     align: "right",
-    //     headerAlign: "center",
-    //     flex:2,
-    //     type: "number"
-    // },
     {
         field: "power",
         headerName: "power",
@@ -172,7 +162,7 @@ class Spearman_correlation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Corellation Parameterisation
+                            Spearman Correlation Parameterisation
                         </Typography>
                         <hr/>
                         <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
@@ -239,17 +229,6 @@ class Spearman_correlation extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        {/*<div className="datatable">*/}
-                        {/*    <DataGrid sx={{width:'90%', height:'700px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}*/}
-                        {/*              item xs zeroMinWidth*/}
-                        {/*              rowHeight={60}*/}
-                        {/*              className="datagrid"*/}
-                        {/*              rows= {this.state.test_data.DataFrame}*/}
-                        {/*              columns= {userColumns}*/}
-                        {/*              pageSize= {15}*/}
-                        {/*              rowsPerPageOptions={[15]}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
                         <div>
                             <Box
                                     sx={{
