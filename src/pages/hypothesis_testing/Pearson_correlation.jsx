@@ -15,7 +15,6 @@ import {
     Typography
 } from "@mui/material";
 import qs from "qs";
-import InnerHTML from "dangerously-set-html-content";
 import {DataGrid} from "@mui/x-data-grid";
 
 const userColumns = [
