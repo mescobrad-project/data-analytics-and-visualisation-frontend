@@ -69,6 +69,7 @@ import RidgeRegressionFunctionPage from "./RidgeRegressionFunctionPage";
 import SGDRegressionFunctionPage from "./SGDRegressionFunctionPage";
 import HuberRegressionFunctionPage from "./HuberRegressionFunctionPage";
 import MRIViewer from "./MRIViewer";
+import Biweight_midcorrelation from "../../pages/hypothesis_testing/Biweight_midcorrelation";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -131,6 +132,7 @@ const App = () => {
                         <Route exact path="/transform_data" element={(<LayoutMain><Transform_data/></LayoutMain>)}/>
                         <Route exact path="/Pearson_correlation" element={(<LayoutMain><Pearson_correlation/></LayoutMain>)}/>
                         <Route exact path="/Spearman_correlation" element={(<LayoutMain><Spearman_correlation/></LayoutMain>)}/>
+                        <Route exact path="/Biweight_midcorrelation" element={(<LayoutMain><Biweight_midcorrelation/></LayoutMain>)}/>
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
