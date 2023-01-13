@@ -72,6 +72,7 @@ import MRIViewer from "./MRIViewer";
 import Biweight_midcorrelation from "../../pages/hypothesis_testing/Biweight_midcorrelation";
 import Percentage_bend_correlation from "../../pages/hypothesis_testing/Percentage_bend_correlation";
 import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_correlation";
+import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -137,6 +138,7 @@ const App = () => {
                         <Route exact path="/Biweight_midcorrelation" element={(<LayoutMain><Biweight_midcorrelation/></LayoutMain>)}/>
                         <Route exact path="/Percentage_bend_correlation" element={(<LayoutMain><Percentage_bend_correlation/></LayoutMain>)}/>
                         <Route exact path="/Shepherd_pi_correlation" element={(<LayoutMain><Shepherd_pi_correlation/></LayoutMain>)}/>
+                        <Route exact path="/Skipped_spearman_correlation" element={(<LayoutMain><Skipped_spearman_correlation/></LayoutMain>)}/>
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
