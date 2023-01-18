@@ -1,8 +1,8 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button, Divider,
-    Grid, IconButton, ImageListItemBar, Modal, TextField,
+    Button, Divider, FormControl, FormHelperText,
+    Grid, IconButton, ImageListItemBar, InputLabel, MenuItem, Modal, Select, TextField,
     Typography
 } from "@mui/material";
 import {Box, Stack} from "@mui/system";
@@ -120,9 +120,8 @@ class EEGViewer extends React.Component {
         this.state = {
             //Channel Select order modal
             open_modal: false,
-            saved_montages: [
-                {label: 'None', year: null}
-            ],
+            saved_montages: [],
+            selected_montage: "",
 
         };
 
@@ -130,9 +129,12 @@ class EEGViewer extends React.Component {
         this.handleProcessOpenEEG = this.handleProcessOpenEEG.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
+        this.fetchMontages = this.fetchMontages.bind(this);
+        this.handleSelectMontage = this.handleSelectMontage.bind(this);
 
         // Initialise component
         // this.handleProcessOpenEEG();
+        this.fetchMontages()
     }
 
 
@@ -143,8 +145,10 @@ class EEGViewer extends React.Component {
         API.get("/mne/open/eeg",
                 {
                     params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        selected_montage: this.state.selected_montage
                     }
                 }
         ).then(res => {
@@ -152,6 +156,11 @@ class EEGViewer extends React.Component {
 
     }
 
+    async fetchMontages() {
+        API.get( "/get/montages").then(res =>{
+            this.setState({saved_montages: res.data})
+        })
+    }
     handleModalOpen() {
         this.setState({open_modal: true})
         this.handleGetChannelSignal()
@@ -161,6 +170,9 @@ class EEGViewer extends React.Component {
         this.setState({open_modal: false})
     }
 
+    handleSelectMontage(event){
+        this.setState({selected_montage: event.target.value})
+    }
 
     render() {
         return (
@@ -172,14 +184,41 @@ class EEGViewer extends React.Component {
                                     Load File with Montage
                                 </Typography>
                                 <Divider sx={{bgcolor: "black", marginTop: "5px", marginBottom: "5px"}}/>
-                                <Autocomplete
-                                        disablePortal
-                                        id="saved-montage-load"
-                                        options={this.state.saved_montages}
-                                        sx={{width: 300}}
-                                        defaultValue={"None"}
-                                        renderInput={(params) => <TextField {...params} label="Montage"/>}
-                                />
+                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                    <InputLabel id="load-montage-label">Load montage</InputLabel>
+                                    <Select
+                                            labelId="montage-selector-label"
+                                            id="montage-selector"
+                                            value= {this.state.selected_montage}
+                                            label="Montage"
+                                            onChange={this.handleSelectMontage}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {this.state.saved_montages.map((montage) => (
+                                                <MenuItem value={montage}>{montage}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    {/*<FormHelperText>Select Channel for Periodogram</FormHelperText>*/}
+                                </FormControl>
+
+
+                                {/*<Autocomplete*/}
+                                {/*        disablePortal*/}
+                                {/*        id="saved-montage-load"*/}
+                                {/*        options={this.state.saved_montages}*/}
+                                {/*        sx={{width: 300}}*/}
+                                {/*        defaultValue={"None"}*/}
+                                {/*        onchange={this.handleSelectMontage}*/}
+                                {/*        value={this.state.selected_montage}*/}
+                                {/*        renderInput={(params) => <TextField {...params} label="Montage"/>}*/}
+                                {/*/>*/}
+                                <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    Reload with selected montage
+                                </Button>
+
                                 <Divider sx={{bgcolor: "black", marginTop: "5px", marginBottom: "5px"}}/>
                                 <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
                                         sx={{margin: "8px", float: "right"}}>
