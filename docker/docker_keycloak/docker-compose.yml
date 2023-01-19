@@ -1,0 +1,49 @@
+version: '3.3'
+
+networks:
+  analytics-network:
+    external: true
+
+volumes:
+  postgres_data:
+    driver: local
+
+
+services:
+  keycloak_postgres:
+    container_name: ${POSTGRES_HOSTNAME}
+    hostname: ${POSTGRES_HOSTNAME}
+    image: postgres:10
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - analytics-network
+
+  keycloak:
+    image: bitnami/keycloak:19.0.3
+    container_name: ${KEYCLOAK_HOSTNAME}
+    hostname: ${KEYCLOAK_HOSTNAME}
+    restart: always
+    environment:
+      DB_VENDOR: ${DB_VENDOR}
+      DB_ADDR: ${POSTGRES_HOSTNAME}
+      DB_DATABASE: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+
+      KEYCLOAK_HTTPS_PORT: 8443
+      PROXY_ADDRESS_FORWARDING: 'true'
+    networks:
+      - analytics-network
+    ports:
+      - "39196:8443"
+      - "8081:8080"
+    depends_on:
+      - keycloak_postgres
