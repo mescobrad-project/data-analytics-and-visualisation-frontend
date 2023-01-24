@@ -1,32 +1,22 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Accordion, AccordionDetails, AccordionSummary,
     Button,
     FormControl,
     FormHelperText,
     Grid,
-    InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem,
-    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField,
+    TextField,
     Typography
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InnerHTML from "dangerously-set-html-content";
-import Paper from "@mui/material/Paper";
 
-class SurvivalAnalysisSimple extends React.Component {
+class SurvivalAnalysisRiskDifferenceSimple extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
-            column_names: [],
             test_data: {
-                estimated_risk:"",
+                risk_difference:"",
                 lower_bound:"",
                 upper_bound:"",
                 standard_error:""
@@ -35,11 +25,9 @@ class SurvivalAnalysisSimple extends React.Component {
             selected_unexposed_with: "",
             selected_exposed_without: "",
             selected_unexposed_without: "",
-            selected_alpha: ""
+            selected_alpha: 0.05
         };
         //Binding functions of the class
-        this.fetchColumnNames = this.fetchColumnNames.bind(this);
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectExposedWithChange = this.handleSelectExposedWithChange.bind(this);
         this.handleSelectUnexposedWithChange = this.handleSelectUnexposedWithChange.bind(this);
@@ -53,10 +41,11 @@ class SurvivalAnalysisSimple extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("risk_ratio_function",
+        API.get("risk_difference_function",
                 {
                     params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         exposed_with: this.state.selected_exposed_with,
                         unexposed_with: this.state.selected_unexposed_with,
@@ -159,13 +148,15 @@ class SurvivalAnalysisSimple extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                        <div>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                { this.state.test_data.estimated_risk}
-                                {this.state.test_data.lower_bound}
-                                {this.state.test_data.upper_bound}
-                                {this.state.test_data.standard_error}
-                            </Typography>
+                                Risk difference = { this.state.test_data.risk_difference}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                Lower bound = {this.state.test_data.lower_bound}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                Upper bound = {this.state.test_data.upper_bound}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                Risk ratio standard error = {this.state.test_data.standard_error}</Typography>
                         </div>
                     </Grid>
                 </Grid>
@@ -173,4 +164,4 @@ class SurvivalAnalysisSimple extends React.Component {
     }
 }
 
-export default SurvivalAnalysisSimple;
+export default SurvivalAnalysisRiskDifferenceSimple;

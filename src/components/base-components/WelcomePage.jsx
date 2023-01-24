@@ -15,14 +15,6 @@ import API from "../../axiosInstance";
 import {useNavigate} from "react-router-dom";
 import {withRouter} from '../withRouter';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import Kruskal_Wallis_H_test from "../../pages/hypothesis_testing/Kruskal_Wallis_H_test";
-import One_way_ANOVA from "../../pages/hypothesis_testing/One_way_ANOVA";
-import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon_rank_sum_statistic";
-import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
-import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
-import DataTransformationForANOVA from "../../pages/hypothesis_testing/DataTransformationForANOVA";
-import Percentage_bend_correlation from "../../pages/hypothesis_testing/Percentage_bend_correlation";
 
 
 // import {useHistory} from "react-router-dom";
@@ -748,11 +740,16 @@ function WelcomePage() {
                                 size="medium"
                                 variant="contained"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1,1, 2, "SurvivalAnalysisSimple", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "survivalanalysisriskratiosimple", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                         >
-                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
-                            Risks
-                            {/*</ListItemButton>*/}
+                            Risk Ratio (simple)
+                        </Button>
+                        <Button
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "survivalanalysisriskdifferencesimple", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                        >
+                            Risk Ratio (simple)
                         </Button>
                     </ButtonGroup>
                     <ButtonGroup

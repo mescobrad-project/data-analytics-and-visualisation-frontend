@@ -73,6 +73,8 @@ import Biweight_midcorrelation from "../../pages/hypothesis_testing/Biweight_mid
 import Percentage_bend_correlation from "../../pages/hypothesis_testing/Percentage_bend_correlation";
 import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_correlation";
 import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
+import SurvivalAnalysisRiskRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioSimple";
+import SurvivalAnalysisRiskDifferenceSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceSimple"
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -175,7 +177,8 @@ const App = () => {
                         <Route exact path="/RidgeRegression" element={(<LayoutMain><RidgeRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SGDRegression" element={(<LayoutMain><SGDRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/SurvivalAnalysisSimple" element={(<LayoutMain><SurvivalAnalysisSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskRatioSimple" element={(<LayoutMain><SurvivalAnalysisRiskRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceSimple/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
