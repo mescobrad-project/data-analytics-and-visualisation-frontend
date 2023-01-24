@@ -75,6 +75,7 @@ import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_
 import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
 import SurvivalAnalysisRiskRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioSimple";
 import SurvivalAnalysisRiskDifferenceSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceSimple"
+import SurvivalAnalysisNNTSimple from "../../pages/hypothesis_testing/SurvivalAnalysisNNTSimple"
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -179,6 +180,7 @@ const App = () => {
                         <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskRatioSimple" element={(<LayoutMain><SurvivalAnalysisRiskRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisNNTSimple" element={(<LayoutMain><SurvivalAnalysisNNTSimple/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

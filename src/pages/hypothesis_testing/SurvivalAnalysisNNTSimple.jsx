@@ -9,14 +9,14 @@ import {
     Typography
 } from "@mui/material";
 
-class SurvivalAnalysisRiskDifferenceSimple extends React.Component {
+class SurvivalAnalysisNNTSimple extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
             test_data: {
-                risk_difference:"",
+                nnt:"",
                 lower_bound:"",
                 upper_bound:"",
                 standard_error:""
@@ -41,7 +41,7 @@ class SurvivalAnalysisRiskDifferenceSimple extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("risk_difference_function",
+        API.get("number_needed_to_treat_function",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
@@ -150,7 +150,7 @@ class SurvivalAnalysisRiskDifferenceSimple extends React.Component {
                         <hr/>
                         <div>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                Risk difference = { this.state.test_data.risk_difference}</Typography>
+                                Estimated number needed to treat = { this.state.test_data.nnt}</Typography>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
                                 Lower bound = {this.state.test_data.lower_bound}</Typography>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
@@ -164,4 +164,4 @@ class SurvivalAnalysisRiskDifferenceSimple extends React.Component {
     }
 }
 
-export default SurvivalAnalysisRiskDifferenceSimple;
+export default SurvivalAnalysisNNTSimple;
