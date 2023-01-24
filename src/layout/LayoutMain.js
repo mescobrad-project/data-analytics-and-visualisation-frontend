@@ -2,7 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 import {Grid, Container} from '@mui/material'
 import AppBarCustom from "../components/ui-components/AppBarCustom";
 import Keycloak from "keycloak-js";
-
+import "../components/css/loading.css"
 
 const LayoutMain = ({children}) => {
     const [keycloak, setKeycloak] = useState(null);
@@ -15,8 +15,8 @@ const LayoutMain = ({children}) => {
 
         const keycloak = new Keycloak({
             "realm": "mescobrad",
-            "url": "http://localhost:8081/auth/",
-            "clientId": "qbr"
+            "url": "https://idm.digital-enabler.eng.it/auth/",
+            "clientId": "data-analytics"
         })
         keycloak.init({onLoad: 'login-required'}).then(authenticated => {
             console.log(keycloak)
@@ -29,12 +29,13 @@ const LayoutMain = ({children}) => {
                 window.accessToken = keycloak.token;
             }
         })
-    });
+    }, []);
 
-    // if (keycloak) {
-    //     if (authenticated) return (
-        if (true) {
-            if (true) return (
+    // TODO add a variable to check if file is downloaded from backend when applicable
+    if (keycloak) {
+        if (authenticated) return (
+    //     if (true) {
+    //         if (true) return (
                 <Grid container spacing={0} direction= "column">
                     <Grid item xs={12}>
                         <AppBarCustom/>
@@ -60,7 +61,8 @@ const LayoutMain = ({children}) => {
             <React.Fragment>
                 <AppBarCustom/>
                 <div>
-                Initializing keycloak...
+                {/*Initializing keycloak...*/}
+                <div className="lds-dual-ring"></div>
                 </div>
             </React.Fragment>
                 )
