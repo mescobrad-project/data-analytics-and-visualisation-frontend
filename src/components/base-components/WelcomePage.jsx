@@ -144,7 +144,7 @@ function WelcomePage() {
 
                                 onClick={redirectToPage.bind(this,1, 1, 1, "welch", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Welch
+                            Power Spectral Density - Welch
                         </Button>
                         {/*<Divider/>*/}
                         <Button
@@ -181,7 +181,7 @@ function WelcomePage() {
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "power_spectral_density_multitaper", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Power Spectral Density - Multitaper> Is this Welch?
+                            Power Spectral Density - Multitaper
                         </Button>
                         {/*<Divider/>*/}
                         <Button
