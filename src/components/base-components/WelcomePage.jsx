@@ -743,7 +743,17 @@ function WelcomePage() {
 
 
                         {/*<p>calculate_SpO2 from eeg_router</p>*/}
-
+                        Survival Analysis
+                        <Button
+                                size="medium"
+                                variant="contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1,1, 2, "SurvivalAnalysisSimple", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            Risks
+                            {/*</ListItemButton>*/}
+                        </Button>
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
