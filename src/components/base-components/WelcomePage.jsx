@@ -463,6 +463,15 @@ function WelcomePage() {
                         >
                             Shepherd’s pi correlation
                         </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "skipped_spearman_correlation", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                        >
+                            Skipped spearman correlation
+                        </Button>
                         {/*<Divider/>*/}
                         <Button
                                 // variant="outlined"
@@ -734,7 +743,17 @@ function WelcomePage() {
 
 
                         {/*<p>calculate_SpO2 from eeg_router</p>*/}
-
+                        Survival Analysis
+                        <Button
+                                size="medium"
+                                variant="contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1,1, 2, "SurvivalAnalysisSimple", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            Risks
+                            {/*</ListItemButton>*/}
+                        </Button>
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
