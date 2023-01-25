@@ -87,8 +87,8 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="exposed-with-selector-label"
                                            id="exposed-with-selector"
                                            value= {this.state.selected_exposed_with}
@@ -98,8 +98,8 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                 <FormHelperText>The number of “cases” (i.e. occurrence of disease or other event of interest)
                                     among the sample of “exposed” individuals.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="Unexposed-with-selector-label"
                                            id="Unexposed-with-selector"
                                            value= {this.state.selected_unexposed_with}
@@ -108,8 +108,8 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                 />
                                 <FormHelperText>Count of unexposed individuals with outcome.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="Exposed-without-selector-label"
                                            id="Exposed-without-selector"
                                            value= {this.state.selected_exposed_without}
@@ -118,8 +118,8 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                 />
                                 <FormHelperText>Count of exposed individuals without outcome.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="Unexposed-without-selector-label"
                                            id="Unexposed-without-selector"
                                            value= {this.state.selected_unexposed_without}
@@ -128,8 +128,8 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                 />
                                 <FormHelperText>Count of unexposed individuals without outcome.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="alpha-selector-label"
                                            id="alpha-selector"
                                            value= {this.state.selected_alpha}

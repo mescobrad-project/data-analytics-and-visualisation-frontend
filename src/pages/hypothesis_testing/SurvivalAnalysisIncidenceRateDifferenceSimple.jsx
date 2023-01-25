@@ -9,14 +9,14 @@ import {
     Typography
 } from "@mui/material";
 
-class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
+class SurvivalAnalysisIncidenceRateDifferenceSimple extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
             test_data: {
-                incident_rate_ratio:"",
+                incident_rate_difference:"",
                 lower_bound:"",
                 upper_bound:"",
                 standard_error:""
@@ -41,7 +41,7 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("incidence_rate_ratio_function",
+        API.get("incidence_rate_difference_function",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
@@ -149,7 +149,7 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
                         <hr/>
                         <div>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                Estimated incidence rate ratio = { this.state.test_data.incident_rate_ratio}</Typography>
+                                Incidence rate difference = { this.state.test_data.incident_rate_difference}</Typography>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
                                 Lower bound = {this.state.test_data.lower_bound}</Typography>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
@@ -163,4 +163,4 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
     }
 }
 
-export default SurvivalAnalysisIncidenceRateRatioSimple;
+export default SurvivalAnalysisIncidenceRateDifferenceSimple;
