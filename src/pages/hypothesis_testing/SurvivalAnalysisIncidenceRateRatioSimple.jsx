@@ -23,16 +23,16 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
             },
             selected_exposed_with: "",
             selected_unexposed_with: "",
-            selected_exposed_without: "",
-            selected_unexposed_without: "",
+            selected_person_time_exposed: "",
+            selected_person_time_unexposed: "",
             selected_alpha: 0.05
         };
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectExposedWithChange = this.handleSelectExposedWithChange.bind(this);
         this.handleSelectUnexposedWithChange = this.handleSelectUnexposedWithChange.bind(this);
-        this.handleSelectExposedWithoutChange = this.handleSelectExposedWithoutChange.bind(this);
-        this.handleSelectUnexposedWithoutChange = this.handleSelectUnexposedWithoutChange.bind(this);
+        this.handleSelectPersonTimeExposedChange = this.handleSelectPersonTimeExposedChange.bind(this);
+        this.handleSelectPersonTimeUnexposedChange = this.handleSelectPersonTimeUnexposedChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
     }
 
@@ -41,7 +41,7 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("odds_ratio_function",
+        API.get("incidence_rate_ratio_function",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
@@ -49,8 +49,8 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
                         step_id: params.get("step_id"),
                         exposed_with: this.state.selected_exposed_with,
                         unexposed_with: this.state.selected_unexposed_with,
-                        exposed_without: this.state.selected_exposed_without,
-                        unexposed_without: this.state.selected_unexposed_without,
+                        person_time_exposed: this.state.selected_person_time_exposed,
+                        person_time_unexposed: this.state.selected_person_time_unexposed,
                         alpha: this.state.selected_alpha
                         }
                 }
@@ -68,11 +68,11 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
     handleSelectUnexposedWithChange(event){
         this.setState( {selected_unexposed_with: event.target.value})
     }
-    handleSelectExposedWithoutChange(event){
-        this.setState( {selected_exposed_without: event.target.value})
+    handleSelectPersonTimeExposedChange(event){
+        this.setState( {selected_person_time_exposed: event.target.value})
     }
-    handleSelectUnexposedWithoutChange(event){
-        this.setState( {selected_unexposed_without: event.target.value})
+    handleSelectPersonTimeUnexposedChange(event){
+        this.setState( {selected_person_time_unexposed: event.target.value})
     }
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
@@ -112,9 +112,9 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
                                 <TextField sx={{m: 1, width:'90%'}} size={"small"}
                                            labelid="Exposed-without-selector-label"
                                            id="Exposed-without-selector"
-                                           value= {this.state.selected_exposed_without}
+                                           value= {this.state.selected_person_time_exposed}
                                            label="Exposed without"
-                                           onChange={this.handleSelectExposedWithoutChange}
+                                           onChange={this.handleSelectPersonTimeExposedChange}
                                 />
                                 <FormHelperText>Count of exposed individuals without outcome.</FormHelperText>
                             </FormControl>
@@ -122,9 +122,9 @@ class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
                                 <TextField sx={{m: 1, width:'90%'}} size={"small"}
                                            labelid="Unexposed-without-selector-label"
                                            id="Unexposed-without-selector"
-                                           value= {this.state.selected_unexposed_without}
+                                           value= {this.state.selected_person_time_unexposed}
                                            label="Unexposed without"
-                                           onChange={this.handleSelectUnexposedWithoutChange}
+                                           onChange={this.handleSelectPersonTimeUnexposedChange}
                                 />
                                 <FormHelperText>Count of unexposed individuals without outcome.</FormHelperText>
                             </FormControl>
