@@ -80,6 +80,7 @@ import SurvivalAnalysisOddsRatioSimple from "../../pages/hypothesis_testing/Surv
 import SurvivalAnalysisIncidenceRateRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioSimple";
 import SurvivalAnalysisIncidenceRateDifferenceSimple
     from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceSimple";
+import Ancova from "../../pages/hypothesis_testing/Ancova"
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -188,6 +189,7 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisOddsRatioSimple" element={(<LayoutMain><SurvivalAnalysisOddsRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateRatioSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

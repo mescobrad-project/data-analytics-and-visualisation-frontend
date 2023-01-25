@@ -10,55 +10,49 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Table,
-    Select, TableCell, TableRow, TextareaAutosize,
+    Select,
     Typography
 } from "@mui/material";
 import qs from "qs";
 import {DataGrid} from "@mui/x-data-grid";
 
 const userColumns = [
-    { field: "Cor",
-        headerName: "Variables", width: '35%',
+    { field: "Source",
+        headerName: "Names of the factor considered", width: '35%',
         align: "left",
         headerAlign: "left",
         flex:3,
         sortable: true},
     {
-        field: "n",
-        headerName: "n",
+        field: "SS",
+        headerName: "Sums of squares",
         width: '5%',
         align: "center",
         headerAlign: "center",
-        flex:0.5
+        flex:0.5,
+        type: "number"
     },
     {
-        field: "r",
-        headerName: "r",
+        field: "DF",
+        headerName: "Degrees of freedom",
         width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:0.5
+        flex:0.5,
+        type: "number"
     },
     {
-        field: "CI95%",
-        headerName: "CI95%",
+        field: "F",
+        headerName: "F-values",
         width: '10%',
         align: "center",
         headerAlign: "center",
-        flex:1
+        flex:1,
+        type: "number"
     },
     {
-        field: "p-val",
-        headerName: "p-val",
-        width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "BF10",
-        headerName: "BF10",
+        field: "p-unc",
+        headerName: "Uncorrected p-values",
         width: '10%',
         align: "right",
         headerAlign: "center",
@@ -66,15 +60,16 @@ const userColumns = [
         type: "number"
     },
     {
-        field: "power",
-        headerName: "power",
-        width: '20%',
+        field: "np2",
+        headerName: "Partial eta-squared",
+        width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:1
+        flex:1,
+        type: "number"
     }];
 
-class Pearson_correlation extends React.Component {
+class Ancova extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -84,16 +79,19 @@ class Pearson_correlation extends React.Component {
                 DataFrame:[]
             },
             //Values selected currently on the form
-            selected_method: "pearson",
-            selected_alternative: "two-sided",
-            selected_independent_variables: []
+            selected_dependent_variable: "",
+            selected_between_factor: "",
+            selected_covariate_variables: [],
+            selected_effsize:"np2"
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
-        this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
+        this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
+        this.handleSelectBetweenFactorChange = this.handleSelectBetweenFactorChange.bind(this);
+        this.handleSelectCovariateVariableChange = this.handleSelectCovariateVariableChange.bind(this);
+        this.handleSelectEffsizeChange = this.handleSelectEffsizeChange.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         // // Initialise component
@@ -109,12 +107,12 @@ class Pearson_correlation extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         API.get("return_columns",
-    {
-        params: {
-            workflow_id: params.get("workflow_id"),
-            run_id: params.get("run_id"),
-            step_id: params.get("step_id")
-        }}).then(res => {
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
@@ -127,15 +125,16 @@ class Pearson_correlation extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("correlations_pingouin",
+        API.get("ancova",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        column_2: this.state.selected_independent_variables,
-                        alternative: this.state.selected_alternative,
-                        method: this.state.selected_method
+                        dv: this.state.selected_dependent_variable,
+                        between: this.state.selected_between_factor,
+                        covar: this.state.selected_covariate_variables,
+                        effsize: this.state.selected_effsize
                     },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
@@ -150,17 +149,24 @@ class Pearson_correlation extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
+    handleSelectDependentVariableChange(event){
+        this.setState( {selected_dependent_variable: event.target.value})
     }
-    handleSelectAlternativeChange(event){
-        this.setState( {selected_alternative: event.target.value})
+    handleSelectBetweenFactorChange(event){
+        this.setState( {selected_between_factor: event.target.value})
     }
+    handleSelectCovariateVariableChange(event){
+        this.setState( {selected_covariate_variables: event.target.value})
+    }
+    handleSelectEffsizeChange(event){
+        this.setState( {selected_effsize: event.target.value})
+    }
+
     clear(){
-        this.setState({selected_independent_variables: []})
+        this.setState({selected_covariate_variables: []})
     }
     selectAll(){
-        this.setState({selected_independent_variables: this.state.column_names})
+        this.setState({selected_covariate_variables: this.state.column_names})
     }
 
     render() {
@@ -168,13 +174,13 @@ class Pearson_correlation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Pearson Correlation Parameterisation
+                            Ancova Parameterisation
                         </Typography>
                         <hr/>
                         <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                             <FormHelperText>Selected Variables</FormHelperText>
                             <List style={{fontSize:'9px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                                {this.state.selected_independent_variables.map((column) => (
+                                {this.state.selected_covariate_variables.map((column) => (
                                         <ListItem disablePadding
                                         >
                                             <ListItemText
@@ -189,14 +195,44 @@ class Pearson_correlation extends React.Component {
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Variables</InputLabel>
+                                <InputLabel id="column-selector-label">Dependent Variable</InputLabel>
+                                <Select
+                                        labelId="dependent-selector-label"
+                                        id="dependent-selector"
+                                        value= {this.state.selected_dependent_variable}
+                                        label="Dependent Variable"
+                                        onChange={this.handleSelectDependentVariableChange}
+                                >
+                                    {this.state.column_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column-selector-label">Between factor</InputLabel>
+                                <Select
+                                        labelId="Between-selector-label"
+                                        id="Between-selector"
+                                        value= {this.state.selected_between_factor}
+                                        label="Between factor"
+                                        onChange={this.handleSelectBetweenFactorChange}
+                                >
+                                    {this.state.column_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Name of column in data with the between factor.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column-selector-label">Variable(s) with the covariate</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_independent_variables}
+                                        value= {this.state.selected_covariate_variables}
                                         multiple
                                         label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        onChange={this.handleSelectCovariateVariableChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
@@ -211,19 +247,18 @@ class Pearson_correlation extends React.Component {
                                 </Button>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
+                                <InputLabel id="effsize-selector-label">effsize</InputLabel>
                                 <Select
-                                        labelid="alternative-selector-label"
-                                        id="alternative-selector"
-                                        value= {this.state.selected_alternative}
-                                        label="Alternative parameter"
-                                        onChange={this.handleSelectAlternativeChange}
+                                        labelid="effsize-selector-label"
+                                        id="effsize-selector"
+                                        value= {this.state.selected_effsize}
+                                        label="effsize parameter"
+                                        onChange={this.handleSelectEffsizeChange}
                                 >
-                                    <MenuItem value={"two-sided"}><em>two-sided</em></MenuItem>
-                                    <MenuItem value={"less"}><em>less</em></MenuItem>
-                                    <MenuItem value={"greater"}><em>greater</em></MenuItem>
+                                    <MenuItem value={"np2"}><em>np2</em></MenuItem>
+                                    <MenuItem value={"n2"}><em>n2</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
+                                <FormHelperText>Effect size. Must be ‘np2’ (partial eta-squared) or ‘n2’ (eta-squared).</FormHelperText>
                             </FormControl>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
@@ -246,7 +281,6 @@ class Pearson_correlation extends React.Component {
                                       pageSize= {15}
                                       rowsPerPageOptions={[15]}
                             />
-                            {/*<p className="result_texts">p_value :    { this.state.test_data['p-value']}</p>*/}
                         </div>
                     </Grid>
                 </Grid>
@@ -254,4 +288,4 @@ class Pearson_correlation extends React.Component {
     }
 }
 
-export default Pearson_correlation;
+export default Ancova;
