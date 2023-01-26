@@ -124,6 +124,25 @@ class Ancova extends React.Component {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
 
+        if (this.state.selected_dependent_variable===this.state.selected_between_factor)
+        {
+            alert("Variable <" + this.state.selected_dependent_variable +"> can not be selected as " +
+                    "Dependent variable and Between factor. Please change your selection.")
+            return
+        }
+        if (this.state.selected_covariate_variables.filter(item => item === this.state.selected_dependent_variable).length > 0)
+        {
+            alert("Variable <" + this.state.selected_dependent_variable +"> can not be selected as " +
+                    "Dependent and Covariant variable. Please change your selection.")
+            return
+        }
+        if (this.state.selected_covariate_variables.filter(item => item === this.state.selected_between_factor).length > 0)
+        {
+            alert("Variable <" + this.state.selected_between_factor +"> can not be selected as " +
+                    "Between factor and Covariant variable. Please change your selection.")
+            return
+        }
+
         // Send the request
         API.get("ancova",
                 {
