@@ -14,12 +14,6 @@ import {
     Select, TextareaAutosize, TextField, Typography
 } from "@mui/material";
 
-// Amcharts
-// import * as am5 from "@amcharts/amcharts5";
-// import * as am5xy from "@amcharts/amcharts5/xy";
-// import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-import PointChartCustom from "../ui-components/PointChartCustom";
-import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 
 class LDAFunctionPage extends React.Component {
@@ -28,25 +22,22 @@ class LDAFunctionPage extends React.Component {
         this.state = {
             // List of columns sent by the backend
             columns: [],
-
+            binary_columns: [],
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_solver: "svd",
             selected_shrinkage_1: "none",
-            // selected_shrinkage_2: "",
-            // selected_shrinkage_3: "",
+            selected_shrinkage_1_show: false,
+            selected_shrinkage_2: 0,
+            selected_shrinkage_2_show: false,
             selected_independent_variables: [],
-
-
-
-            coefficients: "",
-            intercept: "",
-            dataframe: "",
-
+            test_data:{
+                coefficients: "",
+                intercept: "",
+                dataframe: ""
+            },
             // Hide/show results
             LDA_show : false
-
-
         };
 
         //Binding functions of the class
@@ -54,9 +45,10 @@ class LDAFunctionPage extends React.Component {
         this.handleSelectSolverChange = this.handleSelectSolverChange.bind(this);
         this.handleSelectShrinkage1Change = this.handleSelectShrinkage1Change.bind(this);
         this.handleSelectShrinkage2Change = this.handleSelectShrinkage2Change.bind(this);
-        this.handleSelectShrinkage3Change = this.handleSelectShrinkage3Change.bind(this);
+        // this.handleSelectShrinkage3Change = this.handleSelectShrinkage3Change.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -64,7 +56,7 @@ class LDAFunctionPage extends React.Component {
         // Initialise component
         // - values of channels from the backend
         this.fetchColumnNames();
-
+        this.fetchBinaryColumnNames();
     }
 
     debug = () => {
@@ -72,29 +64,13 @@ class LDAFunctionPage extends React.Component {
         console.log(this.state)
     };
 
-
     /**
      * Process and send the request for auto correlation and handle the response
      */
 
     async handleSubmit(event) {
         event.preventDefault();
-
-        // let to_send_shrinkage_2 = null;
-        // let to_send_shrinkage_3 = null;
-        //
-        // if (!!this.state.selected_shrinkage_2){
-        //     to_send_shrinkage_2 = parseFloat(this.state.selected_shrinkage_2)
-        // }
-        // if (!!this.state.selected_shrinkage_3){
-        //     to_send_shrinkage_3 = parseFloat(this.state.selected_shrinkage_3)
-        // }
-
         this.setState({LDA_show: false})
-
-
-
-
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
@@ -103,62 +79,20 @@ class LDAFunctionPage extends React.Component {
                         step_id: params.get("step_id"),
                         dependent_variable: this.state.selected_dependent_variable, solver: this.state.selected_solver,
                         shrinkage_1: this.state.selected_shrinkage_1,
-                        // shrinkage_2: to_send_shrinkage_2, shrinkage_3: to_send_shrinkage_3,
+                        shrinkage_2: this.state.selected_shrinkage_2,
                         independent_variables: this.state.selected_independent_variables},
                 paramsSerializer : params => {
                     return qs.stringify(params, { arrayFormat: "repeat" })
                 }
         }).then(res => {
-            const resultJson = res.data;
-            console.log(resultJson)
-            console.log('Test')
-
-
-
-            // console.log("")
-            // console.log(temp_array)
-
-
-            this.setState({coefficients: resultJson['coefficients']})
-            this.setState({intercept: resultJson['intercept']})
-            this.setState({dataframe: resultJson['dataframe']})
+            this.setState({test_data: res.data})
             this.setState({LDA_show: true})
-
-
-
         });
-        // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
-        //     method: "GET",
-        //     headers: {"Content-Type": "application/json"},
-        //     // body: JSON.stringify({"name": this.state.selected_channel})
-        //     // body: newTodo
-        // })
-        // // .then(response => updateResult(response.json()) )
-        // const resultJson = await response.json()
-        // // let temp_array = []
-        // // for ( let it =0 ; it < resultJson.values_autocorrelation.length; it++){
-        // //     let temp_object = {}
-        // //     temp_object["order"] = it
-        // //     temp_object["value"] = resultJson.values_autocorrelation[it]
-        // //     temp_array.push(temp_object)
-        // // }
-        // // console.log(temp_array)
-        // this.setState({correlation_results: resultJson.values_autocorrelation})
     }
 
     /**
      * Update state when selection changes in the form
      */
-
-    // async fetchColumns(url, config) {
-    //     console.log("Hello")
-    //     API.get("return_columns", {}).then(res =>{
-    //         this.setState({columns: res.data.columns})
-    //     })
-    //     console.log(this.state.selected_solver)
-    //     console.log("First")
-    //     console.log(this.state)
-    // }
 
     async fetchColumnNames(url, config) {
         const params = new URLSearchParams(window.location.search);
@@ -172,25 +106,47 @@ class LDAFunctionPage extends React.Component {
         });
     }
 
+    async fetchBinaryColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_binary_columns",
+                {params: {
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            console.log(res.data.columns)
+            this.setState({binary_columns: res.data.columns})
+        });
+    }
+
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
     }
     handleSelectSolverChange(event){
         this.setState( {selected_solver: event.target.value})
+        if (event.target.value === 'svd')
+        {this.state.selected_shrinkage_1_show = false}
+        else
+        {this.state.selected_shrinkage_1_show = true}
     }
     handleSelectShrinkage1Change(event){
         this.setState( {selected_shrinkage_1: event.target.value})
+        if (event.target.value === 'float')
+        {this.state.selected_shrinkage_2_show = true}
+        else
+        {
+            this.state.selected_shrinkage_2_show = false
+            this.state.selected_shrinkage_2 = 0
+        }
     }
     handleSelectShrinkage2Change(event){
         this.setState( {selected_shrinkage_2: event.target.value})
     }
-    handleSelectShrinkage3Change(event){
-        this.setState( {selected_shrinkage_3: event.target.value})
-    }
+    // handleSelectShrinkage3Change(event){
+    //     this.setState( {selected_shrinkage_3: event.target.value})
+    // }
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
     }
-
     clear(){
         this.setState({selected_independent_variables: []})
     }
@@ -198,30 +154,16 @@ class LDAFunctionPage extends React.Component {
         this.setState({selected_independent_variables: this.state.columns})
     }
 
-
-
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Available Variables
-                        </Typography>
-
-                        <hr/>
-                        <List>
-                            {this.state.columns.map((column) => (
-                                    <ListItem> <ListItemText primary={column}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             LDA Parameterisation
                         </Typography>
                         <hr/>
                         <Grid container justifyContent = "center">
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextareaAutosize
                                         area-label="textarea"
                                         placeholder="Selected Independent Variables"
@@ -236,7 +178,7 @@ class LDAFunctionPage extends React.Component {
                         </Grid>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Dependent Variable</InputLabel>
                                 <Select
                                         labelId="dependent-variable-selector-label"
@@ -245,7 +187,6 @@ class LDAFunctionPage extends React.Component {
                                         label="Dependent Variable"
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
-
                                     {this.state.columns.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
@@ -254,7 +195,7 @@ class LDAFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Dependent Variable</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="solver-label">Solver</InputLabel>
                                 <Select
                                         labelId="solver-label"
@@ -263,58 +204,53 @@ class LDAFunctionPage extends React.Component {
                                         label="Solver"
                                         onChange={this.handleSelectSolverChange}
                                 >
-                                    {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
                                     <MenuItem value={"svd"}><em>svd</em></MenuItem>
-                                    <MenuItem value={"lsgr"}><em>lsgr</em></MenuItem>
+                                    <MenuItem value={"lsqr"}><em>lsqr</em></MenuItem>
                                     <MenuItem value={"eigen"}><em>eigen</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Specify which solver to use.</FormHelperText>
                             </FormControl>
-                            {/*<FormControl sx={{m: 1, minWidth: 120}}>*/}
-                            {/*    <InputLabel id="shrinkage-1-selector-label">Shrinkage 1</InputLabel>*/}
-                            {/*    <Select*/}
-                            {/*            labelId="shrinkage-1-selector-label"*/}
-                            {/*            id="shrinkage-1-selector"*/}
-                            {/*            value= {this.state.selected_shrinkage_1}*/}
-                            {/*            label="Shrinkage 1"*/}
-                            {/*            onChange={this.handleSelectShrinkage1Change}*/}
-                            {/*    >*/}
-                            {/*        <MenuItem value={"none"}><em>none</em></MenuItem>*/}
-                            {/*        <MenuItem value={"auto"}><em>auto</em></MenuItem>*/}
-                            {/*    </Select>*/}
-                            {/*    <FormHelperText>Shrinkage 1</FormHelperText>*/}
-                            {/*</FormControl>*/}
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <TextField
-                                        labelId="shrinkage-1-label"
-                                        id="shrinkage-1-selector"
+                            <div style={{ display: (this.state.selected_shrinkage_1_show ? 'block' : 'none') }}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="shrinkage-label">Shrinkage</InputLabel>
+                                <Select
+                                        labelId="shrinkage-label"
+                                        id="shrinkage-selector"
                                         value= {this.state.selected_shrinkage_1}
-                                        label="Shrinkage 1"
+                                        label="Shrinkage"
                                         onChange={this.handleSelectShrinkage1Change}
-                                />
-                                <FormHelperText>Shrinkage 1</FormHelperText>
+                                >
+                                    <MenuItem value={"none"}><em>No shrinkage</em></MenuItem>
+                                    <MenuItem value={"auto"}><em>Automatic shrinkage using the Ledoit-Wolf lemma</em></MenuItem>
+                                    <MenuItem value={"float"}><em>Fixed shrinkage parameter</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Shrinkage float</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            </div>
+                            <div style={{ display: (this.state.selected_shrinkage_2_show ? 'block' : 'none') }}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="shrinkage-2-label"
                                         id="shrinkage-2-selector"
                                         value= {this.state.selected_shrinkage_2}
-                                        label="Shrinkage 2"
+                                        label="Shrinkage float"
                                         onChange={this.handleSelectShrinkage2Change}
+                                        type="number"
                                 />
-                                <FormHelperText>Shrinkage 2</FormHelperText>
+                                <FormHelperText>Selection must be a float between 0 and 1</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <TextField
-                                        labelId="shrinkage-3-label"
-                                        id="shrinkage-3-selector"
-                                        value= {this.state.selected_shrinkage_3}
-                                        label="Shrinkage 3"
-                                        onChange={this.handleSelectShrinkage3Change}
-                                />
-                                <FormHelperText>Shrinkage 3</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                            </div>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelId="shrinkage-3-label"*/}
+                            {/*            id="shrinkage-3-selector"*/}
+                            {/*            value= {this.state.selected_shrinkage_3}*/}
+                            {/*            label="Shrinkage 3"*/}
+                            {/*            onChange={this.handleSelectShrinkage3Change}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Shrinkage 3</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
@@ -345,19 +281,33 @@ class LDAFunctionPage extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             LDA Result
                         </Typography>
                         <hr/>
-                        {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
-                        {/*    Welch Results*/}
-                        {/*</Typography>*/}
+                        <Grid container direction="row">
+                            <Grid sx={{ flexGrow: 1, textAlign: "center" }} >
+                                <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>
+                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                        Coefficients and Intercept term
+                                    </Typography>
+                                    <div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />
+                                </div>
+                            </Grid>
+                            {/*<Grid sx={{ flexGrow: 1}}>*/}
+                            {/*    <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>*/}
+                            {/*        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >*/}
+                            {/*            Intercept*/}
+                            {/*        </Typography>*/}
+                            {/*        <div dangerouslySetInnerHTML={{__html: this.state.test_data.intercept}} />*/}
+                            {/*    </div>*/}
+                            {/*</Grid>*/}
 
-                        <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>{this.state.coefficients}</div>
-                        <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>{this.state.intercept}</div>
-                        <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>{this.state.dataframe}</div>
-                        <hr style={{ display: (this.state.LDA_show ? 'block' : 'none') }}/>
+                        {/*<div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>{this.state.test_data.coefficients}</div>*/}
+                        {/*<div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>{this.state.test_data.intercept}</div>*/}
+                        {/*<div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>{this.state.test_data.dataframe}</div>*/}
+                        </Grid>
                     </Grid>
                 </Grid>
         )
