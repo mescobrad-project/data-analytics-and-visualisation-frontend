@@ -139,7 +139,12 @@ class LDAFunctionPage extends React.Component {
         }
     }
     handleSelectShrinkage2Change(event){
-        this.setState( {selected_shrinkage_2: event.target.value})
+        if (event.target.value<0 || event.target.value<1)
+        {
+            this.setState( {selected_shrinkage_2: event.target.value})
+
+        }else{alert("KKK")
+            return}
     }
     // handleSelectShrinkage3Change(event){
     //     this.setState( {selected_shrinkage_3: event.target.value})
