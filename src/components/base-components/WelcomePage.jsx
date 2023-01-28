@@ -15,6 +15,7 @@ import API from "../../axiosInstance";
 import {useNavigate} from "react-router-dom";
 import {withRouter} from '../withRouter';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 
 
 // import {useHistory} from "react-router-dom";
@@ -644,7 +645,6 @@ function WelcomePage() {
                                 size="medium"
                                 // href="/KMeans"
                                 variant="contained"
-
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1,1, 2, "KMeans", ["saved"], ["demo_sample_questionnaire.csv"])}
 
@@ -667,6 +667,15 @@ function WelcomePage() {
                                 Linear Regression
                             {/*</ListItemButton>*/}
                         </Button>
+                        <Button
+                                size="medium"
+                                variant="contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linearmixedeffectsmodel", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                        >
+                            Linear Mixed Effects Model
+                        </Button>
+
                         {/*<Button*/}
                         {/*        // component={Link}*/}
                         {/*        // variant="h6"*/}
