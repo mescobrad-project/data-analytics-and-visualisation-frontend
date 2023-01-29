@@ -82,6 +82,7 @@ import SurvivalAnalysisIncidenceRateDifferenceSimple
     from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceSimple";
 import Ancova from "../../pages/hypothesis_testing/Ancova"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
+import CoxRegression from "../../pages/hypothesis_testing/CoxRegression"
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -192,6 +193,7 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
+                        <Route exact path="/CoxRegression" element={(<LayoutMain><CoxRegression/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
