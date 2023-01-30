@@ -73,7 +73,17 @@ import Biweight_midcorrelation from "../../pages/hypothesis_testing/Biweight_mid
 import Percentage_bend_correlation from "../../pages/hypothesis_testing/Percentage_bend_correlation";
 import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_correlation";
 import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
-import SurvivalAnalysisSimple from "../../pages/hypothesis_testing/SurvivalAnalysisSimple";
+import SurvivalAnalysisRiskRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioSimple";
+import SurvivalAnalysisRiskDifferenceSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceSimple"
+import SurvivalAnalysisNNTSimple from "../../pages/hypothesis_testing/SurvivalAnalysisNNTSimple"
+import SurvivalAnalysisOddsRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioSimple";
+import SurvivalAnalysisIncidenceRateRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioSimple";
+import SurvivalAnalysisIncidenceRateDifferenceSimple
+    from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceSimple";
+import Ancova from "../../pages/hypothesis_testing/Ancova"
+import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
+import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
+import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -176,7 +186,16 @@ const App = () => {
                         <Route exact path="/RidgeRegression" element={(<LayoutMain><RidgeRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SGDRegression" element={(<LayoutMain><SGDRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/SurvivalAnalysisSimple" element={(<LayoutMain><SurvivalAnalysisSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskRatioSimple" element={(<LayoutMain><SurvivalAnalysisRiskRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisNNTSimple" element={(<LayoutMain><SurvivalAnalysisNNTSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisOddsRatioSimple" element={(<LayoutMain><SurvivalAnalysisOddsRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisIncidenceRateRatioSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
+                        <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisTimeVaryingCovariates" element={(<LayoutMain><SurvivalAnalysisTimeVaryingCovariates/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

@@ -1,50 +1,38 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Accordion, AccordionDetails, AccordionSummary,
     Button,
     FormControl,
     FormHelperText,
     Grid,
-    InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem,
-    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField,
+    TextField,
     Typography
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InnerHTML from "dangerously-set-html-content";
-import Paper from "@mui/material/Paper";
 
-class SurvivalAnalysisSimple extends React.Component {
+class SurvivalAnalysisIncidenceRateRatioSimple extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
-            column_names: [],
             test_data: {
-                estimated_risk:"",
+                incident_rate_ratio:"",
                 lower_bound:"",
                 upper_bound:"",
                 standard_error:""
             },
             selected_exposed_with: "",
             selected_unexposed_with: "",
-            selected_exposed_without: "",
-            selected_unexposed_without: "",
-            selected_alpha: ""
+            selected_person_time_exposed: "",
+            selected_person_time_unexposed: "",
+            selected_alpha: 0.05
         };
         //Binding functions of the class
-        this.fetchColumnNames = this.fetchColumnNames.bind(this);
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectExposedWithChange = this.handleSelectExposedWithChange.bind(this);
         this.handleSelectUnexposedWithChange = this.handleSelectUnexposedWithChange.bind(this);
-        this.handleSelectExposedWithoutChange = this.handleSelectExposedWithoutChange.bind(this);
-        this.handleSelectUnexposedWithoutChange = this.handleSelectUnexposedWithoutChange.bind(this);
+        this.handleSelectPersonTimeExposedChange = this.handleSelectPersonTimeExposedChange.bind(this);
+        this.handleSelectPersonTimeUnexposedChange = this.handleSelectPersonTimeUnexposedChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
     }
 
@@ -53,15 +41,16 @@ class SurvivalAnalysisSimple extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("risk_ratio_function",
+        API.get("incidence_rate_ratio_function",
                 {
                     params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         exposed_with: this.state.selected_exposed_with,
                         unexposed_with: this.state.selected_unexposed_with,
-                        exposed_without: this.state.selected_exposed_without,
-                        unexposed_without: this.state.selected_unexposed_without,
+                        person_time_exposed: this.state.selected_person_time_exposed,
+                        person_time_unexposed: this.state.selected_person_time_unexposed,
                         alpha: this.state.selected_alpha
                         }
                 }
@@ -79,11 +68,11 @@ class SurvivalAnalysisSimple extends React.Component {
     handleSelectUnexposedWithChange(event){
         this.setState( {selected_unexposed_with: event.target.value})
     }
-    handleSelectExposedWithoutChange(event){
-        this.setState( {selected_exposed_without: event.target.value})
+    handleSelectPersonTimeExposedChange(event){
+        this.setState( {selected_person_time_exposed: event.target.value})
     }
-    handleSelectUnexposedWithoutChange(event){
-        this.setState( {selected_unexposed_without: event.target.value})
+    handleSelectPersonTimeUnexposedChange(event){
+        this.setState( {selected_person_time_unexposed: event.target.value})
     }
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
@@ -98,19 +87,18 @@ class SurvivalAnalysisSimple extends React.Component {
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="exposed-with-selector-label"
                                            id="exposed-with-selector"
                                            value= {this.state.selected_exposed_with}
                                            label="Exposed with"
                                            onChange={this.handleSelectExposedWithChange}
                                 />
-                                <FormHelperText>The number of “cases” (i.e. occurrence of disease or other event of interest)
-                                    among the sample of “exposed” individuals.</FormHelperText>
+                                <FormHelperText> Count of exposed individuals with outcome.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="Unexposed-with-selector-label"
                                            id="Unexposed-with-selector"
                                            value= {this.state.selected_unexposed_with}
@@ -119,28 +107,28 @@ class SurvivalAnalysisSimple extends React.Component {
                                 />
                                 <FormHelperText>Count of unexposed individuals with outcome.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="Exposed-without-selector-label"
                                            id="Exposed-without-selector"
-                                           value= {this.state.selected_exposed_without}
+                                           value= {this.state.selected_person_time_exposed}
                                            label="Exposed without"
-                                           onChange={this.handleSelectExposedWithoutChange}
+                                           onChange={this.handleSelectPersonTimeExposedChange}
                                 />
-                                <FormHelperText>Count of exposed individuals without outcome.</FormHelperText>
+                                <FormHelperText>Person-time contributed by those who were exposed.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="Unexposed-without-selector-label"
                                            id="Unexposed-without-selector"
-                                           value= {this.state.selected_unexposed_without}
+                                           value= {this.state.selected_person_time_unexposed}
                                            label="Unexposed without"
-                                           onChange={this.handleSelectUnexposedWithoutChange}
+                                           onChange={this.handleSelectPersonTimeUnexposedChange}
                                 />
-                                <FormHelperText>Count of unexposed individuals without outcome.</FormHelperText>
+                                <FormHelperText>Person-time contributed by those who were unexposed.</FormHelperText>
                             </FormControl>
-                            <FormControl>
-                                <TextField sx={{m: 1, width:'90%'}} size={"small"}
+                            <FormControl sx={{m: 1, width:'90%'}} >
+                                <TextField size={"small"}
                                            labelid="alpha-selector-label"
                                            id="alpha-selector"
                                            value= {this.state.selected_alpha}
@@ -159,13 +147,15 @@ class SurvivalAnalysisSimple extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                        <div>
                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                { this.state.test_data.estimated_risk}
-                                {this.state.test_data.lower_bound}
-                                {this.state.test_data.upper_bound}
-                                {this.state.test_data.standard_error}
-                            </Typography>
+                                Estimated incidence rate ratio = { this.state.test_data.incident_rate_ratio}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                Lower bound = {this.state.test_data.lower_bound}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                Upper bound = {this.state.test_data.upper_bound}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                Standard error = {this.state.test_data.standard_error}</Typography>
                         </div>
                     </Grid>
                 </Grid>
@@ -173,4 +163,4 @@ class SurvivalAnalysisSimple extends React.Component {
     }
 }
 
-export default SurvivalAnalysisSimple;
+export default SurvivalAnalysisIncidenceRateRatioSimple;

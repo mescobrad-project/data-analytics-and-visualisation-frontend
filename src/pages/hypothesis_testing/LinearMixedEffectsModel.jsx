@@ -1,6 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
+import "./linearmixedeffectsmodel.scss"
 import {
     Button,
     FormControl,
@@ -11,12 +12,13 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, TextareaAutosize, TextField, Typography
+    Select, Table, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography
 } from "@mui/material";
 
 import qs from "qs";
+import Paper from "@mui/material/Paper";
 
-class LDAFunctionPage extends React.Component {
+class LinearMixedEffectsModel extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -25,27 +27,20 @@ class LDAFunctionPage extends React.Component {
             binary_columns: [],
             //Values selected currently on the form
             selected_dependent_variable: "",
-            selected_solver: "svd",
-            selected_shrinkage_1: "none",
-            selected_shrinkage_1_show: false,
-            selected_shrinkage_2: 0,
-            selected_shrinkage_2_show: false,
+            selected_groups: "",
+            selected_use_sqrt: "True",
             selected_independent_variables: [],
             test_data:{
-                coefficients: "",
-                intercept: "",
-                dataframe: ""
+                first_table: [],
+                second_table: []
             },
             // Hide/show results
-            LDA_show : false
+            LMEM_show : false,
         };
-
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectSolverChange = this.handleSelectSolverChange.bind(this);
-        this.handleSelectShrinkage1Change = this.handleSelectShrinkage1Change.bind(this);
-        this.handleSelectShrinkage2Change = this.handleSelectShrinkage2Change.bind(this);
-        // this.handleSelectShrinkage3Change = this.handleSelectShrinkage3Change.bind(this);
+        this.handleSelectGroupsChange = this.handleSelectGroupsChange.bind(this);
+        this.handleSelectUseSqrtChange = this.handleSelectUseSqrtChange.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
@@ -70,23 +65,23 @@ class LDAFunctionPage extends React.Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        this.setState({LDA_show: false})
+        this.setState({LMEM_show: false})
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("return_LDA", {
-                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id"),
-                        dependent_variable: this.state.selected_dependent_variable, solver: this.state.selected_solver,
-                        shrinkage_1: this.state.selected_shrinkage_1,
-                        shrinkage_2: this.state.selected_shrinkage_2,
-                        independent_variables: this.state.selected_independent_variables},
-                paramsSerializer : params => {
-                    return qs.stringify(params, { arrayFormat: "repeat" })
-                }
+        API.get("linear_mixed_effects_model", {
+            params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                dependent: this.state.selected_dependent_variable,
+                groups: this.state.selected_groups,
+                use_sqrt: this.state.selected_use_sqrt,
+                independent: this.state.selected_independent_variables},
+            paramsSerializer : params => {
+                return qs.stringify(params, { arrayFormat: "repeat" })
+            }
         }).then(res => {
             this.setState({test_data: res.data})
-            this.setState({LDA_show: true})
+            this.state.LMEM_show=true
         });
     }
 
@@ -101,7 +96,7 @@ class LDAFunctionPage extends React.Component {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
-                        console.log(res.data.columns)
+            // console.log(res.data.columns)
             this.setState({columns: res.data.columns})
         });
     }
@@ -113,7 +108,7 @@ class LDAFunctionPage extends React.Component {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
-            console.log(res.data.columns)
+            // console.log(res.data.columns)
             this.setState({binary_columns: res.data.columns})
         });
     }
@@ -121,34 +116,12 @@ class LDAFunctionPage extends React.Component {
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
     }
-    handleSelectSolverChange(event){
-        this.setState( {selected_solver: event.target.value})
-        if (event.target.value === 'svd')
-        {this.state.selected_shrinkage_1_show = false}
-        else
-        {this.state.selected_shrinkage_1_show = true}
+    handleSelectGroupsChange(event){
+        this.setState( {selected_groups: event.target.value})
     }
-    handleSelectShrinkage1Change(event){
-        this.setState( {selected_shrinkage_1: event.target.value})
-        if (event.target.value === 'float')
-        {this.state.selected_shrinkage_2_show = true}
-        else
-        {
-            this.state.selected_shrinkage_2_show = false
-            this.state.selected_shrinkage_2 = 0
-        }
+    handleSelectUseSqrtChange(event){
+        this.setState( {selected_use_sqrt: event.target.value})
     }
-    handleSelectShrinkage2Change(event){
-        if (event.target.value<0 || event.target.value<1)
-        {
-            this.setState( {selected_shrinkage_2: event.target.value})
-
-        }else{alert("KKK")
-            return}
-    }
-    // handleSelectShrinkage3Change(event){
-    //     this.setState( {selected_shrinkage_3: event.target.value})
-    // }
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
     }
@@ -160,11 +133,12 @@ class LDAFunctionPage extends React.Component {
     }
 
     render() {
+
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            LDA Parameterisation
+                            Linear Mixed Effects Model Parameterisation
                         </Typography>
                         <hr/>
                         <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
@@ -202,49 +176,39 @@ class LDAFunctionPage extends React.Component {
                                 <FormHelperText>Select Dependent Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="solver-label">Solver</InputLabel>
+                                <InputLabel id="groups-label">Groups</InputLabel>
                                 <Select
-                                        labelId="solver-label"
-                                        id="solver-selector"
-                                        value= {this.state.selected_solver}
-                                        label="Solver"
-                                        onChange={this.handleSelectSolverChange}
+                                        labelId="groups-label"
+                                        id="groups-selector"
+                                        value= {this.state.selected_groups}
+                                        label="groups"
+                                        onChange={this.handleSelectGroupsChange}
                                 >
-                                    <MenuItem value={"svd"}><em>svd</em></MenuItem>
-                                    <MenuItem value={"lsqr"}><em>lsqr</em></MenuItem>
-                                    <MenuItem value={"eigen"}><em>eigen</em></MenuItem>
+                                    {this.state.columns.map((column) => (
+                                            <MenuItem value={column}>
+                                                {column}
+                                            </MenuItem>
+                                    ))}
                                 </Select>
-                                <FormHelperText>Specify which solver to use.</FormHelperText>
+                                <FormHelperText>Specify group.</FormHelperText>
                             </FormControl>
-                            <div style={{ display: (this.state.selected_shrinkage_1_show ? 'block' : 'none') }}>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="shrinkage-label">Shrinkage</InputLabel>
-                                <Select
-                                        labelId="shrinkage-label"
-                                        id="shrinkage-selector"
-                                        value= {this.state.selected_shrinkage_1}
-                                        label="Shrinkage"
-                                        onChange={this.handleSelectShrinkage1Change}
-                                >
-                                    <MenuItem value={"none"}><em>No shrinkage</em></MenuItem>
-                                    <MenuItem value={"auto"}><em>Automatic shrinkage using the Ledoit-Wolf lemma</em></MenuItem>
-                                    <MenuItem value={"float"}><em>Fixed shrinkage parameter</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Shrinkage float</FormHelperText>
-                            </FormControl>
-                            </div>
-                            <div style={{ display: (this.state.selected_shrinkage_2_show ? 'block' : 'none') }}>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelId="shrinkage-2-label"
-                                        id="shrinkage-2-selector"
-                                        value= {this.state.selected_shrinkage_2}
-                                        label="Shrinkage float"
-                                        onChange={this.handleSelectShrinkage2Change}
-                                        type="number"
-                                />
-                                <FormHelperText>Selection must be a float between 0 and 1</FormHelperText>
-                            </FormControl>
+                            <div>
+                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                    <InputLabel id="shrinkage-label">Use sqrt</InputLabel>
+                                    <Select
+                                            labelId="shrinkage-label"
+                                            id="shrinkage-selector"
+                                            value= {this.state.selected_use_sqrt}
+                                            label="Shrinkage"
+                                            onChange={this.handleSelectUseSqrtChange}
+                                    >
+                                        <MenuItem value={"True"}><em>True</em></MenuItem>
+                                        <MenuItem value={"False"}><em>False</em></MenuItem>
+                                    </Select>
+                                    <FormHelperText>If True, optimization is carried out using the lower triangle of the
+                                        square root of the random effects covariance matrix, otherwise it is carried out
+                                        using the lower triangle of the random effects covariance matrix.</FormHelperText>
+                                </FormControl>
                             </div>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
@@ -279,23 +243,64 @@ class LDAFunctionPage extends React.Component {
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            LDA Result
+                            Mixed Linear Model Regression Results
                         </Typography>
                         <hr/>
-                        <Grid container direction="row">
-                            <Grid sx={{ flexGrow: 1, textAlign: "center" }} >
-                                <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>
-                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
-                                        Coefficients and Intercept term
-                                    </Typography>
-                                    <div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />
-                                </div>
-                            </Grid>
+                        <Grid container direction="row" style={{ display: (this.state.LMEM_show ? 'block' : 'none') }}>
+                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                <Table>
+                                    <TableHead>
+                                        <TableRow sx={{alignContent:"right"}}>
+                                            <TableCell className="tableHeadCell" sx={{width:'25%'}}></TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'25%'}}></TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'25%'}}></TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'25%'}}></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    { this.state.test_data.first_table.map((item) => {
+                                            return (
+                                                    <TableRow>
+                                                        <TableCell className="tableCell">{item.col0}</TableCell>
+                                                        <TableCell className="tableCell">{item.col1}</TableCell>
+                                                        <TableCell className="tableCell">{item.col2}</TableCell>
+                                                        <TableCell className="tableCell">{item.col3}</TableCell>
+                                                    </TableRow>
+                                            );
+                                    })}
+                                </Table>
+                            </TableContainer>
+                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell className="tableHeadCell" sx={{width:'15%'}}></TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'15%'}}>Coef.</TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'15%'}}>Std.Err.</TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'15%'}}>z</TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'15%'}}>P>|z|</TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'15%'}}>[0.025</TableCell>
+                                            <TableCell className="tableHeadCell" sx={{width:'15%'}}>0.975]</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    { this.state.test_data.second_table.map((item) => {
+                                        return (
+                                                <TableRow>
+                                                    <TableCell className="tableCell">{item.id}</TableCell>
+                                                    <TableCell className="tableCell">{item.col0}</TableCell>
+                                                    <TableCell className="tableCell">{item.col1}</TableCell>
+                                                    <TableCell className="tableCell">{item.col2}</TableCell>
+                                                    <TableCell className="tableCell">{item.col3}</TableCell>
+                                                    <TableCell className="tableCell">{item.col4}</TableCell>
+                                                    <TableCell className="tableCell">{item.col5}</TableCell>
+                                                </TableRow>
+                                        );
+                                    })}
+                                </Table>
+                            </TableContainer>
                         </Grid>
                     </Grid>
                 </Grid>
         )
     }
 }
-
-export default LDAFunctionPage;
+export default LinearMixedEffectsModel;
