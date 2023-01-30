@@ -73,6 +73,7 @@ import Biweight_midcorrelation from "../../pages/hypothesis_testing/Biweight_mid
 import Percentage_bend_correlation from "../../pages/hypothesis_testing/Percentage_bend_correlation";
 import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_correlation";
 import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
+import SurvivalAnalysisSimple from "../../pages/hypothesis_testing/SurvivalAnalysisSimple";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
