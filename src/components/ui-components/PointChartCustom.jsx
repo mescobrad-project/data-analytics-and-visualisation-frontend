@@ -42,7 +42,7 @@ class PointChartCustom extends React.Component {
             })
         );
         // Format numbers
-        root.numberFormatter.set("numberFormat", "#a");
+        root.numberFormatter.set("numberFormat", "#.##");
 // Create axes
 // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
         let xRenderer = am5xy.AxisRendererX.new(root, {
@@ -73,7 +73,7 @@ class PointChartCustom extends React.Component {
         }));
 
         // Create series
-        let series = chart.series.push(am5xy.ColumnSeries.new(root, {
+        let series = chart.series.push(am5xy.LineSeries.new(root, {
             xAxis: xAxis,
             yAxis: yAxis,
             valueYField: "yValue",
@@ -83,15 +83,15 @@ class PointChartCustom extends React.Component {
                 labelText: "{valueY}"
             })
         }));
-        series.columns.template.setAll({
-            width: 0.5
-        });
-
+        // series.columns.template.setAll({
+        //     width: 0.5
+        // });
+        //
         series.bullets.push(function() {
             return am5.Bullet.new(root, {
                 locationY: 1,
                 sprite: am5.Circle.new(root, {
-                    radius: 5,
+                    radius: 2,
                     fill: series.get("fill")
                 })
             })

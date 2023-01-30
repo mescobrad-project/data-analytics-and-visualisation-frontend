@@ -84,6 +84,7 @@ import Ancova from "../../pages/hypothesis_testing/Ancova"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
 import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
+import SlowwaveSpindleFunctionPage from "./SlowwaveSpindleFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -196,6 +197,7 @@ const App = () => {
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisTimeVaryingCovariates" element={(<LayoutMain><SurvivalAnalysisTimeVaryingCovariates/></LayoutMain>)}/>
+                        <Route exact path="/slowwave_spindle" element={(<LayoutMain><SlowwaveSpindleFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
