@@ -19,7 +19,7 @@ import qs from "qs";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
 
-class CoxRegression extends React.Component {
+class SurvivalAnalysisCoxRegression extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -585,4 +585,4 @@ class CoxRegression extends React.Component {
         )
     }
 }
-export default CoxRegression;
+export default SurvivalAnalysisCoxRegression;
