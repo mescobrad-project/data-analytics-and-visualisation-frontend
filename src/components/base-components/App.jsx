@@ -84,7 +84,7 @@ import Ancova from "../../pages/hypothesis_testing/Ancova"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
 import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
-
+import PrincipalComponentAnalysis from "../../pages/hypothesis_testing/PrincipalComponentAnalysis"
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
 let secondColor = '#FFFFFF'
@@ -196,6 +196,7 @@ const App = () => {
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisTimeVaryingCovariates" element={(<LayoutMain><SurvivalAnalysisTimeVaryingCovariates/></LayoutMain>)}/>
+                        <Route exact path="/PrincipalComponentAnalysis" element={(<LayoutMain><PrincipalComponentAnalysis/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
