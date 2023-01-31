@@ -72,6 +72,9 @@ import MRIViewer from "./MRIViewer";
 import Biweight_midcorrelation from "../../pages/hypothesis_testing/Biweight_midcorrelation";
 import Percentage_bend_correlation from "../../pages/hypothesis_testing/Percentage_bend_correlation";
 import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_correlation";
+import LinearSVRRegressionFunctionPage from "./LinearSVRRegressionFunctionPage";
+import LinearSVCRegressionFunctionPage from "./LinearSVCRegressionFunctionPage";
+import LogisticRegressionPinguinFunctionPage from "./LogisticRegressionPinguinFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -173,6 +176,9 @@ const App = () => {
                         <Route exact path="/RidgeRegression" element={(<LayoutMain><RidgeRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SGDRegression" element={(<LayoutMain><SGDRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LinearSVR" element={(<LayoutMain><LinearSVRRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LinearSVC" element={(<LayoutMain><LinearSVCRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LogisticRegressionPinguin" element={(<LayoutMain><LogisticRegressionPinguinFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

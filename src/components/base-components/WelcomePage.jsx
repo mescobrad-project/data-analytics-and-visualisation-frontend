@@ -666,72 +666,123 @@ function WelcomePage() {
                                 Linear Regression
                             {/*</ListItemButton>*/}
                         </Button>
-                        {/*<Button*/}
-                        {/*        // component={Link}*/}
-                        {/*        // variant="h6"*/}
-                        {/*        // href="/ElasticNet"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "ElasticNet", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                variant = "contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "ElasticNet", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
-                        {/*>*/}
-                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                        {/*        Elastic Net*/}
-                        {/*    /!*</ListItemButton>*!/*/}
-                        {/*</Button>*/}
-                        {/*<Button*/}
-                        {/*        // component={Link}*/}
-                        {/*        // variant="h6"*/}
-                        {/*        // href="/LassoRegression"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "LassoRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            ElasticNet
+                            {/*</ListItemButton>*/}
+                        </Button>
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
 
-                        {/*>*/}
-                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                        {/*        Lasso Regression*/}
-                        {/*    /!*</ListItemButton>*!/*/}
-                        {/*</Button>*/}
-                        {/*<Button*/}
-                        {/*        // component={Link}*/}
-                        {/*        // variant="h6"*/}
-                        {/*        // href="/RidgeRegression"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "RidgeRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LassoRegression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
-                        {/*>*/}
-                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                        {/*        Ridge Regression*/}
-                        {/*    /!*</ListItemButton>*!/*/}
-                        {/*</Button>*/}
-                        {/*<Button*/}
-                        {/*        // component={Link}*/}
-                        {/*        // variant="h6"*/}
-                        {/*        // href="/SGDRegression"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "SGDRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            Lasso Regression
+                            {/*</ListItemButton>*/}
+                        </Button>
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                variant = "contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "RidgeRegression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
-                        {/*>*/}
-                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                        {/*        SGD Regression*/}
-                        {/*    /!*</ListItemButton>*!/*/}
-                        {/*</Button>*/}
-                        {/*<Button*/}
-                        {/*        // component={Link}*/}
-                        {/*        // variant="h6"*/}
-                        {/*        // href="/HuberRegression"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "HuberRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            Ridge Regression
+                            {/*</ListItemButton>*/}
+                        </Button>
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "SGDRegression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
-                        {/*>*/}
-                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                        {/*        Huber Regression*/}
-                        {/*    /!*</ListItemButton>*!/*/}
-                        {/*</Button>*/}
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            SGD Regression
+                            {/*</ListItemButton>*/}
+                        </Button>
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                variant = "contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "HuberRegression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            Huber Regression
+                            {/*</ListItemButton>*/}
+                        </Button>
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LinearSVR", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            LinearSVR Regression
+                            {/*</ListItemButton>*/}
+                        </Button>
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                variant = "contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LinearSVCRegression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            LinearSVC Regression
+                            {/*</ListItemButton>*/}
+                        </Button>
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LogisticRegressionPinguin", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            Logistic Regression Pinguin
+                            {/*</ListItemButton>*/}
+                        </Button>
 
                         {/*<p>calculate_SpO2 from eeg_router</p>*/}
 

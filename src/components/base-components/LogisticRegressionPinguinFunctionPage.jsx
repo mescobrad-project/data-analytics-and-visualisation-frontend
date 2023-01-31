@@ -24,7 +24,7 @@ import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
 
-class ElasticNetFunctionPage extends React.Component {
+class LogisticRegressionPinguinFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -34,8 +34,6 @@ class ElasticNetFunctionPage extends React.Component {
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_alpha: "1",
-            selected_l1_ratio: "0.5",
-            selected_max_iter: "1000",
             selected_independent_variables: [],
 
             coefficients: "",
@@ -60,8 +58,8 @@ class ElasticNetFunctionPage extends React.Component {
             selected_y_axis: "",
 
             // Hide/show results
-            ElasticNet_show : false,
-            ElasticNet_step2_show: false
+            LogisticRegressionPinguin_show : false,
+            LogisticRegressionPinguin_step2_show: false
 
 
         };
@@ -69,8 +67,6 @@ class ElasticNetFunctionPage extends React.Component {
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
-        this.handleSelectL1RatioChange = this.handleSelectL1RatioChange.bind(this);
-        this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
@@ -109,20 +105,18 @@ class ElasticNetFunctionPage extends React.Component {
         //     to_send_shrinkage_3 = parseFloat(this.state.selected_shrinkage_3)
         // }
 
-        this.setState({ElasticNet_show: false})
+        this.setState({LogisticRegressionPinguin_show: false})
 
 
 
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("elastic_net", {
+        API.get("logistic_regressor_pinguin", {
             params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 dependent_variable: this.state.selected_dependent_variable,
                 alpha: this.state.selected_alpha,
-                l1_ratio: this.state.selected_l1_ratio,
-                max_iter: this.state.max_iter,
                 independent_variables: this.state.selected_independent_variables},
             paramsSerializer : params => {
                 return qs.stringify(params, { arrayFormat: "repeat" })
@@ -156,7 +150,7 @@ class ElasticNetFunctionPage extends React.Component {
             this.setState({values_dict: resultJson['values_dict']})
             this.setState({values_columns: resultJson['values_columns']})
 
-            this.setState({ElasticNet_show: true})
+            this.setState({LogisticRegressionPinguin_show: true})
 
 
 
@@ -198,7 +192,7 @@ class ElasticNetFunctionPage extends React.Component {
         console.log(temp_array)
         this.setState({scatter_chart_data: temp_array})
 
-        this.setState({ElasticNet_step2_show: true})
+        this.setState({LogisticRegressionPinguin_step2_show: true})
 
     }
 
@@ -226,12 +220,7 @@ class ElasticNetFunctionPage extends React.Component {
     handleSelectAlphaChange(event){
         this.setState({selected_alpha: event.target.value})
     }
-    handleSelectL1RatioChange(event){
-        this.setState({selected_l1_ratio: event.target.value})
-    }
-    handleSelectMaxIterChange(event){
-        this.setState({selected_max_iter: event.target.value})
-    }
+
 
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
@@ -257,7 +246,7 @@ class ElasticNetFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            ElasticNet Parameterisation
+                            LogisticRegressionPinguin Parameterisation
                         </Typography>
                         <hr/>
                         <Grid container justifyContent = "center">
@@ -329,26 +318,7 @@ class ElasticNetFunctionPage extends React.Component {
                                 />
                                 <FormHelperText>Alpha</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelId="l1-ratio-label"
-                                        id="l1-ratio-selector"
-                                        value= {this.state.selected_l1_ratio}
-                                        label="l1-ratio"
-                                        onChange={this.handleSelectL1RatioChange}
-                                />
-                                <FormHelperText>l1-ratio</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelId="max-iter-label"
-                                        id="max-iter-selector"
-                                        value= {this.state.selected_max_iter}
-                                        label="max-iter"
-                                        onChange={this.handleSelectMaxIterChange}
-                                />
-                                <FormHelperText>Max Iterations</FormHelperText>
-                            </FormControl>
+
 
 
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
@@ -366,8 +336,8 @@ class ElasticNetFunctionPage extends React.Component {
                         </form>
                         <br/>
                         <br/>
-                        <div  style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}>
-                            <hr style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}/>
+                        <div  style={{display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none')}}>
+                            <hr style={{display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none')}}/>
                             <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                 Available Variables
                             </Typography>
@@ -412,73 +382,29 @@ class ElasticNetFunctionPage extends React.Component {
                                     Submit
                                 </Button>
                             </form>
-                            <div style={{ display: (this.state.ElasticNet_step2_show ? 'block' : 'none') }}>
+                            <div style={{ display: (this.state.LogisticRegressionPinguin_step2_show ? 'block' : 'none') }}>
                                 <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
                             </div>
                         </div>
                     </Grid>
                     <Grid  item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            ElasticNet Result
+                            LogisticRegressionPinguin Result
                         </Typography>
                         <hr/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
                         {/*    Welch Results*/}
                         {/*</Typography>*/}
 
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
-                        <hr style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}/>
+                        {/*<div style={{ display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
+                        {/*<div style={{ display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
+                        {/*<div style={{ display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
+                        <hr style={{ display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none') }}/>
                         <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
-                        <div style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}>
-                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Intercept:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Skew:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Kurtosis:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Omnibus test statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Durbin Watson:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                        <hr/>
-                            <div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
-                        </div>
                     </Grid>
                 </Grid>
         )
     }
 }
 
-export default ElasticNetFunctionPage;
+export default LogisticRegressionPinguinFunctionPage;
