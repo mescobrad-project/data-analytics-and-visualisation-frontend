@@ -33,7 +33,7 @@ class LogisticRegressionPinguinFunctionPage extends React.Component {
 
             //Values selected currently on the form
             selected_dependent_variable: "",
-            selected_alpha: "1",
+            selected_alpha: "0.05",
             selected_independent_variables: [],
 
             coefficients: "",
@@ -336,56 +336,56 @@ class LogisticRegressionPinguinFunctionPage extends React.Component {
                         </form>
                         <br/>
                         <br/>
-                        <div  style={{display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none')}}>
-                            <hr style={{display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none')}}/>
-                            <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                Available Variables
-                            </Typography>
-                            <form onSubmit={this.handleScatter}>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="x-axis-selector-label">Select X-axis</InputLabel>
-                                    <Select
-                                            labelId="x-axis-selector-label"
-                                            id="x-axis-selector"
-                                            value= {this.state.selected_x_axis}
-                                            label="x-axis"
-                                            onChange={this.handleSelectXAxisnChange}
-                                    >
+                        {/*<div  style={{display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none')}}>*/}
+                        {/*    <hr style={{display: (this.state.LogisticRegressionPinguin_show ? 'block' : 'none')}}/>*/}
+                        {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                        {/*        Available Variables*/}
+                        {/*    </Typography>*/}
+                        {/*    <form onSubmit={this.handleScatter}>*/}
+                        {/*        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                        {/*            <InputLabel id="x-axis-selector-label">Select X-axis</InputLabel>*/}
+                        {/*            <Select*/}
+                        {/*                    labelId="x-axis-selector-label"*/}
+                        {/*                    id="x-axis-selector"*/}
+                        {/*                    value= {this.state.selected_x_axis}*/}
+                        {/*                    label="x-axis"*/}
+                        {/*                    onChange={this.handleSelectXAxisnChange}*/}
+                        {/*            >*/}
 
-                                        {this.state.values_columns.map((column) => (
-                                                <MenuItem value={column}>
-                                                    {column}
-                                                </MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Select Variable for X axis of scatterplot</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="y-axis-selector-label">Select Y-axis</InputLabel>
-                                    <Select
-                                            labelId="y-axis-selector-label"
-                                            id="y-axis-selector"
-                                            value= {this.state.selected_y_axis}
-                                            label="y-axis"
-                                            onChange={this.handleSelectYAxisnChange}
-                                    >
+                        {/*                {this.state.values_columns.map((column) => (*/}
+                        {/*                        <MenuItem value={column}>*/}
+                        {/*                            {column}*/}
+                        {/*                        </MenuItem>*/}
+                        {/*                ))}*/}
+                        {/*            </Select>*/}
+                        {/*            <FormHelperText>Select Variable for X axis of scatterplot</FormHelperText>*/}
+                        {/*        </FormControl>*/}
+                        {/*        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                        {/*            <InputLabel id="y-axis-selector-label">Select Y-axis</InputLabel>*/}
+                        {/*            <Select*/}
+                        {/*                    labelId="y-axis-selector-label"*/}
+                        {/*                    id="y-axis-selector"*/}
+                        {/*                    value= {this.state.selected_y_axis}*/}
+                        {/*                    label="y-axis"*/}
+                        {/*                    onChange={this.handleSelectYAxisnChange}*/}
+                        {/*            >*/}
 
-                                        {this.state.values_columns.map((column) => (
-                                                <MenuItem value={column}>
-                                                    {column}
-                                                </MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Select Variable for Y axis of scatterplot</FormHelperText>
-                                </FormControl>
-                                <Button variant="contained" color="primary" type="submit">
-                                    Submit
-                                </Button>
-                            </form>
-                            <div style={{ display: (this.state.LogisticRegressionPinguin_step2_show ? 'block' : 'none') }}>
-                                <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
-                            </div>
-                        </div>
+                        {/*                {this.state.values_columns.map((column) => (*/}
+                        {/*                        <MenuItem value={column}>*/}
+                        {/*                            {column}*/}
+                        {/*                        </MenuItem>*/}
+                        {/*                ))}*/}
+                        {/*            </Select>*/}
+                        {/*            <FormHelperText>Select Variable for Y axis of scatterplot</FormHelperText>*/}
+                        {/*        </FormControl>*/}
+                        {/*        <Button variant="contained" color="primary" type="submit">*/}
+                        {/*            Submit*/}
+                        {/*        </Button>*/}
+                        {/*    </form>*/}
+                        {/*    <div style={{ display: (this.state.LogisticRegressionPinguin_step2_show ? 'block' : 'none') }}>*/}
+                        {/*        <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </Grid>
                     <Grid  item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

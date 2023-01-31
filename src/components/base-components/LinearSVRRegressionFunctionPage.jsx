@@ -266,7 +266,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            LinearSVRRegression Parameterisation
+                            LinearSVR Parameterisation
                         </Typography>
                         <hr/>
                         <Grid container justifyContent = "center">
@@ -453,7 +453,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                     </Grid>
                     <Grid  item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            LinearSVRRegression Result
+                            LinearSVR Result
                         </Typography>
                         <hr/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}

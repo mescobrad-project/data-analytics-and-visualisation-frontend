@@ -75,6 +75,8 @@ import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_
 import LinearSVRRegressionFunctionPage from "./LinearSVRRegressionFunctionPage";
 import LinearSVCRegressionFunctionPage from "./LinearSVCRegressionFunctionPage";
 import LogisticRegressionPinguinFunctionPage from "./LogisticRegressionPinguinFunctionPage";
+import LogisticRegressionStatsmodelsFunctionPage from "./LogisticRegressionStatsmodelsFunctionPage";
+import LogisticRegressionSklearnFunctionPage from "./LogisticRegressionSklearnFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -175,10 +177,12 @@ const App = () => {
                         <Route exact path="/LassoRegression" element={(<LayoutMain><LassoRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/RidgeRegression" element={(<LayoutMain><RidgeRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SGDRegression" element={(<LayoutMain><SGDRegressionFunctionPage/></LayoutMain>)}/>
-                        <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/LinearSVR" element={(<LayoutMain><LinearSVRRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/LinearSVC" element={(<LayoutMain><LinearSVCRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/LogisticRegressionPinguin" element={(<LayoutMain><LogisticRegressionPinguinFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LogisticRegressionStatsmodels" element={(<LayoutMain><LogisticRegressionStatsmodelsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LogisticRegressionSklearn" element={(<LayoutMain><LogisticRegressionSklearnFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
