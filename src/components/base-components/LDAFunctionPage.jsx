@@ -1,4 +1,6 @@
-import React from 'react';
+// import React from 'react';
+import * as React from 'react';
+import '../../pages/hypothesis_testing/normality_tests.scss'
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
@@ -11,17 +13,67 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, TextareaAutosize, TextField, Typography
+    Select,
+    Tab,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tabs,
+    TextareaAutosize,
+    TextField,
+    Typography
 } from "@mui/material";
 
 import qs from "qs";
+import {Box} from "@mui/system";
+import Paper from "@mui/material/Paper";
+import InnerHTML from "dangerously-set-html-content";
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
 
 class LDAFunctionPage extends React.Component {
+
     constructor(props){
         super(props);
         this.state = {
             // List of columns sent by the backend
             columns: [],
+            initialdataset:[],
             binary_columns: [],
             //Values selected currently on the form
             selected_dependent_variable: "",
@@ -37,7 +89,8 @@ class LDAFunctionPage extends React.Component {
                 dataframe: ""
             },
             // Hide/show results
-            LDA_show : false
+            LDA_show : false,
+            tabvalue : 0
         };
 
         //Binding functions of the class
@@ -45,18 +98,18 @@ class LDAFunctionPage extends React.Component {
         this.handleSelectSolverChange = this.handleSelectSolverChange.bind(this);
         this.handleSelectShrinkage1Change = this.handleSelectShrinkage1Change.bind(this);
         this.handleSelectShrinkage2Change = this.handleSelectShrinkage2Change.bind(this);
-        // this.handleSelectShrinkage3Change = this.handleSelectShrinkage3Change.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
+        // this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.debug = this.debug.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchColumnNames();
-        this.fetchBinaryColumnNames();
+        // this.fetchBinaryColumnNames();
     }
 
     debug = () => {
@@ -87,6 +140,7 @@ class LDAFunctionPage extends React.Component {
         }).then(res => {
             this.setState({test_data: res.data})
             this.setState({LDA_show: true})
+            this.setState({tabvalue:0})
         });
     }
 
@@ -101,22 +155,24 @@ class LDAFunctionPage extends React.Component {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
-                        console.log(res.data.columns)
-            this.setState({columns: res.data.columns})
+                        this.setState({columns: res.data.columns})
+                        this.setState({initialdataset: res.data.dataFrame})
+                        this.setState({tabvalue:1})
+            console.log(res.data.dataFrame)
         });
     }
 
-    async fetchBinaryColumnNames(url, config) {
-        const params = new URLSearchParams(window.location.search);
-        API.get("return_binary_columns",
-                {params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
-                    }}).then(res => {
-            console.log(res.data.columns)
-            this.setState({binary_columns: res.data.columns})
-        });
-    }
+    // async fetchBinaryColumnNames(url, config) {
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.get("return_binary_columns",
+    //             {params: {
+    //                     workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+    //                     step_id: params.get("step_id")
+    //                 }}).then(res => {
+    //         console.log(res.data.columns)
+    //         this.setState({binary_columns: res.data.columns})
+    //     });
+    // }
 
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
@@ -158,7 +214,9 @@ class LDAFunctionPage extends React.Component {
     selectAll(){
         this.setState({selected_independent_variables: this.state.columns})
     }
-
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
     render() {
         return (
                 <Grid container direction="row">
@@ -282,16 +340,57 @@ class LDAFunctionPage extends React.Component {
                             LDA Result
                         </Typography>
                         <hr/>
-                        <Grid container direction="row">
-                            <Grid sx={{ flexGrow: 1, textAlign: "center" }} >
-                                <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>
-                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
-                                        Coefficients and Intercept term
-                                    </Typography>
-                                    <div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />
-                                </div>
-                            </Grid>
-                        </Grid>
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Results" {...a11yProps(0)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    <Tab label="New Dataset" {...a11yProps(2)} />
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={this.state.tabvalue} index={0}>
+                                <Grid container direction="row">
+                                    <Grid sx={{ flexGrow: 1, textAlign: "center" }} >
+                                        <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>
+                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                Coefficients and Intercept term
+                                            </Typography>
+                                            <div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />
+                                        </div>
+                                    </Grid>
+                                </Grid>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={1}>
+                                <InnerHTML html={this.state.initialdataset} style={{fontSize:'11px', wordWrap: 'break-word'}}/>
+                                {/*<TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}}>*/}
+                                {/*    <Table>*/}
+                                {/*        <TableHead>*/}
+                                {/*            <TableRow sx={{alignContent:"right"}}>*/}
+                                {/*                <TableCell className="tableHeadCell" sx={{width:'30%'}}></TableCell>*/}
+                                {/*                {*/}
+                                {/*                    this.state.columns.map((item)=>{*/}
+                                {/*                        return (*/}
+                                {/*                                <TableCell className="tableHeadCell">{item}</TableCell>*/}
+                                {/*                        )})}*/}
+                                {/*            </TableRow>*/}
+                                {/*        </TableHead>*/}
+                                {/*        <TableBody>*/}
+                                {/*            <TableRow>*/}
+                                {/*                {this.state.initialdataset.map((index, item)=> {*/}
+                                {/*                    return (*/}
+                                {/*                            <TableCell className="tableCell">{item}</TableCell>*/}
+                                {/*                    );*/}
+                                {/*                })}*/}
+                                {/*            </TableRow>*/}
+                                {/*        </TableBody>*/}
+                                {/*    </Table>*/}
+                                {/*</TableContainer>*/}
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={2}>
+                                Item Three
+                            </TabPanel>
+                        </Box>
+
                     </Grid>
                 </Grid>
         )
