@@ -84,6 +84,10 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         this.fetchSleepStabilityExtraction = this.fetchSleepStabilityExtraction.bind(this);
         this.fetchBandPower = this.fetchBandPower.bind(this);
         this.fetchSpectogram = this.fetchSpectogram.bind(this);
+        this.fetchSpindles = this.fetchSpindles.bind(this);
+        this.fetchSlowwave = this.fetchSlowwave.bind(this);
+        this.fetchPAC = this.fetchPAC.bind(this);
+        this.fetchPACExtra = this.fetchPACExtra.bind(this);
 
         this.fetchChannels()
     }
@@ -99,6 +103,10 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         await this.fetchSleepStabilityExtraction();
         await this.fetchBandPower();
         await this.fetchSpectogram();
+        await this.fetchSpindles();
+        await this.fetchSlowwave();
+        await this.fetchPAC();
+        await this.fetchPACExtra();
 
         this.setState({results_show: true})
 
@@ -198,6 +206,74 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         });
     }
 
+
+    async fetchSpindles() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("/spindles_detect_two_dataframes", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                // name: this.state.selected_channel,
+                // sampling_frequency: 1/30,
+            }
+        }).then(res => {
+            console.log("SPINDLES")
+            console.log(res.data)
+            this.setState({result_spindles: res.data})
+        });
+    }
+
+    async fetchSlowwave() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("/sw_detect_two_dataframes", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                // name: this.state.selected_channel,
+                // sampling_frequency: 1/30,
+            }
+        }).then(res => {
+            console.log("Slowwave")
+            console.log(res.data)
+            this.setState({result_slowwave: res.data})
+        });
+    }
+
+    async fetchPAC() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("/PAC_values", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                // name: this.state.selected_channel,
+                // sampling_frequency: 1/30,
+            }
+        }).then(res => {
+            console.log("PAC")
+            console.log(res.data)
+            this.setState({result_pac: res.data})
+        });
+    }
+
+    async fetchPACExtra() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("/extra_PAC_values", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                // name: this.state.selected_channel,
+                // sampling_frequency: 1/30,
+            }
+        }).then(res => {
+            console.log("EXTRA_PAC")
+            console.log(res.data)
+            this.setState({result_extra_pac: res.data})
+        });
+    }
 
     async fetchChannels() {
         const params = new URLSearchParams(window.location.search);
