@@ -15,22 +15,14 @@ import {
     MenuItem,
     Select,
     Tab,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Tabs,
-    TextareaAutosize,
     TextField,
     Typography
 } from "@mui/material";
 
 import qs from "qs";
 import {Box} from "@mui/system";
-import Paper from "@mui/material/Paper";
-import InnerHTML from "dangerously-set-html-content";
+import JsonTable from "ts-react-json-table";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -74,7 +66,7 @@ class LDAFunctionPage extends React.Component {
             // List of columns sent by the backend
             columns: [],
             initialdataset:[],
-            binary_columns: [],
+            result_coefficients:[],
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_solver: "svd",
@@ -100,7 +92,6 @@ class LDAFunctionPage extends React.Component {
         this.handleSelectShrinkage2Change = this.handleSelectShrinkage2Change.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        // this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -109,9 +100,7 @@ class LDAFunctionPage extends React.Component {
         // Initialise component
         // - values of channels from the backend
         this.fetchColumnNames();
-        // this.fetchBinaryColumnNames();
     }
-
     debug = () => {
         console.log("DEBUG")
         console.log(this.state)
@@ -139,6 +128,7 @@ class LDAFunctionPage extends React.Component {
                 }
         }).then(res => {
             this.setState({test_data: res.data})
+            this.setState({result_coefficients: JSON.parse(res.data.coefficients)})
             this.setState({LDA_show: true})
             this.setState({tabvalue:0})
         });
@@ -156,23 +146,10 @@ class LDAFunctionPage extends React.Component {
                         step_id: params.get("step_id")
                     }}).then(res => {
                         this.setState({columns: res.data.columns})
-                        this.setState({initialdataset: res.data.dataFrame})
+                        this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
                         this.setState({tabvalue:1})
-            console.log(res.data.dataFrame)
         });
     }
-
-    // async fetchBinaryColumnNames(url, config) {
-    //     const params = new URLSearchParams(window.location.search);
-    //     API.get("return_binary_columns",
-    //             {params: {
-    //                     workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-    //                     step_id: params.get("step_id")
-    //                 }}).then(res => {
-    //         console.log(res.data.columns)
-    //         this.setState({binary_columns: res.data.columns})
-    //     });
-    // }
 
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
@@ -235,7 +212,6 @@ class LDAFunctionPage extends React.Component {
                                                     primaryTypographyProps={{fontSize: '10px'}}
                                                     primary={'•  ' + column}
                                             />
-
                                         </ListItem>
                                 ))}
                             </List>
@@ -350,41 +326,19 @@ class LDAFunctionPage extends React.Component {
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
                                 <Grid container direction="row">
-                                    <Grid sx={{ flexGrow: 1, textAlign: "center" }} >
-                                        <div style={{ display: (this.state.LDA_show ? 'block' : 'none') }}>
+                                    <Grid sx={{ flexGrow: 1, textAlign: "center"}} >
+                                        <div style={{ display: (this.state.LDA_show ? 'block' : 'none')}}>
                                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
                                                 Coefficients and Intercept term
                                             </Typography>
-                                            <div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.result_coefficients}/>
+                                            {/*<div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />*/}
                                         </div>
                                     </Grid>
                                 </Grid>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <InnerHTML html={this.state.initialdataset} style={{fontSize:'11px', wordWrap: 'break-word'}}/>
-                                {/*<TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}}>*/}
-                                {/*    <Table>*/}
-                                {/*        <TableHead>*/}
-                                {/*            <TableRow sx={{alignContent:"right"}}>*/}
-                                {/*                <TableCell className="tableHeadCell" sx={{width:'30%'}}></TableCell>*/}
-                                {/*                {*/}
-                                {/*                    this.state.columns.map((item)=>{*/}
-                                {/*                        return (*/}
-                                {/*                                <TableCell className="tableHeadCell">{item}</TableCell>*/}
-                                {/*                        )})}*/}
-                                {/*            </TableRow>*/}
-                                {/*        </TableHead>*/}
-                                {/*        <TableBody>*/}
-                                {/*            <TableRow>*/}
-                                {/*                {this.state.initialdataset.map((index, item)=> {*/}
-                                {/*                    return (*/}
-                                {/*                            <TableCell className="tableCell">{item}</TableCell>*/}
-                                {/*                    );*/}
-                                {/*                })}*/}
-                                {/*            </TableRow>*/}
-                                {/*        </TableBody>*/}
-                                {/*    </Table>*/}
-                                {/*</TableContainer>*/}
+                                <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
                                 Item Three
