@@ -87,3 +87,32 @@ hr.result{
         }
     }
 }
+.jsonResultsTable{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    width:80%;
+    text-align: center;
+    th, thead {
+        font-size:14px;
+        font-weight: bold;
+        padding: 5px;
+        border-top: 1px solid lightgray;
+        border-bottom: 1px solid lightgray;
+        //border-inline-end: 1px solid lightgray;
+    }
+    td, tbody
+    {
+        border-bottom: 1px solid lightgray;
+        font-size:12px;
+            //border-bottom: 1px solid lightgray;
+    }
+    th:nth-child(1), td:nth-child(1) {
+        /* your stuff here */
+    border-left: 1px solid lightgray;
+    }
+    th:nth-child(n), td:nth-child(n) {
+        /* your stuff here */
+        border-right: 1px solid lightgray;
+    }
+}
