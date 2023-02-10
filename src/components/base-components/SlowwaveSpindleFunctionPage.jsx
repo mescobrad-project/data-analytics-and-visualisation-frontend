@@ -70,6 +70,22 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                 "figure": {"figure": []}
             },
 
+            result_spindles : {
+                "data_frame_1" : null,
+                "data_frame_2" : null,
+            },
+            result_slowwave : {
+                "data_frame_1" : null,
+                "data_frame_2" : null,
+                "circular_mean" : null,
+                "vector_length" : null,
+            },
+            result_pac : {
+
+            },
+            result_pac_extra : {
+
+            },
             //Values selected currently on the form
             selected_channel: "",
 
@@ -221,6 +237,8 @@ class SlowwaveSpindleFunctionPage extends React.Component {
             console.log("SPINDLES")
             console.log(res.data)
             this.setState({result_spindles: res.data})
+            console.log( JSON.parse(res.data["data_frame_1"]))
+
         });
     }
 
@@ -237,7 +255,10 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         }).then(res => {
             console.log("Slowwave")
             console.log(res.data)
+            console.log( JSON.parse(res.data["data_frame_1"]))
+
             this.setState({result_slowwave: res.data})
+
         });
     }
 
@@ -622,7 +643,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             <Grid item xs={6}
                                   style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                    Spectogram
+                                    Spectogram Results
                                 </Typography>
                                 <img
                                         src={`http://localhost:8000/static/spectrogram.png?w=164&h=164&fit=crop&auto=format`}
@@ -635,8 +656,153 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                 <hr className="result"/>
                             </Grid>
                             <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
-
-
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Slowwaves Results
+                            </Typography>
+                            <TableContainer component={Paper} className="ExtremeValues" sx={{width: '90%'}}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow sx={{alignContent: "right"}}>
+                                            <TableCell className="tableHeadCell">Start</TableCell>
+                                            <TableCell className="tableHeadCell">NegPeak</TableCell>
+                                            <TableCell className="tableHeadCell">MidCrossing</TableCell>
+                                            <TableCell className="tableHeadCell">PosPeak</TableCell>
+                                            <TableCell className="tableHeadCell">End</TableCell>
+                                            <TableCell className="tableHeadCell">Duration</TableCell>
+                                            <TableCell className="tableHeadCell">ValNegPeak</TableCell>
+                                            <TableCell className="tableHeadCell">ValPosPeak</TableCell>
+                                            <TableCell className="tableHeadCell">PTP</TableCell>
+                                            <TableCell className="tableHeadCell">Slope</TableCell>
+                                            <TableCell className="tableHeadCell">Frequency</TableCell>
+                                            <TableCell className="tableHeadCell">SigmaPeak</TableCell>
+                                            <TableCell className="tableHeadCell">PhaseAtSigmaPeak</TableCell>
+                                            <TableCell className="tableHeadCell">ndPAC</TableCell>
+                                            <TableCell className="tableHeadCell">Stage</TableCell>
+                                            <TableCell className="tableHeadCell">Channel</TableCell>
+                                            <TableCell className="tableHeadCell">IdxChannel</TableCell>
+                                            <TableCell className="tableHeadCell">index</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        { (  this.state.result_slowwave["data_frame_1"] ? JSON.parse(this.state.result_slowwave["data_frame_1"])["data"] : []).map((item) => {
+                                            return (
+                                                    <TableRow>
+                                                        <TableCell
+                                                                className="tableCell"> {  item[0] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[1] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[2] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[3] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> {  item[4] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[5] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[6] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[7] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[8] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[9] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[10] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[11] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[12] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[13] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[14] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[15] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[16] } </TableCell>
+                                                        <TableCell
+                                                                className="tableCell"> { item[17] } </TableCell>
+                                                    </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Circular Mean: { this.state.result_sleep_stability_extraction["circular_mean"]}</Typography>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Vector Length: { this.state.result_sleep_stability_extraction["vector_length"]}</Typography>
+                            <Grid item xs={6}
+                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
+                                <img
+                                        src={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format`}
+                                        srcSet={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                        // alt={item.title}
+                                        loading="lazy"
+                                />
+                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
+                                {/*           style={{zoom: '50%'}}/>*/}
+                                <hr className="result"/>
+                            </Grid>
+                            <Grid item xs={6}
+                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
+                                <img
+                                        src={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format`}
+                                        srcSet={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                        // alt={item.title}
+                                        loading="lazy"
+                                />
+                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
+                                {/*           style={{zoom: '50%'}}/>*/}
+                                <hr className="result"/>
+                            </Grid>
+                            <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Spindles Results
+                            </Typography>
+                            <Grid item xs={6}
+                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
+                                <img
+                                        src={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format`}
+                                        srcSet={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                        // alt={item.title}
+                                        loading="lazy"
+                                />
+                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
+                                {/*           style={{zoom: '50%'}}/>*/}
+                                <hr className="result"/>
+                            </Grid>
+                            <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                PAC Values Results
+                            </Typography>
+                            <Grid item xs={12}
+                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
+                                <img
+                                        src={`http://localhost:8000/static/pac_values.png?w=164&h=164&fit=crop&auto=format`}
+                                        srcSet={`http://localhost:8000/static/pac_values.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                        // alt={item.title}
+                                        loading="lazy"
+                                />
+                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
+                                {/*           style={{zoom: '50%'}}/>*/}
+                                <hr className="result"/>
+                            </Grid>
+                            <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                PAC Extra Results
+                            </Typography>
+                            <Grid item xs={12}
+                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
+                                <img
+                                        src={`http://localhost:8000/static/extra_pac_values.png?w=164&h=164&fit=crop&auto=format`}
+                                        srcSet={`http://localhost:8000/static/extra_pac_values.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                        // alt={item.title}
+                                        loading="lazy"
+                                />
+                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
+                                {/*           style={{zoom: '50%'}}/>*/}
+                                <hr className="result"/>
+                            </Grid>
                         </Grid>
                         {/*<NewWindow>*/}
                         {/*    <EEGSelector/>*/}
