@@ -1,8 +1,8 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button,
-    FormControl,
+    Button, Checkbox,
+    FormControl, FormControlLabel,
     FormHelperText,
     Grid,
     InputLabel,
@@ -68,26 +68,30 @@ class PointBiserialCorrelation extends React.Component {
             column_names: [],
             binary_columns: [],
             initialdataset:[],
+            outputdataset:[],
+            outliers_dataset_A:[],
             test_data: {
                 status: '',
                 error_descr: '',
                 scatter_plot: '',
                 html_box_1: '',
+                outliersA: [],
                 html_box_2: '',
                 html_hist_1: '',
                 html_hist_2: '',
                 correlation: '',
-                p_value: ''
+                p_value: '',
+                new_dataset:[]
             },
             //Values selected currently on the form
             selected_column: "",
             selected_column2: "",
-
+            // remove_outliers: true
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
-
+        // this.handleOutliersRemovalChange = this.handleOutliersRemovalChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectColumnChange1 = this.handleSelectColumnChange1.bind(this);
         this.handleSelectColumnChange2 = this.handleSelectColumnChange2.bind(this);
@@ -113,7 +117,7 @@ class PointBiserialCorrelation extends React.Component {
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
+            this.setState({tabvalue:0})
                     });
     }
 
@@ -129,11 +133,15 @@ class PointBiserialCorrelation extends React.Component {
                 {
                     params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        column_1: this.state.selected_column, column_2: this.state.selected_column2}
+                        column_1: this.state.selected_column, column_2: this.state.selected_column2,
+                        // remove_outliers:this.state.remove_outliers
+                    }
                 }
         ).then(res => {
             this.setState({test_data: res.data})
-            this.setState({tabvalue:0})
+            this.setState({outputdataset: JSON.parse(res.data.new_dataset)})
+            this.setState({outliers_dataset_A: JSON.parse(res.data.outliersA)})
+            this.setState({tabvalue:1})
         });
     }
 
@@ -161,20 +169,13 @@ class PointBiserialCorrelation extends React.Component {
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
+    // handleOutliersRemovalChange(event){
+    //     this.setState( {remove_outliers: event.target.checked})
+    // }
+
     render() {
         return (
                 <Grid container direction="row">
-                    {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
-                    {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
-                    {/*        Data Preview*/}
-                    {/*    </Typography>*/}
-                    {/*    <hr/>*/}
-                    {/*    <List>*/}
-                    {/*        {this.state.column_names.map((column) => (*/}
-                    {/*                <ListItem> <ListItemText primary={column}/></ListItem>*/}
-                    {/*        ))}*/}
-                    {/*    </List>*/}
-                    {/*</Grid>*/}
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Select columns
@@ -217,8 +218,25 @@ class PointBiserialCorrelation extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Second column for correlation</FormHelperText>
                             </FormControl>
+                            {/*<FormControlLabel sx={{m: 1, minWidth: 120}}*/}
+                            {/*        control={*/}
+                            {/*    <Checkbox*/}
+                            {/*            checked={this.state.remove_outliers}*/}
+                            {/*            onChange={this.handleOutliersRemovalChange}*/}
+                            {/*            inputProps={{ 'aria-label': 'controlled' }}*/}
+                            {/*    />} label="Remove Outliers" />*/}
+                            <hr/>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
+                            </Button>
+                        </form>
+                        <form onSubmit={async (event) => {
+                            event.preventDefault();
+                            window.location.replace("/")
+                            // Send the request
+                        }}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                                Proceed >
                             </Button>
                         </form>
                     </Grid>
@@ -230,36 +248,59 @@ class PointBiserialCorrelation extends React.Component {
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Results" {...a11yProps(0)} />
-                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
-                                    {/*<Tab label="New Dataset" {...a11yProps(2)} />*/}
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
+                                    <Tab label="New Dataset" {...a11yProps(2)} />
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <p className="result_texts">Point biserial correlation :  { this.state.test_data.correlation}</p>
-                                <p className="result_texts">p-value :    { this.state.test_data.p_value}</p>
-
-                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
-                                        Q-Q Plot of Selected data
-                                    </Typography>
-                                    <div>
-                                        <InnerHTML html={this.state.test_data.scatter_plot} style={{zoom:'50%'}}/>
-                                        <InnerHTML html={this.state.test_data.html_box_1} style={{zoom:'50%'}}/>
-                                        <InnerHTML html={this.state.test_data.html_box_2} style={{zoom:'50%'}}/>
-                                        <InnerHTML html={this.state.test_data.html_hist_1} style={{zoom:'50%'}}/>
-                                        <InnerHTML html={this.state.test_data.html_hist_2} style={{zoom:'50%'}}/>
-                                    </div>
-                                    <hr  class="result" style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
-                                </Grid>
-
-                            </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={1}>
                                 <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
                             </TabPanel>
-                            {/*<TabPanel value={this.state.tabvalue} index={2}>*/}
-                            {/*    Item Three*/}
-                            {/*</TabPanel>*/}
+                            <TabPanel value={this.state.tabvalue} index={1}>
+                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Point biserial correlation :  { this.state.test_data.correlation}</Typography>
+                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >p-value :  { this.state.test_data.p_value}</Typography>
+                                <hr className="result"/>
+                                <Grid>
+                                    <Grid>
+                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                Scatter plot of Selected variable and dichotomous
+                                            </Typography>
+                                            <InnerHTML html={this.state.test_data.scatter_plot} style={{zoom:'70%'}}/>
+                                            <hr className="result"/>
+                                        </Grid>
+                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                Box plot for each category of the dichotomous
+                                            </Typography>
+                                            <InnerHTML html={this.state.test_data.html_box_1} style={{zoom:'70%'}}/>
+                                            <hr  class="result"/>
+                                            <p>{this.state.outliers_dataset_A}</p>
+                                            {/*<JsonTable className="jsonResultsTable" rows = {this.state.outliers_dataset_A}/>*/}
+                                            <hr className="result"/>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                Histogram of category 0 of the dichotomous
+                                            </Typography>
+                                            <InnerHTML html={this.state.test_data.html_hist_1} style={{zoom:'70%'}}/>
+                                            <hr  class="result"/>
+                                        </Grid>
+                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                Histogram of category 1 of the dichotomous
+                                            </Typography>
+                                            <InnerHTML html={this.state.test_data.html_hist_2} style={{zoom:'70%'}}/>
+                                            <hr className="result"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={2}>
+                                <JsonTable className="jsonResultsTable" rows = {this.state.outputdataset}/>
+                            </TabPanel>
                         </Box>
                     </Grid>
                 </Grid>
