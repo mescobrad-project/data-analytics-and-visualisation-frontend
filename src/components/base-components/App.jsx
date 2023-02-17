@@ -91,6 +91,7 @@ import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/Surviv
 import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
 import PrincipalComponentAnalysis from "../../pages/hypothesis_testing/PrincipalComponentAnalysis"
 import SlowwaveSpindleFunctionPage from "./SlowwaveSpindleFunctionPage";
+import TestingPage from "./TestingPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -210,6 +211,7 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisTimeVaryingCovariates" element={(<LayoutMain><SurvivalAnalysisTimeVaryingCovariates/></LayoutMain>)}/>
                         <Route exact path="/PrincipalComponentAnalysis" element={(<LayoutMain><PrincipalComponentAnalysis/></LayoutMain>)}/>
                         <Route exact path="/slowwave_spindle" element={(<LayoutMain><SlowwaveSpindleFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/testing" element={(<LayoutMain><TestingPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
