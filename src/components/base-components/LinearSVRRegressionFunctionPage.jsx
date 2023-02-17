@@ -11,8 +11,9 @@ import {
     ListItem,
     ListItemText,
     MenuItem, Paper,
-    Select, Table, TableCell, TableContainer, TableRow, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
 } from "@mui/material";
+
 
 // Amcharts
 // import * as am5 from "@amcharts/amcharts5";
@@ -23,6 +24,41 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 class LinearSVRRegressionFunctionPage extends React.Component {
     constructor(props){
@@ -30,6 +66,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
         this.state = {
             // List of columns sent by the backend
             columns: [],
+            initialdataset:[],
 
             //Values selected currently on the form
             selected_dependent_variable: "",
@@ -84,6 +121,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchColumnNames();
@@ -143,11 +181,11 @@ class LinearSVRRegressionFunctionPage extends React.Component {
 
             this.setState({coefficients: resultJson['coefficients']})
             this.setState({intercept: resultJson['intercept']})
-            this.setState({dataframe: resultJson['dataframe']})
+            this.setState({dataframe: JSON.parse(resultJson['dataframe'])})
             this.setState({skew: resultJson['skew']})
             this.setState({kurtosis: resultJson['kurtosis']})
             this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
-            this.setState({jarque_bera_p: resultJson['Jarque Bera p-value']})
+            this.setState({jarque_bera_p: resultJson['Jarque-Bera p-value']})
             this.setState({omnibus_test_stat: resultJson['Omnibus test statistic']})
             this.setState({omnibus_test_p: resultJson['Omnibus test p-value']})
             this.setState({durbin_watson: resultJson['Durbin Watson']})
@@ -155,7 +193,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
             this.setState({predicted_values: resultJson['predicted values']})
             this.setState({residuals: resultJson['residuals']})
             this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
-            this.setState({df_scatter: resultJson['values_df']})
+            this.setState({df_scatter: JSON.parse(resultJson['values_df'])})
             this.setState({values_dict: resultJson['values_dict']})
             this.setState({values_columns: resultJson['values_columns']})
 
@@ -219,6 +257,8 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({columns: res.data.columns})
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:1})
         });
     }
 
@@ -258,6 +298,9 @@ class LinearSVRRegressionFunctionPage extends React.Component {
     }
     handleSelectYAxisnChange(event){
         this.setState({selected_y_axis: event.target.value})
+    }
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
     }
 
 
@@ -463,7 +506,8 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
-                        <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
+                        {/*<div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />*/}
+                        <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
                         <hr style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}/>
                         <div style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
                             <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
@@ -486,7 +530,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p)}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><strong>Omnibus test statistic:</strong></TableCell>
@@ -494,7 +538,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p)}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><strong>Durbin Watson:</strong></TableCell>
@@ -507,7 +551,31 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                 </Table>
                             </TableContainer>
                             <hr/>
-                            <div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
+                            <Box sx={{ width: '100%' }}>
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                    <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                        <Tab label="Results" {...a11yProps(0)} />
+                                        <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    </Tabs>
+                                </Box>
+                                <TabPanel value={this.state.tabvalue} index={0}>
+                                    <Grid container direction="row">
+                                        <Grid sx={{ flexGrow: 1, textAlign: "center"}} >
+                                            <div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                    Actual values, predicted values and residuals
+                                                </Typography>
+                                                <JsonTable className="jsonResultsTable" rows = {this.state.df_scatter}/>
+                                                {/*<div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />*/}
+                                            </div>
+                                        </Grid>
+                                    </Grid>
+                                </TabPanel>
+                                <TabPanel value={this.state.tabvalue} index={1}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
+                                </TabPanel>
+                            </Box>
+                            {/*<div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />*/}
                         </div>
                     </Grid>
                 </Grid>
