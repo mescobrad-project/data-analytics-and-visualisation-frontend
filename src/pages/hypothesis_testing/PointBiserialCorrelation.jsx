@@ -10,7 +10,7 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, Tab, Tabs,
+    Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs,
     Typography
 } from "@mui/material";
 import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
@@ -18,6 +18,7 @@ import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
 import InnerHTML from "dangerously-set-html-content";
+import Paper from "@mui/material/Paper";
 
 function CustomToolbar() {
     return (
@@ -69,16 +70,35 @@ class PointBiserialCorrelation extends React.Component {
             binary_columns: [],
             initialdataset:[],
             outputdataset:[],
-            outliers_dataset_A:[],
+            outliers_A:[],
+            outliers_B:[],
             test_data: {
                 status: '',
                 error_descr: '',
                 scatter_plot: '',
-                html_box_1: '',
-                outliersA: [],
-                html_box_2: '',
-                html_hist_1: '',
-                html_hist_2: '',
+                html_box: '',
+                sample_A: {
+                    value: '',
+                    N: '',
+                    N_clean:  '',
+                    outliers: [],
+                    html_hist: '',
+                    Norm_statistic: '',
+                    Norm_p_value: '',
+                    Hom_statistic: '',
+                    Hom_p_value: '',
+                },
+                sample_B: {
+                    value: '',
+                    N: '',
+                    N_clean:  '',
+                    outliers: [],
+                    html_hist: '',
+                    Norm_statistic: '',
+                    Norm_p_value: '',
+                    Hom_statistic: '',
+                    Hom_p_value: '',
+                },
                 correlation: '',
                 p_value: '',
                 new_dataset:[]
@@ -134,13 +154,13 @@ class PointBiserialCorrelation extends React.Component {
                     params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         column_1: this.state.selected_column, column_2: this.state.selected_column2,
-                        // remove_outliers:this.state.remove_outliers
                     }
                 }
         ).then(res => {
             this.setState({test_data: res.data})
             this.setState({outputdataset: JSON.parse(res.data.new_dataset)})
-            this.setState({outliers_dataset_A: JSON.parse(res.data.outliersA)})
+            this.setState({outliers_A: JSON.parse(res.data.sample_A.outliers)})
+            this.setState({outliers_B: JSON.parse(res.data.sample_B.outliers)})
             this.setState({tabvalue:1})
         });
     }
@@ -257,44 +277,140 @@ class PointBiserialCorrelation extends React.Component {
                                 <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Point biserial correlation :  { this.state.test_data.correlation}</Typography>
-                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >p-value :  { this.state.test_data.p_value}</Typography>
-                                <hr className="result"/>
                                 <Grid>
-                                    <Grid>
-                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
-                                                Scatter plot of Selected variable and dichotomous
-                                            </Typography>
-                                            <InnerHTML html={this.state.test_data.scatter_plot} style={{zoom:'70%'}}/>
-                                            <hr className="result"/>
+                                    <Grid container direction="row">
+                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Point biserial correlation</TableCell>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>p-value</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.correlation).toFixed(6)}</TableCell>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.p_value).toFixed(6)}</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
                                         </Grid>
-                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                        <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <InnerHTML html={this.state.test_data.scatter_plot} style={{zoom:'50%'}}/>
+                                        </Grid>
+                                    </Grid>
+                                    <hr className="result"/>
+                                    <Grid container direction="row">
+                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <Typography>
+                                                Outliers of the selected variable for each category of the dichotomous variable
+                                            </Typography>
+                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Dichotomous value</TableCell>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Size</TableCell>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Size (without outliers)</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.value}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.N}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.N_clean}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.value}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.N}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.N_clean}</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                            {/*{this.state.outliers_A.map((item, index) => {*/}
+                                            {/*        return (*/}
+                                            {/*                <TableRow>*/}
+                                            {/*                    <TableCell className="tableCell">{index}</TableCell>*/}
+                                            {/*                    <TableCell className="tableCell">{item}</TableCell>*/}
+                                            {/*                </TableRow>*/}
+                                            {/*        )*/}
+                                            {/*    })}*/}
+                                            {/*<Typography>{this.state.outliers_A}</Typography>*/}
+                                        </Grid>
+                                        <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
                                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
                                                 Box plot for each category of the dichotomous
                                             </Typography>
-                                            <InnerHTML html={this.state.test_data.html_box_1} style={{zoom:'70%'}}/>
-                                            <hr  class="result"/>
-                                            <p>{this.state.outliers_dataset_A}</p>
-                                            {/*<JsonTable className="jsonResultsTable" rows = {this.state.outliers_dataset_A}/>*/}
-                                            <hr className="result"/>
+                                            <InnerHTML html={this.state.test_data.html_box} style={{zoom:'50%'}}/>
                                         </Grid>
                                     </Grid>
-                                    <Grid>
-                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
-                                                Histogram of category 0 of the dichotomous
+                                    <hr className="result"/>
+                                    <Grid container direction="row">
+                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <Typography>
+                                                Normally distribution test for each category of the dichotomous variable
                                             </Typography>
-                                            <InnerHTML html={this.state.test_data.html_hist_1} style={{zoom:'70%'}}/>
-                                            <hr  class="result"/>
+                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Dichotomous value</TableCell>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Normality test (Shapiro-Wilk) statistic</TableCell>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Normality test (Shapiro-Wilk) p-value</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.value}</TableCell>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Norm_statistic).toFixed(6)}</TableCell>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Norm_p_value).toFixed(6)}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.value}</TableCell>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_B.Norm_statistic).toFixed(6)}</TableCell>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_B.Norm_p_value).toFixed(6)}</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
                                         </Grid>
-                                        <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                        <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
                                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
-                                                Histogram of category 1 of the dichotomous
+                                                Histogram of category {this.state.test_data.sample_A.value} of the dichotomous
                                             </Typography>
-                                            <InnerHTML html={this.state.test_data.html_hist_2} style={{zoom:'70%'}}/>
-                                            <hr className="result"/>
+                                            <InnerHTML html={this.state.test_data.sample_A.html_hist} style={{zoom:'50%'}}/>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                Histogram of category {this.state.test_data.sample_B.value} of the dichotomous
+                                            </Typography>
+                                            <InnerHTML html={this.state.test_data.sample_B.html_hist} style={{zoom:'50%'}}/>
                                         </Grid>
+                                    </Grid>
+                                    <hr className="result"/>
+                                    <Grid container direction="row">
+                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}> Equal variances test (Levene) statistic</TableCell>
+                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>p-value</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Hom_statistic).toFixed(6)}</TableCell>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Hom_p_value).toFixed(6)}</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                            {/*<p>{this.state.test_data.sample_A.Hom_statistic}</p>*/}
+                                            {/*<p>{this.state.test_data.sample_A.Hom_p_value}</p>*/}
+                                        </Grid>
+
                                     </Grid>
                                 </Grid>
                             </TabPanel>
