@@ -463,8 +463,8 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
-                        <hr style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}/>
                         <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
+                        <hr style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}/>
                         <div style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
                             <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
                                 <Table>
