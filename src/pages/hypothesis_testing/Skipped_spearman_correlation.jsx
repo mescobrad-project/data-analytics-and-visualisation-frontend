@@ -109,7 +109,7 @@ function a11yProps(index) {
     };
 }
 
-class Shepherd_pi_correlation extends React.Component {
+class Skipped_spearman_correlation extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -120,7 +120,7 @@ class Shepherd_pi_correlation extends React.Component {
                 DataFrame:[]
             },
             //Values selected currently on the form
-            selected_method: "shepherd",
+            selected_method: "skipped",
             selected_alternative: "two-sided",
             selected_independent_variables: []
         };
@@ -155,7 +155,7 @@ class Shepherd_pi_correlation extends React.Component {
             this.setState({column_names: res.data.columns})
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
             this.setState({tabvalue:1})
-                    });
+        });
     }
 
     /**
@@ -211,7 +211,7 @@ class Shepherd_pi_correlation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Shepherd’s pi correlation Parameterisation
+                            Skipped spearman correlation Parameterisation
                         </Typography>
                         <hr/>
                         <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
@@ -353,4 +353,4 @@ class Shepherd_pi_correlation extends React.Component {
     }
 }
 
-export default Shepherd_pi_correlation;
+export default Skipped_spearman_correlation;
