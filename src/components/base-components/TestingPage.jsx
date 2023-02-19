@@ -61,7 +61,7 @@ async function redirectToPage(workflow_id, run_id, step_id, function_name, bucke
     });
 }
 
-function WelcomePage() {
+function TestingPage() {
     useEffect(() => {
         document.title = ' MES-CoBraD | Analytics Engine'
     }, [])
@@ -223,22 +223,6 @@ function WelcomePage() {
                             Asymmetry Indices
                         </Button>
                         {/*<Divider/>*/}
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 4, "sleep_statistic", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"])}
-                        >
-                            Sleep Statistic
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 4, "spectogram_bandpower", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"])}
-                        >
-                            Spectogram Bandpower
-                        </Button>
                         <Button
                                 variant="contained"
                                 size="medium"
@@ -839,20 +823,20 @@ function WelcomePage() {
                             Logistic Regression Statsmodels
                             {/*</ListItemButton>*/}
                         </Button>
-                        {/*<Button*/}
-                        {/*        // component={Link}*/}
-                        {/*        // variant="h6"*/}
-                        {/*        // href="/LinearRegression"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
-                        {/*        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LogisticRegressionSklearn", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}*/}
+                        <Button
+                                // component={Link}
+                                // variant="h6"
+                                // href="/LinearRegression"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LogisticRegressionSklearn", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
-                        {/*>*/}
-                        {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                        {/*    Logistic Regression Sklearn*/}
-                        {/*    /!*</ListItemButton>*!/*/}
-                        {/*</Button>*/}
+                        >
+                            {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                            Logistic Regression Sklearn
+                            {/*</ListItemButton>*/}
+                        </Button>
                         {/*/*<p>calculate_SpO2 from eeg_router</p>*/}
                         {/*Survival Analysis*/}
 
@@ -967,4 +951,4 @@ function WelcomePage() {
     );
 }
 
-export default WelcomePage;
+export default TestingPage;
