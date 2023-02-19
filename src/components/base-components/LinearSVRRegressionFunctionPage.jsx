@@ -11,8 +11,9 @@ import {
     ListItem,
     ListItemText,
     MenuItem, Paper,
-    Select, Table, TableCell, TableContainer, TableRow, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
 } from "@mui/material";
+
 
 // Amcharts
 // import * as am5 from "@amcharts/amcharts5";
@@ -23,19 +24,57 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
 
-class ElasticNetFunctionPage extends React.Component {
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+class LinearSVRRegressionFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns sent by the backend
             columns: [],
+            initialdataset:[],
 
             //Values selected currently on the form
             selected_dependent_variable: "",
-            selected_alpha: "1",
-            selected_l1_ratio: "0.5",
+            selected_alpha: "0.0001",
             selected_max_iter: "1000",
+            selected_epsilon: "0",
+            selected_C: "1",
+            selected_loss: "epsilon_insensitive",
             selected_independent_variables: [],
 
             coefficients: "",
@@ -60,8 +99,8 @@ class ElasticNetFunctionPage extends React.Component {
             selected_y_axis: "",
 
             // Hide/show results
-            ElasticNet_show : false,
-            ElasticNet_step2_show: false
+            LinearSVRRegression_show : false,
+            LinearSVRRegression_step2_show: false
 
 
         };
@@ -69,9 +108,11 @@ class ElasticNetFunctionPage extends React.Component {
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
-        this.handleSelectL1RatioChange = this.handleSelectL1RatioChange.bind(this);
         this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        this.handleSelectEpsilonChange = this.handleSelectEpsilonChange.bind(this);
+        this.handleSelectLossChange = this.handleSelectLossChange.bind(this);
+        this.handleSelectCChange = this.handleSelectCChange.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -80,6 +121,7 @@ class ElasticNetFunctionPage extends React.Component {
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchColumnNames();
@@ -109,19 +151,18 @@ class ElasticNetFunctionPage extends React.Component {
         //     to_send_shrinkage_3 = parseFloat(this.state.selected_shrinkage_3)
         // }
 
-        this.setState({ElasticNet_show: false})
+        this.setState({LinearSVRRegression_show: false})
 
 
 
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("elastic_net", {
+        API.get("linearsvr_regression", {
             params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 dependent_variable: this.state.selected_dependent_variable,
                 alpha: this.state.selected_alpha,
-                l1_ratio: this.state.selected_l1_ratio,
                 max_iter: this.state.max_iter,
                 independent_variables: this.state.selected_independent_variables},
             paramsSerializer : params => {
@@ -140,11 +181,11 @@ class ElasticNetFunctionPage extends React.Component {
 
             this.setState({coefficients: resultJson['coefficients']})
             this.setState({intercept: resultJson['intercept']})
-            this.setState({dataframe: resultJson['dataframe']})
+            this.setState({dataframe: JSON.parse(resultJson['dataframe'])})
             this.setState({skew: resultJson['skew']})
             this.setState({kurtosis: resultJson['kurtosis']})
             this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
-            this.setState({jarque_bera_p: resultJson['Jarque Bera p-value']})
+            this.setState({jarque_bera_p: resultJson['Jarque-Bera p-value']})
             this.setState({omnibus_test_stat: resultJson['Omnibus test statistic']})
             this.setState({omnibus_test_p: resultJson['Omnibus test p-value']})
             this.setState({durbin_watson: resultJson['Durbin Watson']})
@@ -152,11 +193,11 @@ class ElasticNetFunctionPage extends React.Component {
             this.setState({predicted_values: resultJson['predicted values']})
             this.setState({residuals: resultJson['residuals']})
             this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
-            this.setState({df_scatter: resultJson['values_df']})
+            this.setState({df_scatter: JSON.parse(resultJson['values_df'])})
             this.setState({values_dict: resultJson['values_dict']})
             this.setState({values_columns: resultJson['values_columns']})
 
-            this.setState({ElasticNet_show: true})
+            this.setState({LinearSVRRegression_show: true})
 
 
 
@@ -198,7 +239,7 @@ class ElasticNetFunctionPage extends React.Component {
         console.log(temp_array)
         this.setState({scatter_chart_data: temp_array})
 
-        this.setState({ElasticNet_step2_show: true})
+        this.setState({LinearSVRRegression_step2_show: true})
 
     }
 
@@ -216,6 +257,8 @@ class ElasticNetFunctionPage extends React.Component {
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({columns: res.data.columns})
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:1})
         });
     }
 
@@ -226,15 +269,21 @@ class ElasticNetFunctionPage extends React.Component {
     handleSelectAlphaChange(event){
         this.setState({selected_alpha: event.target.value})
     }
-    handleSelectL1RatioChange(event){
-        this.setState({selected_l1_ratio: event.target.value})
-    }
     handleSelectMaxIterChange(event){
         this.setState({selected_max_iter: event.target.value})
     }
 
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
+    }
+    handleSelectEpsilonChange(event){
+        this.setState( {selected_solver: event.target.value})
+    }
+    handleSelectLossChange(event){
+        this.setState({selected_loss: event.target.value})
+    }
+    handleSelectCChange(event){
+        this.setState({selected_C: event.target.value})
     }
 
     clear(){
@@ -250,6 +299,9 @@ class ElasticNetFunctionPage extends React.Component {
     handleSelectYAxisnChange(event){
         this.setState({selected_y_axis: event.target.value})
     }
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
 
 
     render() {
@@ -257,7 +309,7 @@ class ElasticNetFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            ElasticNet Parameterisation
+                            LinearSVR Parameterisation
                         </Typography>
                         <hr/>
                         <Grid container justifyContent = "center">
@@ -331,16 +383,6 @@ class ElasticNetFunctionPage extends React.Component {
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
-                                        labelId="l1-ratio-label"
-                                        id="l1-ratio-selector"
-                                        value= {this.state.selected_l1_ratio}
-                                        label="l1-ratio"
-                                        onChange={this.handleSelectL1RatioChange}
-                                />
-                                <FormHelperText>l1-ratio</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
                                         labelId="max-iter-label"
                                         id="max-iter-selector"
                                         value= {this.state.selected_max_iter}
@@ -348,6 +390,41 @@ class ElasticNetFunctionPage extends React.Component {
                                         onChange={this.handleSelectMaxIterChange}
                                 />
                                 <FormHelperText>Max Iterations</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        labelId="C-label"
+                                        id="C-selector"
+                                        value= {this.state.selected_C}
+                                        label="C"
+                                        onChange={this.handleSelectCChange}
+                                />
+                                <FormHelperText>C</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="loss-label">Loss</InputLabel>
+                                <Select
+                                        labelId="loss-label"
+                                        id="loss-selector"
+                                        value= {this.state.selected_loss}
+                                        label="loss"
+                                        onChange={this.handleSelectLossChange}
+                                >
+                                    {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
+                                    <MenuItem value={"epsilon_insensitive"}><em>epsilon insensitive</em></MenuItem>
+                                    <MenuItem value={"squared_epsilon_insensitive"}><em>squared epsilon insensitive</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Specify which loss to use.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        labelId="epsilon-label"
+                                        id="epsilon-selector"
+                                        value= {this.state.selected_epsilon}
+                                        label="epsilon"
+                                        onChange={this.handleSelectEpsilonChange}
+                                />
+                                <FormHelperText>Epsilon</FormHelperText>
                             </FormControl>
 
 
@@ -366,8 +443,8 @@ class ElasticNetFunctionPage extends React.Component {
                         </form>
                         <br/>
                         <br/>
-                        <div  style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}>
-                            <hr style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}/>
+                        <div  style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
+                            <hr style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}/>
                             <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                 Available Variables
                             </Typography>
@@ -412,26 +489,27 @@ class ElasticNetFunctionPage extends React.Component {
                                     Submit
                                 </Button>
                             </form>
-                            <div style={{ display: (this.state.ElasticNet_step2_show ? 'block' : 'none') }}>
+                            <div style={{ display: (this.state.LinearSVRRegression_step2_show ? 'block' : 'none') }}>
                                 <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
                             </div>
                         </div>
                     </Grid>
                     <Grid  item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            ElasticNet Result
+                            LinearSVR Result
                         </Typography>
                         <hr/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
                         {/*    Welch Results*/}
                         {/*</Typography>*/}
 
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
-                        <hr style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}/>
-                        <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
-                        <div style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}>
+                        {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
+                        {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
+                        {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
+                        {/*<div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />*/}
+                        <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
+                        <hr style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}/>
+                        <div style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
                             <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
                                 <Table>
                                     <TableRow>
@@ -442,38 +520,62 @@ class ElasticNetFunctionPage extends React.Component {
                                         <TableCell><strong>Skew:</strong></TableCell>
                                         <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell><strong>Kurtosis:</strong></TableCell>
                                         <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
                                         <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p)}</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell><strong>Omnibus test statistic:</strong></TableCell>
                                         <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p)}</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell><strong>Durbin Watson:</strong></TableCell>
                                         <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
                                         <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
                                     </TableRow>
                                 </Table>
                             </TableContainer>
-                        <hr/>
-                            <div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
+                            <hr/>
+                            <Box sx={{ width: '100%' }}>
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                    <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                        <Tab label="Results" {...a11yProps(0)} />
+                                        <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    </Tabs>
+                                </Box>
+                                <TabPanel value={this.state.tabvalue} index={0}>
+                                    <Grid container direction="row">
+                                        <Grid sx={{ flexGrow: 1, textAlign: "center"}} >
+                                            <div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                    Actual values, predicted values and residuals
+                                                </Typography>
+                                                <JsonTable className="jsonResultsTable" rows = {this.state.df_scatter}/>
+                                                {/*<div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />*/}
+                                            </div>
+                                        </Grid>
+                                    </Grid>
+                                </TabPanel>
+                                <TabPanel value={this.state.tabvalue} index={1}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
+                                </TabPanel>
+                            </Box>
+                            {/*<div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />*/}
                         </div>
                     </Grid>
                 </Grid>
@@ -481,4 +583,4 @@ class ElasticNetFunctionPage extends React.Component {
     }
 }
 
-export default ElasticNetFunctionPage;
+export default LinearSVRRegressionFunctionPage;

@@ -72,6 +72,11 @@ import MRIViewer from "./MRIViewer";
 import Biweight_midcorrelation from "../../pages/hypothesis_testing/Biweight_midcorrelation";
 import Percentage_bend_correlation from "../../pages/hypothesis_testing/Percentage_bend_correlation";
 import Shepherd_pi_correlation from "../../pages/hypothesis_testing/Shepherd_pi_correlation";
+import LinearSVRRegressionFunctionPage from "./LinearSVRRegressionFunctionPage";
+import LinearSVCRegressionFunctionPage from "./LinearSVCRegressionFunctionPage";
+import LogisticRegressionPinguinFunctionPage from "./LogisticRegressionPinguinFunctionPage";
+import LogisticRegressionStatsmodelsFunctionPage from "./LogisticRegressionStatsmodelsFunctionPage";
+import LogisticRegressionSklearnFunctionPage from "./LogisticRegressionSklearnFunctionPage";
 import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
 import SurvivalAnalysisRiskRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioSimple";
 import SurvivalAnalysisRiskDifferenceSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceSimple"
@@ -86,6 +91,7 @@ import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/Surviv
 import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
 import PrincipalComponentAnalysis from "../../pages/hypothesis_testing/PrincipalComponentAnalysis"
 import SlowwaveSpindleFunctionPage from "./SlowwaveSpindleFunctionPage";
+import TestingPage from "./TestingPage";
 import SleepStatisticsFunctionPage from "./SleepStatisticsFunctionPage";
 import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
 
@@ -189,7 +195,12 @@ const App = () => {
                         <Route exact path="/LassoRegression" element={(<LayoutMain><LassoRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/RidgeRegression" element={(<LayoutMain><RidgeRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SGDRegression" element={(<LayoutMain><SGDRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LinearSVR" element={(<LayoutMain><LinearSVRRegressionFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/HuberRegression" element={(<LayoutMain><HuberRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LinearSVC" element={(<LayoutMain><LinearSVCRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LogisticRegressionPinguin" element={(<LayoutMain><LogisticRegressionPinguinFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LogisticRegressionStatsmodels" element={(<LayoutMain><LogisticRegressionStatsmodelsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/LogisticRegressionSklearn" element={(<LayoutMain><LogisticRegressionSklearnFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskRatioSimple" element={(<LayoutMain><SurvivalAnalysisRiskRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisNNTSimple" element={(<LayoutMain><SurvivalAnalysisNNTSimple/></LayoutMain>)}/>
@@ -204,6 +215,7 @@ const App = () => {
                         <Route exact path="/sleep_statistic" element={(<LayoutMain><SleepStatisticsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/spectogram_bandpower" element={(<LayoutMain><SpectogramBandpowerFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/slowwave_spindle" element={(<LayoutMain><SlowwaveSpindleFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/testing" element={(<LayoutMain><TestingPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

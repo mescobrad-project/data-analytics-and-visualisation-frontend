@@ -24,7 +24,7 @@ import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
 
-class ElasticNetFunctionPage extends React.Component {
+class LogisticRegressionStatsmodelsFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -33,12 +33,26 @@ class ElasticNetFunctionPage extends React.Component {
 
             //Values selected currently on the form
             selected_dependent_variable: "",
-            selected_alpha: "1",
-            selected_l1_ratio: "0.5",
-            selected_max_iter: "1000",
+            selected_alpha: "0.05",
             selected_independent_variables: [],
 
-            coefficients: "",
+
+            dep_variable: "",
+            model: "",
+            method: "",
+            date: "",
+            time: "",
+            no_observations: "",
+            df_resid: "",
+            df_mod: "",
+            cov_type: "",
+            pseudo_r_sq: "",
+            log_like: "",
+            ll_null: "",
+            llr_p: "",
+
+            first_table: "",
+            second_table: "",
             intercept: "",
             dataframe: "",
             skew: "",
@@ -60,17 +74,14 @@ class ElasticNetFunctionPage extends React.Component {
             selected_y_axis: "",
 
             // Hide/show results
-            ElasticNet_show : false,
-            ElasticNet_step2_show: false
+            LogisticRegressionStatsmodels_show : false,
+            LogisticRegressionStatsmodels_step2_show: false
 
 
         };
 
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
-        this.handleSelectL1RatioChange = this.handleSelectL1RatioChange.bind(this);
-        this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
@@ -109,20 +120,17 @@ class ElasticNetFunctionPage extends React.Component {
         //     to_send_shrinkage_3 = parseFloat(this.state.selected_shrinkage_3)
         // }
 
-        this.setState({ElasticNet_show: false})
+        this.setState({LogisticRegressionStatsmodels_show: false})
 
 
 
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("elastic_net", {
+        API.get("logistic_regressor_statsmodels", {
             params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 dependent_variable: this.state.selected_dependent_variable,
-                alpha: this.state.selected_alpha,
-                l1_ratio: this.state.selected_l1_ratio,
-                max_iter: this.state.max_iter,
                 independent_variables: this.state.selected_independent_variables},
             paramsSerializer : params => {
                 return qs.stringify(params, { arrayFormat: "repeat" })
@@ -155,8 +163,24 @@ class ElasticNetFunctionPage extends React.Component {
             this.setState({df_scatter: resultJson['values_df']})
             this.setState({values_dict: resultJson['values_dict']})
             this.setState({values_columns: resultJson['values_columns']})
+            this.setState({first_table: resultJson['first_table']})
+            this.setState({second_table: resultJson['second table']})
+            this.setState({dep_variable: resultJson['dep']})
+            this.setState({model: resultJson['model']})
+            this.setState({method: resultJson['method']})
+            this.setState({date: resultJson['date']})
+            this.setState({time: resultJson['time']})
+            this.setState({no_observations: resultJson['no_obs']})
+            this.setState({df_resid: resultJson['resid']})
+            this.setState({df_mod: resultJson['df_model']})
+            this.setState({cov_type: resultJson['cov_type']})
+            this.setState({r_sq: resultJson['pseudo_r_squared']})
+            this.setState({ll_null: resultJson['LL-Null']})
+            this.setState({llr_p: resultJson['LLR p-value']})
+            this.setState({log_like: resultJson['log_like']})
+            this.setState({converged: resultJson['converged']})
 
-            this.setState({ElasticNet_show: true})
+            this.setState({LogisticRegressionStatsmodels_show: true})
 
 
 
@@ -198,7 +222,7 @@ class ElasticNetFunctionPage extends React.Component {
         console.log(temp_array)
         this.setState({scatter_chart_data: temp_array})
 
-        this.setState({ElasticNet_step2_show: true})
+        this.setState({LogisticRegressionStatsmodels_step2_show: true})
 
     }
 
@@ -223,15 +247,7 @@ class ElasticNetFunctionPage extends React.Component {
     handleSelectDependentVariableChange(event){
         this.setState({selected_dependent_variable: event.target.value})
     }
-    handleSelectAlphaChange(event){
-        this.setState({selected_alpha: event.target.value})
-    }
-    handleSelectL1RatioChange(event){
-        this.setState({selected_l1_ratio: event.target.value})
-    }
-    handleSelectMaxIterChange(event){
-        this.setState({selected_max_iter: event.target.value})
-    }
+
 
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
@@ -257,7 +273,7 @@ class ElasticNetFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            ElasticNet Parameterisation
+                            LogisticRegressionStatsmodels Parameterisation
                         </Typography>
                         <hr/>
                         <Grid container justifyContent = "center">
@@ -319,36 +335,7 @@ class ElasticNetFunctionPage extends React.Component {
                                     Clear Selections
                                 </Button>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelId="alpha-label"
-                                        id="alpha-selector"
-                                        value= {this.state.selected_alpha}
-                                        label="alpha"
-                                        onChange={this.handleSelectAlphaChange}
-                                />
-                                <FormHelperText>Alpha</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelId="l1-ratio-label"
-                                        id="l1-ratio-selector"
-                                        value= {this.state.selected_l1_ratio}
-                                        label="l1-ratio"
-                                        onChange={this.handleSelectL1RatioChange}
-                                />
-                                <FormHelperText>l1-ratio</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelId="max-iter-label"
-                                        id="max-iter-selector"
-                                        value= {this.state.selected_max_iter}
-                                        label="max-iter"
-                                        onChange={this.handleSelectMaxIterChange}
-                                />
-                                <FormHelperText>Max Iterations</FormHelperText>
-                            </FormControl>
+
 
 
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
@@ -366,119 +353,137 @@ class ElasticNetFunctionPage extends React.Component {
                         </form>
                         <br/>
                         <br/>
-                        <div  style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}>
-                            <hr style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}/>
-                            <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                Available Variables
-                            </Typography>
-                            <form onSubmit={this.handleScatter}>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="x-axis-selector-label">Select X-axis</InputLabel>
-                                    <Select
-                                            labelId="x-axis-selector-label"
-                                            id="x-axis-selector"
-                                            value= {this.state.selected_x_axis}
-                                            label="x-axis"
-                                            onChange={this.handleSelectXAxisnChange}
-                                    >
+                        {/*<div  style={{display: (this.state.LogisticRegressionStatsmodels_show ? 'block' : 'none')}}>*/}
+                        {/*    <hr style={{display: (this.state.LogisticRegressionStatsmodels_show ? 'block' : 'none')}}/>*/}
+                        {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                        {/*        Available Variables*/}
+                        {/*    </Typography>*/}
+                        {/*    <form onSubmit={this.handleScatter}>*/}
+                        {/*        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                        {/*            <InputLabel id="x-axis-selector-label">Select X-axis</InputLabel>*/}
+                        {/*            <Select*/}
+                        {/*                    labelId="x-axis-selector-label"*/}
+                        {/*                    id="x-axis-selector"*/}
+                        {/*                    value= {this.state.selected_x_axis}*/}
+                        {/*                    label="x-axis"*/}
+                        {/*                    onChange={this.handleSelectXAxisnChange}*/}
+                        {/*            >*/}
 
-                                        {this.state.values_columns.map((column) => (
-                                                <MenuItem value={column}>
-                                                    {column}
-                                                </MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Select Variable for X axis of scatterplot</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="y-axis-selector-label">Select Y-axis</InputLabel>
-                                    <Select
-                                            labelId="y-axis-selector-label"
-                                            id="y-axis-selector"
-                                            value= {this.state.selected_y_axis}
-                                            label="y-axis"
-                                            onChange={this.handleSelectYAxisnChange}
-                                    >
+                        {/*                {this.state.values_columns.map((column) => (*/}
+                        {/*                        <MenuItem value={column}>*/}
+                        {/*                            {column}*/}
+                        {/*                        </MenuItem>*/}
+                        {/*                ))}*/}
+                        {/*            </Select>*/}
+                        {/*            <FormHelperText>Select Variable for X axis of scatterplot</FormHelperText>*/}
+                        {/*        </FormControl>*/}
+                        {/*        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                        {/*            <InputLabel id="y-axis-selector-label">Select Y-axis</InputLabel>*/}
+                        {/*            <Select*/}
+                        {/*                    labelId="y-axis-selector-label"*/}
+                        {/*                    id="y-axis-selector"*/}
+                        {/*                    value= {this.state.selected_y_axis}*/}
+                        {/*                    label="y-axis"*/}
+                        {/*                    onChange={this.handleSelectYAxisnChange}*/}
+                        {/*            >*/}
 
-                                        {this.state.values_columns.map((column) => (
-                                                <MenuItem value={column}>
-                                                    {column}
-                                                </MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Select Variable for Y axis of scatterplot</FormHelperText>
-                                </FormControl>
-                                <Button variant="contained" color="primary" type="submit">
-                                    Submit
-                                </Button>
-                            </form>
-                            <div style={{ display: (this.state.ElasticNet_step2_show ? 'block' : 'none') }}>
-                                <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
-                            </div>
-                        </div>
+                        {/*                {this.state.values_columns.map((column) => (*/}
+                        {/*                        <MenuItem value={column}>*/}
+                        {/*                            {column}*/}
+                        {/*                        </MenuItem>*/}
+                        {/*                ))}*/}
+                        {/*            </Select>*/}
+                        {/*            <FormHelperText>Select Variable for Y axis of scatterplot</FormHelperText>*/}
+                        {/*        </FormControl>*/}
+                        {/*        <Button variant="contained" color="primary" type="submit">*/}
+                        {/*            Submit*/}
+                        {/*        </Button>*/}
+                        {/*    </form>*/}
+                        {/*    <div style={{ display: (this.state.LogisticRegressionStatsmodels_step2_show ? 'block' : 'none') }}>*/}
+                        {/*        <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </Grid>
                     <Grid  item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            ElasticNet Result
+                            LogisticRegressionStatsmodels Result
                         </Typography>
                         <hr/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
                         {/*    Welch Results*/}
                         {/*</Typography>*/}
 
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
-                        {/*<div style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
-                        <hr style={{ display: (this.state.ElasticNet_show ? 'block' : 'none') }}/>
-                        <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
-                        <div style={{display: (this.state.ElasticNet_show ? 'block' : 'none')}}>
-                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
+                        {/*<div style={{ display: (this.state.LogisticRegressionStatsmodels_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
+                        {/*<div style={{ display: (this.state.LogisticRegressionStatsmodels_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
+                        {/*<div style={{ display: (this.state.LogisticRegressionStatsmodels_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
+                        <div style={{display: (this.state.LogisticRegressionStatsmodels_show ? 'block' : 'none')}}>
+                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
                                 <Table>
                                     <TableRow>
-                                        <TableCell><strong>Intercept:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
+                                        <TableCell><strong>Dependent Variable:</strong></TableCell>
+                                        <TableCell>{this.state.dep_variable}</TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell><strong>Skew:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
+                                        <TableCell><strong>Model:</strong></TableCell>
+                                        <TableCell>{this.state.model}</TableCell>
                                     </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Kurtosis:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
+                                    <TableRow>
+                                        <TableCell><strong>Method:</strong></TableCell>
+                                        <TableCell>{this.state.method}</TableCell>
                                     </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
+                                    <TableRow>
+                                        <TableCell><strong>Date:</strong></TableCell>
+                                        <TableCell>{this.state.date}</TableCell>
                                     </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
+                                    <TableRow>
+                                        <TableCell><strong>Time:</strong></TableCell>
+                                        <TableCell>{this.state.time}</TableCell>
                                     </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Omnibus test statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
+                                    <TableRow>
+                                        <TableCell><strong>Converged:</strong></TableCell>
+                                        <TableCell>{this.state.converged}</TableCell>
                                     </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
+                                    <TableRow>
+                                        <TableCell><strong>Covariance Type:</strong></TableCell>
+                                        <TableCell>{this.state.cov_type}</TableCell>
                                     </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Durbin Watson:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
+                                    <TableRow>
+                                        <TableCell><strong>No. Observations:</strong></TableCell>
+                                        <TableCell>{this.state.no_observations}</TableCell>
                                     </TableRow>
-                                     <TableRow>
-                                        <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
+                                    <TableRow>
+                                        <TableCell><strong>Df Residuals:</strong></TableCell>
+                                        <TableCell>{this.state.df_resid}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Df Model:</strong></TableCell>
+                                        <TableCell>{this.state.df_mod}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Pseudo R-squared:</strong></TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.pseudo_r_sq).toFixed(5)}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Log-Likelihood:</strong></TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.log_like).toFixed(5)}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>LL-Null:</strong></TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.ll_null).toFixed(5)}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>LLR p-value:</strong></TableCell>
+                                        <TableCell>{Number.parseFloat(this.state.llr_p).toFixed(5)}</TableCell>
                                     </TableRow>
                                 </Table>
                             </TableContainer>
-                        <hr/>
-                            <div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
                         </div>
+                        <hr style={{ display: (this.state.LogisticRegressionStatsmodels_show ? 'block' : 'none') }}/>
+                        <div dangerouslySetInnerHTML={{__html: this.state.second_table}} />
                     </Grid>
                 </Grid>
         )
     }
 }
 
-export default ElasticNetFunctionPage;
+export default LogisticRegressionStatsmodelsFunctionPage;
