@@ -177,6 +177,9 @@ class SlowwaveSpindleFunctionPage extends React.Component {
             }
         }).then(res => {
             this.setState({result_band_power: res.data})
+            console.log("BAND POWER")
+            console.log(res.data)
+
         });
     }
 
@@ -284,6 +287,24 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                     knows what file to access*/}
                         <form onSubmit={this.handleSubmit}
                               style={{display: (this.state.channels.length != 0 ? 'block' : 'none')}}>
+
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                General Parameterisation
+                            </Typography>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        id="sampling-frequency-hypnogram"
+                                        value= {this.state.general_sampling_freuency_hypno}
+                                        label="Sampling Frequency of Hypnogram"
+                                        size={"small"}
+                                        onChange={this.handleSelectNlagsChange}
+                                />
+                                <FormHelperText>Current Sampling Frequency of Hypnogram</FormHelperText>
+                            </FormControl>
+                            <Divider/>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Spectogram Parameterisation
+                            </Typography>
                             <FormControl sx={{m: 1, width: '90%'}} size={"small"}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select
@@ -301,20 +322,6 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                     ))}
                                 </Select>
                                 <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
-                            </FormControl>
-                            <Divider/>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                General Parameterisation
-                            </Typography>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        id="sampling-frequency-hypnogram"
-                                        value= {this.state.general_sampling_freuency_hypno}
-                                        label="Sampling Frequency of Hypnogram"
-                                        size={"small"}
-                                        onChange={this.handleSelectNlagsChange}
-                                />
-                                <FormHelperText>Current Sampling Frequency of Hypnogram</FormHelperText>
                             </FormControl>
                             <Divider/>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
@@ -427,6 +434,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                 <Table>
                                     <TableHead>
                                         <TableRow sx={{alignContent: "right"}}>
+                                            <TableCell className="tableHeadCell">Stage/Channel</TableCell>
                                             <TableCell className="tableHeadCell">Delta</TableCell>
                                             <TableCell className="tableHeadCell">Theta</TableCell>
                                             <TableCell className="tableHeadCell">Alpha</TableCell>
@@ -442,6 +450,8 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                         { (  this.state.result_band_power["bandpower"] ? JSON.parse(this.state.result_band_power["bandpower"])["data"] : []).map((item) => {
                                             return (
                                                     <TableRow>
+                                                        <TableCell
+                                                                className="tableCell"> { item[9] } </TableCell>
                                                         <TableCell
                                                                 className="tableCell"> {  item[0] } </TableCell>
                                                         <TableCell
@@ -459,7 +469,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                                         <TableCell
                                                                 className="tableCell"> { item[7] } </TableCell>
                                                         <TableCell
-                                                                className="tableCell"> { item[8] } </TableCell>
+                                                                className="tableCell"> { item[8].toString() } </TableCell>
 
                                                     </TableRow>
                                             );

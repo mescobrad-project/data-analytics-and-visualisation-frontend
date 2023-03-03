@@ -588,6 +588,7 @@ class SleepStatisticsFunctionPage extends React.Component {
                             <hr className="result"/>
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Sleep transition matrix
+                                Counts transition matrix (number of transitions from stage A to stage B).
                             </Typography>
                             <TableContainer component={Paper} className="ExtremeValues" sx={{width: '90%'}}>
                                 <Table>
