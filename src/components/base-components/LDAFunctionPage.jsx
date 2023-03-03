@@ -14,7 +14,7 @@ import {
     ListItemText,
     MenuItem,
     Select,
-    Tab,
+    Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Tabs,
     TextField,
     Typography
@@ -23,6 +23,7 @@ import {
 import qs from "qs";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import Paper from "@mui/material/Paper";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -67,6 +68,11 @@ class LDAFunctionPage extends React.Component {
             columns: [],
             initialdataset:[],
             result_coefficients:[],
+            result_means:[],
+            result_priors:[],
+            result_xbar:[],
+            result_vratio:[],
+            result_scaling:[],
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_solver: "svd",
@@ -76,12 +82,23 @@ class LDAFunctionPage extends React.Component {
             selected_shrinkage_2_show: false,
             selected_independent_variables: [],
             test_data:{
-                coefficients: "",
-                intercept: "",
-                dataframe: ""
+                number_of_features: '',
+                features_columns: '',
+                classes_: [],
+                number_of_classes:'',
+                number_of_components: '',
+                explained_variance_ratio: '',
+                means_: '',
+                priors_: [],
+                scalings_: [],
+                xbar_: [],
+                coefficients: '',
+                intercept: '',
             },
             // Hide/show results
             LDA_show : false,
+            svd_show : false,
+            svdeigen_show : false,
             tabvalue : 0
         };
 
@@ -129,9 +146,23 @@ class LDAFunctionPage extends React.Component {
         }).then(res => {
             this.setState({test_data: res.data})
             this.setState({result_coefficients: JSON.parse(res.data.coefficients)})
+            this.setState({result_means: JSON.parse(res.data.means_)})
+            this.setState({result_priors: JSON.parse(res.data.priors_)})
+            this.setState({result_xbar: JSON.parse(res.data.xbar_)})
+            this.setState({result_vratio: JSON.parse(res.data.explained_variance_ratio)})
+            this.setState({result_scaling: JSON.parse(res.data.scalings_)})
             this.setState({LDA_show: true})
             this.setState({tabvalue:0})
         });
+        if (this.state.selected_solver=='svd'){
+            this.setState({svd_show: true})
+        }
+        else{this.setState({svd_show: false})}
+        if (this.state.selected_solver=='svd' || this.state.selected_solver=='eigen'){
+            this.setState({svdeigen_show: true})
+        }
+        else{this.setState({svdeigen_show: false})
+        }
     }
 
     /**
@@ -157,7 +188,11 @@ class LDAFunctionPage extends React.Component {
     handleSelectSolverChange(event){
         this.setState( {selected_solver: event.target.value})
         if (event.target.value === 'svd')
-        {this.state.selected_shrinkage_1_show = false}
+        {
+            this.state.selected_shrinkage_1_show = false
+            this.state.selected_shrinkage_2_show = false
+            this.state.selected_shrinkage_2 = 0
+        }
         else
         {this.state.selected_shrinkage_1_show = true}
     }
@@ -176,7 +211,7 @@ class LDAFunctionPage extends React.Component {
         {
             this.setState( {selected_shrinkage_2: event.target.value})
 
-        }else{alert("KKK")
+        }else{alert("Select a float between 0 and 1.")
             return}
     }
     // handleSelectShrinkage3Change(event){
@@ -328,6 +363,54 @@ class LDAFunctionPage extends React.Component {
                                 <Grid container direction="row">
                                     <Grid sx={{ flexGrow: 1, textAlign: "center"}} >
                                         <div style={{ display: (this.state.LDA_show ? 'block' : 'none')}}>
+                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}}>
+                                                <Table sx={{textAlign:"right"}}>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell className="tableHeadCell" sx={{width:'60%'}}></TableCell>
+                                                            <TableCell className="tableHeadCell" sx={{width:'40%'}}>test_statistic</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{'Number of features: '}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.number_of_features}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{'Number of classes:'}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.number_of_classes}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell">{'Number of components.'}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.number_of_components}</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                            <div style={{display: (this.state.svdeigen_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                    Percentage of variance explained by each of the selected components.
+                                                </Typography>
+                                                <JsonTable className="jsonResultsTable" rows = {this.state.result_vratio}/>
+                                            </div>
+                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                Class-wise means.
+                                            </Typography>
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.result_means}/>
+                                            <div style={{display: (this.state.svd_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                    Overall mean.
+                                                </Typography>
+                                                <JsonTable className="jsonResultsTable" rows = {this.state.result_xbar}/>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                    Scaling of the features in the space spanned by the class centroids.
+                                                </Typography>
+                                                <JsonTable className="jsonResultsTable" rows = {this.state.result_scaling}/>
+                                            </div>
+                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
+                                                Class priors
+                                            </Typography>
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.result_priors}/>
                                             <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
                                                 Coefficients and Intercept term
                                             </Typography>

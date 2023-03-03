@@ -85,6 +85,8 @@ import SurvivalAnalysisOddsRatioSimple from "../../pages/hypothesis_testing/Surv
 import SurvivalAnalysisIncidenceRateRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioSimple";
 import SurvivalAnalysisIncidenceRateDifferenceSimple
     from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceSimple";
+import FisherExact from "../../pages/hypothesis_testing/FisherExact";
+import McNemar from "../../pages/hypothesis_testing/McNemar";
 import Ancova from "../../pages/hypothesis_testing/Ancova"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
@@ -207,6 +209,8 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisOddsRatioSimple" element={(<LayoutMain><SurvivalAnalysisOddsRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateRatioSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
+                        <Route exact path="/McNemar" element={(<LayoutMain><McNemar/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>
