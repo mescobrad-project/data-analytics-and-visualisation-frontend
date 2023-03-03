@@ -1,24 +1,21 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import "./linearmixedeffectsmodel.scss"
 import {
     Button,
     FormControl,
     FormHelperText,
     Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    TextField,
     Typography
 } from "@mui/material";
-import JsonTable from "ts-react-json-table";
 import Paper from "@mui/material/Paper";
 
-class FisherExact extends React.Component {
+class McNemar extends React.Component {
     constructor(props){
         super(props);
-        const params = new URLSearchParams(window.location.search);
+        // const params = new URLSearchParams(window.location.search);
         this.state = {
             test_data: {
-                odd_ratio: "",
+                statistic: "",
                 p_value: "",
                 crosstab: ""
             },
@@ -32,7 +29,9 @@ class FisherExact extends React.Component {
             result_crosstab:"",
             selected_column_variable: "",
             selected_row_variable: "",
-            selected_alternative: "two-sided",
+            selected_exact: true,
+            selected_correction:false,
+            correction_show:false,
             stats_show: false
         };
         //Binding functions of the class
@@ -40,7 +39,8 @@ class FisherExact extends React.Component {
         this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.handleSelectColumnVariableChange = this.handleSelectColumnVariableChange.bind(this);
         this.handleSelectRowVariableChange = this.handleSelectRowVariableChange.bind(this);
-        this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
+        this.handleSelectExactChange = this.handleSelectExactChange.bind(this);
+        this.handleSelectCorrectionChange = this.handleSelectCorrectionChange.bind(this);
         this.fetchBinaryColumnNames();
     }
 
@@ -60,9 +60,8 @@ class FisherExact extends React.Component {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
-
         // Send the request
-        API.get("fisher",
+        API.get("mc_nemar",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
@@ -70,7 +69,8 @@ class FisherExact extends React.Component {
                         step_id: params.get("step_id"),
                         variable_column: this.state.selected_column_variable,
                         variable_row: this.state.selected_row_variable,
-                        alternative: this.state.selected_alternative
+                        exact: this.state.selected_exact,
+                        correction: this.state.selected_correction
                         }
                 }
         ).then(res => {
@@ -107,8 +107,21 @@ class FisherExact extends React.Component {
             return
         }
     }
-    handleSelectAlternativeChange(event){
-        this.setState( {selected_alternative: event.target.value})
+    handleSelectExactChange(event){
+        this.setState( {selected_exact: event.target.value})
+        console.log(event.target.value)
+        if (event.target.value === 'true'){
+            this.setState({correction_show: false})
+            console.log('Hide')
+        }
+        else
+        {
+            this.setState({correction_show: true})
+            console.log('Show')
+        }
+    }
+    handleSelectCorrectionChange(event){
+        this.setState( {selected_correction: event.target.value})
     }
 
     render() {
@@ -157,20 +170,35 @@ class FisherExact extends React.Component {
                                 <FormHelperText>Select Column variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
+                                <InputLabel id="exact-selector-label">exact</InputLabel>
                                 <Select
-                                        labelid="alternative-selector-label"
-                                        id="alternative-selector"
-                                        value= {this.state.selected_alternative}
-                                        label="Alternative parameter"
-                                        onChange={this.handleSelectAlternativeChange}
+                                        labelid="exact-selector-label"
+                                        id="exact-selector"
+                                        value= {this.state.selected_exact}
+                                        label="exact parameter"
+                                        onChange={this.handleSelectExactChange}
                                 >
-                                    <MenuItem value={"two-sided"}><em>two-sided</em></MenuItem>
-                                    <MenuItem value={"less"}><em>less</em></MenuItem>
-                                    <MenuItem value={"greater"}><em>greater</em></MenuItem>
+                                    <MenuItem value={"false"}><em>false</em></MenuItem>
+                                    <MenuItem value={"true"}><em>true</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
+                                <FormHelperText>If exact is true, then the binomial distribution will be used. If exact is false, then the chisquare distribution will be used, which is the approximation to the distribution of the test statistic for large sample sizes.. </FormHelperText>
                             </FormControl>
+                            <div style={{ display: (this.state.correction_show ? 'block' : 'none')}}>
+                            <FormControl  sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="correction-selector-label">Correction</InputLabel>
+                                <Select
+                                        labelid="correction-selector-label"
+                                        id="correction-selector"
+                                        value= {this.state.selected_correction}
+                                        label="Correction"
+                                        onChange={this.handleSelectCorrectionChange}
+                                >
+                                    <MenuItem value={"false"}><em>false</em></MenuItem>
+                                    <MenuItem value={"true"}><em>true</em></MenuItem>
+                                </Select>
+                                <FormHelperText>If true, then a continuity correction is used for the chisquare distribution.</FormHelperText>
+                            </FormControl>
+                            </div>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
@@ -226,14 +254,14 @@ class FisherExact extends React.Component {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell/>
-                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>odd_ratio</TableCell>
+                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>statistic</TableCell>
                                             <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>p_value</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         <TableRow>
-                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>Fisher's Exact test</TableCell>
-                                            <TableCell align="center">{ Number.parseFloat(this.state.test_data.odd_ratio).toExponential(4)}</TableCell>
+                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>McNemar's test of homogeneity</TableCell>
+                                            <TableCell align="center">{ Number.parseFloat(this.state.test_data.statistic).toExponential(4)}</TableCell>
                                             <TableCell align="center">{Number.parseFloat(this.state.test_data.p_value).toExponential(4)}</TableCell>
                                         </TableRow>
                                     </TableBody>
@@ -246,4 +274,4 @@ class FisherExact extends React.Component {
     }
 }
 
-export default FisherExact;
+export default McNemar;
