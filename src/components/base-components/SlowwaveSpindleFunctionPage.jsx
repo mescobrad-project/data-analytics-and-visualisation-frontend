@@ -677,6 +677,8 @@ class SlowwaveSpindleFunctionPage extends React.Component {
             console.log("Slowwave")
             console.log(res.data)
             console.log( JSON.parse(res.data["data_frame_1"]))
+            // console.log( JSON.parse(res.data["circular_mean"]))
+            // console.log( JSON.parse(res.data["vector_length"]))
 
             this.setState({result_slowwave: res.data})
             this.setState({result_slowave_dataframe_1_table: JSON.parse(res.data.data_frame_1)})
@@ -898,24 +900,24 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                     knows what file to access*/}
                         <form onSubmit={this.handleSubmit}
                               style={{display: (this.state.channels.length != 0 ? 'block' : 'none')}}>
-                            <FormControl sx={{m: 1, width: '90%'}} size={"small"}>
-                                <InputLabel id="channel-selector-label">Channel</InputLabel>
-                                <Select
-                                        labelId="channel-selector-label"
-                                        id="channel-selector"
-                                        value={this.state.selected_channel}
-                                        label="Channel"
-                                        onChange={this.handleSelectChannelChange}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {this.state.channels.map((channel) => (
-                                            <MenuItem value={channel}>{channel}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width: '90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="channel-selector-label">Channel</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="channel-selector-label"*/}
+                            {/*            id="channel-selector"*/}
+                            {/*            value={this.state.selected_channel}*/}
+                            {/*            label="Channel"*/}
+                            {/*            onChange={this.handleSelectChannelChange}*/}
+                            {/*    >*/}
+                            {/*        <MenuItem value="">*/}
+                            {/*            <em>None</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*        {this.state.channels.map((channel) => (*/}
+                            {/*                <MenuItem value={channel}>{channel}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select Channel to Auto Correlate</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <Divider/>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 General Parameterisation
@@ -1323,6 +1325,9 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Slowwaves Results
                             </Typography>
+                            {/*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Circular Mean: { this.state.result_slowwave["circular_mean"]}</Typography>*/}
+                            {/*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Vector Length: { this.state.result_slowwave["vector_length"]}</Typography>*/}
+
                             <Grid item xs={6}
                                   style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
                                 <img

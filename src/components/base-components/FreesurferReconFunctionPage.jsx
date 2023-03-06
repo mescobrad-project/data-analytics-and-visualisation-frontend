@@ -243,44 +243,41 @@ class FreesurferReconFunctionPage extends React.Component {
         return (
                 <Grid container direction="column">
                     <Grid container direction="row" >
-                        <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
+                        {/*<Grid item xs={2} sx={{borderRight: "1px solid grey"}}>*/}
+                        {/*    <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        Data Preview*/}
+                        {/*    </Typography>*/}
+                        {/*    <hr/>*/}
+                        {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        File Name:*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        mri_example*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        File Type:*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        DICOM*/}
+                        {/*    </Typography>*/}
+                        {/*    <hr/>*/}
+                        {/*    /!*Not sure if slices need to be displayed*!/*/}
+                        {/*    /!*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*!/*/}
+                        {/*    /!*    Slices:*!/*/}
+                        {/*    /!*</Typography>*!/*/}
+                        {/*    /!*<List>*!/*/}
+                        {/*    /!*    {this.state.channels.map((channel) => (*!/*/}
+                        {/*    /!*            <ListItem> <ListItemText primary={channel}/></ListItem>*!/*/}
+                        {/*    /!*    ))}*!/*/}
+                        {/*    /!*</List>*!/*/}
+                        {/*</Grid>*/}
+                        <Grid item xs={6} sx={{borderRight: "1px solid grey", align: "center"}}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Data Preview
-                            </Typography>
-                            <hr/>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File Name:
-                            </Typography>
-                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                mri_example
-                            </Typography>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File Type:
-                            </Typography>
-                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                DICOM
-                            </Typography>
-                            <hr/>
-                            {/*Not sure if slices need to be displayed*/}
-                            {/*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
-                            {/*    Slices:*/}
-                            {/*</Typography>*/}
-                            {/*<List>*/}
-                            {/*    {this.state.channels.map((channel) => (*/}
-                            {/*            <ListItem> <ListItemText primary={channel}/></ListItem>*/}
-                            {/*    ))}*/}
-                            {/*</List>*/}
-                        </Grid>
-                        <Grid item xs={5} sx={{borderRight: "1px solid grey", align: "center"}}>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Freesurfer Recon-All
+                                Freesurfer Cortical Reconstruction Process: recon-all
                             </Typography>
                             <hr/>
                             <div style={{display: (this.state.selected_page_function !== "Old" ? 'block' : 'none')}}>
-
                                 <form onSubmit={this.handleSubmit}>
-
-
                                     <Button variant="contained" color="primary" type="submit"
                                             sx={{display: (this.state.selected_page_function === "None" ? 'inline-flex' : 'none')}}
                                     >
@@ -289,6 +286,48 @@ class FreesurferReconFunctionPage extends React.Component {
                                 </form>
                                 <hr/>
                             </div>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                Recon-All Output Status
+                            </Typography>
+                            <hr/>
+                            <form onSubmit={this.handleProcessUpdate}>
+                                <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}
+                                        disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }>
+                                    Check progress
+                                </Button>
+                                {/*<Button onClick={this.sendToBottom} variant="contained" color="secondary"*/}
+                                {/*        sx={{margin: "8px", float: "right"}}>*/}
+                                {/*    Scroll down to latest log >*/}
+                                {/*</Button>*/}
+                            </form>
+
+                            <br/>
+                            <TextareaAutosize
+                                    aria-label="Status Log"
+                                    placeholder="Status Log of recon function"
+                                    value={this.state.returned_status}
+                                    style={{
+                                        width: "90%",
+                                        backgroundColor: "black",
+                                        color: "white",
+                                        padding: "10px",
+                                        margin: "8px"
+                                    }}
+                            />
+                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
+                                    sx={{margin: "8px", float: "right"}}>
+                                Continue >
+                            </Button>
+                            <Button onClick={this.handleProcessFinished} variant="contained" color="primary"
+                                    disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }
+                                    sx={{margin: "8px"}}>
+                                Process Finished
+                            </Button>
+
+                            {/*<Button onClick={this.sendToTop} variant="contained" color="secondary"*/}
+                            {/*        sx={{margin: "8px", float: "right"}}>*/}
+                            {/*    Back to Top >*/}
+                            {/*</Button>*/}
                             {/*<div style={{display: (this.state.selected_page_function !== "New" ? 'block' : 'none')}}>*/}
                             {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
                             {/*        Check Old Process Status*/}
@@ -322,9 +361,9 @@ class FreesurferReconFunctionPage extends React.Component {
                             {/*        or logs have explicitly stated failure contact the administrators and send the logs*/}
                             {/*    </Typography>*/}
                         </Grid>
-                        <Grid item xs={5}>
+                        <Grid item xs={6}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Freesurfer Samseg
+                                Sequence Adaptive Multimodal SEGmentation (SAMSEG)
                             </Typography>
                             <hr/>
                             <div style={{display: (this.state.selected_page_function !== "Old" ? 'block' : 'none')}}>
@@ -343,95 +382,8 @@ class FreesurferReconFunctionPage extends React.Component {
                                 <hr/>
                             </div>
                         </Grid>
-                        <Grid item xs={2} sx={{borderRight: "1px solid grey", align: "center"}}>
-                        </Grid>
-                        <Grid item xs={5} sx={{borderRight: "1px solid grey", align: "center"}}>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Recon-All Output Status
-                            </Typography>
-                            <hr/>
-                            <form onSubmit={this.handleProcessUpdate}>
-                                <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}
-                                        disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }>
-                                    Check progress
-                                </Button>
-                                <Button onClick={this.sendToBottom} variant="contained" color="secondary"
-                                        sx={{margin: "8px", float: "right"}}>
-                                    Scroll down to latest log >
-                                </Button>
-                            </form>
 
-                            <br/>
-                            <TextareaAutosize
-                                    aria-label="Status Log"
-                                    placeholder="Status Log of recon function"
-                                    value={this.state.returned_status}
-                                    style={{
-                                        width: "90%",
-                                        backgroundColor: "black",
-                                        color: "white",
-                                        padding: "10px",
-                                        margin: "8px"
-                                    }}
-                            />
-                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
-                                    sx={{margin: "8px", float: "right"}}>
-                                Continue >
-                            </Button>
-                            <Button onClick={this.handleProcessFinished} variant="contained" color="primary"
-                                    disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }
-                                    sx={{margin: "8px"}}>
-                                Process Finished
-                            </Button>
 
-                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
-                                    sx={{margin: "8px", float: "right"}}>
-                                Back to Top >
-                            </Button>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Samseg Output Status
-                            </Typography>
-                            <hr/>
-                            <form onSubmit={this.handleProcessUpdate}>
-                                <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}
-                                        disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }>
-                                    Check progress
-                                </Button>
-                                <Button onClick={this.sendToBottom} variant="contained" color="secondary"
-                                        sx={{margin: "8px", float: "right"}}>
-                                    Scroll down to latest log >
-                                </Button>
-                            </form>
-
-                            <br/>
-                            <TextareaAutosize
-                                    aria-label="Status Log"
-                                    placeholder="Status Log of recon function"
-                                    value={this.state.returned_status}
-                                    style={{
-                                        width: "90%",
-                                        backgroundColor: "black",
-                                        color: "white",
-                                        padding: "10px",
-                                        margin: "8px"
-                                    }}
-                            />
-                            <Button onClick={this.handleProcessFinished} variant="contained" color="primary"
-                                    disabled={ (this.state.selected_freesurfer_function_id_to_log === "" ? "disabled" : false)  }
-                                    sx={{margin: "8px"}}>
-                                Process Finished
-                            </Button>
-                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
-                                    sx={{margin: "8px", float: "right"}}>
-                                Continue >
-                            </Button>
-                            <Button onClick={this.sendToTop} variant="contained" color="secondary"
-                                    sx={{margin: "8px", float: "right"}}>
-                                Back to Top >
-                            </Button>
-                        </Grid>
                     </Grid>
                     {this.state.show_neurodesk ? <Grid container direction="row">
                         <Grid item xs={12} sx={{height: "10vh", borderTop: "1px solid grey", borderBottom: "1px solid grey", backgroundColor: "#0099cc"}}>

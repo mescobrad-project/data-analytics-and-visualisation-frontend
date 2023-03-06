@@ -12,6 +12,7 @@ services:
     restart: always
     ports:
       - "3005:3000"
-    networks:
-      - mri-freesurfer-network
-      - analytics-network
+#    networks:
+#      - mri-freesurfer-network
+#      - analytics-network
+
