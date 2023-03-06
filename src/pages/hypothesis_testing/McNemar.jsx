@@ -4,10 +4,46 @@ import {
     Button,
     FormControl,
     FormHelperText,
-    Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    Grid, InputLabel, MenuItem, Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs,
     Typography
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+import PropTypes from "prop-types";
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 class McNemar extends React.Component {
     constructor(props){
@@ -37,11 +73,26 @@ class McNemar extends React.Component {
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
         this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleSelectColumnVariableChange = this.handleSelectColumnVariableChange.bind(this);
         this.handleSelectRowVariableChange = this.handleSelectRowVariableChange.bind(this);
         this.handleSelectExactChange = this.handleSelectExactChange.bind(this);
         this.handleSelectCorrectionChange = this.handleSelectCorrectionChange.bind(this);
         this.fetchBinaryColumnNames();
+        this.fetchColumnNames();
+    }
+
+    async fetchColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_columns",
+                {params: {
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({columns: res.data.columns})
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:1})
+        });
     }
 
     async fetchBinaryColumnNames(url, config) {
@@ -83,6 +134,7 @@ class McNemar extends React.Component {
             this.setState({crosstab_data_1:resultJson['data'][1]})
             this.setState({crosstab_data_2:resultJson['data'][2]})
             this.setState({stats_show: true})
+            this.setState({tabvalue:0})
         });
     }
 
@@ -209,65 +261,82 @@ class McNemar extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr className="result"/>
-                        <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                { this.state.selected_row_variable} * {this.state.selected_column_variable} Crosstabulation</Typography>
-                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'50%', minWidth:'120px'}}>
-                                <Table sx={{textAlign:"right"}}>
-                                    <TableHead>
-                                        <TableRow >
-                                            <TableCell sx={{border:'none'}}></TableCell>
-                                            <TableCell colSpan={3} className="tableHeadCell" style={{fontWeight:'bold', borderTop:'none'}}>{this.state.selected_column_variable}</TableCell></TableRow>
-                                        <TableRow>
-                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} className="tableHeadCell">{this.state.selected_row_variable}</TableCell>
-                                            {this.state.crosstab_cols.map((column) => (
-                                                    <TableCell className="tableHeadCell" value={column}>{column}</TableCell>
-                                            ))}
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell sx={{fontWeight:'bold', width:'20%'}} className="tableCell" >{this.state.crosstab_index[0]}</TableCell>
-                                            {this.state.crosstab_data_0.map((column) => (
-                                                    <TableCell className="tableCell" value={column}>{column}</TableCell>
-                                            ))}
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell sx={{fontWeight:'bold'}} className="tableCell" >{this.state.crosstab_index[1]}</TableCell>
-                                            {this.state.crosstab_data_1.map((column) => (
-                                                    <TableCell className="tableCell" value={column}>{column}</TableCell>
-                                            ))}
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell sx={{fontWeight:'bold'}} className="tableCell" >{this.state.crosstab_index[2]}</TableCell>
-                                            {this.state.crosstab_data_2.map((column) => (
-                                                    <TableCell className="tableCell" value={column}>{column}</TableCell>
-                                            ))}
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <br/>
-                            <br/>
-                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'70%', minWidth:'120px'}}>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell/>
-                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>statistic</TableCell>
-                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>p_value</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>McNemar's test of homogeneity</TableCell>
-                                            <TableCell align="center">{ Number.parseFloat(this.state.test_data.statistic).toExponential(4)}</TableCell>
-                                            <TableCell align="center">{Number.parseFloat(this.state.test_data.p_value).toExponential(4)}</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </div>
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Results" {...a11yProps(0)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    {/*<Tab label="New Dataset" {...a11yProps(2)} />*/}
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={this.state.tabvalue} index={0}>
+                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                        { this.state.selected_row_variable} * {this.state.selected_column_variable} Crosstabulation</Typography>
+                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'50%', minWidth:'120px'}}>
+                                        <Table sx={{textAlign:"right"}}>
+                                            <TableHead>
+                                                <TableRow >
+                                                    <TableCell sx={{border:'none'}}></TableCell>
+                                                    <TableCell colSpan={3} className="tableHeadCell" style={{fontWeight:'bold', borderTop:'none'}}>{this.state.selected_column_variable}</TableCell></TableRow>
+                                                <TableRow>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} className="tableHeadCell">{this.state.selected_row_variable}</TableCell>
+                                                    {this.state.crosstab_cols.map((column) => (
+                                                            <TableCell className="tableHeadCell" value={column}>{column}</TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                <TableRow>
+                                                    <TableCell sx={{fontWeight:'bold', width:'20%'}} className="tableCell" >{this.state.crosstab_index[0]}</TableCell>
+                                                    {this.state.crosstab_data_0.map((column) => (
+                                                            <TableCell className="tableCell" value={column}>{column}</TableCell>
+                                                    ))}
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell sx={{fontWeight:'bold'}} className="tableCell" >{this.state.crosstab_index[1]}</TableCell>
+                                                    {this.state.crosstab_data_1.map((column) => (
+                                                            <TableCell className="tableCell" value={column}>{column}</TableCell>
+                                                    ))}
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell sx={{fontWeight:'bold'}} className="tableCell" >{this.state.crosstab_index[2]}</TableCell>
+                                                    {this.state.crosstab_data_2.map((column) => (
+                                                            <TableCell className="tableCell" value={column}>{column}</TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <br/>
+                                    <br/>
+                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'70%', minWidth:'120px'}}>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell/>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>statistic</TableCell>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>p_value</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                <TableRow>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}}>McNemar's test of homogeneity</TableCell>
+                                                    <TableCell align="center">{ Number.parseFloat(this.state.test_data.statistic).toExponential(4)}</TableCell>
+                                                    <TableCell align="center">{Number.parseFloat(this.state.test_data.p_value).toExponential(4)}</TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={1}>
+                                <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
+                            </TabPanel>
+                            {/*<TabPanel value={this.state.tabvalue} index={2}>*/}
+                            {/*    Item Three*/}
+                            {/*</TabPanel>*/}
+                        </Box>
                     </Grid>
                 </Grid>
         )
