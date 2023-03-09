@@ -19,6 +19,7 @@ import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-gri
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
+import InnerHTML from "dangerously-set-html-content";
 
 const userColumns = [
     { field: "Cor",
@@ -126,9 +127,13 @@ class Pearson_correlation extends React.Component {
             column_names: [],
             initialdataset:[],
             test_data: {
-                DataFrame:[]
+                DataFrame:[],
+                Table_rcorr:[],
+                // rplot: [],
             },
             //Values selected currently on the form
+            Teblecorr: [],
+            // chart_data: [],
             selected_method: "pearson",
             selected_alternative: "two-sided",
             selected_independent_variables: []
@@ -191,6 +196,9 @@ class Pearson_correlation extends React.Component {
                 }
         ).then(res => {
             this.setState({test_data: res.data})
+            this.setState({Teblecorr: JSON.parse(res.data.Table_rcorr)})
+            // this.setState({chart_data: res.data['rplot']})
+            // console.log(res.data['rplot'])
             this.setState({tabvalue:0})
         });
     }
@@ -307,6 +315,17 @@ class Pearson_correlation extends React.Component {
                                               Toolbar: CustomToolbar,
                                           }}
                                 />
+                                <hr className="result"/>
+                                <Grid>
+                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                        Correlation matrix
+                                    </Typography>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.Teblecorr}/>
+                                </Grid>
+                                <hr className="result"/>
+                                {/*<Grid>*/}
+                                {/*    <InnerHTML html={this.state.chart_data} style={{zoom:'80%'}}/>*/}
+                                {/*</Grid>*/}
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
@@ -315,9 +334,6 @@ class Pearson_correlation extends React.Component {
                             {/*    Item Three*/}
                             {/*</TabPanel>*/}
                         </Box>
-                        <div className="datatable">
-
-                        </div>
                     </Grid>
                 </Grid>
         )

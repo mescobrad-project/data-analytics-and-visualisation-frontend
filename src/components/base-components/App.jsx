@@ -79,6 +79,7 @@ import LogisticRegressionStatsmodelsFunctionPage from "./LogisticRegressionStats
 import LogisticRegressionSklearnFunctionPage from "./LogisticRegressionSklearnFunctionPage";
 import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
 import SurvivalAnalysisRiskRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioSimple";
+import SurvivalAnalysisRiskRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioDataset";
 import SurvivalAnalysisRiskDifferenceSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceSimple"
 import SurvivalAnalysisNNTSimple from "../../pages/hypothesis_testing/SurvivalAnalysisNNTSimple"
 import SurvivalAnalysisOddsRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioSimple";
@@ -204,6 +205,7 @@ const App = () => {
                         <Route exact path="/LogisticRegressionStatsmodels" element={(<LayoutMain><LogisticRegressionStatsmodelsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/LogisticRegressionSklearn" element={(<LayoutMain><LogisticRegressionSklearnFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskRatioSimple" element={(<LayoutMain><SurvivalAnalysisRiskRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskRatioDataset" element={(<LayoutMain><SurvivalAnalysisRiskRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisNNTSimple" element={(<LayoutMain><SurvivalAnalysisNNTSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisOddsRatioSimple" element={(<LayoutMain><SurvivalAnalysisOddsRatioSimple/></LayoutMain>)}/>
