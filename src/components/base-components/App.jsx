@@ -81,8 +81,11 @@ import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped
 import SurvivalAnalysisRiskRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioSimple";
 import SurvivalAnalysisRiskRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioDataset";
 import SurvivalAnalysisRiskDifferenceSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceSimple"
+import SurvivalAnalysisRiskDifferenceDataset from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceDataset"
 import SurvivalAnalysisNNTSimple from "../../pages/hypothesis_testing/SurvivalAnalysisNNTSimple"
+import SurvivalAnalysisNNTDataset from "../../pages/hypothesis_testing/SurvivalAnalysisNNTDataset"
 import SurvivalAnalysisOddsRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioSimple";
+import SurvivalAnalysisOddsRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioDataset";
 import SurvivalAnalysisIncidenceRateRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioSimple";
 import SurvivalAnalysisIncidenceRateDifferenceSimple
     from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceSimple";
@@ -207,8 +210,11 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisRiskRatioSimple" element={(<LayoutMain><SurvivalAnalysisRiskRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskRatioDataset" element={(<LayoutMain><SurvivalAnalysisRiskRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskDifferenceDataset" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisNNTSimple" element={(<LayoutMain><SurvivalAnalysisNNTSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisNNTDataset" element={(<LayoutMain><SurvivalAnalysisNNTDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisOddsRatioSimple" element={(<LayoutMain><SurvivalAnalysisOddsRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisOddsRatioDataset" element={(<LayoutMain><SurvivalAnalysisOddsRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateRatioSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
                         <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
