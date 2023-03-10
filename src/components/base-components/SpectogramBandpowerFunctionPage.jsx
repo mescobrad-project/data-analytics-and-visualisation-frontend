@@ -29,6 +29,7 @@ import {useLocation} from "react-router-dom";
 import {GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
+import qs from "qs";
 
 const style = {
     position: 'absolute',
@@ -95,6 +96,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
             general_sampling_freuency_hypno: 1/30,
             bandpower_relative: false,
             bandpower_bandpass: false,
+            bandpower_include: [2,3],
             bandpower_include_low: 2,
             bandpower_include_high: 3,
 
@@ -129,6 +131,9 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         this.handleChangeBandpowerIncludeLow = this.handleChangeBandpowerIncludeLow.bind(this);
         this.handleChangeBandpowerIncludeHigh = this.handleChangeBandpowerIncludeHigh.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleChangeBandpowerInclude = this.handleChangeBandpowerInclude.bind(this);
+        this.clear = this.clear.bind(this);
+        this.selectAll = this.selectAll.bind(this);
 
         this.fetchChannels()
     }
@@ -165,6 +170,16 @@ class SlowwaveSpindleFunctionPage extends React.Component {
 
     async fetchBandPower() {
         const params = new URLSearchParams(window.location.search);
+        console.log("Include")
+        console.log(this.state.bandpower_include)
+        console.log(typeof this.state.bandpower_include[0])
+        let include_to_send = []
+        for (let i = 0; i < this.state.bandpower_include.length; i++) {
+            include_to_send.push(parseInt(this.state.bandpower_include[i]))
+        }
+        console.log(include_to_send)
+        console.log(typeof include_to_send[0])
+
         API.get("/bandpower_yasa", {
             params: {
                 workflow_id: params.get("workflow_id"),
@@ -172,8 +187,12 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                 step_id: params.get("step_id"),
                 relative: this.state.bandpower_relative,
                 bandpass: this.state.bandpower_bandpass,
-                include: [this.state.bandpower_include_low, this.state.bandpower_include_high],
+                // include: [this.state.bandpower_include_low, this.state.bandpower_include_high],
+                include: include_to_send,
                 sampling_frequency: this.state.general_sampling_freuency_hypno
+            },
+            paramsSerializer: params => {
+                return qs.stringify(params, { arrayFormat: "repeat" })
             }
         }).then(res => {
             this.setState({result_band_power: res.data})
@@ -241,8 +260,18 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         this.setState({bandpower_include_high: event.target.value})
     }
 
+    handleChangeBandpowerInclude(event) {
+        this.setState({bandpower_include: event.target.value})
+    }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
+    }
+
+    clear(){
+        this.setState({bandpower_include: []})
+    }
+    selectAll(){
+        this.setState({bandpower_include: [-2,-1,0,1,2,3,4]})
     }
 
     debug = () => {
@@ -365,26 +394,69 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                 <FormHelperText>Bandpower Bandpass </FormHelperText>
                             </FormControl>
                             <Divider sx={{opacity: 0.4}}/>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="bandpower-include-low"
-                                        value= {this.state.bandpower_include_low}
-                                        label="Bandpower Include Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeBandpowerIncludeLow}
-                                />
-                                <FormHelperText>Bandpower Include Low</FormHelperText>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                                <FormHelperText>Selected Variables</FormHelperText>
+                                <List style={{fontSize:'9px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                                    {this.state.bandpower_include.map((column) => (
+                                            <ListItem disablePadding
+                                            >
+                                                <ListItemText
+                                                        primaryTypographyProps={{fontSize: '10px'}}
+                                                        primary={'•  ' + column}
+                                                />
+
+                                            </ListItem>
+                                    ))}
+                                </List>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="bandpower-include-high"
-                                        value= {this.state.bandpower_include_high}
-                                        label="Bandpower Include high"
-                                        size={"small"}
-                                        onChange={this.handleChangeBandpowerIncludeHigh}
-                                />
-                                <FormHelperText>Bandpower Include High</FormHelperText>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="include-selector-label">Sleep Stages to include</InputLabel>
+                                <Select
+                                        labelId="include-selector-label"
+                                        id="include-selector"
+                                        value= {this.state.bandpower_include}
+                                        multiple
+                                        label="Include"
+                                        onChange={this.handleChangeBandpowerInclude}
+                                >
+                                    <MenuItem value="-2">Unscored</MenuItem>
+                                    <MenuItem value="-1">Artefact/Movement</MenuItem>
+                                    <MenuItem value="0">Wake</MenuItem>
+                                    <MenuItem value="1">N1 Sleep</MenuItem>
+                                    <MenuItem value="2">N2 Sleep</MenuItem>
+                                    <MenuItem value="3">N3 Sleep</MenuItem>
+                                    <MenuItem value="4">REM Sleep</MenuItem>
+                                </Select>
+                                <FormHelperText>Select which hypnogram sleep stages to be included in the analysis</FormHelperText>
+                                <Button onClick={this.selectAll}>
+                                    Select All Variables
+                                </Button>
+                                <Button onClick={this.clear}>
+                                    Clear Selections
+                                </Button>
                             </FormControl>
+
+
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="bandpower-include-low"*/}
+                            {/*            value= {this.state.bandpower_include_low}*/}
+                            {/*            label="Bandpower Include Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeBandpowerIncludeLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Bandpower Include Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="bandpower-include-high"*/}
+                            {/*            value= {this.state.bandpower_include_high}*/}
+                            {/*            label="Bandpower Include high"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeBandpowerIncludeHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Bandpower Include High</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <Divider/>
                             <Button sx={{float: "left", marginLeft: "2px"}} variant="contained" color="primary"
                                     type="submit">
