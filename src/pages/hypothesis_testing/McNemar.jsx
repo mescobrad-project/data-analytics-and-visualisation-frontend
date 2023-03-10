@@ -278,31 +278,31 @@ class McNemar extends React.Component {
                                             <TableHead>
                                                 <TableRow >
                                                     <TableCell sx={{border:'none'}}></TableCell>
-                                                    <TableCell colSpan={3} className="tableHeadCell" style={{fontWeight:'bold', borderTop:'none'}}>{this.state.selected_column_variable}</TableCell></TableRow>
+                                                    <TableCell align="center" colSpan={3} style={{fontWeight:'bold', borderTop:'none'}}>{this.state.selected_column_variable}</TableCell></TableRow>
                                                 <TableRow>
-                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} className="tableHeadCell">{this.state.selected_row_variable}</TableCell>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} >{this.state.selected_row_variable}</TableCell>
                                                     {this.state.crosstab_cols.map((column) => (
-                                                            <TableCell className="tableHeadCell" value={column}>{column}</TableCell>
+                                                            <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} value={column}>{column}</TableCell>
                                                     ))}
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
                                                 <TableRow>
-                                                    <TableCell sx={{fontWeight:'bold', width:'20%'}} className="tableCell" >{this.state.crosstab_index[0]}</TableCell>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} >{this.state.crosstab_index[0]}</TableCell>
                                                     {this.state.crosstab_data_0.map((column) => (
-                                                            <TableCell className="tableCell" value={column}>{column}</TableCell>
+                                                            <TableCell align="center" style={{borderTop:'none'}} value={column}>{column}</TableCell>
                                                     ))}
                                                 </TableRow>
                                                 <TableRow>
-                                                    <TableCell sx={{fontWeight:'bold'}} className="tableCell" >{this.state.crosstab_index[1]}</TableCell>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} >{this.state.crosstab_index[1]}</TableCell>
                                                     {this.state.crosstab_data_1.map((column) => (
-                                                            <TableCell className="tableCell" value={column}>{column}</TableCell>
+                                                            <TableCell align="center" style={{borderTop:'none'}} value={column}>{column}</TableCell>
                                                     ))}
                                                 </TableRow>
                                                 <TableRow>
-                                                    <TableCell sx={{fontWeight:'bold'}} className="tableCell" >{this.state.crosstab_index[2]}</TableCell>
+                                                    <TableCell align="center" style={{fontWeight:'bold' , borderTop:'none'}} >{this.state.crosstab_index[2]}</TableCell>
                                                     {this.state.crosstab_data_2.map((column) => (
-                                                            <TableCell className="tableCell" value={column}>{column}</TableCell>
+                                                            <TableCell align="center" style={{borderTop:'none'}} value={column}>{column}</TableCell>
                                                     ))}
                                                 </TableRow>
                                             </TableBody>
