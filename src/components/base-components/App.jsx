@@ -87,6 +87,8 @@ import SurvivalAnalysisNNTDataset from "../../pages/hypothesis_testing/SurvivalA
 import SurvivalAnalysisOddsRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioSimple";
 import SurvivalAnalysisOddsRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioDataset";
 import SurvivalAnalysisIncidenceRateRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioSimple";
+import SurvivalAnalysisIncidenceRateRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioDataset"
+import SurvivalAnalysisIncidenceRateDifferenceDataset from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceDataset"
 import SurvivalAnalysisIncidenceRateDifferenceSimple
     from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceSimple";
 import FisherExact from "../../pages/hypothesis_testing/FisherExact";
@@ -216,7 +218,9 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisOddsRatioSimple" element={(<LayoutMain><SurvivalAnalysisOddsRatioSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisOddsRatioDataset" element={(<LayoutMain><SurvivalAnalysisOddsRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateRatioSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisIncidenceRateRatioDataset" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceDataset" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceDataset/></LayoutMain>)}/>
                         <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
                         <Route exact path="/McNemar" element={(<LayoutMain><McNemar/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
