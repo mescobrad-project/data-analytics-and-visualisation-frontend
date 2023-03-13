@@ -102,6 +102,7 @@ import SlowwaveSpindleFunctionPage from "./SlowwaveSpindleFunctionPage";
 import TestingPage from "./TestingPage";
 import SleepStatisticsFunctionPage from "./SleepStatisticsFunctionPage";
 import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
+import PowerSpectralDensityPage from "./PowerSpectralDensityPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -232,6 +233,7 @@ const App = () => {
                         <Route exact path="/spectogram_bandpower" element={(<LayoutMain><SpectogramBandpowerFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/slowwave_spindle" element={(<LayoutMain><SlowwaveSpindleFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/testing" element={(<LayoutMain><TestingPage/></LayoutMain>)}/>
+                        <Route exact path="/power_spectral_density_main" element={(<LayoutMain><PowerSpectralDensityPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
