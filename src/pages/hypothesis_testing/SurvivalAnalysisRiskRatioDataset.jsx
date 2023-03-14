@@ -88,8 +88,7 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
         this.fetchBinaryColumnNames();
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchColumnNames();
-
-
+        this.handleTabChange = this.handleTabChange.bind(this);
     }
 
     async fetchColumnNames(url, config) {
@@ -171,6 +170,9 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
     }
     handleSelectReferenceChange(event){
         this.setState( {selected_reference: event.target.value})
+    }
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
     }
 
     render() {

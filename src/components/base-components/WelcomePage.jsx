@@ -389,7 +389,7 @@ function WelcomePage() {
                                         variant="contained"
                                         size="medium"
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-
+                                        fullWidth
                                         // onClick={redirectToPage.bind(this,1,1, 2, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "normality", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                                 >
@@ -524,6 +524,15 @@ function WelcomePage() {
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "kendalltau_correlation", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                                 >
                                     Kendalltau Correlation
+                                </Button>
+                                <Button
+                                        // variant="contained"
+                                        size="medium"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "canonical_correlation", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Canonical Correlation
                                 </Button>
                             </AccordionDetails>
                         </Accordion>
@@ -701,8 +710,6 @@ function WelcomePage() {
                                 {/*</Button>*/}
                             </AccordionDetails>
                         </Accordion>
-
-
                         <Accordion>
                             <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
@@ -914,7 +921,6 @@ function WelcomePage() {
                                 </Button>
                             </AccordionDetails>
                         </Accordion>
-
                         <Accordion>
                             <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
