@@ -103,6 +103,7 @@ import TestingPage from "./TestingPage";
 import SleepStatisticsFunctionPage from "./SleepStatisticsFunctionPage";
 import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
 import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_correlation"
+import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -223,6 +224,7 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisIncidenceRateRatioDataset" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceDataset" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceDataset/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisKaplanMeier" element={(<LayoutMain><SurvivalAnalysisKaplanMeier/></LayoutMain>)}/>
                         <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
                         <Route exact path="/McNemar" element={(<LayoutMain><McNemar/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
