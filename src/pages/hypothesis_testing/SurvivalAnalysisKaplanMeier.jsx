@@ -74,6 +74,11 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
             SurvivalFunction:[],
             ConfidenceInterval:[],
             EventTable:[],
+            Conditional_time_to_event:[],
+            Confidence_interval_cumulative_density:[],
+            Cumulative_density:[],
+            Timeline:[],
+            Median_survival_time:"",
             selected_exposure_variable: "",
             selected_outcome_variable: "",
             selected_at_risk_counts: 'True',
@@ -82,8 +87,6 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
             stats_show: false,
             svg_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/survival_function.svg',
-            svg1_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/survival_function2.svg',
         };
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -148,6 +151,11 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
             this.setState({SurvivalFunction:JSON.parse(res.data.survival_function)})
             this.setState({ConfidenceInterval:JSON.parse(res.data.confidence_interval)})
             this.setState({EventTable:JSON.parse(res.data.event_table)})
+            this.setState({Conditional_time_to_event:JSON.parse(res.data.conditional_time_to_event)})
+            this.setState({Confidence_interval_cumulative_density:JSON.parse(res.data.confidence_interval_cumulative_density)})
+            this.setState({Cumulative_density:JSON.parse(res.data.cumulative_density)})
+            this.setState({Timeline:JSON.parse(res.data.timeline)})
+            this.setState({Median_survival_time:res.data.median_survival_time})
             this.setState({stats_show: true})
             this.setState({tabvalue:0})
         });
@@ -197,7 +205,7 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Exposure Variable</InputLabel>
+                                <InputLabel id="column-selector-label">Status</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
@@ -212,10 +220,10 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Exposure Variable</FormHelperText>
+                                <FormHelperText>Select Status Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Outcome Variable</InputLabel>
+                                <InputLabel id="column-selector-label">Duration</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
@@ -230,7 +238,7 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Outcome variable</FormHelperText>
+                                <FormHelperText>Select Duration variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
@@ -285,25 +293,52 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    <Grid container>
+                                        <Grid item xs={7} >
+                                        <img src={this.state.svg_path + "?random=" + new Date().getTime()}
+                                                // srcSet={this.state.svg_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                             loading="lazy"
+                                        />
+                                        </Grid>
+                                        <Grid item xs={5} >
+                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                Survival Function. </Typography>
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.SurvivalFunction}/>
+                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                Cumulative density. </Typography>
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.Cumulative_density}/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <hr className="result"/>
+                                <Grid>
                                     <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                        Estimates of Incidence Rate Ratio with a (1-alpha)*100% Confidence interval. </Typography>
-
-                                    <JsonTable className="jsonResultsTable" rows = {this.state.SurvivalFunction}/>
-                                    <JsonTable className="jsonResultsTable" rows = {this.state.ConfidenceInterval}/>
+                                        Event Table. </Typography>
                                     <JsonTable className="jsonResultsTable" rows = {this.state.EventTable}/>
-                                    <hr className="result"/>
-                                </div>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <img src={this.state.svg_path + "?random=" + new Date().getTime()}
-                                         // srcSet={this.state.svg_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                         loading="lazy"
-                                    />
-                                    <img src={this.state.svg1_path + "?random=" + new Date().getTime()}
-                                         // srcSet={this.state.svg_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                         loading="lazy"
-                                    />
-                                </div>
+                                </Grid>
+                                <hr className="result"/>
+                                <Grid>
+                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                        Conditional time to event. </Typography>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.Conditional_time_to_event}/>
+
+                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                        Median survival time = {this.state.Median_survival_time} </Typography>
+                                </Grid>
+                                <hr className="result"/>
+                                <Grid container>
+                                    <Grid item xs={6}>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                            Confidence Interval. </Typography>
+                                        <JsonTable className="jsonResultsTable" rows = {this.state.ConfidenceInterval}/>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                            Confidence Interval cumulative density. </Typography>
+                                        <JsonTable className="jsonResultsTable" rows = {this.state.Confidence_interval_cumulative_density}/>
+                                    </Grid>
+                                </Grid>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
