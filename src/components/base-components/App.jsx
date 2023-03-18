@@ -79,12 +79,20 @@ import LogisticRegressionStatsmodelsFunctionPage from "./LogisticRegressionStats
 import LogisticRegressionSklearnFunctionPage from "./LogisticRegressionSklearnFunctionPage";
 import Skipped_spearman_correlation from "../../pages/hypothesis_testing/Skipped_spearman_correlation";
 import SurvivalAnalysisRiskRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioSimple";
+import SurvivalAnalysisRiskRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisRiskRatioDataset";
 import SurvivalAnalysisRiskDifferenceSimple from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceSimple"
+import SurvivalAnalysisRiskDifferenceDataset from "../../pages/hypothesis_testing/SurvivalAnalysisRiskDifferenceDataset"
 import SurvivalAnalysisNNTSimple from "../../pages/hypothesis_testing/SurvivalAnalysisNNTSimple"
+import SurvivalAnalysisNNTDataset from "../../pages/hypothesis_testing/SurvivalAnalysisNNTDataset"
 import SurvivalAnalysisOddsRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioSimple";
+import SurvivalAnalysisOddsRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisOddsRatioDataset";
 import SurvivalAnalysisIncidenceRateRatioSimple from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioSimple";
+import SurvivalAnalysisIncidenceRateRatioDataset from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateRatioDataset"
+import SurvivalAnalysisIncidenceRateDifferenceDataset from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceDataset"
 import SurvivalAnalysisIncidenceRateDifferenceSimple
     from "../../pages/hypothesis_testing/SurvivalAnalysisIncidenceRateDifferenceSimple";
+import FisherExact from "../../pages/hypothesis_testing/FisherExact";
+import McNemar from "../../pages/hypothesis_testing/McNemar";
 import Ancova from "../../pages/hypothesis_testing/Ancova"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
@@ -95,6 +103,8 @@ import TestingPage from "./TestingPage";
 import FactorAnalysisFunctionPage from "./FactorAnalysisFunctionPage";
 import SleepStatisticsFunctionPage from "./SleepStatisticsFunctionPage";
 import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
+import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_correlation"
+import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
 
 // Theme Colors Declaration
@@ -164,6 +174,7 @@ const App = () => {
                         <Route exact path="/Skipped_spearman_correlation" element={(<LayoutMain><Skipped_spearman_correlation/></LayoutMain>)}/>
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
+                        <Route exact path="/Canonical_correlation" element={(<LayoutMain><Canonical_correlation/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Welch_t_test" element={(<LayoutMain><Welch_t_test/></LayoutMain>)}/>
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
@@ -204,11 +215,20 @@ const App = () => {
                         <Route exact path="/LogisticRegressionStatsmodels" element={(<LayoutMain><LogisticRegressionStatsmodelsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/LogisticRegressionSklearn" element={(<LayoutMain><LogisticRegressionSklearnFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskRatioSimple" element={(<LayoutMain><SurvivalAnalysisRiskRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskRatioDataset" element={(<LayoutMain><SurvivalAnalysisRiskRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisRiskDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisRiskDifferenceDataset" element={(<LayoutMain><SurvivalAnalysisRiskDifferenceDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisNNTSimple" element={(<LayoutMain><SurvivalAnalysisNNTSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisNNTDataset" element={(<LayoutMain><SurvivalAnalysisNNTDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisOddsRatioSimple" element={(<LayoutMain><SurvivalAnalysisOddsRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisOddsRatioDataset" element={(<LayoutMain><SurvivalAnalysisOddsRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateRatioSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisIncidenceRateRatioDataset" element={(<LayoutMain><SurvivalAnalysisIncidenceRateRatioDataset/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceSimple" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceSimple/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisIncidenceRateDifferenceDataset" element={(<LayoutMain><SurvivalAnalysisIncidenceRateDifferenceDataset/></LayoutMain>)}/>
+                        <Route exact path="/SurvivalAnalysisKaplanMeier" element={(<LayoutMain><SurvivalAnalysisKaplanMeier/></LayoutMain>)}/>
+                        <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
+                        <Route exact path="/McNemar" element={(<LayoutMain><McNemar/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>

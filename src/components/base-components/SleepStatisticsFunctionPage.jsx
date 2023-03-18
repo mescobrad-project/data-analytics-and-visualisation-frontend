@@ -49,7 +49,7 @@ const userColumns = [
         width: '10%',
         align: "left",
         headerAlign: "left",
-        flex:3,
+        flex:1,
         sortable: true},
     {
         field: "SPT",
@@ -57,7 +57,7 @@ const userColumns = [
         width: '10%',
         align: "center",
         headerAlign: "center",
-        flex:0.5
+        flex:1
     },
     {
         field: "WASO",
@@ -403,7 +403,7 @@ class SleepStatisticsFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Slowwave/Spindle Parameterisation
+                            Sleep Statistics Parameterisation
                         </Typography>
                         <Divider sx={{bgcolor: "black"}}/>
 
@@ -588,6 +588,7 @@ class SleepStatisticsFunctionPage extends React.Component {
                             <hr className="result"/>
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Sleep transition matrix
+                                Counts transition matrix (number of transitions from stage A to stage B).
                             </Typography>
                             <TableContainer component={Paper} className="ExtremeValues" sx={{width: '90%'}}>
                                 <Table>
