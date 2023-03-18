@@ -11,7 +11,7 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, TextField, Typography
+    Select, Tab, Tabs, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -21,13 +21,59 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import {Box} from "@mui/system";
+import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+function CustomToolbar() {
+    return (
+            <GridToolbarContainer>
+                <GridToolbarExport />
+            </GridToolbarContainer>
+    );
+}
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
 
 class PowerSpectralDensityPage extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of channels sent by the backend
             channels: [],
+            tabvalue: 0,
 
             //Values selected currently on the form
             selected_type_psd: "welch",
@@ -70,7 +116,13 @@ class PowerSpectralDensityPage extends React.Component {
             periodogram_chart_show : false,
 
             //Info from selector
-            file_used: null
+            file_used: null,
+            periodogram_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/periodogram_plot.png',
+            welch_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/welch_plot.png',
+            multitaper_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/multitaper_plot.png',
         };
 
         //Binding functions of the class
@@ -105,6 +157,7 @@ class PowerSpectralDensityPage extends React.Component {
         this.handleSelectMultitaperOutputChange = this.handleSelectMultitaperOutputChange.bind(this);
         this.handleSelectMultitaperNJobsChange = this.handleSelectMultitaperNJobsChange.bind(this);
         this.handleSelectMultitaperVerboseChange = this.handleSelectMultitaperVerboseChange.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
 
         this.handleChannelChange = this.handleChannelChange.bind(this);
         this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
@@ -174,7 +227,8 @@ class PowerSpectralDensityPage extends React.Component {
                 this.setState({peridogram_chart_data: temp_array_peridogram})
                 this.setState({peridogram_chart_show: true})
             });
-        }else if (this.state.selected_type_psd === "welch"){
+        }else if (this.state.selected_type_psd === "welch")
+        {
             let to_send_input_nperseg = null;
             let to_send_input_noverlap = null;
             let to_send_input_nfft = null;
@@ -233,7 +287,88 @@ class PowerSpectralDensityPage extends React.Component {
                 // this.setState({welch_chart_show: true})
             });
         }else if (this.state.selected_type_psd === "multitaper"){
+            let to_send_input_fmin = null;     //float
+            let to_send_input_fmax = null;  //float
+            let to_send_input_bandwidth = null;  //float
+            let to_send_input_n_jobs = null;  //float
+            // let to_send_input_verbose = null;  //bool|str|int
 
+
+            if (!!this.state.selected_multitaper_fmin){
+                to_send_input_fmin = parseFloat(this.state.selected_multitaper_fmin)
+            }
+
+            if (!!this.state.selected_multitaper_fmax){
+                to_send_input_fmax = parseFloat(this.state.selected_multitaper_fmax)
+            }else{
+                to_send_input_fmax = null
+            }
+
+            if (!!this.state.selected_multitaper_bandwidth){
+                to_send_input_bandwidth = parseFloat(this.state.selected_multitaper_bandwidth)
+            }
+
+            if (!!this.state.selected_multitaper_n_jobs){
+                to_send_input_n_jobs = parseFloat(this.state.selected_multitaper_n_jobs)
+            }
+
+            console.log("Test")
+            console.log({
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                input_name: this.state.selected_channel,
+                input_fmin: to_send_input_fmin,
+                input_fmax: to_send_input_fmax,
+                input_bandwidth: to_send_input_bandwidth,
+                input_adaptive: this.state.selected_multitaper_adaptive ,
+                input_low_bias: this.state.selected_multitaper_low_bias,
+                input_normalization: this.state.selected_multitaper_normalization,
+                input_output: this.state.selected_multitaper_output,
+                input_n_jobs: to_send_input_n_jobs,
+                input_verbose: this.state.selected_multitaper_verbose
+            })
+            API.get("return_power_spectral_density",
+                    {
+                        params: {
+                            workflow_id: params.get("workflow_id"),
+                            run_id: params.get("run_id"),
+                            step_id: params.get("step_id"),
+                            input_name: this.state.selected_channel,
+                            input_fmin: to_send_input_fmin,
+                            input_fmax: to_send_input_fmax,
+                            input_bandwidth: to_send_input_bandwidth,
+                            input_adaptive: this.state.selected_multitaper_adaptive ,
+                            input_low_bias: this.state.selected_multitaper_low_bias,
+                            input_normalization: this.state.selected_multitaper_normalization,
+                            input_output: this.state.selected_multitaper_output,
+                            input_n_jobs: to_send_input_n_jobs,
+                            input_verbose: this.state.selected_multitaper_verbose
+
+                        }
+                    }
+            ).then(res => {
+                const resultJson = res.data;
+                console.log("--- Results ---")
+                console.log(resultJson)
+
+                // let temp_array_psd = []
+                // for ( let it =0 ; it < resultJson['power spectral density'].length; it++){
+                //     if(it > 1000){
+                //         break;
+                //     }
+                //     let temp_object = {}
+                //     temp_object["category"] = resultJson['frequencies'][it]
+                //     temp_object["yValue"] = resultJson['power spectral density'][it]
+                //     temp_array_psd.push(temp_object)
+                // }
+                // // console.log("")
+                // // console.log(temp_array)
+                //
+                //
+                // this.setState({psd_chart_data: temp_array_psd})
+                // this.setState({psd_chart_show: true})
+            });
         }
 
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
@@ -346,6 +481,11 @@ class PowerSpectralDensityPage extends React.Component {
         // console.log("CHANNELS")
         this.setState({file_used: file_used_new_value})
     }
+
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
+
 
     render() {
         return (
@@ -698,13 +838,41 @@ class PowerSpectralDensityPage extends React.Component {
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>
-                        <hr/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.peridogram_chart_show ? 'block' : 'none')  }} noWrap>
-                            Periodogram Results
-                        </Typography>
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Periodogram Results" {...a11yProps(1)} />
+                                    <Tab label="Welch Results" {...a11yProps(2)} />
+                                    <Tab label="Multitaper Results" {...a11yProps(3)} />
+                                </Tabs>
+                            </Box>
 
-                        <div style={{ display: (this.state.peridogram_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peridogram_chart_id" chart_data={ this.state.peridogram_chart_data}/></div>
-                        <hr style={{ display: (this.state.peridogram_chart_show ? 'block' : 'none') }}/>
+                        </Box>
+                        <TabPanel value={this.state.tabvalue} index={0}>
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={1}>
+                            <img src={this.state.periodogram_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.periodogram_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                 loading="lazy"
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={2}>
+                            <img src={this.state.welch_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.welch_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                 loading="lazy"
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={3}>
+                            <img src={this.state.multitaper_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.multitaper_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                 loading="lazy"
+                            />
+                        </TabPanel>
+                        {/*<hr/>*/}
+
+                        {/*<div style={{ display: (this.state.peridogram_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="peridogram_chart_id" chart_data={ this.state.peridogram_chart_data}/></div>*/}
+                        {/*<hr style={{ display: (this.state.peridogram_chart_show ? 'block' : 'none') }}/>*/}
                     </Grid>
                 </Grid>
         )
