@@ -23,6 +23,148 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {Box} from "@mui/system";
 import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+import JsonTable from "ts-react-json-table";
+
+// const alpha_delta_ratio_table_columns = [
+//     {
+//         field: "Band",
+//         headerName: "Band",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Power",
+//         headerName: "Power",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Peak",
+//         headerName: "Peak",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Be",
+//         headerName: "PosPeak",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "End",
+//         headerName: "End",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Duration",
+//         headerName: "Duration",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "ValNegPeak",
+//         headerName: "ValNegPeak",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "ValPosPeak",
+//         headerName: "ValPosPeak",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "PTP",
+//         headerName: "PTP",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Slope",
+//         headerName: "Slope",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Frequency",
+//         headerName: "Frequency",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "SigmaPeak",
+//         headerName: "SigmaPeak",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "PhaseAtSigmaPeak",
+//         headerName: "PhaseAtSigmaPeak",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "ndPAC",
+//         headerName: "ndPAC",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Stage",
+//         headerName: "Stage",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "Channel",
+//         headerName: "Channel",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+//     {
+//         field: "IdxChannel",
+//         headerName: "IdxChannel",
+//         width: '10%',
+//         align: "center",
+//         headerAlign: "center",
+//         flex:1
+//     },
+// ]
+
+
 
 function a11yProps(index) {
     return {
@@ -88,6 +230,10 @@ class PowerSpectralDensityPage extends React.Component {
             selected_periodogram_scaling: "density",
             selected_periodogram_axis: "-1",
 
+            //Periodogram Alpha Delta Ratio
+            result_periodogram_alpha_delta_ratio: "",
+            result_periodogram_alpha_delta_ratio_dataframe: [],
+
             // Welch Values
             selected_welch_window: "hann",
             selected_welch_nperseg: "256",
@@ -98,6 +244,10 @@ class PowerSpectralDensityPage extends React.Component {
             selected_welch_axis: "-1",
             selected_welch_average: "mean",
 
+            result_welch_alpha_delta_ratio: "",
+            result_welch_alpha_delta_ratio_dataframe: [],
+
+            result_welch_alpha_variability: "",
             // Multitaper Values
             selected_multitaper_fmin: "0",
             selected_multitaper_fmax: "",
@@ -227,6 +377,34 @@ class PowerSpectralDensityPage extends React.Component {
                 this.setState({peridogram_chart_data: temp_array_peridogram})
                 this.setState({peridogram_chart_show: true})
             });
+
+            // Retrieve alpha variability periodogram information
+            API.get("return_alpha_delta_ratio_periodogram",
+                    {
+                        params: {
+                            workflow_id: params.get("workflow_id"),
+                            run_id: params.get("run_id"),
+                            step_id: params.get("step_id"),
+                            input_name: this.state.selected_channel,
+                            input_window: this.state.selected_periodogram_window,
+                            input_nfft: to_send_input_nfft,
+                            input_return_onesided: this.state.selected_periodogram_return_onesided,
+                            input_scaling: this.state.selected_periodogram_scaling,
+                            input_axis: this.state.selected_periodogram_axis,
+                            file_used: this.state.file_used
+                        }
+                    }
+            ).then(res => {
+                const resultJson = res.data;
+                console.log('return_alpha_delta_ratio_periodogram')
+                console.log(resultJson)
+                this.setState({result_periodogram_alpha_delta_ratio: resultJson['alpha_delta_ratio']})
+                this.setState({result_periodogram_alpha_delta_ratio_dataframe:  JSON.parse(resultJson['alpha_delta_ratio_df'])})
+                // Clear alpha variability since it isn't returned in this case
+                this.setState({result_welch_alpha_variability: 0})
+
+            });
+
         }else if (this.state.selected_type_psd === "welch")
         {
             let to_send_input_nperseg = null;
@@ -286,7 +464,61 @@ class PowerSpectralDensityPage extends React.Component {
                 // this.setState({welch_chart_data: temp_array_welch})
                 // this.setState({welch_chart_show: true})
             });
-        }else if (this.state.selected_type_psd === "multitaper"){
+
+            API.get("return_alpha_variability",
+                    {
+                        params: {
+                            workflow_id: params.get("workflow_id"),
+                            run_id: params.get("run_id"),
+                            step_id: params.get("step_id"),
+                            input_name: this.state.selected_channel,
+                            input_window: this.state.selected_welch_window,
+                            input_nperseg: to_send_input_nperseg,
+                            input_noverlap: to_send_input_noverlap,
+                            input_nfft: to_send_input_nfft,
+                            input_return_onesided: this.state.selected_welch_return_onesided,
+                            input_scaling: this.state.selected_welch_scaling,
+                            input_axis: this.state.selected_welch_axis,
+                            input_average: this.state.selected_welch_average,
+                            file_used: this.state.file_used
+                        }
+                    }
+            ).then(res => {
+                const resultJson = res.data;
+                console.log(resultJson)
+                console.log('Test')
+
+                this.setState({result_welch_alpha_variability: resultJson['alpha_variability']})
+            });
+
+            API.get("return_alpha_delta_ratio",
+                    {
+                        params: {
+                            workflow_id: params.get("workflow_id"),
+                            run_id: params.get("run_id"),
+                            step_id: params.get("step_id"),
+                            input_name: this.state.selected_channel,
+                            input_window: this.state.selected_welch_window,
+                            input_nperseg: to_send_input_nperseg,
+                            input_noverlap: to_send_input_noverlap,
+                            input_nfft: to_send_input_nfft,
+                            input_return_onesided: this.state.selected_welch_return_onesided,
+                            input_scaling: this.state.selected_welch_scaling,
+                            input_axis: this.state.selected_welch_axis,
+                            input_average: this.state.selected_welch_average,
+                            file_used: this.state.file_used
+                        }
+                    }
+            ).then(res => {
+                const resultJson = res.data;
+                this.setState({result_periodogram_alpha_delta_ratio: resultJson['alpha_delta_ratio']})
+                this.setState({result_periodogram_alpha_delta_ratio_dataframe:  JSON.parse(resultJson['alpha_delta_ratio_df'])})
+
+                // this.setState({result_welch_alpha_delta_ratio: resultJson['alpha_delta_ratio']})
+                // this.setState({result_welch_alpha_delta_ratio_dataframe:  JSON.parse(resultJson['alpha_delta_ratio_df'])})
+            });
+        }else if (this.state.selected_type_psd === "multitaper")
+        {
             let to_send_input_fmin = null;     //float
             let to_send_input_fmax = null;  //float
             let to_send_input_bandwidth = null;  //float
@@ -370,6 +602,10 @@ class PowerSpectralDensityPage extends React.Component {
                 // this.setState({psd_chart_show: true})
             });
         }
+
+
+
+
 
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
         //     method: "GET",
@@ -845,6 +1081,8 @@ class PowerSpectralDensityPage extends React.Component {
                                     <Tab label="Periodogram Results" {...a11yProps(1)} />
                                     <Tab label="Welch Results" {...a11yProps(2)} />
                                     <Tab label="Multitaper Results" {...a11yProps(3)} />
+                                    <Tab label="AlphaDeltaRatio Results" {...a11yProps(4)} />
+                                    <Tab label="AlphaVariability Results" {...a11yProps(5)} />
                                 </Tabs>
                             </Box>
 
@@ -868,6 +1106,14 @@ class PowerSpectralDensityPage extends React.Component {
                                  srcSet={this.state.multitaper_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
                                  loading="lazy"
                             />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={4}>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Alpha Delta Ratio: {this.state.result_periodogram_alpha_delta_ratio}</Typography>
+                            <JsonTable className="jsonResultsTable" rows = {this.state.result_periodogram_alpha_delta_ratio_dataframe}/>
+                            {/*Alpha Delta Ratio: {this.state.result_periodogram_alpha_delta_ratio}*/}
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={5}>
+                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Alpha Delta Ratio: {this.state.result_welch_alpha_variability}</Typography>
                         </TabPanel>
                         {/*<hr/>*/}
 
