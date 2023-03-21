@@ -59,33 +59,44 @@ function a11yProps(index) {
     };
 }
 
-class SurvivalAnalysisRiskRatioDataset extends React.Component {
+class SurvivalAnalysisKaplanMeier extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
         this.state = {
             test_data: {
-                table: ""
+                survival_function:"",
+                confidence_interval:"",
+                event_table:"",
             },
             binary_columns: [],
             columns: [],
-            RiskTable:[],
+            SurvivalFunction:[],
+            ConfidenceInterval:[],
+            EventTable:[],
+            Conditional_time_to_event:[],
+            Confidence_interval_cumulative_density:[],
+            Cumulative_density:[],
+            Timeline:[],
+            Median_survival_time:"",
             selected_exposure_variable: "",
             selected_outcome_variable: "",
-            selected_reference: 0,
+            selected_at_risk_counts: 'True',
             selected_alpha: 0.05,
+            selected_label: null,
             stats_show: false,
             svg_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/Risktest.svg',
+                    + '/step_' + params.get("step_id") + '/output/survival_function.svg',
         };
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
+        // this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.handleSelectOutcomeVariableChange = this.handleSelectOutcomeVariableChange.bind(this);
         this.handleSelectExposureVariableChange = this.handleSelectExposureVariableChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
-        this.handleSelectReferenceChange = this.handleSelectReferenceChange.bind(this);
-        this.fetchBinaryColumnNames();
+        this.handleSelectLabelChange = this.handleSelectLabelChange.bind(this);
+        this.handleSelectAtRiskCountsChange = this.handleSelectAtRiskCountsChange.bind(this);
+        // this.fetchBinaryColumnNames();
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchColumnNames();
         this.handleTabChange = this.handleTabChange.bind(this);
@@ -104,17 +115,17 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
         });
     }
 
-    async fetchBinaryColumnNames(url, config) {
-        const params = new URLSearchParams(window.location.search);
-        API.get("return_binary_columns",
-                {params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
-                    }}).then(res => {
-            // console.log(res.data.columns)
-            this.setState({binary_columns: res.data.columns})
-        });
-    }
+    // async fetchBinaryColumnNames(url, config) {
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.get("return_binary_columns",
+    //             {params: {
+    //                     workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+    //                     step_id: params.get("step_id")
+    //                 }}).then(res => {
+    //         // console.log(res.data.columns)
+    //         this.setState({binary_columns: res.data.columns})
+    //     });
+    // }
 
     async handleSubmit(event) {
         event.preventDefault();
@@ -122,23 +133,29 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
         this.setState({stats_show: false})
 
         // Send the request
-        API.get("risks",
+        API.get("kaplan_meier",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        exposure: this.state.selected_exposure_variable,
-                        outcome: this.state.selected_outcome_variable,
-                        // time: 'None',
-                        reference: this.state.selected_reference,
+                        column_1: this.state.selected_exposure_variable,
+                        column_2: this.state.selected_outcome_variable,
+                        at_risk_counts: this.state.selected_at_risk_counts,
+                        label:this.state.selected_label,
                         alpha: this.state.selected_alpha,
-                        method:'risk_ratio'
                         }
                 }
         ).then(res => {
             this.setState({test_data: res.data})
-            this.setState({RiskTable:JSON.parse(res.data.table)})
+            this.setState({SurvivalFunction:JSON.parse(res.data.survival_function)})
+            this.setState({ConfidenceInterval:JSON.parse(res.data.confidence_interval)})
+            this.setState({EventTable:JSON.parse(res.data.event_table)})
+            this.setState({Conditional_time_to_event:JSON.parse(res.data.conditional_time_to_event)})
+            this.setState({Confidence_interval_cumulative_density:JSON.parse(res.data.confidence_interval_cumulative_density)})
+            this.setState({Cumulative_density:JSON.parse(res.data.cumulative_density)})
+            this.setState({Timeline:JSON.parse(res.data.timeline)})
+            this.setState({Median_survival_time:res.data.median_survival_time})
             this.setState({stats_show: true})
             this.setState({tabvalue:0})
         });
@@ -168,13 +185,15 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
     }
-    handleSelectReferenceChange(event){
-        this.setState( {selected_reference: event.target.value})
+    handleSelectAtRiskCountsChange(event){
+        this.setState( {selected_at_risk_counts: event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-
+    handleSelectLabelChange(event){
+        this.setState({selected_label:event.target.value})
+    }
     render() {
 
         return (
@@ -186,7 +205,7 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Exposure Variable</InputLabel>
+                                <InputLabel id="column-selector-label">Status</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
@@ -197,14 +216,14 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
                                     <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    {this.state.binary_columns.map((column) => (
+                                    {this.state.columns.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Exposure Variable</FormHelperText>
+                                <FormHelperText>Select Status Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Outcome Variable</InputLabel>
+                                <InputLabel id="column-selector-label">Duration</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
@@ -215,11 +234,11 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
                                     <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    {this.state.binary_columns.map((column) => (
+                                    {this.state.columns.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Outcome variable</FormHelperText>
+                                <FormHelperText>Select Duration variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
@@ -229,21 +248,31 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
                                         label="Alpha parameter"
                                         onChange={this.handleSelectAlphaChange}
                                 />
-                                <FormHelperText>Alpha value to calculate two-sided Wald confidence intervals.</FormHelperText>
+                                <FormHelperText>The alpha value associated with the confidence intervals.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="alpha-selector-label">Reference</InputLabel>
+                                <TextField
+                                        labelid="label-selector-label"
+                                        id="label-selector"
+                                        value= {this.state.selected_label}
+                                        label="Label"
+                                        onChange={this.handleSelectLabelChange}
+                                />
+                                <FormHelperText>Provide a new label for the estimate.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="alpha-selector-label">at_risk_counts</InputLabel>
                                 <Select
-                                        labelid="reference-selector-label"
-                                        id="reference-selector"
-                                        value= {this.state.selected_reference}
-                                        label="Reference parameter"
-                                        onChange={this.handleSelectReferenceChange}
+                                        labelid="at_risk_counts-selector-label"
+                                        id="at_risk_counts-selector"
+                                        value= {this.state.selected_at_risk_counts}
+                                        label="at risk counts parameter"
+                                        onChange={this.handleSelectAtRiskCountsChange}
                                 >
-                                    <MenuItem value={"0"}><em>0</em></MenuItem>
-                                    <MenuItem value={"1"}><em>1</em></MenuItem>
+                                    <MenuItem value={"False"}><em>False</em></MenuItem>
+                                    <MenuItem value={"True"}><em>True</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Reference category for comparisons.</FormHelperText>
+                                <FormHelperText>Show group sizes at time points.</FormHelperText>
                             </FormControl>
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
@@ -264,18 +293,52 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                        Estimates of Incidence Rate Ratio with a (1-alpha)*100% Confidence interval. </Typography>
-                                    <JsonTable className="jsonResultsTable" rows = {this.state.RiskTable}/>
-                                </div>
+                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    <Grid container>
+                                        <Grid item xs={7} >
+                                        <img src={this.state.svg_path + "?random=" + new Date().getTime()}
+                                                // srcSet={this.state.svg_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                             loading="lazy"
+                                        />
+                                        </Grid>
+                                        <Grid item xs={5} >
+                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                Survival Function. </Typography>
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.SurvivalFunction}/>
+                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                Cumulative density. </Typography>
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.Cumulative_density}/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
                                 <hr className="result"/>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <img src={this.state.svg_path + "?random=" + new Date().getTime()}
-                                         srcSet={this.state.svg_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                         loading="lazy"
-                                    />
-                                </div>
+                                <Grid>
+                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                        Event Table. </Typography>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.EventTable}/>
+                                </Grid>
+                                <hr className="result"/>
+                                <Grid>
+                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                        Conditional time to event. </Typography>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.Conditional_time_to_event}/>
+
+                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                        Median survival time = {this.state.Median_survival_time} </Typography>
+                                </Grid>
+                                <hr className="result"/>
+                                <Grid container>
+                                    <Grid item xs={6}>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                            Confidence Interval. </Typography>
+                                        <JsonTable className="jsonResultsTable" rows = {this.state.ConfidenceInterval}/>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                            Confidence Interval cumulative density. </Typography>
+                                        <JsonTable className="jsonResultsTable" rows = {this.state.Confidence_interval_cumulative_density}/>
+                                    </Grid>
+                                </Grid>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
@@ -290,4 +353,4 @@ class SurvivalAnalysisRiskRatioDataset extends React.Component {
     }
 }
 
-export default SurvivalAnalysisRiskRatioDataset;
+export default SurvivalAnalysisKaplanMeier;

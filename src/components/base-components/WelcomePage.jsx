@@ -10,6 +10,7 @@ import {useNavigate} from "react-router-dom";
 import {withRouter} from '../withRouter';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {red} from "@mui/material/colors";
+import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 
 
 // import {useHistory} from "react-router-dom";
@@ -397,7 +398,7 @@ function WelcomePage() {
                                         variant="contained"
                                         size="medium"
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-
+                                        fullWidth
                                         // onClick={redirectToPage.bind(this,1,1, 2, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "normality", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                                 >
@@ -532,6 +533,15 @@ function WelcomePage() {
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "kendalltau_correlation", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                                 >
                                     Kendalltau Correlation
+                                </Button>
+                                <Button
+                                        // variant="contained"
+                                        size="medium"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "canonical_correlation", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Canonical Correlation
                                 </Button>
                             </AccordionDetails>
                         </Accordion>
@@ -709,15 +719,13 @@ function WelcomePage() {
                                 {/*</Button>*/}
                             </AccordionDetails>
                         </Accordion>
-
-
                         <Accordion>
                             <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                             >
-                                <Typography>Clastering</Typography>
+                                <Typography>Clustering</Typography>
                             </AccordionSummary>
                             <AccordionDetails orientation="vertical">
                         <Button
@@ -747,6 +755,7 @@ function WelcomePage() {
                                         // href="/LinearRegression"
                                         size="medium"
                                         fullWidth
+                                        variant = "contained"
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                         // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linear_regression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
@@ -755,6 +764,16 @@ function WelcomePage() {
                                     {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
                                     Linear Regression
                                     {/*</ListItemButton>*/}
+                                </Button>
+                                <Button
+                                        size="medium"
+                                        fullWidth
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LassoRegression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+
+                                >
+                                    Lasso Regression
                                 </Button>
                                 <Button
                                         // component={Link}
@@ -771,14 +790,21 @@ function WelcomePage() {
                                     ElasticNet
                                 </Button>
                                 <Button
+                                        // component={Link}
+                                        // variant="h6"
+                                        // href="/LinearRegression"
                                         size="medium"
                                         fullWidth
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LassoRegression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                        // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "GeneralizedEstimatingEquations", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
 
                                 >
-                                    Lasso Regression
+                                    {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                                    Generalized Estimating Equations
+                                    {/*</ListItemButton>*/}
                                 </Button>
+
                                 <Button
                                         // component={Link}
                                         // variant="h6"
@@ -882,26 +908,11 @@ function WelcomePage() {
                                     Logistic Regression Statsmodels
                                     {/*</ListItemButton>*/}
                                 </Button>
-                                {/*<Button*/}
-                                {/*        // component={Link}*/}
-                                {/*        // variant="h6"*/}
-                                {/*        // href="/LinearRegression"*/}
-                                {/*        size="medium"*/}
-                                {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                                {/*        // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
-                                {/*        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LogisticRegressionSklearn", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}*/}
 
-                                {/*>*/}
-                                {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                                {/*    Logistic Regression Sklearn*/}
-                                {/*    /!*</ListItemButton>*!/*/}
-                                {/*</Button>*/}
-                                {/*/*<p>calculate_SpO2 from eeg_router</p>*/}
-                                {/*Survival Analysis*/}
 
                                 <Button
                                         size="medium"
-                                        variant="contained"
+
                                         fullWidth
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "survivalanalysiscoxregression", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
@@ -922,7 +933,6 @@ function WelcomePage() {
                                 </Button>
                             </AccordionDetails>
                         </Accordion>
-
                         <Accordion>
                             <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
@@ -1057,6 +1067,41 @@ function WelcomePage() {
                                 >
                                     Time Varying Covariates
                                 </Button>
+                                <Button
+                                        size="medium"
+                                        // variant="contained"
+                                        fullWidth
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "survivalanalysiskaplanmeier", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Kaplan-Meier
+                                </Button>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion>
+                            <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                            >
+                                <Typography>Factor Analysis</Typography>
+                            </AccordionSummary>
+                            <Button
+                                    // component={Link}
+                                    // variant="h6"
+                                    // href="/LinearRegression"
+                                    size="medium"
+                                    variant="contained"
+                                    endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                    // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                    onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "FactorAnalysis", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                    fullWidth
+                            >
+                                {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                                Factor Analysis
+                                {/*</ListItemButton>*/}
+                            </Button>
+                            <AccordionDetails orientation="vertical">
                             </AccordionDetails>
                         </Accordion>
                         <Button
