@@ -132,7 +132,7 @@ function WelcomePage() {
 
                                 onClick={redirectToPage.bind(this,1, 1, 1, "welch", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Power Spectral Density - Welch
+                            (OLD) Power Spectral Density - Welch
                         </Button>
                         {/*<Divider/>*/}
                         <Button
@@ -159,7 +159,7 @@ function WelcomePage() {
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "power_spectral_density_periodogram", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Power Spectral Density - Periodogram
+                            (OLD)Power Spectral Density - Periodogram
                         </Button>
                         {/*<Divider/>*/}
                         <Button
@@ -177,7 +177,7 @@ function WelcomePage() {
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "power_spectral_density_multitaper", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Power Spectral Density - Multitaper
+                            (OLD)Power Spectral Density - Multitaper
                         </Button>
                         {/*<Divider/>*/}
                         <Button
@@ -186,7 +186,7 @@ function WelcomePage() {
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "alpha_delta_ratio", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Alpha Delta Ratio
+                            (OLD) Alpha Delta Ratio
                         </Button>
                         {/*<Divider/>*/}
                         <Button
@@ -213,7 +213,7 @@ function WelcomePage() {
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "alpha_variability", ["saved"], ["psg1 anonym2.edf"])}
                         >
-                            Alpha Variability
+                            (OLD?)  Alpha Variability
                         </Button>
                         {/*<Divider/>*/}
                         <Button
