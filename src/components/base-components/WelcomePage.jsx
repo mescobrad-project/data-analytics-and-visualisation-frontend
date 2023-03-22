@@ -9,6 +9,7 @@ import API from "../../axiosInstance";
 import {useNavigate} from "react-router-dom";
 import {withRouter} from '../withRouter';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import {red} from "@mui/material/colors";
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 
@@ -55,17 +56,44 @@ async function redirectToPage(workflow_id, run_id, step_id, function_name, bucke
     });
 }
 
+
 function WelcomePage() {
     useEffect(() => {
         document.title = ' MES-CoBraD | Analytics Engine'
     }, [])
     const navigate = useNavigate();
+    const [dashboardMode, setDashboardMode] = React.useState("dev");
+    const [notdashboardMode, setNotDashboardMode] = React.useState("user");
+
+    const changeMode = () => {
+        if (dashboardMode === "dev"){
+            setDashboardMode("user")
+            setNotDashboardMode("dev")
+        }
+        else{
+            setDashboardMode("dev")
+            setNotDashboardMode("user")
+
+        }
+    }
 
     return (
             <React.Fragment>
                 {/*<h1>{document.title}</h1>*/}
                 <h1>MES-CoBraD | Analytics Engine</h1>
-                <h3>Welcome to MES-CoBraDs' Analytics Module</h3>
+                <h2 style={{color: dashboardMode === "dev" ? "red" : "#1976d2"}}> {dashboardMode} Dashboard </h2>
+                <h4>To change it please press the button below</h4>
+                <Button
+                        variant="contained"
+                        size="medium"
+                        endIcon={<DashboardIcon sx={{right: "0%", top: "20%", position: "absolute"}} />}
+                        // endIcon={}
+                        sx={{backgroundColor: dashboardMode !== "dev" ? "red" : "default"}}
+                        onClick= {changeMode}
+                >
+                    Change to {notdashboardMode} dashboard
+                    {/*<SendIcon/>*/}
+                </Button>
                 <div class="list-container" style={{display: 'flex'}}>
                     {/*<form onSubmit={async (event) => {*/}
                     {/*    event.preventDefault();*/}
@@ -109,6 +137,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 // endIcon={}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick= {redirectToPage.bind(this,1, 1, 1, "auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Auto Correlation
