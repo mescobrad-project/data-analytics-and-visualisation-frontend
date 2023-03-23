@@ -104,6 +104,7 @@ import SleepStatisticsFunctionPage from "./SleepStatisticsFunctionPage";
 import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
 import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_correlation"
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
+import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysis'
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -173,6 +174,7 @@ const App = () => {
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
                         <Route exact path="/Canonical_correlation" element={(<LayoutMain><Canonical_correlation/></LayoutMain>)}/>
+                        <Route exact path="/Mediation_Analysis" element={(<LayoutMain><Mediation_Analysis/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Welch_t_test" element={(<LayoutMain><Welch_t_test/></LayoutMain>)}/>
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
