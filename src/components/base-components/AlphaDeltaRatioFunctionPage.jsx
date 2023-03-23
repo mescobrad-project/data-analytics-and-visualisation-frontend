@@ -98,11 +98,18 @@ class AlphaDeltaRatioFunctionPage extends React.Component {
         // Send the request
         API.get("return_alpha_delta_ratio",
                 {
-                    params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id"),input_name: this.state.selected_channel, input_window: this.state.selected_window,
-                        input_nperseg: to_send_input_nperseg, input_noverlap: to_send_input_noverlap,
-                        input_nfft: to_send_input_nfft, input_return_onesided: this.state.selected_return_onesided,
-                        input_scaling: this.state.selected_scaling, input_axis: this.state.selected_axis,
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                        ,input_name: this.state.selected_channel,
+                        input_window: this.state.selected_window,
+                        input_nperseg: to_send_input_nperseg,
+                        input_noverlap: to_send_input_noverlap,
+                        input_nfft: to_send_input_nfft,
+                        input_return_onesided: this.state.selected_return_onesided,
+                        input_scaling: this.state.selected_scaling,
+                        input_axis: this.state.selected_axis,
                         input_average: this.state.selected_average,
                         file_used: this.state.file_used
                     }

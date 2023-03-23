@@ -100,11 +100,14 @@ import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testin
 import PrincipalComponentAnalysis from "../../pages/hypothesis_testing/PrincipalComponentAnalysis"
 import SlowwaveSpindleFunctionPage from "./SlowwaveSpindleFunctionPage";
 import TestingPage from "./TestingPage";
+import FactorAnalysisFunctionPage from "./FactorAnalysisFunctionPage";
 import SleepStatisticsFunctionPage from "./SleepStatisticsFunctionPage";
 import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
+import PowerSpectralDensityPage from "./PowerSpectralDensityPage";
 import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_correlation"
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysis'
+import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -238,6 +241,9 @@ const App = () => {
                         <Route exact path="/spectogram_bandpower" element={(<LayoutMain><SpectogramBandpowerFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/slowwave_spindle" element={(<LayoutMain><SlowwaveSpindleFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/testing" element={(<LayoutMain><TestingPage/></LayoutMain>)}/>
+                        <Route exact path="/power_spectral_density_main" element={(<LayoutMain><PowerSpectralDensityPage/></LayoutMain>)}/>
+                        <Route exact path="/FactorAnalysis" element={(<LayoutMain><FactorAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/GeneralizedEstimatingEquations" element={(<LayoutMain><GeneralizedEstimatingEquationsFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
