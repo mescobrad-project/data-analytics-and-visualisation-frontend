@@ -11,7 +11,7 @@ services:
     image: analytics_frontend
     restart: always
     ports:
-      - "3005:3000"
+      - "3000:3000"
 #    networks:
 #      - mri-freesurfer-network
 #      - analytics-network
