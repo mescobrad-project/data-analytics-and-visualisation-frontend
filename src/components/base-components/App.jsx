@@ -143,6 +143,7 @@ const App = () => {
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
+                {/*<BrowserRouter basename={"/analytics"}>*/}
                 <BrowserRouter>
                     <Routes>
                         <Route exact path="/" element={(<LayoutMain><WelcomePage/></LayoutMain>)}/>
@@ -197,6 +198,7 @@ const App = () => {
                         <Route exact path="/alpha_variability" element={(<LayoutMain><AlphaVariabilityFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
+                        <Route exact path="/whatever" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>

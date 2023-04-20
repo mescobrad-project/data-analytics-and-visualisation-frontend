@@ -38,7 +38,7 @@ async function redirectToPage(workflow_id, run_id, step_id, function_name, bucke
     // Send the request
     let files_to_send = []
     for (let it=0 ; it< bucket.length;it++){
-        files_to_send.push([bucket[it], file[it]])
+        files_to_send.push({'bucket': bucket[it], 'file': file[it]})
     }
 
     API.put("function/navigation/",
