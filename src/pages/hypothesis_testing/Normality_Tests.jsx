@@ -71,6 +71,7 @@ class Normality_Tests extends React.Component {
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
         this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
@@ -134,43 +135,44 @@ class Normality_Tests extends React.Component {
             this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
             this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
 
-            const output_info = {
-                date_created: new Date().toLocaleString(),
-                workflow_id: params.get("run_id"),
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-                test_name: 'Normality test',
-                test_params: {
-                    selected_method: this.state.selected_method,
-                    selected_variable: this.state.selected_column,
-                    selected_alternative: this.state.selected_alternative,
-                    selected_nan_policy: this.state.selected_nan_policy
-                },
-                test_results: {
-                    statistic: res.data.statistic,
-                    critical_values: res.data.critical_values,
-                    significance_level: res.data.significance_level,
-                    p_value: res.data.p_value,
-                    skew: res.data.results.skew,
-                    kurtosis: res.data.results.kurtosis,
-                    standard_deviation: res.data.results.standard_deviation,
-                    median: res.data.results.median,
-                    mean: res.data.results.mean,
-                    sample_N: res.data.results.sample_N,
-                    top_5: res.data.results.top_5,
-                    last_5: res.data.results.last_5,
-                    Description: res.data.results.description,
-                },
-                selected_dataset:{
-                    bucket:"demo",
-                    object: "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"
-                },
-                output_dataset:{
-                    bucket:"",
-                    object:""
-                }
-            };
-            localStorage.setItem('MY_APP_STATE', JSON.stringify(output_info));
+            // We changed info file uploading process to the DataLake
+            // const output_info = {
+            //     date_created: new Date().toLocaleString(),
+            //     workflow_id: params.get("run_id"),
+            //     run_id: params.get("run_id"),
+            //     step_id: params.get("step_id"),
+            //     test_name: 'Normality test',
+            //     test_params: {
+            //         selected_method: this.state.selected_method,
+            //         selected_variable: this.state.selected_column,
+            //         selected_alternative: this.state.selected_alternative,
+            //         selected_nan_policy: this.state.selected_nan_policy
+            //     },
+            //     test_results: {
+            //         statistic: res.data.statistic,
+            //         critical_values: res.data.critical_values,
+            //         significance_level: res.data.significance_level,
+            //         p_value: res.data.p_value,
+            //         skew: res.data.results.skew,
+            //         kurtosis: res.data.results.kurtosis,
+            //         standard_deviation: res.data.results.standard_deviation,
+            //         median: res.data.results.median,
+            //         mean: res.data.results.mean,
+            //         sample_N: res.data.results.sample_N,
+            //         top_5: res.data.results.top_5,
+            //         last_5: res.data.results.last_5,
+            //         Description: res.data.results.description,
+            //     },
+            //     selected_dataset:{
+            //         bucket:"demo",
+            //         object: "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_output.csv"
+            //     },
+            //     output_dataset:{
+            //         bucket:"",
+            //         object:""
+            //     }
+            // };
+            // localStorage.setItem('MY_APP_STATE', JSON.stringify(output_info));
             // alert('Params to output: ' + JSON.stringify(output_info));
         });
     }
@@ -178,17 +180,17 @@ class Normality_Tests extends React.Component {
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
-        const file_to_output= window.localStorage.getItem('MY_APP_STATE');
-        console.log(file_to_output)
+        // We changed info file uploading process to the DataLake
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
         API.put("save_hypothesis_output",
                 {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id"),
-                        file: file_to_output,
+                        step_id: params.get("step_id")
                 }
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
+        console.log(this.state.output_return_data);
         window.location.replace("/")
     }
 

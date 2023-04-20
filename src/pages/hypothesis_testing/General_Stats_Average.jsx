@@ -121,7 +121,6 @@ class General_Stats_Average extends React.Component {
                     step_id: params.get("step_id"),
                 }
         ).then(res => {
-            alert("info file is saved to the Datalake")
             this.setState({output_return_data: res.data})
         });
         window.location.replace("/")
