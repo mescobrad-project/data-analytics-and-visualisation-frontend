@@ -12,6 +12,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import {red} from "@mui/material/colors";
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
+import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average";
 
 
 // import {useHistory} from "react-router-dom";
@@ -420,6 +421,27 @@ function WelcomePage() {
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                             >
+                                <Typography>General Statistics</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails orientation="vertical">
+                                <Button
+                                        variant="contained"
+                                        size="medium"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        // onClick={redirectToPage.bind(this,1,1, 2, "normality", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "general_stats_average", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Average
+                                </Button>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion>
+                            <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                            >
                                 <Typography>Normality & Homoscedasticity</Typography>
                             </AccordionSummary>
                             <AccordionDetails orientation="vertical">
@@ -572,6 +594,16 @@ function WelcomePage() {
                                 >
                                     Canonical Correlation
                                 </Button>
+                                <Button
+                                        variant="contained"
+                                        size="medium"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "mediation_analysis", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Mediation Analysis
+                                </Button>
+
                             </AccordionDetails>
                         </Accordion>
 
@@ -712,6 +744,15 @@ function WelcomePage() {
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "mcnemar",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                                 >
                                     McNemar
+                                </Button>
+                                <Button
+                                        variant="contained"
+                                        size="medium"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "mixed_anova",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Mixed ANOVA
                                 </Button>
                             </AccordionDetails>
                         </Accordion>
@@ -1161,7 +1202,14 @@ function WelcomePage() {
                         >
                             Principal Component Analysis
                         </Button>
-
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 4, "slowwave_spindle", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"])}
+                        >
+                            Slow Waves / Spindles
+                        </Button>
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"

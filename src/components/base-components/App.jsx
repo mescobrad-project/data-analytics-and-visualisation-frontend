@@ -106,7 +106,10 @@ import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
 import PowerSpectralDensityPage from "./PowerSpectralDensityPage";
 import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_correlation"
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
+import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysis'
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
+import Mixed_Anova from "../../pages/hypothesis_testing/Mixed_Anova"
+import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average"
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -177,6 +180,7 @@ const App = () => {
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
                         <Route exact path="/Canonical_correlation" element={(<LayoutMain><Canonical_correlation/></LayoutMain>)}/>
+                        <Route exact path="/Mediation_Analysis" element={(<LayoutMain><Mediation_Analysis/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Welch_t_test" element={(<LayoutMain><Welch_t_test/></LayoutMain>)}/>
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
@@ -244,6 +248,8 @@ const App = () => {
                         <Route exact path="/power_spectral_density_main" element={(<LayoutMain><PowerSpectralDensityPage/></LayoutMain>)}/>
                         <Route exact path="/FactorAnalysis" element={(<LayoutMain><FactorAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GeneralizedEstimatingEquations" element={(<LayoutMain><GeneralizedEstimatingEquationsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/Mixed_Anova" element={(<LayoutMain><Mixed_Anova/></LayoutMain>)}/>
+                        <Route exact path="/General_Stats_Average" element={(<LayoutMain><General_Stats_Average/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
