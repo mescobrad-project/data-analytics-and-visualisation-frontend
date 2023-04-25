@@ -65,6 +65,7 @@ class Normality_Tests_And extends React.Component {
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
         this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectAxisChange = this.handleSelectAxisChange.bind(this);
@@ -176,6 +177,22 @@ class Normality_Tests_And extends React.Component {
         });
     }
 
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        // We changed info file uploading process to the DataLake
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        console.log(this.state.output_return_data);
+        window.location.replace("/")
+    }
 
     /**
      * Update state when selection changes in the form
@@ -250,12 +267,9 @@ class Normality_Tests_And extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_column}>
                                 Proceed >
                             </Button>
                         </form>

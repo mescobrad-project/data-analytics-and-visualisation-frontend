@@ -110,6 +110,22 @@ class General_Stats_Average extends React.Component {
         });
     }
 
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
+        // console.log(file_to_output)
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
+    }
+
     /**
      * Update state when selection changes in the form
      */
@@ -181,8 +197,14 @@ class General_Stats_Average extends React.Component {
                                 </Select>
                                 <FormHelperText>Name of column in selected dataset.</FormHelperText>
                             </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
+                            </Button>
+                        </form>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show}>
+                                Proceed >
                             </Button>
                         </form>
                     </Grid>
