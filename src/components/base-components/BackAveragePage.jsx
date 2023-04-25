@@ -78,6 +78,16 @@ class BackAveragePage extends React.Component {
             selected_max_ptp_amplitude: '',
             selected_annotation_name: '',
 
+            // Back Average form validation variables
+            timeBeforeEventError: false,
+            timeAfterEventError: false,
+            minPtpAmplitudeError: false,
+            maxPtpAmplitudeError: false,
+            annotationNameError: false,
+
+            //Plot paths
+            back_average_plot_path: 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/back_average_plot.png',
         };
 
         //Binding functions of the class
@@ -89,6 +99,10 @@ class BackAveragePage extends React.Component {
         this.handleSelectMaxPtpAmplitudeChange = this.handleSelectMaxPtpAmplitudeChange.bind(this);
         this.handleSelectAnnotationNameChange = this.handleSelectAnnotationNameChange.bind(this);
 
+        this.validateAnnotationName = this.validateAnnotationName.bind(this);
+        this.validateFloatNumber = this.validateFloatNumber.bind(this);
+
+        this.handleChannelChange = this.handleChannelChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
 
         this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
@@ -148,6 +162,11 @@ class BackAveragePage extends React.Component {
         this.setState({ selected_annotation_name: event.target.value });
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
     handleFileUsedChange(file_used_new_value){
         // console.log("CHANNELS")
         this.setState({file_used: file_used_new_value})
@@ -157,8 +176,19 @@ class BackAveragePage extends React.Component {
         this.setState({tabvalue: newvalue})
     }
 
+    // Form validation
+    validateAnnotationName() {
+        const value = this.state.selected_annotation_name;
+        const isError = value.trim() === '';
+        this.setState({ annotationNameError: isError });
+    };
 
-    render() {
+    validateFloatNumber(value, stateKey) {
+        const floatValue = parseFloat(value);
+        const isValid = !isNaN(floatValue);
+        this.setState({ [stateKey]: !isValid });
+    }
+        render() {
         return (
                 <Grid container direction="row">
                     {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
@@ -174,60 +204,65 @@ class BackAveragePage extends React.Component {
                     {/*</Grid>*/}
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Power Spectral Density Parameterisation
+                            Back Average Parametirisation
                         </Typography>
                         <Divider/>
                         <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                         <Divider/>
                         <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
 
-                            <FormControl sx={{m: 1, width:'90%'}}>
+                            <FormControl sx={{m: 1, width:'90%'}} error={this.state.timeBeforeEventError}>
                                 <TextField
                                         id="time-before-event"
                                         value={this.state.selected_time_before_event}
                                         label="Time Before Event"
                                         size={"small"}
                                         onChange={this.handleSelectTimeBeforeEventChange}
+                                        onBlur={() => this.validateFloatNumber(this.state.selected_time_before_event, 'timeBeforeEventError')}
                                 />
                                 <FormHelperText>Time before the event</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}}>
+                            <FormControl sx={{m: 1, width:'90%'}} error={this.state.timeAfterEventError}>
                                 <TextField
                                         id="time-after-event"
                                         value={this.state.selected_time_after_event}
                                         label="Time After Event"
                                         size={"small"}
                                         onChange={this.handleSelectTimeAfterEventChange}
+                                        onBlur={() => this.validateFloatNumber(this.state.selected_time_after_event, 'timeAfterEventError')}
                                 />
                                 <FormHelperText>Time after the event</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}}>
+                            <FormControl sx={{m: 1, width:'90%'}} error={this.state.minPtpAmplitudeError}>
                                 <TextField
                                         id="min-ptp-amplitude"
                                         value={this.state.selected_min_ptp_amplitude}
                                         label="Min PTP Amplitude"
                                         size={"small"}
                                         onChange={this.handleSelectMinPtpAmplitudeChange}
+                                        onBlur={() => this.validateFloatNumber(this.state.selected_min_ptp_amplitude, 'minPtpAmplitudeError')}
                                 />
                                 <FormHelperText>Minimum peak-to-peak amplitude</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}}>
+                            <FormControl sx={{m: 1, width:'90%'}} error = {this.state.maxPtpAmplitudeError}>
                                 <TextField
                                         id="max-ptp-amplitude"
                                         value={this.state.selected_max_ptp_amplitude}
                                         label="Max PTP Amplitude"
                                         size={"small"}
                                         onChange={this.handleSelectMaxPtpAmplitudeChange}
+                                        onBlur={() => this.validateFloatNumber(this.state.selected_max_ptp_amplitude, 'maxPtpAmplitudeError')}
                                 />
                                 <FormHelperText>Maximum peak-to-peak amplitude</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}}>
+                            <FormControl sx={{m: 1, width:'90%'}}  error={this.state.annotationNameError}>>
                                 <TextField
                                         id="annotation-name"
                                         value={this.state.selected_annotation_name}
                                         label="Annotation Name"
                                         size={"small"}
                                         onChange={this.handleSelectAnnotationNameChange}
+                                        onBlur={this.validateAnnotationName}
                                 />
                                 <FormHelperText>Annotation name</FormHelperText>
                             </FormControl>
@@ -257,8 +292,8 @@ class BackAveragePage extends React.Component {
                         <TabPanel value={this.state.tabvalue} index={0}>
                         </TabPanel>
                         <TabPanel value={this.state.tabvalue} index={1}>
-                            <img src={this.state.periodogram_path + "?random=" + new Date().getTime()}
-                                 srcSet={this.state.periodogram_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                            <img src={this.state.back_average_plot_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.back_average_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
                                  loading="lazy"
                             />
                         </TabPanel>
