@@ -168,7 +168,10 @@ class General_Stats_Average extends React.Component {
     handleSelectVariableNameChange(event){
         this.setState( {selected_variable_name: event.target.value})
         var newArray = this.state.selected_variables.slice();
-        newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
         this.setState({selected_variables:newArray})
     }
     handleSelectFileNameChange(event){
@@ -185,77 +188,74 @@ class General_Stats_Average extends React.Component {
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
-                        <Grid>
-                            <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                Average Parameterisation
-                            </Typography>
-                            <hr/>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                            Average Parameterisation
+                        </Typography>
+                        <hr/>
 
-                            <form onSubmit={this.handleSubmit}>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="file-selector-label">File</InputLabel>
-                                    <Select
-                                            labelId="file-selector-label"
-                                            id="file-selector"
-                                            value= {this.state.selected_file_name}
-                                            label="File Variable"
-                                            onChange={this.handleSelectFileNameChange}
-                                    >
-                                        {this.state.file_names.map((column) => (
-                                                <MenuItem value={column}>{column}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="column-selector-label">Select Variable</InputLabel>
-                                    <Select
-                                            labelId="column-selector-label"
-                                            id="column-selector"
-                                            value= {this.state.selected_variable_name}
-                                            label="Select Variable"
-                                            onChange={this.handleSelectVariableNameChange}
-                                    >
-                                        {this.state.column_names.map((column) => (
-                                                <MenuItem value={column}>{column}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Name of column in selected dataset.</FormHelperText>
-                                </FormControl>
-                                <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
-                                    Submit
-                                </Button>
-                            </form>
-                            <form onSubmit={this.handleProceed}>
-                                <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                        disabled={!this.state.stats_show}>
-                                    Proceed >
-                                </Button>
-                            </form>
-                        </Grid>
-                        <Grid>
-                            <hr item xs={12}/>
-                            <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                                <FormHelperText>Selected variables</FormHelperText>
-                                <List style={{backgroundColor:"powderblue", borderRadius:'10%'}}>
+                        <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column-selector-label">Select Variable</InputLabel>
+                                <Select
+                                        // multiple
+                                        labelId="column-selector-label"
+                                        id="column-selector"
+                                        value= {this.state.selected_variable_name}
+                                        label="Select Variable"
+                                        onChange={this.handleSelectVariableNameChange}
+                                >
+                                    {this.state.column_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Name of column in selected dataset.</FormHelperText>
+                            </FormControl>
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
+                                Submit
+                            </Button>
+                        </form>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show}>
+                                Proceed >
+                            </Button>
+                        </form>
+                        <br/>
+                        <br/>
+                        <hr/>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected variables</FormHelperText>
+                            <div>
+                                <span>
                                     {this.state.selected_variables.map((column) => (
-                                            <ListItem disablePadding
-                                            >
-                                                <ListItemText
-                                                        primaryTypographyProps={{fontSize: '12px'}}
-                                                        primary={'•  ' + column}
-                                                />
+                                            <Button variant="outlined" size="small" sx={{m:0.5}} style={{fontSize:'10px'}}>
+                                                {column}
                                                 <IconButton edge="end" aria-label="delete">
                                                     <DeleteIcon />
                                                 </IconButton>
-                                            </ListItem>
-                                    ))}
-                                </List>
-                                <Button onClick={this.handleDeleteVariable}>
-                                    Clear selection
-                                </Button>
-                            </FormControl>
-                        </Grid>
+                                            </Button>
+                                        ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear selection
+                            </Button>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
