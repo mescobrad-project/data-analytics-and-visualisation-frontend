@@ -190,7 +190,7 @@ class Normality_Tests_And extends React.Component {
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        console.log(this.state.output_return_data);
+        // console.log(this.state.output_return_data);
         window.location.replace("/")
     }
 

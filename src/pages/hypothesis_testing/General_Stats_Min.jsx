@@ -4,7 +4,7 @@ import {
     Button,
     FormControl,
     FormHelperText,
-    Grid, IconButton,
+    Grid,
     InputLabel,
     List,
     ListItem,
@@ -52,7 +52,7 @@ function a11yProps(index) {
     };
 }
 
-class General_Stats_Average extends React.Component {
+class General_Stats_Min extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -126,7 +126,7 @@ class General_Stats_Average extends React.Component {
         this.setState({stats_show: false})
 
         // Send the request
-        API.get("compute_mean",
+        API.get("compute_min",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
@@ -185,77 +185,68 @@ class General_Stats_Average extends React.Component {
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
-                        <Grid>
-                            <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                Average Parameterisation
-                            </Typography>
-                            <hr/>
-
-                            <form onSubmit={this.handleSubmit}>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="file-selector-label">File</InputLabel>
-                                    <Select
-                                            labelId="file-selector-label"
-                                            id="file-selector"
-                                            value= {this.state.selected_file_name}
-                                            label="File Variable"
-                                            onChange={this.handleSelectFileNameChange}
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                            Average Parameterisation
+                        </Typography>
+                        <hr/>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                            <FormHelperText>Selected features in sample X</FormHelperText>
+                            <List style={{backgroundColor:"powderblue", borderRadius:'10%'}}>
+                                {this.state.selected_variables.map((column) => (
+                                    <ListItem disablePadding
                                     >
-                                        {this.state.file_names.map((column) => (
-                                                <MenuItem value={column}>{column}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                    <InputLabel id="column-selector-label">Select Variable</InputLabel>
-                                    <Select
-                                            labelId="column-selector-label"
-                                            id="column-selector"
-                                            value= {this.state.selected_variable_name}
-                                            label="Select Variable"
-                                            onChange={this.handleSelectVariableNameChange}
-                                    >
-                                        {this.state.column_names.map((column) => (
-                                                <MenuItem value={column}>{column}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText>Name of column in selected dataset.</FormHelperText>
-                                </FormControl>
-                                <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
-                                    Submit
-                                </Button>
-                            </form>
-                            <form onSubmit={this.handleProceed}>
-                                <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                        disabled={!this.state.stats_show}>
-                                    Proceed >
-                                </Button>
-                            </form>
-                        </Grid>
-                        <Grid>
-                            <hr item xs={12}/>
-                            <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                                <FormHelperText>Selected variables</FormHelperText>
-                                <List style={{backgroundColor:"powderblue", borderRadius:'10%'}}>
-                                    {this.state.selected_variables.map((column) => (
-                                            <ListItem disablePadding
-                                            >
-                                                <ListItemText
-                                                        primaryTypographyProps={{fontSize: '12px'}}
-                                                        primary={'•  ' + column}
-                                                />
-                                                <IconButton edge="end" aria-label="delete">
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </ListItem>
+                                        <ListItemText
+                                                primaryTypographyProps={{fontSize: '12px'}}
+                                                primary={'•  ' + column}
+                                        />
+                                    </ListItem>
+                                ))}
+                            </List>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear selection
+                            </Button>
+                        </FormControl>
+                        <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
                                     ))}
-                                </List>
-                                <Button onClick={this.handleDeleteVariable}>
-                                    Clear selection
-                                </Button>
+                                </Select>
+                                <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
-                        </Grid>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column-selector-label">Select Variable</InputLabel>
+                                <Select
+                                        labelId="column-selector-label"
+                                        id="column-selector"
+                                        value= {this.state.selected_variable_name}
+                                        label="Select Variable"
+                                        onChange={this.handleSelectVariableNameChange}
+                                >
+                                    {this.state.column_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Name of column in selected dataset.</FormHelperText>
+                            </FormControl>
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
+                                Submit
+                            </Button>
+                        </form>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show}>
+                                Proceed >
+                            </Button>
+                        </form>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
@@ -274,7 +265,7 @@ class General_Stats_Average extends React.Component {
                                 <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
                                     <Grid>
                                         <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                            Compute the average value of the selected variables. </Typography>
+                                            Compute the min values of the selected variables. </Typography>
                                         <div style={{textAlign:"center"}}>
                                             <CSVLink data={this.state.Results}
                                                      filename={"Results.csv"}>Download</CSVLink>
@@ -296,4 +287,4 @@ class General_Stats_Average extends React.Component {
     }
 }
 
-export default General_Stats_Average;
+export default General_Stats_Min;

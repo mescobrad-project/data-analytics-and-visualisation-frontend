@@ -110,6 +110,8 @@ import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysi
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
 import Mixed_Anova from "../../pages/hypothesis_testing/Mixed_Anova"
 import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average"
+import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min"
+import General_Stats_Max from "../../pages/hypothesis_testing/General_Stats_Max"
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -250,6 +252,8 @@ const App = () => {
                         <Route exact path="/GeneralizedEstimatingEquations" element={(<LayoutMain><GeneralizedEstimatingEquationsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/Mixed_Anova" element={(<LayoutMain><Mixed_Anova/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Average" element={(<LayoutMain><General_Stats_Average/></LayoutMain>)}/>
+                        <Route exact path="/General_Stats_Min" element={(<LayoutMain><General_Stats_Min/></LayoutMain>)}/>
+                        <Route exact path="/General_Stats_Max" element={(<LayoutMain><General_Stats_Max/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

@@ -141,7 +141,7 @@ class Mixed_Anova extends React.Component {
         ).then(res => {
             this.setState({test_data: res.data})
             this.setState({Results:JSON.parse(res.data.Dataframe)});
-            console.log(res.data.DataFrame)
+            // console.log(res.data.DataFrame)
             this.setState({stats_show: true})
             this.setState({tabvalue:0})
         });
