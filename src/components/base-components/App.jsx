@@ -110,6 +110,7 @@ import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysi
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
 import Mixed_Anova from "../../pages/hypothesis_testing/Mixed_Anova"
 import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average"
+import BackAveragePage from "./BackAveragePage";
 import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min"
 import General_Stats_Max from "../../pages/hypothesis_testing/General_Stats_Max"
 
@@ -200,7 +201,7 @@ const App = () => {
                         <Route exact path="/alpha_variability" element={(<LayoutMain><AlphaVariabilityFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
-                        <Route exact path="/whatever" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
+                        <Route exact path="/back_average" element={(<LayoutMain><BackAveragePage/></LayoutMain>)}/>
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
