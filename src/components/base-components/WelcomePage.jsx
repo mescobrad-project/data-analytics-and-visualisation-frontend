@@ -138,7 +138,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 // endIcon={}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick= {redirectToPage.bind(this,1, 1, 1, "auto_correlation", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Auto Correlation
@@ -159,7 +159,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "welch", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             (OLD) Power Spectral Density - Welch
@@ -195,6 +195,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "power_spectral_density_periodogram", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             (OLD)Power Spectral Density - Periodogram
@@ -213,6 +214,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "power_spectral_density_multitaper", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             (OLD)Power Spectral Density - Multitaper
@@ -222,6 +224,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "alpha_delta_ratio", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             (OLD) Alpha Delta Ratio
@@ -249,6 +252,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "alpha_variability", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             (OLD?)  Alpha Variability
@@ -306,7 +310,7 @@ function WelcomePage() {
                         {/*</Button>*/}
                         {/*<Divider/>*/}
                         <Button
-                                variant="contained"
+                                // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "eeg_viewer", ["saved"], ["ps_case_edf.edf"])}
@@ -324,7 +328,7 @@ function WelcomePage() {
                         {/*</Button>*/}
                         {/*<Divider/>*/}
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "envelop_trend_analysis", ["saved"], ["psg1 anonym2.edf"])}
@@ -345,7 +349,7 @@ function WelcomePage() {
 
 
                         <Button
-                                variant="contained"
+                                // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"])}
@@ -354,7 +358,7 @@ function WelcomePage() {
                         </Button>
                         <Divider/>
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"])}
@@ -1202,22 +1206,22 @@ function WelcomePage() {
                         >
                             Ancova
                         </Button>
-                        <Button
-                                size="medium"
-                                // variant="contained"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "principalcomponentanalysis",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
-                        >
-                            Principal Component Analysis
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 4, "slowwave_spindle", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"])}
-                        >
-                            Slow Waves / Spindles
-                        </Button>
+                        {/*<Button*/}
+                        {/*        size="medium"*/}
+                        {/*        // variant="contained"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "principalcomponentanalysis",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}*/}
+                        {/*>*/}
+                        {/*    Principal Component Analysis*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        variant="contained"*/}
+                        {/*        size="medium"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 1, 4, "slowwave_spindle", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"])}*/}
+                        {/*>*/}
+                        {/*    Slow Waves / Spindles*/}
+                        {/*</Button>*/}
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
