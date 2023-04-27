@@ -78,6 +78,7 @@ class General_Stats_Average extends React.Component {
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         // this.fetchColumnNames();
@@ -183,6 +184,14 @@ class General_Stats_Average extends React.Component {
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
+    handleListDelete(event) {
+        var newArray = this.state.selected_variables.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_variables:newList})
+    }
 
     render() {
         return (
@@ -207,7 +216,7 @@ class General_Stats_Average extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
+                                <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Select Variable</InputLabel>
@@ -223,7 +232,7 @@ class General_Stats_Average extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Name of column in selected dataset.</FormHelperText>
+                                <FormHelperText>Select variable in the selected dataset.</FormHelperText>
                             </FormControl>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
@@ -239,21 +248,21 @@ class General_Stats_Average extends React.Component {
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables</FormHelperText>
+                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_variables.map((column) => (
-                                            <Button variant="outlined" size="small" sx={{m:0.5}} style={{fontSize:'10px'}}>
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
                                                 {column}
-                                                <IconButton edge="end" aria-label="delete">
-                                                    <DeleteIcon />
-                                                </IconButton>
                                             </Button>
                                         ))}
                                 </span>
                             </div>
                             <Button onClick={this.handleDeleteVariable}>
-                                Clear selection
+                                Clear all
                             </Button>
                         </FormControl>
                     </Grid>
