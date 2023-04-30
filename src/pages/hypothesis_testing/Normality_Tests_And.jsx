@@ -112,6 +112,7 @@ class Normality_Tests_And extends React.Component {
         this.handleSelectColumnChange = this.handleSelectColumnChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectAxisChange = this.handleSelectAxisChange.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         this.fetchColumnNames();
@@ -177,7 +178,6 @@ class Normality_Tests_And extends React.Component {
         this.setState({probplot_chart_show: false})
         this.setState({stats_show: false})
         this.setState({histogram_chart_show: false})
-        this.setState({tabvalue:0})
         // Send the request
         API.get("normality_tests",
                 {
@@ -195,6 +195,7 @@ class Normality_Tests_And extends React.Component {
 
             const resultJson = res.data;
             // console.log(resultJson)
+            this.setState({tabvalue:0})
 
             // this.setState({test_chart_data: temp_array_chart})
             this.setState({histogram_chart_show: true})
