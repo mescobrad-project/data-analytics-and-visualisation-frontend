@@ -72,12 +72,14 @@ class General_Stats_Max extends React.Component {
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         // this.fetchColumnNames();
@@ -99,8 +101,6 @@ class General_Stats_Max extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
-            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
         });
     }
 
@@ -115,6 +115,21 @@ class General_Stats_Max extends React.Component {
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({file_names: res.data.files})
+        });
+    }
+
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:1})
         });
     }
     /**
@@ -168,11 +183,17 @@ class General_Stats_Max extends React.Component {
     handleSelectVariableNameChange(event){
         this.setState( {selected_variable_name: event.target.value})
         var newArray = this.state.selected_variables.slice();
-        newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
         this.setState({selected_variables:newArray})
     }
     handleSelectFileNameChange(event){
-        this.setState( {selected_file_name: event.target.value}, ()=>{this.fetchColumnNames()})
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+        })
     }
     handleDeleteVariable(event) {
         this.setState({selected_variables:[]})
@@ -180,32 +201,23 @@ class General_Stats_Max extends React.Component {
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
+    handleListDelete(event) {
+        var newArray = this.state.selected_variables.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_variables:newList})
+    }
 
     render() {
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Max Parameterisation
+                            Max() Parameterisation
                         </Typography>
                         <hr/>
-                        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                            <FormHelperText>Selected features in sample X</FormHelperText>
-                            <List style={{backgroundColor:"powderblue", borderRadius:'10%'}}>
-                                {this.state.selected_variables.map((column) => (
-                                    <ListItem disablePadding
-                                    >
-                                        <ListItemText
-                                                primaryTypographyProps={{fontSize: '12px'}}
-                                                primary={'•  ' + column}
-                                        />
-                                    </ListItem>
-                                ))}
-                            </List>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear selection
-                            </Button>
-                        </FormControl>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="file-selector-label">File</InputLabel>
@@ -247,6 +259,27 @@ class General_Stats_Max extends React.Component {
                                 Proceed >
                             </Button>
                         </form>
+                        <br/>
+                        <br/>
+                        <hr/>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_variables.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
+                            </Button>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>

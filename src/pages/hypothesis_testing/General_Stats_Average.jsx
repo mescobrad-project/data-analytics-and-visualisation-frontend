@@ -100,8 +100,6 @@ class General_Stats_Average extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
-            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
         });
     }
 
@@ -116,6 +114,21 @@ class General_Stats_Average extends React.Component {
                         step_id: params.get("step_id")
                     }}).then(res => {
             this.setState({file_names: res.data.files})
+        });
+    }
+
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:1})
         });
     }
     /**
@@ -176,7 +189,10 @@ class General_Stats_Average extends React.Component {
         this.setState({selected_variables:newArray})
     }
     handleSelectFileNameChange(event){
-        this.setState( {selected_file_name: event.target.value}, ()=>{this.fetchColumnNames()})
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+        })
     }
     handleDeleteVariable(event) {
         this.setState({selected_variables:[]})
