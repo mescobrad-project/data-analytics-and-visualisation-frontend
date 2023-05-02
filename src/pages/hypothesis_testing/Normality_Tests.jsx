@@ -441,8 +441,8 @@ class Normality_Tests extends React.Component {
                         <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Results" {...a11yProps(0)} />
-                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
                                     {/*<Tab label="Transformed" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
