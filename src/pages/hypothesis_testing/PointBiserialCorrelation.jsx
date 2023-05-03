@@ -1,32 +1,28 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button, Checkbox,
-    FormControl, FormControlLabel,
+    Button,
+    FormControl,
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
     Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs,
     Typography
 } from "@mui/material";
-import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
-import InnerHTML from "dangerously-set-html-content";
 import Paper from "@mui/material/Paper";
 
-function CustomToolbar() {
-    return (
-            <GridToolbarContainer>
-                <GridToolbarExport />
-            </GridToolbarContainer>
-    );
-}
+// function CustomToolbar() {
+//     return (
+//             <GridToolbarContainer>
+//                 <GridToolbarExport />
+//             </GridToolbarContainer>
+//     );
+// }
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -64,25 +60,22 @@ function a11yProps(index) {
 class PointBiserialCorrelation extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
             column_names: [],
             binary_columns: [],
+            file_names:[],
             initialdataset:[],
             outputdataset:[],
             outliers_A:[],
             outliers_B:[],
             test_data: {
-                status: '',
-                error_descr: '',
-                scatter_plot: '',
-                html_box: '',
                 sample_A: {
                     value: '',
                     N: '',
                     N_clean:  '',
                     outliers: [],
-                    html_hist: '',
                     Norm_statistic: '',
                     Norm_p_value: '',
                     Hom_statistic: '',
@@ -93,11 +86,8 @@ class PointBiserialCorrelation extends React.Component {
                     N: '',
                     N_clean:  '',
                     outliers: [],
-                    html_hist: '',
                     Norm_statistic: '',
                     Norm_p_value: '',
-                    Hom_statistic: '',
-                    Hom_p_value: '',
                 },
                 correlation: '',
                 p_value: '',
@@ -106,17 +96,33 @@ class PointBiserialCorrelation extends React.Component {
             //Values selected currently on the form
             selected_column: "",
             selected_column2: "",
-            // remove_outliers: true
+            selected_variable: "",
+            selected_variable2: "",
+            selected_file_name: "",
+            stats_show: false,
+            svg_Scatter_Two_Variables : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/Scatter_Two_Variables.svg',
+            svg_BoxPlot : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/BoxPlot.svg',
+            svg_HistogramPlot_GroupA : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/HistogramPlot_GroupA.svg',
+            svg_HistogramPlot_GroupB : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/HistogramPlot_GroupB.svg',
+// remove_outliers: true
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
-        // this.handleOutliersRemovalChange = this.handleOutliersRemovalChange.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
         this.handleSelectColumnChange1 = this.handleSelectColumnChange1.bind(this);
         this.handleSelectColumnChange2 = this.handleSelectColumnChange2.bind(this);
         // // Initialise component
         // // - values of channels from the backend
+        this.fetchFileNames();
         this.fetchColumnNames();
         this.fetchBinaryColumnNames();
         this.handleTabChange = this.handleTabChange.bind(this);
@@ -133,27 +139,54 @@ class PointBiserialCorrelation extends React.Component {
                 {
                     params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
-            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:0})
                     });
     }
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
 
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
+        });
+    }
     /**
      * Process and send the request for auto correlation and handle the response
      */
     async handleSubmit(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
+        this.setState({stats_show: false})
 
         // Send the request
         API.get("compute_point_biserial_correlation",
                 {
                     params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        column_1: this.state.selected_column, column_2: this.state.selected_column2,
+                        column_1: this.state.selected_variable,
+                        column_2: this.state.selected_variable2,
                     }
                 }
         ).then(res => {
@@ -161,6 +194,7 @@ class PointBiserialCorrelation extends React.Component {
             this.setState({outputdataset: JSON.parse(res.data.new_dataset)})
             this.setState({outliers_A: JSON.parse(res.data.sample_A.outliers)})
             this.setState({outliers_B: JSON.parse(res.data.sample_B.outliers)})
+            this.setState({stats_show: true})
             this.setState({tabvalue:1})
         });
     }
@@ -170,28 +204,49 @@ class PointBiserialCorrelation extends React.Component {
         API.get("return_binary_columns",
                 {params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
-            // console.log(res.data.columns)
             this.setState({binary_columns: res.data.columns})
         });
     }
 
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+       API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
+    }
     /**
      * Update state when selection changes in the form
      */
     handleSelectColumnChange1(event){
         this.setState( {selected_column: event.target.value})
+        this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
     }
     handleSelectColumnChange2(event){
         this.setState( {selected_column2: event.target.value})
+        this.setState( {selected_variable2: this.state.selected_file_name+"--"+event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    // handleOutliersRemovalChange(event){
-    //     this.setState( {remove_outliers: event.target.checked})
-    // }
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.fetchBinaryColumnNames()
+            this.state.selected_variable=""
+            this.state.selected_variable2=""
+        })
+    }
 
     render() {
         return (
@@ -202,6 +257,21 @@ class PointBiserialCorrelation extends React.Component {
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, minWidth: 120}}>
                                 <InputLabel id="column-selector-label">Column 1</InputLabel>
                                 <Select
@@ -211,9 +281,6 @@ class PointBiserialCorrelation extends React.Component {
                                         label="Column"
                                         onChange={this.handleSelectColumnChange1}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
                                     {this.state.binary_columns.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
@@ -229,9 +296,6 @@ class PointBiserialCorrelation extends React.Component {
                                         label="Second column"
                                         onChange={this.handleSelectColumnChange2}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
@@ -246,19 +310,38 @@ class PointBiserialCorrelation extends React.Component {
                             {/*            inputProps={{ 'aria-label': 'controlled' }}*/}
                             {/*    />} label="Remove Outliers" />*/}
                             <hr/>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_variable && !this.state.selected_variable2}>
+                                {/*|| !this.state.selected_method*/}
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show}>
                                 Proceed >
                             </Button>
                         </form>
+                        <br/>
+                        <br/>
+                        <Grid>
+                            Binary variable =
+                            <Button variant="outlined" size="small"
+                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
+                                    id={this.state.selected_variable}
+                                    onClick={this.handleListDelete}>
+                                {this.state.selected_variable}
+                            </Button>
+                        </Grid>
+                        <Grid>
+                            Variable =
+                            <Button variant="outlined" size="small"
+                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
+                                    id={this.state.selected_variable2}
+                                    onClick={this.handleListDelete}>
+                                {this.state.selected_variable2}
+                            </Button>
+                        </Grid>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -274,10 +357,11 @@ class PointBiserialCorrelation extends React.Component {
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
+                                <JsonTable className="jsonResultsTable"
+                                           rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Grid>
+                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
                                     <Grid container direction="row">
                                         <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
                                             <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
@@ -298,7 +382,12 @@ class PointBiserialCorrelation extends React.Component {
                                             </TableContainer>
                                         </Grid>
                                         <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <InnerHTML html={this.state.test_data.scatter_plot} style={{zoom:'50%'}}/>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <img src={this.state.svg_Scatter_Two_Variables + "?random=" + new Date().getTime()}
+                                                     srcSet={this.state.svg_Scatter_Two_Variables + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                     loading="lazy"
+                                                />
+                                            </div>
                                         </Grid>
                                     </Grid>
                                     <hr className="result"/>
@@ -344,7 +433,12 @@ class PointBiserialCorrelation extends React.Component {
                                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
                                                 Box plot for each category of the dichotomous
                                             </Typography>
-                                            <InnerHTML html={this.state.test_data.html_box} style={{zoom:'50%'}}/>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <img src={this.state.svg_BoxPlot + "?random=" + new Date().getTime()}
+                                                     srcSet={this.state.svg_BoxPlot + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                     loading="lazy"
+                                                />
+                                            </div>
                                         </Grid>
                                     </Grid>
                                     <hr className="result"/>
@@ -381,11 +475,21 @@ class PointBiserialCorrelation extends React.Component {
                                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
                                                 Histogram of category {this.state.test_data.sample_A.value} of the dichotomous
                                             </Typography>
-                                            <InnerHTML html={this.state.test_data.sample_A.html_hist} style={{zoom:'50%'}}/>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <img src={this.state.svg_HistogramPlot_GroupA + "?random=" + new Date().getTime()}
+                                                     srcSet={this.state.svg_HistogramPlot_GroupA + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                     loading="lazy"
+                                                />
+                                            </div>
                                             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
                                                 Histogram of category {this.state.test_data.sample_B.value} of the dichotomous
                                             </Typography>
-                                            <InnerHTML html={this.state.test_data.sample_B.html_hist} style={{zoom:'50%'}}/>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <img src={this.state.svg_HistogramPlot_GroupB + "?random=" + new Date().getTime()}
+                                                     srcSet={this.state.svg_HistogramPlot_GroupB + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                     loading="lazy"
+                                                />
+                                            </div>
                                         </Grid>
                                     </Grid>
                                     <hr className="result"/>
@@ -415,7 +519,8 @@ class PointBiserialCorrelation extends React.Component {
                                 </Grid>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
-                                <JsonTable className="jsonResultsTable" rows = {this.state.outputdataset}/>
+                                <JsonTable className="jsonResultsTable"
+                                           rows = {this.state.outputdataset}/>
                             </TabPanel>
                         </Box>
                     </Grid>

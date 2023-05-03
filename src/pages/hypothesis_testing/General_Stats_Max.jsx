@@ -9,15 +9,16 @@ import {
     List,
     ListItem,
     ListItemText,
-    MenuItem,
-    Select, Tab, Tabs, TextareaAutosize, TextField,
+    MenuItem, Modal,
+    Select, Tab, Tabs,
     Typography
 } from "@mui/material";
 import qs from "qs";
-import {DataGrid} from "@mui/x-data-grid";
-import {Box} from "@mui/system";
-import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
+import {CSVLink} from "react-csv";
+import {Box} from "@mui/system";
+import DeleteIcon from '@mui/icons-material/Delete';
+import PropTypes from "prop-types";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -38,7 +39,6 @@ function TabPanel(props) {
             </div>
     );
 }
-
 TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
@@ -51,22 +51,8 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-const userColumns = [
-    { field: "Variable", headerName: "Variable", width: '50%',
-        align: "left",
-        headerAlign: "left",
-        flex:2,
-        sortable: true},
-    {
-        field: "Variance",
-        headerName: "Variance",
-        width: '50%',
-        align: "left",
-        headerAlign: "left",
-        flex:2
-    }];
 
-class Homoscedasticity extends React.Component {
+class General_Stats_Max extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -74,59 +60,50 @@ class Homoscedasticity extends React.Component {
             column_names: [],
             file_names:[],
             test_data: {
-                statistic: "",
-                p_value: "",
-                variance: []
+                Dataframe:""
             },
             //Values selected currently on the form
-            selected_file_name: "",
-            selected_method: "Bartlett",
-            selected_center: "median",
-            selected_independent_variables: [],
             selected_variables: [],
-            center_show:false,
-            stats_show:false
+            selected_file_name: "",
+            selected_variable_name: "",
+            Results:[],
+            stats_show: false,
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
-        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
-        this.handleSelectCenterChange = this.handleSelectCenterChange.bind(this);
-
-        this.onClickButton = this.onClickButton.bind(this)
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.handleListDelete = this.handleListDelete.bind(this);
-
         // // Initialise component
         // // - values of channels from the backend
-        this.fetchColumnNames();
+        // this.fetchColumnNames();
         this.fetchFileNames();
-
     }
 
     /**
      * Call backend endpoint to get column names
      */
-    async fetchColumnNames(url, config) {
+    async fetchColumnNames() {
         const params = new URLSearchParams(window.location.search);
 
         API.get("return_columns",
                 {
                     params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
         });
     }
+
     async fetchFileNames() {
         const params = new URLSearchParams(window.location.search);
 
@@ -140,6 +117,7 @@ class Homoscedasticity extends React.Component {
             this.setState({file_names: res.data.files})
         });
     }
+
     async fetchDatasetContent() {
         const params = new URLSearchParams(window.location.search);
         API.get("return_dataset",
@@ -151,7 +129,7 @@ class Homoscedasticity extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:0})
+            this.setState({tabvalue:1})
         });
     }
     /**
@@ -163,84 +141,65 @@ class Homoscedasticity extends React.Component {
         this.setState({stats_show: false})
 
         // Send the request
-        API.get("check_homoscedasticity",
+        API.get("compute_max",
                 {
                     params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        columns: this.state.selected_variables,
-                        name_of_test: this.state.selected_method,
-                        center: this.state.selected_center},
+                        variables: this.state.selected_variables,
+                    },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
-                }}
+                    }
+                }
         ).then(res => {
             this.setState({test_data: res.data})
+            this.setState({Results:JSON.parse(res.data.Dataframe)});
             this.setState({stats_show: true})
-            this.setState({tabvalue:1})
+            this.setState({tabvalue:0})
         });
     }
 
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
+        // console.log(file_to_output)
         API.put("save_hypothesis_output",
                 {
                     workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
+                    step_id: params.get("step_id"),
                 }
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
         window.location.replace("/")
     }
+
     /**
      * Update state when selection changes in the form
      */
-
-    onClickButton(event) {
-        const cnt = this.state.selected_variables.map((item) => ({item}.length))
-        console.log(cnt)
-        if (cnt<2)
-        {
-            alert('At least TWO variables must be selected!')
-            event.preventDefault();
-        }
-    }
-
-    handleTabChange(event, newvalue){
-        this.setState({tabvalue: newvalue})
-    }
-    handleSelectFileNameChange(event){
-        this.setState( {selected_file_name: event.target.value}, ()=>{
-            this.fetchColumnNames()
-            this.fetchDatasetContent()
-            this.state.selected_variables=[]
-        })
-    }
-
-    handleSelectMethodChange(event){
-        this.setState( {selected_method: event.target.value})
-        if (event.target.value=="Bartlett"){
-            this.setState({center_show:false})
-        }
-        else {
-            this.setState({center_show:true});
-        }
-        this.setState({stats_show: false})
-    }
-    handleSelectCenterChange(event){
-        this.setState( {selected_center: event.target.value})
-        this.setState({stats_show: false})
-    }
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
+    handleSelectVariableNameChange(event){
+        this.setState( {selected_variable_name: event.target.value})
         var newArray = this.state.selected_variables.slice();
         if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
         {
             newArray.push(this.state.selected_file_name+"--"+event.target.value);
         }
         this.setState({selected_variables:newArray})
+    }
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+        })
+    }
+    handleDeleteVariable(event) {
+        this.setState({selected_variables:[]})
+    }
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
     }
     handleListDelete(event) {
         var newArray = this.state.selected_variables.slice();
@@ -250,18 +209,15 @@ class Homoscedasticity extends React.Component {
         })
         this.setState({selected_variables:newList})
     }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
-    }
+
     render() {
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select method for Homoscedasticity check
+                            Max() Parameterisation
                         </Typography>
                         <hr/>
-
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="file-selector-label">File</InputLabel>
@@ -276,58 +232,24 @@ class Homoscedasticity extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select dataset.</FormHelperText>
+                                <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Column</InputLabel>
+                                <InputLabel id="column-selector-label">Select Variable</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        // multiple
-                                        label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        value= {this.state.selected_variable_name}
+                                        label="Select Variable"
+                                        onChange={this.handleSelectVariableNameChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Variables</FormHelperText>
+                                <FormHelperText>Name of column in selected dataset.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="method-selector-label">Method</InputLabel>
-                                <Select
-                                        labelId="method-selector-label"
-                                        id="method-selector"
-                                        value= {this.state.selected_method}
-                                        label="Method"
-                                        onChange={this.handleSelectMethodChange}
-                                >
-                                    <MenuItem value={"Bartlett"}><em>Bartlett</em></MenuItem>
-                                    <MenuItem value={"Fligner-Killeen"}><em>Fligner-Killeen</em></MenuItem>
-                                    <MenuItem value={"Levene"}><em>Levene</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Specify which method to use.</FormHelperText>
-                            </FormControl>
-                            <FormControl style={{ display: (this.state.center_show ? 'block' : 'none') }}>
-                                <InputLabel id="center-selector-label">Function</InputLabel>
-                                <Select sx={{m: 1, width:'90%'}} size={"small"}
-                                        labelid="center-selector-label"
-                                        id="center-selector"
-                                        value= {this.state.selected_center}
-                                        label="Center parameter"
-                                        onChange={this.handleSelectCenterChange}
-                                >
-                                    <MenuItem value={"trimmed"}><em>trimmed</em></MenuItem>
-                                    <MenuItem value={"median"}><em>median</em></MenuItem>
-                                    <MenuItem value={"mean"}><em>mean</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Keyword argument controlling which function of the data is used in computing the test statistic. The default is ‘median’.</FormHelperText>
-                            </FormControl>
-                            <Button sx={{float: "left", marginRight: "2px"}}
-                                    variant="contained" color="primary"
-                                    type="submit" onClick={this.onClickButton}
-                                    >
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
                         </form>
@@ -360,42 +282,36 @@ class Homoscedasticity extends React.Component {
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Result Visualisation
                         </Typography>
                         <hr className="result"/>
                         <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
-                                    <Tab label="Results" {...a11yProps(1)} />
-                                    <Tab label="New Dataset" {...a11yProps(2)} />
+                                    <Tab label="Results" {...a11yProps(0)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    {/*<Tab label="Transformed" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <JsonTable className="jsonResultsTable"
-                                           rows = {this.state.initialdataset}/>
+                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    <Grid>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                            Compute the max values of the selected variables. </Typography>
+                                        <div style={{textAlign:"center"}}>
+                                            <CSVLink data={this.state.Results}
+                                                     filename={"Results.csv"}>Download</CSVLink>
+                                            <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
+                                        </div>
+                                    </Grid>
+                                </Grid>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <div className="datatable">
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} >
-                                            Variance of Selected Variables
-                                        </Typography>
-                                        <DataGrid sx={{width:'80%', height:'210px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
-                                                rowHeight={30}
-                                                className="datagrid"
-                                                rows= {this.state.test_data.variance}
-                                                columns= {userColumns}
-                                                pageSize= {12}
-                                                rowsPerPageOptions={[5]}
-                                        />
-                                        <hr className="result"
-                                            />
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >{this.state.selected_method}{"'s test statistic:"}  { this.state.test_data.statistic}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >P-value: {this.state.test_data.p_value}</Typography>
-                                    </div>
-                                </Grid>
+                                <Box>
+                                        <JsonTable className="jsonResultsTable"
+                                                   rows = {this.state.initialdataset}/>
+                                </Box>
                             </TabPanel>
                         </Grid>
                     </Grid>
@@ -404,4 +320,4 @@ class Homoscedasticity extends React.Component {
     }
 }
 
-export default Homoscedasticity;
+export default General_Stats_Max;
