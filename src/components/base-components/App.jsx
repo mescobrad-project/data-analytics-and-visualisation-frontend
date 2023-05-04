@@ -107,6 +107,8 @@ import PowerSpectralDensityPage from "./PowerSpectralDensityPage";
 import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_correlation"
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
+import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
+import GrangerAnalysisFunctionPage from "./GrangerAnalysisFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -242,6 +244,8 @@ const App = () => {
                         <Route exact path="/power_spectral_density_main" element={(<LayoutMain><PowerSpectralDensityPage/></LayoutMain>)}/>
                         <Route exact path="/FactorAnalysis" element={(<LayoutMain><FactorAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GeneralizedEstimatingEquations" element={(<LayoutMain><GeneralizedEstimatingEquationsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/ChooseFactors" element={(<LayoutMain><ChooseFactorsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/GrangerAnalysis" element={(<LayoutMain><GrangerAnalysisFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
