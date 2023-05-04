@@ -11,7 +11,6 @@ const LayoutMain = ({children}) => {
     useEffect(() => {
         // console.log(this.state.keycloak)
         // console.log(this.state.authenticated)
-        console.log("HELLO TEST")
 
         const keycloak = new Keycloak({
             "realm": "mescobrad",

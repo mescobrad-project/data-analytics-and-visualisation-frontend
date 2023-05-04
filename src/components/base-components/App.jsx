@@ -106,7 +106,13 @@ import SpectogramBandpowerFunctionPage from "./SpectogramBandpowerFunctionPage";
 import PowerSpectralDensityPage from "./PowerSpectralDensityPage";
 import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_correlation"
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
+import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysis'
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
+import Mixed_Anova from "../../pages/hypothesis_testing/Mixed_Anova"
+import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average"
+import BackAveragePage from "./BackAveragePage";
+import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min"
+import General_Stats_Max from "../../pages/hypothesis_testing/General_Stats_Max"
 import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
 import GrangerAnalysisFunctionPage from "./GrangerAnalysisFunctionPage";
 
@@ -142,6 +148,7 @@ const App = () => {
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
+                {/*<BrowserRouter basename={"/analytics"}>*/}
                 <BrowserRouter>
                     <Routes>
                         <Route exact path="/" element={(<LayoutMain><WelcomePage/></LayoutMain>)}/>
@@ -178,6 +185,7 @@ const App = () => {
                         <Route exact path="/PointBiserialCorrelation" element={(<LayoutMain><PointBiserialCorrelation/></LayoutMain>)}/>
                         <Route exact path="/Kendalltau_correlation" element={(<LayoutMain><Kendalltau_correlation/></LayoutMain>)}/>
                         <Route exact path="/Canonical_correlation" element={(<LayoutMain><Canonical_correlation/></LayoutMain>)}/>
+                        <Route exact path="/Mediation_Analysis" element={(<LayoutMain><Mediation_Analysis/></LayoutMain>)}/>
                         <Route exact path="/DataTransformationForANOVA" element={(<LayoutMain><DataTransformationForANOVA/></LayoutMain>)}/>
                         <Route exact path="/Welch_t_test" element={(<LayoutMain><Welch_t_test/></LayoutMain>)}/>
                         <Route exact path="/Independent_t_test" element={(<LayoutMain><Independent_t_test/></LayoutMain>)}/>
@@ -195,6 +203,7 @@ const App = () => {
                         <Route exact path="/alpha_variability" element={(<LayoutMain><AlphaVariabilityFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/asymmetry_indices" element={(<LayoutMain><AsymmetryIndicesFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/dashboard" element={(<LayoutMain><DashboardPage/></LayoutMain>)}/>
+                        <Route exact path="/back_average" element={(<LayoutMain><BackAveragePage/></LayoutMain>)}/>
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
@@ -244,6 +253,10 @@ const App = () => {
                         <Route exact path="/power_spectral_density_main" element={(<LayoutMain><PowerSpectralDensityPage/></LayoutMain>)}/>
                         <Route exact path="/FactorAnalysis" element={(<LayoutMain><FactorAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GeneralizedEstimatingEquations" element={(<LayoutMain><GeneralizedEstimatingEquationsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/Mixed_Anova" element={(<LayoutMain><Mixed_Anova/></LayoutMain>)}/>
+                        <Route exact path="/General_Stats_Average" element={(<LayoutMain><General_Stats_Average/></LayoutMain>)}/>
+                        <Route exact path="/General_Stats_Min" element={(<LayoutMain><General_Stats_Min/></LayoutMain>)}/>
+                        <Route exact path="/General_Stats_Max" element={(<LayoutMain><General_Stats_Max/></LayoutMain>)}/>
                         <Route exact path="/ChooseFactors" element={(<LayoutMain><ChooseFactorsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GrangerAnalysis" element={(<LayoutMain><GrangerAnalysisFunctionPage/></LayoutMain>)}/>
                     </Routes>
