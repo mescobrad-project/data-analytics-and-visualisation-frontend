@@ -13,7 +13,7 @@ import {
     ListItemText,
     MenuItem,
     Select, TextareaAutosize, TextField, Typography,
-    Table, TableHead, TableRow, TableBody, TableCell, TableContainer, Paper
+    Table, TableHead, TableRow, TableBody, TableCell, TableContainer, Paper, Tabs, Tab
 } from "@mui/material";
 
 // Amcharts
@@ -26,7 +26,40 @@ import qs from "qs";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import {DataGrid} from "@mui/x-data-grid";
-import {display} from "@mui/system";
+import {Box, display} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 
 class LinearRegressionFunctionPage extends React.Component {
@@ -34,7 +67,11 @@ class LinearRegressionFunctionPage extends React.Component {
         super(props);
         this.state = {
             // List of columns sent by the backend
-            columns: [],
+            column_names: [],
+            file_names:[],
+            test_data: {
+                Dataframe:""
+            },
 
             //Values selected currently on the form
             selected_dependent_variable: "",
@@ -102,11 +139,18 @@ class LinearRegressionFunctionPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleScatter = this.handleScatter.bind(this);
 
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
+
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
-        this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        // Initialise component
-        // - values of channels from the backend
+
+        this.fetchFileNames();
         this.fetchColumnNames();
 
     }
@@ -202,6 +246,7 @@ class LinearRegressionFunctionPage extends React.Component {
             this.setState({goldfeld_order: resultJson['Goldfeld-Quandt ordering used in the alternative']})
 
             this.setState({LinearRegression_show: true})
+            this.setState({tabvalue:1})
 
 
         });
@@ -248,21 +293,86 @@ class LinearRegressionFunctionPage extends React.Component {
      * Update state when selection changes in the form
      */
 
-    async fetchColumnNames(url, config) {
+    async fetchColumnNames() {
         const params = new URLSearchParams(window.location.search);
+
         API.get("return_columns",
-                {params: {
+                {
+                    params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({column_names: res.data.columns})
+        });
+    }
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
-            this.setState({columns: res.data.columns})
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
         });
     }
 
-
-    handleSelectDependentVariableChange(event){
-        this.setState({selected_dependent_variable: event.target.value})
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
     }
+    handleSelectDependentVariableChange(event){
+        this.setState( {selected_dependent_variable: event.target.value})
+        this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+    }
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.state.selected_dependent_variable=""
+            this.state.selected_independent_variables=[]
+            this.state.LinearRegression_show=false
+            this.state.linear_regression_step2_show=false
+        })
+    }
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
+    handleListDelete(event) {
+        var newArray = this.state.selected_independent_variables.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_independent_variables:newList})
+    }
+
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
     }
@@ -273,7 +383,7 @@ class LinearRegressionFunctionPage extends React.Component {
         this.setState({selected_independent_variables: []})
     }
     selectAll(){
-        this.setState({selected_independent_variables: this.state.columns})
+        this.setState({selected_independent_variables: this.state.column_names})
     }
 
     handleSelectXAxisnChange(event){
@@ -303,22 +413,22 @@ class LinearRegressionFunctionPage extends React.Component {
                             Linear Regression Parameterisation
                         </Typography>
                         <hr/>
-                        <Grid container justifyContent = "center">
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextareaAutosize
-                                        area-label="textarea"
-                                        placeholder="Selected Independent Variables"
-                                        style={{ width: 200 }}
-                                        value={this.state.selected_column}
-                                        inputProps={
-                                            { readOnly: true, }
-                                        }
-                                />
-                                <FormHelperText>Selected Independent Variables</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                        <hr/>
                         <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Dependent Variable</InputLabel>
                                 <Select
@@ -329,16 +439,16 @@ class LinearRegressionFunctionPage extends React.Component {
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
 
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Dependent Variable (Categorical)</FormHelperText>
+                                <FormHelperText>Select Dependent Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Columns</InputLabel>
+                                <InputLabel id="column-selector-label">Independent Variables</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
@@ -348,19 +458,13 @@ class LinearRegressionFunctionPage extends React.Component {
                                         onChange={this.handleSelectIndependentVariableChange}
                                 >
 
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select Independent Variables</FormHelperText>
-                                <Button onClick={this.selectAll}>
-                                    Select All Variables
-                                </Button>
-                                <Button onClick={this.clear}>
-                                    Clear Selections
-                                </Button>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="regularization-label">Regularization</InputLabel>
@@ -377,19 +481,39 @@ class LinearRegressionFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select if you want to add regularization</FormHelperText>
                             </FormControl>
-                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
+                                {/*|| !this.state.selected_method*/}
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.LinearRegression_show}>
                                 Proceed >
                             </Button>
                         </form>
+                            <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                                <FormHelperText>Selected independent variables [click to remove]</FormHelperText>
+                                <div>
+                                <span>
+                                    {this.state.selected_independent_variables.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {this.state.selected_file_name + "--" + column}
+                                            </Button>
+                                    ))}
+                                </span>
+                                </div>
+                                <Button onClick={this.selectAll}>
+                                    Select All
+                                </Button>
+                                <Button onClick={this.clear}>
+                                    Clear All
+                                </Button>
+                            </FormControl>
                         <br/>
                         <br/>
                         <div  style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
@@ -445,7 +569,7 @@ class LinearRegressionFunctionPage extends React.Component {
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Linear Regression Result
+                            Linear Regression Results
                         </Typography>
                         <hr className="result"/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
@@ -453,197 +577,217 @@ class LinearRegressionFunctionPage extends React.Component {
                         {/*</Typography>*/}
                         {/*<div style={{ display: (this.state.LinearRegression_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.first_table}} />*/}
                         {/*<hr style={{ display: (this.state.LinearRegression_show ? 'block' : 'none') }}/>*/}
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
+                                    <Tab label="New Dataset" {...a11yProps(2)} />
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={this.state.tabvalue} index={0}>
+                                <JsonTable className="jsonResultsTable"
+                                           rows = {this.state.initialdataset}/>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={1}>
+                                <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
+                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                        <Table>
+                                            <TableRow>
+                                                <TableCell><strong>Dependent Variable:</strong></TableCell>
+                                                <TableCell>{this.state.dep_variable}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Model:</strong></TableCell>
+                                                <TableCell>{this.state.model}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Method:</strong></TableCell>
+                                                <TableCell>{this.state.method}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Date:</strong></TableCell>
+                                                <TableCell>{this.state.date}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Time:</strong></TableCell>
+                                                <TableCell>{this.state.time}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>No. Observations:</strong></TableCell>
+                                                <TableCell>{this.state.no_observations}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Df Residuals:</strong></TableCell>
+                                                <TableCell>{this.state.df_resid}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Df Model:</strong></TableCell>
+                                                <TableCell>{this.state.df_mod}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Covariance Type:</strong></TableCell>
+                                                <TableCell>{this.state.cov_type}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>R-squared:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.r_sq).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Adjusted R-squared:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.adj_r_sq).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>F-statistic:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.f_stat).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Prob (F-statistic):</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.prob_f).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Log-Likelihood:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.log_like).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>AIC:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.aic).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>BIC:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.bic).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                                <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                                <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
+                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                        <Table>
+                                            <TableRow>
+                                                <TableCell><strong>Omnnibus:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.omnibus).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Prob(Omnibus):</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.prob_omni).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Skew:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Kurtosis:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Durbin-Watson:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.durbin).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Jarque-Bera (JB):</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.jb).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Prob(JB):</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.prob_jb).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Cond. No.:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.cond).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                                <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                                <br/>
+                                <div className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}
+                                     dangerouslySetInnerHTML={{__html: this.state.second_table}}/>
+                                <br/>
+                                <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                                <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
+                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                        White test (test for heteroscedasticity)
+                                    </Typography>
+                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                        <Table>
+                                            <TableRow>
+                                                <TableCell><strong>Test Statistic:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.test_stat).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Test Statistic p-value:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.test_stat_p).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>F-Statistic:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.white_f_stat).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>F-Test p-value:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.white_prob_f).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </TableContainer>
+                                    <hr className="result"/>
+                                    <div>
+                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                            Goldfeld-Quandt (test for heteroscedasticity)
+                                        </Typography>
+                                        <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                            <Table>
+                                                <TableRow>
+                                                    <TableCell><strong>Goldfeld-Quandt p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.goldfeld_p_value).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Goldfeld-Quandt F-Statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.goldfeld_f_value).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Goldfeld-Quandt ordering used in the alternative</strong></TableCell>
+                                                    <TableCell>{this.state.goldfeld_order}</TableCell>
+                                                </TableRow>
+                                            </Table>
+                                        </TableContainer>
+                                    </div>
+                                    <hr className="result"/>
+                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                        Breusch-Pagan test (test for heteroscedasticity)
+                                    </Typography>
+                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                        <Table>
+                                            <TableRow>
+                                                <TableCell><strong>Lagrange Multiplier Statistic:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.bresuch_lagrange).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>Lagrange Multiplier Statistic p-value:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.bresuch_p_value).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>F-Statistic:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.bresuch_f_value).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell><strong>F-Test p-value:</strong></TableCell>
+                                                <TableCell>{Number.parseFloat(this.state.bresuch_f_p_value).toFixed(5)}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </TableContainer>
+                                    <hr className="result"/>
 
-                        <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
-                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Dependent Variable:</strong></TableCell>
-                                        <TableCell>{this.state.dep_variable}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Model:</strong></TableCell>
-                                        <TableCell>{this.state.model}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Method:</strong></TableCell>
-                                        <TableCell>{this.state.method}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Date:</strong></TableCell>
-                                        <TableCell>{this.state.date}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Time:</strong></TableCell>
-                                        <TableCell>{this.state.time}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>No. Observations:</strong></TableCell>
-                                        <TableCell>{this.state.no_observations}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Df Residuals:</strong></TableCell>
-                                        <TableCell>{this.state.df_resid}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Df Model:</strong></TableCell>
-                                        <TableCell>{this.state.df_mod}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Covariance Type:</strong></TableCell>
-                                        <TableCell>{this.state.cov_type}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>R-squared:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.r_sq).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Adjusted R-squared:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.adj_r_sq).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>F-statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.f_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Prob (F-statistic):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.prob_f).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Log-Likelihood:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.log_like).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>AIC:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.aic).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>BIC:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.bic).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                        </div>
-                        <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
-                        <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
-                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Omnnibus:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Prob(Omnibus):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.prob_omni).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                <TableRow>
-                                        <TableCell><strong>Skew:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                <TableRow>
-                                        <TableCell><strong>Kurtosis:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                <TableRow>
-                                        <TableCell><strong>Durbin-Watson:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.durbin).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                <TableRow>
-                                        <TableCell><strong>Jarque-Bera (JB):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jb).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                <TableRow>
-                                        <TableCell><strong>Prob(JB):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.prob_jb).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                <TableRow>
-                                        <TableCell><strong>Cond. No.:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.cond).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                        </div>
-                        <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
-                        <br/>
-                        <div className="first_table" dangerouslySetInnerHTML={{__html: this.state.second_table}}/>
-                        <br/>
-                        <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
-                        <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                White test (test for heteroscedasticity)
-                            </Typography>
-                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Test Statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.test_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Test Statistic p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.test_stat_p).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>F-Statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.white_f_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>F-Test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.white_prob_f).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                        <hr className="result"/>
-                            <div>
-                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                    Goldfeld-Quandt (test for heteroscedasticity)
-                                </Typography>
-                                <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                    <Table>
-                                        <TableRow>
-                                            <TableCell><strong>Goldfeld-Quandt p-value:</strong></TableCell>
-                                            <TableCell>{Number.parseFloat(this.state.goldfeld_p_value).toFixed(5)}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Goldfeld-Quandt F-Statistic:</strong></TableCell>
-                                            <TableCell>{Number.parseFloat(this.state.goldfeld_f_value).toFixed(5)}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Goldfeld-Quandt ordering used in the alternative</strong></TableCell>
-                                            <TableCell>{this.state.goldfeld_order}</TableCell>
-                                        </TableRow>
-                                    </Table>
-                                </TableContainer>
-                            </div>
-                            <hr className="result"/>
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Breusch-Pagan test (test for heteroscedasticity)
-                        </Typography>
-                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Lagrange Multiplier Statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.bresuch_lagrange).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Lagrange Multiplier Statistic p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.bresuch_p_value).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>F-Statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.bresuch_f_value).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>F-Test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.bresuch_f_p_value).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                        <div dangerouslySetInnerHTML={{__html: this.state.bresuch_test}}/>
-                        <hr className="result"/>
 
-                        <div dangerouslySetInnerHTML={{__html: this.state.influence_points}} />
-                        <hr/>
-                        </div>
+                                    <hr/>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={2}>
+                                <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}} dangerouslySetInnerHTML={{__html: this.state.influence_points}} />
+                            </TabPanel>
+                        </Box>
+
+
+
                         {/*<div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>*/}
                         {/*    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>*/}
                         {/*        <Table>*/}
