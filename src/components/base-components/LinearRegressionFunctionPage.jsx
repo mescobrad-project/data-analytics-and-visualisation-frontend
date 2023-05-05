@@ -349,7 +349,7 @@ class LinearRegressionFunctionPage extends React.Component {
     }
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
-        this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
