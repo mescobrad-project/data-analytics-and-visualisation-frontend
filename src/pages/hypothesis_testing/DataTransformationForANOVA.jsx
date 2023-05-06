@@ -78,10 +78,8 @@ class DataTransformationForANOVA extends React.Component {
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         // // Initialise component
         // // - values of channels from the backend
-        this.onClickButton = this.onClickButton.bind(this)
         this.fetchFileNames();
         // this.fetchColumnNames();
-
     }
 
     /**
@@ -184,16 +182,6 @@ class DataTransformationForANOVA extends React.Component {
             this.setState({output_return_data: res.data})
         });
         window.location.replace("/")
-    }
-
-    onClickButton(event) {
-        const cnt = this.state.selected_variables.map((item) => ({item}.length))
-        console.log(cnt)
-        if (cnt<2)
-        {
-            alert('At least TWO variables must be selected!')
-            event.preventDefault();
-        }
     }
     /**
      * Update state when selection changes in the form
