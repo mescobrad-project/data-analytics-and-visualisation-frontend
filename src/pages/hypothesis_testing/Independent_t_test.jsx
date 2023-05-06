@@ -339,8 +339,8 @@ class Independent_t_test extends React.Component {
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     </Grid>
                                     <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { this.state.test_data['statistic']}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { this.state.test_data['p-value']}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toFixed(5)}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toFixed(5)}</Typography>
                                         <JsonTable className="jsonResultsTable"
                                                    rows = {this.state.mean_std}/></Grid>
                                 </Grid>
