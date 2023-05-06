@@ -63,7 +63,7 @@ class Wilcoxon_rank_sum_statistic extends React.Component {
             selected_variables: [],
             selected_file_name: "",
             selected_alternative: "two-sided",
-            selected_nan_policy:"propagate",
+            selected_nan_policy:"omit",
             selected_statistical_test:"Wilcoxon rank-sum statistic",
             stats_show:false
         };
