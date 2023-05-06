@@ -6,11 +6,8 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, Tab, Tabs, TextField,
+    Select, Tab, Tabs,
     Typography
 } from "@mui/material";
 import {Box} from "@mui/system";
@@ -58,16 +55,7 @@ class Alexander_Govern_test extends React.Component {
             // List of columns in dataset
             column_names: [],
             file_names:[],
-            test_data: {
-                mean_positive: '',
-                standard_deviation_positive: '',
-                mean_negative: '',
-                standard_deviation_negative: '',
-                'statistic, p_value': {
-                    statistic:'',
-                    p_value:''
-                }
-            },
+            test_data: [],
             //Values selected currently on the form
             selected_columns: [],
             selected_variables: [],
@@ -255,7 +243,7 @@ class Alexander_Govern_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
+                                <FormHelperText>Select Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
