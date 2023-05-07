@@ -296,7 +296,8 @@ class LDAFunctionPage extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_variables=[]
+            this.state.selected_variable_wf=[]
+            this.state.selected_independent_variables_wf=[]
             this.setState({stats_show: false})
         })
     }
