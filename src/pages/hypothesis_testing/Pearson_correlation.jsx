@@ -123,13 +123,9 @@ class Pearson_correlation extends React.Component {
             file_names:[],
             initialdataset:[],
             test_data: {
-                DataFrame:[],
-                Table_rcorr:'',
-                // rplot: [],
+                DataFrame:[]
             },
             //Values selected currently on the form
-            Teblecorr: [],
-            // chart_data: [],
             selected_method: "pearson",
             selected_alternative: "two-sided",
             selected_independent_variables: [],
@@ -223,7 +219,6 @@ class Pearson_correlation extends React.Component {
                 }
         ).then(res => {
             this.setState({test_data: res.data})
-            this.setState({Teblecorr: JSON.parse(res.data.Table_rcorr)})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
         });
@@ -401,13 +396,6 @@ class Pearson_correlation extends React.Component {
                                                       Toolbar: CustomToolbar,
                                                   }}
                                         />
-                                        <hr className="result"/>
-                                        <Grid>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                                Correlation matrix
-                                            </Typography>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.Teblecorr}/>
-                                        </Grid>
                                         <hr className="result"/>
                                     </Grid>
                                 </Grid>

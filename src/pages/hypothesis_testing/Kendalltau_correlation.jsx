@@ -114,12 +114,8 @@ class Kendalltau_correlation extends React.Component {
             initialdataset:[],
             test_data: {
                 DataFrame:[],
-                Table_rcorr:'',
-                // rplot: [],
             },
             //Values selected currently on the form
-            Teblecorr: [],
-            // chart_data: [],
             selected_method: "kendall",
             selected_alternative: "two-sided",
             selected_independent_variables: [],
@@ -213,7 +209,6 @@ class Kendalltau_correlation extends React.Component {
                 }
         ).then(res => {
             this.setState({test_data: res.data})
-            this.setState({Teblecorr: JSON.parse(res.data.Table_rcorr)})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
         });
@@ -280,7 +275,7 @@ class Kendalltau_correlation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Pearson Correlation Parameterisation
+                            Kendall Tau Correlation Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -396,13 +391,6 @@ class Kendalltau_correlation extends React.Component {
                                                       Toolbar: CustomToolbar,
                                                   }}
                                         />
-                                        <hr className="result"/>
-                                        <Grid>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                                Correlation matrix
-                                            </Typography>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.Teblecorr}/>
-                                        </Grid>
                                         <hr className="result"/>
                                     </Grid>
                                 </Grid>
