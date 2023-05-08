@@ -56,6 +56,7 @@ class DataTransformationForANOVA extends React.Component {
             column_names: [],
             file_names:[],
             test_data: {
+                status:'',
                 Dataframe:""
             },
             //Values selected currently on the form
@@ -263,8 +264,8 @@ class DataTransformationForANOVA extends React.Component {
                         </form>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show}>
-                                Proceed >
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed
                             </Button>
                         </form>
                         <br/>
@@ -309,17 +310,21 @@ class DataTransformationForANOVA extends React.Component {
                                 </Box>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Grid>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                            Transformed variables. </Typography>
-                                        <div style={{textAlign:"center"}}>
-                                            <CSVLink data={this.state.Results}
-                                                     filename={"Results.csv"}>Download</CSVLink>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
-                                        </div>
-                                    </Grid>
-                                </Grid>
+                                {this.state.test_data['status']!=='Success' ? (
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                ) : (
+                                        <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                            <Grid>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                    Transformed variables. </Typography>
+                                                <div style={{textAlign:"center"}}>
+                                                    <CSVLink data={this.state.Results}
+                                                             filename={"Results.csv"}>Download</CSVLink>
+                                                    <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
+                                                </div>
+                                            </Grid>
+                                        </Grid>
+                                )}
                             </TabPanel>
                         </Grid>
                         {/*<div style={{display:"flex"}}>*/}
