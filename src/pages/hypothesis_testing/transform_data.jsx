@@ -57,6 +57,7 @@ class Transform_data extends React.Component {
             column_names: [],
             file_names:[],
             test_data: {
+                status:'',
                 statistic: 0,
                 min_confidence:"",
                 max_confidence:"",
@@ -374,8 +375,8 @@ class Transform_data extends React.Component {
                         </form>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.selected_variable}>
-                                Proceed >
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                            Proceed >
                             </Button>
                         </form>
                     </Grid>
@@ -393,94 +394,100 @@ class Transform_data extends React.Component {
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <p className="result_texts" style={{display: (this.state.lamda_value ? 'block' : 'none')}}> Lamda parameter: {this.state.lamda_value}</p>
-                                    <p className="result_texts" style={{display: (this.state.min_confidence ? 'block' : 'none')}}> Minimum confidence limit: {this.state.min_confidence}</p>
-                                    <p className="result_texts" style={{display: (this.state.max_confidence ? 'block' : 'none')}}> Maximum confidence limit: {this.state.max_confidence}</p>
-                                </div>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
-                                        Sample characteristics
-                                    </Typography>
-                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell className="tableHeadCell">Name</TableCell>
-                                                    <TableCell className="tableHeadCell">N</TableCell>
-                                                    <TableCell className="tableHeadCell">Mean</TableCell>
-                                                    <TableCell className="tableHeadCell">Median</TableCell>
-                                                    <TableCell className="tableHeadCell">Std. Deviation</TableCell>
-                                                    <TableCell className="tableHeadCell">Skewness</TableCell>
-                                                    <TableCell className="tableHeadCell">Kurtosis</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
-                                                    <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                                <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
-                                <Grid>
-                                    <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                            Histogram of Selected data
-                                        </Typography>
-                                        <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
-                                            <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
-                                        </div>
-                                        <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
-                                    </Grid>
-                                    <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                            Box Plot of Selected data
-                                        </Typography>
-                                        <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
-                                            <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
-                                        </div>
-                                        <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
-                                    </Grid>
-                                </Grid>
-                                <Grid>
-                                    <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                            Q-Q Plot of Selected data
-                                        </Typography>
-                                        <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
-                                            <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
+                                {this.state.test_data['status']!=='Success' ? (
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                ) : (
+                                        <Grid>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <p className="result_texts" style={{display: (this.state.lamda_value ? 'block' : 'none')}}> Lamda parameter: {this.state.lamda_value}</p>
+                                                <p className="result_texts" style={{display: (this.state.min_confidence ? 'block' : 'none')}}> Minimum confidence limit: {this.state.min_confidence}</p>
+                                                <p className="result_texts" style={{display: (this.state.max_confidence ? 'block' : 'none')}}> Maximum confidence limit: {this.state.max_confidence}</p>
+                                            </div>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
+                                                    Sample characteristics
+                                                </Typography>
+                                                <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                                    <Table>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell className="tableHeadCell">Name</TableCell>
+                                                                <TableCell className="tableHeadCell">N</TableCell>
+                                                                <TableCell className="tableHeadCell">Mean</TableCell>
+                                                                <TableCell className="tableHeadCell">Median</TableCell>
+                                                                <TableCell className="tableHeadCell">Std. Deviation</TableCell>
+                                                                <TableCell className="tableHeadCell">Skewness</TableCell>
+                                                                <TableCell className="tableHeadCell">Kurtosis</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            <TableRow>
+                                                                <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
+                                                                <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
+                                                            </TableRow>
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </div>
+                                            <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
+                                            <Grid>
+                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                                        Histogram of Selected data
+                                                    </Typography>
+                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
+                                                        <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
+                                                    </div>
+                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                </Grid>
+                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                                        Box Plot of Selected data
+                                                    </Typography>
+                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
+                                                        <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
+                                                    </div>
+                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid>
+                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                                        Q-Q Plot of Selected data
+                                                    </Typography>
+                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
+                                                        <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
 
-                                        </div>
-                                        <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
-                                    </Grid>
-                                    <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                            Probability Plot of Selected data
-                                        </Typography>
-                                        <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
-                                            <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
+                                                    </div>
+                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                </Grid>
+                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                                        Probability Plot of Selected data
+                                                    </Typography>
+                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
+                                                        <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
 
-                                        </div>
-                                        <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
-                                    </Grid>
-                                    <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                            Comparison of Data Transformation
-                                        </Typography>
-                                        <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
-                                            <InnerHTML html={this.state.test_transf_plot_chart_data} style={{zoom:'50%'}}/>
-                                        </div>
-                                        <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
-                                    </Grid>
-                                </Grid>
+                                                    </div>
+                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                </Grid>
+                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
+                                                        Comparison of Data Transformation
+                                                    </Typography>
+                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
+                                                        <InnerHTML html={this.state.test_transf_plot_chart_data} style={{zoom:'50%'}}/>
+                                                    </div>
+                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                )}
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <Box>
