@@ -1,7 +1,6 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Accordion, AccordionDetails, AccordionSummary,
     Button,
     FormControl,
     FormHelperText,
@@ -11,7 +10,6 @@ import {
     Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField,
     Typography
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InnerHTML from "dangerously-set-html-content";
 import Paper from "@mui/material/Paper";
 import {Box} from "@mui/system";
@@ -51,7 +49,7 @@ function a11yProps(index) {
 class Transform_data extends React.Component {
     constructor(props){
         super(props);
-        const params = new URLSearchParams(window.location.search);
+        // const params = new URLSearchParams(window.location.search);
         this.state = {
             // List of columns in dataset
             column_names: [],
@@ -255,11 +253,11 @@ class Transform_data extends React.Component {
     handleSelectMethodChange(event){
         this.setState( {selected_method: event.target.value})
         this.setState({stats_show: false})
-        if (event.target.value=="Box-Cox"){
+        if (event.target.value==="Box-Cox"){
             this.setState({alpha_show:true});
             this.setState({lmbda_show:true});
         }
-        else if (event.target.value=="Yeo-Johnson") {
+        else if (event.target.value==="Yeo-Johnson") {
             this.setState({alpha_show:false});
             this.setState({lmbda_show:true});
         }
