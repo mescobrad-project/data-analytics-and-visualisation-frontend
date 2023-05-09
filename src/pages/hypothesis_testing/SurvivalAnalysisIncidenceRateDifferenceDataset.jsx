@@ -1,6 +1,6 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import "./linearmixedeffectsmodel.scss"
+import "./normality_tests.scss"
 import {
     Button,
     FormControl,
