@@ -58,7 +58,9 @@ class SurvivalAnalysisRiskDifferenceDataset extends React.Component {
         this.state = {
             status:'',
             test_data: {
-                table: ""
+                status:'',
+                table: "",
+                col_transormed:{}
             },
             binary_columns: [],
             columns: [],
@@ -251,9 +253,6 @@ class SurvivalAnalysisRiskDifferenceDataset extends React.Component {
                                         label="Exposure"
                                         onChange={this.handleSelectExposureVariableChange}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
                                     {this.state.binary_columns.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
