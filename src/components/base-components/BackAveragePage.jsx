@@ -88,6 +88,8 @@ class BackAveragePage extends React.Component {
             //Plot paths
             back_average_plot_path: 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/back_average_plot.png',
+            back_average_plot_path_1: 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/back_average_plot_f4.png',
         };
 
         //Binding functions of the class
@@ -129,7 +131,7 @@ class BackAveragePage extends React.Component {
                 max_ptp_amplitude: this.state.selected_max_ptp_amplitude,
                 annotation_name: this.state.selected_annotation_name,
                 // Add other input parameters as required
-                file_used: this.state.file_used
+                // file_used: this.state.file_used
             }
         }).then(res => {
             const resultJson = res.data;
@@ -294,6 +296,10 @@ class BackAveragePage extends React.Component {
                         <TabPanel value={this.state.tabvalue} index={1}>
                             <img src={this.state.back_average_plot_path + "?random=" + new Date().getTime()}
                                  srcSet={this.state.back_average_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                 loading="lazy"
+                            />
+                            <img src={this.state.back_average_plot_path_1 + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.back_average_plot_path_1 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
                                  loading="lazy"
                             />
                         </TabPanel>
