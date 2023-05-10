@@ -307,7 +307,7 @@ class McNemar extends React.Component {
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
+                                Proceed
                             </Button>
                         </form>
                         <br/>
