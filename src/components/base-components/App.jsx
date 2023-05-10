@@ -53,6 +53,7 @@ import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_compar
 import SpindleDetection from "./SpindleDetection";
 import SlowWaves from "./SlowWaves";
 import ActrigraphyViewer from "./ActrigraphyViewer";
+import ActigraphyFunctionPage from "./ActigraphyFunctionPage";
 import Level from "./Level";
 import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
@@ -196,6 +197,8 @@ const App = () => {
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_test" element={(<LayoutMain><test/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_page" element={(<LayoutMain><ActigraphyFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
                         <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/artifacts" element={(<LayoutMain><ArtifactsFunctionPage/></LayoutMain>)}/>
