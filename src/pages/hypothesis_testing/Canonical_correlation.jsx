@@ -57,6 +57,11 @@ class Canonical_correlation extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             test_data: {
                 status:'',
@@ -87,13 +92,13 @@ class Canonical_correlation extends React.Component {
             selected_independent_variables_2: '',
             selected_independent_variables_2_wf: [],
             stats_show: false,
-            svg1_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XYcorr.svg',
-            svg2_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg2_path : ip + 'runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_comp_corr.svg',
-            svg3_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg3_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XY_c_corr.svg',
-            svg4_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg4_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_coefs.svg',
 
         };

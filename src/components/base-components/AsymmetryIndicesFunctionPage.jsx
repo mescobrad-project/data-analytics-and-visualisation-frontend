@@ -207,7 +207,7 @@ class AsymmetryIndicesFunctionPage extends React.Component {
                     {/*        ))}*/}
                     {/*    </List>*/}
                     {/*</Grid>*/}
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Asymmetry Indices Parameterisation
                         </Typography>

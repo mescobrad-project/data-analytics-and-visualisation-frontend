@@ -26,6 +26,12 @@ import EEGSelectModal from "../ui-components/EEGSelectModal";
 class StftFunctionPage extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of channels sent by the backend
             channels: [],
@@ -51,7 +57,10 @@ class StftFunctionPage extends React.Component {
 
             test_chart_html: [],
             //Info from selector
-            file_used: null
+            file_used: null,
+
+            stft_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/stft_plot.png',
         };
 
         //Binding functions of the class
@@ -408,8 +417,12 @@ class StftFunctionPage extends React.Component {
                         <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.stft_chart_show ? 'block' : 'none')  }} noWrap>
                             Stft Results
                         </Typography>
+                        <img src={this.state.stft_path + "?random=" + new Date().getTime()}
+                             srcSet={this.state.stft_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                             loading="lazy"
+                        />
                         {/*<div dangerouslySetInnerHTML={{__html:this.state.test_chart_html}}></div>*/}
-                        <InnerHTML html={this.state.test_chart_html} />
+                        {/*<InnerHTML html={this.state.test_chart_html} />*/}
                         {/*<div style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="stft_chart_id" chart_data={ this.state.stft_chart_data}/></div>*/}
                         {/*<hr style={{ display: (this.state.stft_chart_show ? 'block' : 'none') }}/>*/}
                     </Grid>

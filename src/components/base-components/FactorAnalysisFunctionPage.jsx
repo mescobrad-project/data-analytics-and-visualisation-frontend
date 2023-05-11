@@ -64,6 +64,12 @@ function a11yProps(index) {
 class FactorAnalysisFunctionPage extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of columns sent by the backend
             columns: [],
@@ -89,10 +95,10 @@ class FactorAnalysisFunctionPage extends React.Component {
             factor_corr_matrix: [],
 
             // path to visualisations sent from backend
-            corr_path: 'http://localhost:8000/static/runtime_config/workflow_'
+            corr_path: ip + 'static/runtime_config/workflow_'
                     + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/correlation_matrix.png',
-            factor_corr_path: 'http://localhost:8000/static/runtime_config/workflow_'
+            factor_corr_path: ip + 'static/runtime_config/workflow_'
                     + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/factor_correlation_matrix.png',
 

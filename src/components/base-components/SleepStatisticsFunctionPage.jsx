@@ -256,6 +256,12 @@ TabPanel.propTypes = {
 class SleepStatisticsFunctionPage extends React.Component {
     constructor(props) {
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // Utils
             channels: [],
@@ -281,6 +287,8 @@ class SleepStatisticsFunctionPage extends React.Component {
             //Values selected currently on the form
             selected_channel: "",
 
+            sleep_transition_matrix_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/sleep_transition_matrix.png',
         };
 
         //Binding functions of the class
@@ -579,12 +587,17 @@ class SleepStatisticsFunctionPage extends React.Component {
                             {/*</TableContainer>*/}
                         </TabPanel>
                         <TabPanel value={this.state.tabvalue} index={2}>
-                            <img
-                                    src={`http://localhost:8000/static/sleep_transition_matrix.png?w=164&h=164&fit=crop&auto=format`}
-                                    srcSet={`http://localhost:8000/static/sleep_transition_matrix.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                    // alt={item.title}
-                                    loading="lazy"
+                            <img src={this.state.sleep_transition_matrix_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.sleep_transition_matrix_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                 loading="lazy"
                             />
+
+                            {/*<img*/}
+                            {/*        src={`http://localhost:8000/static/sleep_transition_matrix.png?w=164&h=164&fit=crop&auto=format`}*/}
+                            {/*        srcSet={`http://localhost:8000/static/sleep_transition_matrix.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                            {/*        // alt={item.title}*/}
+                            {/*        loading="lazy"*/}
+                            {/*/>*/}
                             <hr className="result"/>
                             <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Sleep transition matrix
