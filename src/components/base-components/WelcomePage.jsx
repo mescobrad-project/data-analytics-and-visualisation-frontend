@@ -64,8 +64,8 @@ function WelcomePage() {
         document.title = ' MES-CoBraD | Analytics Engine'
     }, [])
     const navigate = useNavigate();
-    const [dashboardMode, setDashboardMode] = React.useState("dev");
-    const [notdashboardMode, setNotDashboardMode] = React.useState("user");
+    const [dashboardMode, setDashboardMode] = React.useState("user");
+    const [notdashboardMode, setNotDashboardMode] = React.useState("dev");
 
     const changeMode = () => {
         if (dashboardMode === "dev"){
@@ -170,7 +170,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "find_peaks", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Find Peaks
@@ -354,6 +354,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"])}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                         >
                             Actigraphy Viewer
                         </Button>
@@ -363,6 +364,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"])}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                         >
                             Actigraphy General Viewer
                         </Button>
@@ -1253,12 +1255,31 @@ function WelcomePage() {
                             aria-labelledby="nested-list-subheader"
                     >
                         <h2 sx= {{color: "grey"}}>
+                            Demo
+                        </h2>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,2, 2, 2, "eeg_viewer", ["saved"], ["anon14.edf"])}
+                        >
+                            EEG Viewer - EDF with marks (anon14.edf)
+                        </Button>
+                    </ButtonGroup>
+                    <ButtonGroup
+                            orientation="vertical"
+                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                    >
+                        <h2 sx= {{color: "grey"}}>
                             Miscellaneous
                         </h2>
                         <Button
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
                                 onClick={redirectToPage.bind(this,1,1, 3, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"])}
                         >
                             Dashboard

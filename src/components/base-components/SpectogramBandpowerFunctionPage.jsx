@@ -88,6 +88,12 @@ TabPanel.propTypes = {
 class SlowwaveSpindleFunctionPage extends React.Component {
     constructor(props) {
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // Utils
             channels: [],
@@ -114,7 +120,8 @@ class SlowwaveSpindleFunctionPage extends React.Component {
 
             //Values selected currently on the form
             selected_channel: "",
-
+            spectogram_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/spectrogram.png',
         };
 
         //Binding functions of the class
@@ -556,12 +563,16 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Spectogram Results
                                 </Typography>
-                                <img
-                                        src={`http://localhost:8000/static/spectrogram.png?w=164&h=164&fit=crop&auto=format`}
-                                        srcSet={`http://localhost:8000/static/spectrogram.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                        // alt={item.title}
-                                        loading="lazy"
+                                <img src={this.state.spectogram_path + "?random=" + new Date().getTime()}
+                                     srcSet={this.state.spectogram_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                     loading="lazy"
                                 />
+                                {/*<img*/}
+                                {/*        src={`http://localhost:8000/static/spectrogram.png?w=164&h=164&fit=crop&auto=format`}*/}
+                                {/*        srcSet={`http://localhost:8000/static/spectrogram.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                {/*        // alt={item.title}*/}
+                                {/*        loading="lazy"*/}
+                                {/*/>*/}
                                 {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
                                 {/*           style={{zoom: '50%'}}/>*/}
                                 <hr className="result"/>

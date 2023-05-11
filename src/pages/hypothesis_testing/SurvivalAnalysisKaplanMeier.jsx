@@ -55,7 +55,11 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
-        this.state = {
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }        this.state = {
             test_data: {
                 status:'',
                 survival_function:"",
@@ -80,7 +84,7 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
             selected_alpha: 0.05,
             selected_label: null,
             stats_show: false,
-            svg_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/survival_function.svg',
         };
         //Binding functions of the class

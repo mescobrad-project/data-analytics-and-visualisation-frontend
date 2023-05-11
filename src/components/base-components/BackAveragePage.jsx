@@ -63,6 +63,11 @@ class BackAveragePage extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of channels sent by the backend
             channels: [],
@@ -70,6 +75,7 @@ class BackAveragePage extends React.Component {
 
             // EEG general variables
             file_used: null,
+            selected_channel: "",
 
             // Back Average selection variables
             selected_time_before_event: '',
@@ -86,7 +92,7 @@ class BackAveragePage extends React.Component {
             annotationNameError: false,
 
             //Plot paths
-            back_average_plot_path: 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            back_average_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/back_average_plot.png',
             back_average_plot_path_1: 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/back_average_plot_f4.png',
@@ -95,6 +101,7 @@ class BackAveragePage extends React.Component {
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
 
+        this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectTimeBeforeEventChange = this.handleSelectTimeBeforeEventChange.bind(this);
         this.handleSelectTimeAfterEventChange = this.handleSelectTimeAfterEventChange.bind(this);
         this.handleSelectMinPtpAmplitudeChange = this.handleSelectMinPtpAmplitudeChange.bind(this);
@@ -120,15 +127,31 @@ class BackAveragePage extends React.Component {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
 
+        console.log(
+                {
+                    workflow_id: params.get("workflow_id"),
+                    run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
+                    input_name: this.state.selected_channel,
+                    time_before_event: parseFloat(this.state.selected_time_before_event),
+                    time_after_event: parseFloat(this.state.selected_time_after_event),
+                    min_ptp_amplitude: parseFloat(this.state.selected_min_ptp_amplitude),
+                    max_ptp_amplitude: parseFloat(this.state.selected_max_ptp_amplitude),
+                    annotation_name: this.state.selected_annotation_name,
+                    // Add other input parameters as required
+                    // file_used: this.state.file_used
+                }
+        )
         API.get("back_average", {
             params: {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
-                time_before_event: this.state.selected_time_before_event,
-                time_after_event: this.state.selected_time_after_event,
-                min_ptp_amplitude: this.state.selected_min_ptp_amplitude,
-                max_ptp_amplitude: this.state.selected_max_ptp_amplitude,
+                input_name: this.state.selected_channel,
+                time_before_event: parseFloat(this.state.selected_time_before_event),
+                time_after_event: parseFloat(this.state.selected_time_after_event),
+                min_ptp_amplitude: parseFloat(this.state.selected_min_ptp_amplitude),
+                max_ptp_amplitude: parseFloat(this.state.selected_max_ptp_amplitude),
                 annotation_name: this.state.selected_annotation_name,
                 // Add other input parameters as required
                 // file_used: this.state.file_used
@@ -144,6 +167,9 @@ class BackAveragePage extends React.Component {
     /**
      * Update state when selection changes in the form
      */
+    handleSelectChannelChange(event){
+        this.setState( {selected_channel: event.target.value})
+    }
     handleSelectTimeBeforeEventChange = (event) => {
         this.setState({ selected_time_before_event: event.target.value });
     }
@@ -169,6 +195,7 @@ class BackAveragePage extends React.Component {
         this.setState({channels: channel_new_value})
     }
 
+
     handleFileUsedChange(file_used_new_value){
         // console.log("CHANNELS")
         this.setState({file_used: file_used_new_value})
@@ -190,7 +217,7 @@ class BackAveragePage extends React.Component {
         const isValid = !isNaN(floatValue);
         this.setState({ [stateKey]: !isValid });
     }
-        render() {
+    render() {
         return (
                 <Grid container direction="row">
                     {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
@@ -212,7 +239,24 @@ class BackAveragePage extends React.Component {
                         <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                         <Divider/>
                         <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="channel-selector-label">Channel</InputLabel>
+                                <Select
+                                        labelId="channel-selector-label"
+                                        id="channel-selector"
+                                        value= {this.state.selected_channel}
+                                        label="Channel"
+                                        onChange={this.handleSelectChannelChange}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {this.state.channels.map((channel) => (
+                                            <MenuItem value={channel}>{channel}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select Channel to back average</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} error={this.state.timeBeforeEventError}>
                                 <TextField
                                         id="time-before-event"
@@ -220,7 +264,7 @@ class BackAveragePage extends React.Component {
                                         label="Time Before Event"
                                         size={"small"}
                                         onChange={this.handleSelectTimeBeforeEventChange}
-                                        onBlur={() => this.validateFloatNumber(this.state.selected_time_before_event, 'timeBeforeEventError')}
+                                        // onBlur={() => this.validateFloatNumber(this.state.selected_time_before_event, 'timeBeforeEventError')}
                                 />
                                 <FormHelperText>Time before the event</FormHelperText>
                             </FormControl>
@@ -231,7 +275,7 @@ class BackAveragePage extends React.Component {
                                         label="Time After Event"
                                         size={"small"}
                                         onChange={this.handleSelectTimeAfterEventChange}
-                                        onBlur={() => this.validateFloatNumber(this.state.selected_time_after_event, 'timeAfterEventError')}
+                                        // onBlur={() => this.validateFloatNumber(this.state.selected_time_after_event, 'timeAfterEventError')}
                                 />
                                 <FormHelperText>Time after the event</FormHelperText>
                             </FormControl>
@@ -242,7 +286,7 @@ class BackAveragePage extends React.Component {
                                         label="Min PTP Amplitude"
                                         size={"small"}
                                         onChange={this.handleSelectMinPtpAmplitudeChange}
-                                        onBlur={() => this.validateFloatNumber(this.state.selected_min_ptp_amplitude, 'minPtpAmplitudeError')}
+                                        // onBlur={() => this.validateFloatNumber(this.state.selected_min_ptp_amplitude, 'minPtpAmplitudeError')}
                                 />
                                 <FormHelperText>Minimum peak-to-peak amplitude</FormHelperText>
                             </FormControl>
@@ -253,18 +297,18 @@ class BackAveragePage extends React.Component {
                                         label="Max PTP Amplitude"
                                         size={"small"}
                                         onChange={this.handleSelectMaxPtpAmplitudeChange}
-                                        onBlur={() => this.validateFloatNumber(this.state.selected_max_ptp_amplitude, 'maxPtpAmplitudeError')}
+                                        // onBlur={() => this.validateFloatNumber(this.state.selected_max_ptp_amplitude, 'maxPtpAmplitudeError')}
                                 />
                                 <FormHelperText>Maximum peak-to-peak amplitude</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}}  error={this.state.annotationNameError}>>
+                            <FormControl sx={{m: 1, width:'90%'}}  error={this.state.annotationNameError}>
                                 <TextField
                                         id="annotation-name"
                                         value={this.state.selected_annotation_name}
                                         label="Annotation Name"
                                         size={"small"}
                                         onChange={this.handleSelectAnnotationNameChange}
-                                        onBlur={this.validateAnnotationName}
+                                        // onBlur={this.validateAnnotationName}
                                 />
                                 <FormHelperText>Annotation name</FormHelperText>
                             </FormControl>
@@ -298,10 +342,10 @@ class BackAveragePage extends React.Component {
                                  srcSet={this.state.back_average_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
                                  loading="lazy"
                             />
-                            <img src={this.state.back_average_plot_path_1 + "?random=" + new Date().getTime()}
-                                 srcSet={this.state.back_average_plot_path_1 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                 loading="lazy"
-                            />
+                            {/*<img src={this.state.back_average_plot_path_1 + "?random=" + new Date().getTime()}*/}
+                            {/*     srcSet={this.state.back_average_plot_path_1 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                            {/*     loading="lazy"*/}
+                            {/*/>*/}
                         </TabPanel>
                         {/*<hr/>*/}
 
