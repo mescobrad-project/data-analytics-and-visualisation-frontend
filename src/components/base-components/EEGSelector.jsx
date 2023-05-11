@@ -24,14 +24,20 @@ const style = {
 };
 
 class EEGSelector extends React.Component {
-        // static propTypes = {
-        //     step_id: PropTypes.string,
-        //     run_id: PropTypes.string
-        // }
-
-        constructor(props) {
+    // static propTypes = {
+    //     step_id: PropTypes.string,
+    //     run_id: PropTypes.string
+    // }
+    constructor(props) {
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://localhost:8080/"
+        if (process.env.NEURODESK_BASEURL)
+        {
+            ip = process.env.NEURODESK_BASEURL
+        }
         super(props);
         this.state = {
+            path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
         };
 
         //Binding functions of the class
@@ -61,8 +67,10 @@ class EEGSelector extends React.Component {
     render() {
         return (
                 <Grid container sx={{height: "100%"}} direction="column">
-                    <Grid item xs={12} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black", height: "100vh"}}>
-                        <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                    <Grid item xs={12}
+                          sx={{borderRight: "1px solid grey", borderLeft: "2px solid black", height: "100vh"}}>
+                        <iframe src={this.state.path}
+                                style={{width: "100%", height: "100%", marginLeft: "0%"}}></iframe>
                     </Grid>
                 </Grid>
 

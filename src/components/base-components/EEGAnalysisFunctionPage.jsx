@@ -65,6 +65,12 @@ class EEGAnalysisFunctionPage extends React.Component {
 
     constructor(props) {
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             //Channel Select order modal
             checked: [],
@@ -122,10 +128,10 @@ class EEGAnalysisFunctionPage extends React.Component {
             list_annotations: [],
             itemData: [
                 {
-                    img: 'http://localhost:8000/static/screenshots/lh.pial.T1_127.png',
+                    img: ip + 'static/screenshots/lh.pial.T1_127.png',
                 },
                 {
-                    img: 'http://localhost:8000/static/screenshots/rh.pial.T1_127.png',
+                    img: ip + 'static/screenshots/rh.pial.T1_127.png',
                     // title: 'Burger',
                 }
             ]

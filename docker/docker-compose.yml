@@ -8,10 +8,11 @@ services:
     container_name: analytics_frontend
     environment:
       REACT_APP_BASEURL: http://localhost:8000/
+      NEURODESK_BASEURL: https://gui.platform.mes-cobrad.eu/#/
     image: analytics_frontend
     restart: always
     ports:
-      - "3000:3000"
+      - "3005:3000"
 #    networks:
 #      - mri-freesurfer-network
 #      - analytics-network
