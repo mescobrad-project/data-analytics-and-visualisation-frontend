@@ -306,7 +306,7 @@ class ActigraphyFunctionPage extends React.Component {
                     {/*<img src={this.state.actigraphy_visualisation_1} srcSet={this.state.actigraphy_visualisation_1} align={'right'} loading="lazy"/>*/}
                     <img src={this.state.actigraphy_visualisation_1 + "?random=" + new Date().getTime()}
                          srcSet={this.state.actigraphy_visualisation_1 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                         loading="eager"
+                         loading="lazy"
                     />
                     {/*<img src={this.state.actigraphy_visualisation_2} align={'right'} loading="lazy"/>*/}
                     {/*<img src={this.state.actigraphy_visualisation_3} align={'right'} loading="lazy"/>*/}
