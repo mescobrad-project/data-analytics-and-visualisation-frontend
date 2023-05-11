@@ -1,7 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
-import "../../pages/hypothesis_testing/linearmixedeffectsmodel.scss";
+import "../../pages/hypothesis_testing/normality_tests.scss";
 import {
     Button, Divider,
     FormControl,
