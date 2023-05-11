@@ -61,6 +61,11 @@ class PointBiserialCorrelation extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of columns in dataset
             column_names: [],
@@ -71,6 +76,7 @@ class PointBiserialCorrelation extends React.Component {
             outliers_A:[],
             outliers_B:[],
             test_data: {
+                status:'',
                 sample_A: {
                     value: '',
                     N: '',
@@ -100,13 +106,13 @@ class PointBiserialCorrelation extends React.Component {
             selected_variable2: "",
             selected_file_name: "",
             stats_show: false,
-            svg_Scatter_Two_Variables : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_Scatter_Two_Variables : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/Scatter_Two_Variables.svg',
-            svg_BoxPlot : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_BoxPlot : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/BoxPlot.svg',
-            svg_HistogramPlot_GroupA : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_HistogramPlot_GroupA : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/HistogramPlot_GroupA.svg',
-            svg_HistogramPlot_GroupB : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_HistogramPlot_GroupB : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/HistogramPlot_GroupB.svg',
 // remove_outliers: true
         };
@@ -318,7 +324,7 @@ class PointBiserialCorrelation extends React.Component {
                         </form>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show}>
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
                                 Proceed >
                             </Button>
                         </form>
@@ -361,162 +367,166 @@ class PointBiserialCorrelation extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Grid container direction="row">
-                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Point biserial correlation</TableCell>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>p-value</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.correlation).toFixed(6)}</TableCell>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.p_value).toFixed(6)}</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </Grid>
-                                        <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                                <img src={this.state.svg_Scatter_Two_Variables + "?random=" + new Date().getTime()}
-                                                     srcSet={this.state.svg_Scatter_Two_Variables + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                                     loading="lazy"
-                                                />
-                                            </div>
-                                        </Grid>
-                                    </Grid>
-                                    <hr className="result"/>
-                                    <Grid container direction="row">
-                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <Typography>
-                                                Outliers of the selected variable for each category of the dichotomous variable
-                                            </Typography>
-                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Dichotomous value</TableCell>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Size</TableCell>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Size (without outliers)</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.value}</TableCell>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.N}</TableCell>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.N_clean}</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.value}</TableCell>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.N}</TableCell>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.N_clean}</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                            {/*{this.state.outliers_A.map((item, index) => {*/}
-                                            {/*        return (*/}
-                                            {/*                <TableRow>*/}
-                                            {/*                    <TableCell className="tableCell">{index}</TableCell>*/}
-                                            {/*                    <TableCell className="tableCell">{item}</TableCell>*/}
-                                            {/*                </TableRow>*/}
-                                            {/*        )*/}
-                                            {/*    })}*/}
-                                            {/*<Typography>{this.state.outliers_A}</Typography>*/}
-                                        </Grid>
-                                        <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
-                                                Box plot for each category of the dichotomous
-                                            </Typography>
-                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                                <img src={this.state.svg_BoxPlot + "?random=" + new Date().getTime()}
-                                                     srcSet={this.state.svg_BoxPlot + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                                     loading="lazy"
-                                                />
-                                            </div>
-                                        </Grid>
-                                    </Grid>
-                                    <hr className="result"/>
-                                    <Grid container direction="row">
-                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <Typography>
-                                                Normally distribution test for each category of the dichotomous variable
-                                            </Typography>
-                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Dichotomous value</TableCell>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Normality test (Shapiro-Wilk) statistic</TableCell>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>Normality test (Shapiro-Wilk) p-value</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_A.value}</TableCell>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Norm_statistic).toFixed(6)}</TableCell>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Norm_p_value).toFixed(6)}</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className="tableCell">{this.state.test_data.sample_B.value}</TableCell>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_B.Norm_statistic).toFixed(6)}</TableCell>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_B.Norm_p_value).toFixed(6)}</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </Grid>
-                                        <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
-                                                Histogram of category {this.state.test_data.sample_A.value} of the dichotomous
-                                            </Typography>
-                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                                <img src={this.state.svg_HistogramPlot_GroupA + "?random=" + new Date().getTime()}
-                                                     srcSet={this.state.svg_HistogramPlot_GroupA + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                                     loading="lazy"
-                                                />
-                                            </div>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
-                                                Histogram of category {this.state.test_data.sample_B.value} of the dichotomous
-                                            </Typography>
-                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                                <img src={this.state.svg_HistogramPlot_GroupB + "?random=" + new Date().getTime()}
-                                                     srcSet={this.state.svg_HistogramPlot_GroupB + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                                     loading="lazy"
-                                                />
-                                            </div>
-                                        </Grid>
-                                    </Grid>
-                                    <hr className="result"/>
-                                    <Grid container direction="row">
-                                        <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
-                                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}> Equal variances test (Levene) statistic</TableCell>
-                                                            <TableCell className="tableHeadCell" sx={{width:'20%'}}>p-value</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Hom_statistic).toFixed(6)}</TableCell>
-                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Hom_p_value).toFixed(6)}</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                            {/*<p>{this.state.test_data.sample_A.Hom_statistic}</p>*/}
-                                            {/*<p>{this.state.test_data.sample_A.Hom_p_value}</p>*/}
-                                        </Grid>
+                                {this.state.test_data['status']!=='Success' ? (
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                ) : (
+                                        <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                            <Grid container direction="row">
+                                                <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                        <Table>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>Point biserial correlation</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>p-value</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.correlation).toFixed(6)}</TableCell>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.p_value).toFixed(6)}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Grid>
+                                                <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                        <img src={this.state.svg_Scatter_Two_Variables + "?random=" + new Date().getTime()}
+                                                             srcSet={this.state.svg_Scatter_Two_Variables + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                             loading="lazy"
+                                                        />
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
+                                            <hr className="result"/>
+                                            <Grid container direction="row">
+                                                <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography>
+                                                        Outliers of the selected variable for each category of the dichotomous variable
+                                                    </Typography>
+                                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                        <Table>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>Dichotomous value</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>Size</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>Size (without outliers)</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_A.value}</TableCell>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_A.N}</TableCell>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_A.N_clean}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_B.value}</TableCell>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_B.N}</TableCell>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_B.N_clean}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                    {/*{this.state.outliers_A.map((item, index) => {*/}
+                                                    {/*        return (*/}
+                                                    {/*                <TableRow>*/}
+                                                    {/*                    <TableCell className="tableCell">{index}</TableCell>*/}
+                                                    {/*                    <TableCell className="tableCell">{item}</TableCell>*/}
+                                                    {/*                </TableRow>*/}
+                                                    {/*        )*/}
+                                                    {/*    })}*/}
+                                                    {/*<Typography>{this.state.outliers_A}</Typography>*/}
+                                                </Grid>
+                                                <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                        Box plot for each category of the dichotomous
+                                                    </Typography>
+                                                    <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                        <img src={this.state.svg_BoxPlot + "?random=" + new Date().getTime()}
+                                                             srcSet={this.state.svg_BoxPlot + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                             loading="lazy"
+                                                        />
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
+                                            <hr className="result"/>
+                                            <Grid container direction="row">
+                                                <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography>
+                                                        Normally distribution test for each category of the dichotomous variable
+                                                    </Typography>
+                                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                        <Table>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>Dichotomous value</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>Normality test (Shapiro-Wilk) statistic</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>Normality test (Shapiro-Wilk) p-value</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_A.value}</TableCell>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Norm_statistic).toFixed(6)}</TableCell>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Norm_p_value).toFixed(6)}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell className="tableCell">{this.state.test_data.sample_B.value}</TableCell>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_B.Norm_statistic).toFixed(6)}</TableCell>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_B.Norm_p_value).toFixed(6)}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Grid>
+                                                <Grid item xs={5} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                        Histogram of category {this.state.test_data.sample_A.value} of the dichotomous
+                                                    </Typography>
+                                                    <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                        <img src={this.state.svg_HistogramPlot_GroupA + "?random=" + new Date().getTime()}
+                                                             srcSet={this.state.svg_HistogramPlot_GroupA + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                             loading="lazy"
+                                                        />
+                                                    </div>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center"}}>
+                                                        Histogram of category {this.state.test_data.sample_B.value} of the dichotomous
+                                                    </Typography>
+                                                    <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                        <img src={this.state.svg_HistogramPlot_GroupB + "?random=" + new Date().getTime()}
+                                                             srcSet={this.state.svg_HistogramPlot_GroupB + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                             loading="lazy"
+                                                        />
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
+                                            <hr className="result"/>
+                                            <Grid container direction="row">
+                                                <Grid item xs={7} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                        <Table>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}> Equal variances test (Levene) statistic</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'20%'}}>p-value</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Hom_statistic).toFixed(6)}</TableCell>
+                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.sample_A.Hom_p_value).toFixed(6)}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                    {/*<p>{this.state.test_data.sample_A.Hom_statistic}</p>*/}
+                                                    {/*<p>{this.state.test_data.sample_A.Hom_p_value}</p>*/}
+                                                </Grid>
 
-                                    </Grid>
-                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                )}
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
                                 <JsonTable className="jsonResultsTable"

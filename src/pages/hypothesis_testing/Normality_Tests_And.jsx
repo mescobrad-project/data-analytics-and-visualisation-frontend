@@ -65,6 +65,7 @@ class Normality_Tests_And extends React.Component {
             column_names: [],
             file_names:[],
             test_data: {
+                status:'',
                 statistic: "",
                 critical_values:[],
                 significance_level:[],
@@ -368,8 +369,8 @@ class Normality_Tests_And extends React.Component {
                         </form>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.selected_column}>
-                                Proceed >
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed
                             </Button>
                         </form>
                     </Grid>
@@ -387,199 +388,203 @@ class Normality_Tests_And extends React.Component {
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
-                                        Sample characteristics
-                                    </Typography>
-                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell className="tableHeadCell">Name</TableCell>
-                                                    <TableCell className="tableHeadCell">N</TableCell>
-                                                    <TableCell className="tableHeadCell">Mean</TableCell>
-                                                    <TableCell className="tableHeadCell">Median</TableCell>
-                                                    <TableCell className="tableHeadCell">Std. Deviation</TableCell>
-                                                    <TableCell className="tableHeadCell">Skewness</TableCell>
-                                                    <TableCell className="tableHeadCell">Kurtosis</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
-                                                    <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
-                                                    <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                                <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center", padding: "15px"}}>
-                                        Extreme Values
-                                    </Typography>
-                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width: '80%'}}>
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell className="tableHeadCell" sx={{width: '40%'}}></TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '20%'}}></TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '20%'}}></TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '20%'}}>Value</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                            {this.state.test_data.results.top_5.map((item, index) => {
-                                                if (index === 0) {
-                                                    return (
+                                {this.state.test_data['status']!=='Success' ? (
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                ) : (
+                                        <Grid>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", padding:"15px"}}>
+                                                    Sample characteristics
+                                                </Typography>
+                                                <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                                    <Table>
+                                                        <TableHead>
                                                             <TableRow>
-                                                                <TableCell
-                                                                        className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
-                                                                <TableCell className="tableCell">Highest</TableCell>
-                                                                <TableCell className="tableCell">{index + 1}</TableCell>
-                                                                <TableCell className="tableCell">{item}</TableCell>
+                                                                <TableCell className="tableHeadCell">Name</TableCell>
+                                                                <TableCell className="tableHeadCell">N</TableCell>
+                                                                <TableCell className="tableHeadCell">Mean</TableCell>
+                                                                <TableCell className="tableHeadCell">Median</TableCell>
+                                                                <TableCell className="tableHeadCell">Std. Deviation</TableCell>
+                                                                <TableCell className="tableHeadCell">Skewness</TableCell>
+                                                                <TableCell className="tableHeadCell">Kurtosis</TableCell>
                                                             </TableRow>
-                                                    )
-                                                } else {
-                                                    return (
+                                                        </TableHead>
+                                                        <TableBody>
                                                             <TableRow>
-                                                                <TableCell className="tableCell"></TableCell>
-                                                                <TableCell className="tableCell"></TableCell>
-                                                                <TableCell className="tableCell">{index + 1}</TableCell>
-                                                                <TableCell className="tableCell">{item}</TableCell>
+                                                                <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
+                                                                <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
                                                             </TableRow>
-                                                    )
-                                                }
-                                            })}
-                                            {this.state.test_data.results.last_5.reverse().map((item, index) => {
-                                                if (index === 0) {
-                                                    return (
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </div>
+                                            <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center", padding: "15px"}}>
+                                                    Extreme Values
+                                                </Typography>
+                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width: '80%'}}>
+                                                    <Table>
+                                                        <TableHead>
                                                             <TableRow>
-                                                                <TableCell
-                                                                        className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
-                                                                <TableCell className="tableCell2">Lowest</TableCell>
-                                                                <TableCell className="tableCell2">{index + 1}</TableCell>
-                                                                <TableCell className="tableCell2">{item}</TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '40%'}}></TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '20%'}}></TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '20%'}}></TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '20%'}}>Value</TableCell>
                                                             </TableRow>
-                                                    )
-                                                } else {
-                                                    return (
+                                                        </TableHead>
+                                                        <TableBody>
+                                                        {this.state.test_data.results.top_5.map((item, index) => {
+                                                            if (index === 0) {
+                                                                return (
+                                                                        <TableRow>
+                                                                            <TableCell
+                                                                                    className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
+                                                                            <TableCell className="tableCell">Highest</TableCell>
+                                                                            <TableCell className="tableCell">{index + 1}</TableCell>
+                                                                            <TableCell className="tableCell">{item}</TableCell>
+                                                                        </TableRow>
+                                                                )
+                                                            } else {
+                                                                return (
+                                                                        <TableRow>
+                                                                            <TableCell className="tableCell"></TableCell>
+                                                                            <TableCell className="tableCell"></TableCell>
+                                                                            <TableCell className="tableCell">{index + 1}</TableCell>
+                                                                            <TableCell className="tableCell">{item}</TableCell>
+                                                                        </TableRow>
+                                                                )
+                                                            }
+                                                        })}
+                                                        {this.state.test_data.results.last_5.reverse().map((item, index) => {
+                                                            if (index === 0) {
+                                                                return (
+                                                                        <TableRow>
+                                                                            <TableCell
+                                                                                    className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
+                                                                            <TableCell className="tableCell2">Lowest</TableCell>
+                                                                            <TableCell className="tableCell2">{index + 1}</TableCell>
+                                                                            <TableCell className="tableCell2">{item}</TableCell>
+                                                                        </TableRow>
+                                                                )
+                                                            } else {
+                                                                return (
+                                                                        <TableRow>
+                                                                            <TableCell className="tableCell"></TableCell>
+                                                                            <TableCell className="tableCell"></TableCell>
+                                                                            <TableCell className="tableCell">{index + 1}</TableCell>
+                                                                            <TableCell className="tableCell">{item}</TableCell>
+                                                                        </TableRow>
+                                                                )
+                                                            }
+                                                        })}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </div>
+                                            <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
+                                            <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center", padding: "15px"}}>
+                                                    Test of Normality
+                                                </Typography>
+
+                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width: '80%'}}>
+                                                    <Table>
+                                                        <TableHead>
                                                             <TableRow>
-                                                                <TableCell className="tableCell"></TableCell>
-                                                                <TableCell className="tableCell"></TableCell>
-                                                                <TableCell className="tableCell">{index + 1}</TableCell>
-                                                                <TableCell className="tableCell">{item}</TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '40%'}}>Sample Name</TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '12%'}}>Statistic</TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '12%'}}>df</TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '12%'}}>Significance level</TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '12%'}}>Critical Values</TableCell>
+                                                                <TableCell className="tableHeadCell" sx={{width: '12%'}}>Description</TableCell>
                                                             </TableRow>
-                                                    )
-                                                }
-                                            })}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                                <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
-                                <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center", padding: "15px"}}>
-                                        Test of Normality
-                                    </Typography>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {this.state.test_data.Description.map((item, index) => {
+                                                                let s_level=item.split(":")[0]
+                                                                let c_val=item.split(":")[1].split(",")[0]
+                                                                let descr=item.split(":")[1].split(",")[1].trim()
+                                                                if (index === 0) {
+                                                                    return (
+                                                                            <TableRow>
+                                                                                <TableCell
+                                                                                        className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
+                                                                                <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>
+                                                                                <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
+                                                                                <TableCell className="tableCell">{Number.parseFloat(s_level/100).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2})}</TableCell>
+                                                                                <TableCell className="tableCell">{Number.parseFloat(c_val).toFixed(5)}</TableCell>
+                                                                                <TableCell className="tableCell" style={{color: (descr === "data looks normal (fail to reject H0)" ? 'Red' : 'Green')}}>{descr}</TableCell>
+                                                                            </TableRow>
+                                                                    )
+                                                                } else {
+                                                                    return (
 
-                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width: '80%'}}>
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell className="tableHeadCell" sx={{width: '40%'}}>Sample Name</TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '12%'}}>Statistic</TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '12%'}}>df</TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '12%'}}>Significance level</TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '12%'}}>Critical Values</TableCell>
-                                                    <TableCell className="tableHeadCell" sx={{width: '12%'}}>Description</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {this.state.test_data.Description.map((item, index) => {
-                                                    let s_level=item.split(":")[0]
-                                                    let c_val=item.split(":")[1].split(",")[0]
-                                                    let descr=item.split(":")[1].split(",")[1].trim()
-                                                    if (index === 0) {
-                                                        return (
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                            className="tableCell">{this.state.test_data.results.plot_column}</TableCell>
-                                                                    <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>
-                                                                    <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
-                                                                    <TableCell className="tableCell">{Number.parseFloat(s_level/100).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2})}</TableCell>
-                                                                    <TableCell className="tableCell">{Number.parseFloat(c_val).toFixed(5)}</TableCell>
-                                                                    <TableCell className="tableCell" style={{color: (descr === "data looks normal (fail to reject H0)" ? 'Red' : 'Green')}}>{descr}</TableCell>
-                                                                </TableRow>
-                                                        )
-                                                    } else {
-                                                        return (
+                                                                            <TableRow>
+                                                                                <TableCell className="tableCell"></TableCell>
+                                                                                <TableCell className="tableCell"></TableCell>
+                                                                                <TableCell className="tableCell"></TableCell>
+                                                                                <TableCell className="tableCell">{Number.parseFloat(s_level/100).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2})}</TableCell>
+                                                                                <TableCell className="tableCell">{Number.parseFloat(c_val).toFixed(5)}</TableCell>
+                                                                                <TableCell className="tableCell" style={{color: (descr === "data looks normal (fail to reject H0)" ? 'Red' : 'Green')}}>{descr}</TableCell>
+                                                                            </TableRow>
+                                                                    )
+                                                                }
+                                                            })}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </div>
+                                            <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
+                                            <Grid>
+                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
+                                                        Histogram of Selected data
+                                                    </Typography>
+                                                    <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
+                                                        <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
+                                                        {/*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*/}
+                                                    </div>
+                                                    <hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
+                                                </Grid>
+                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.boxplot_chart_show ? 'block' : 'none')  }}>
+                                                        Box Plot of Selected data
+                                                    </Typography>
+                                                    <div style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
+                                                        <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
+                                                        {/*<ClusteredBoxPlot chart_id="boxplot_chart_id" chart_data={ this.state.test_boxplot_chart_data}/>*/}
+                                                    </div>
+                                                    <hr  class="result" style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
+                                                    Q-Q Plot of Selected data
+                                                </Typography>
+                                                <div style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }} >
+                                                    <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
 
-                                                                <TableRow>
-                                                                    <TableCell className="tableCell"></TableCell>
-                                                                    <TableCell className="tableCell"></TableCell>
-                                                                    <TableCell className="tableCell"></TableCell>
-                                                                    <TableCell className="tableCell">{Number.parseFloat(s_level/100).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2})}</TableCell>
-                                                                    <TableCell className="tableCell">{Number.parseFloat(c_val).toFixed(5)}</TableCell>
-                                                                    <TableCell className="tableCell" style={{color: (descr === "data looks normal (fail to reject H0)" ? 'Red' : 'Green')}}>{descr}</TableCell>
-                                                                </TableRow>
-                                                        )
-                                                    }
-                                                })}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                                <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
-                                <Grid>
-                                    <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
-                                            Histogram of Selected data
-                                        </Typography>
-                                        <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
-                                            <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
-                                            {/*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*/}
-                                        </div>
-                                        <hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
-                                    </Grid>
-                                    <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.boxplot_chart_show ? 'block' : 'none')  }}>
-                                            Box Plot of Selected data
-                                        </Typography>
-                                        <div style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
-                                            <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
-                                            {/*<ClusteredBoxPlot chart_id="boxplot_chart_id" chart_data={ this.state.test_boxplot_chart_data}/>*/}
-                                        </div>
-                                        <hr  class="result" style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
-                                    </Grid>
-                                </Grid>
-                                <Grid>
-                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
-                                        Q-Q Plot of Selected data
-                                    </Typography>
-                                    <div style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }} >
-                                        <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
+                                                </div>
+                                                <hr  class="result" style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
+                                            </Grid>
+                                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
+                                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.probplot_chart_show ? 'block' : 'none')  }}>
+                                                    Probability Plot of Selected data
+                                                </Typography>
+                                                <div style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }} >
+                                                    <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
 
-                                    </div>
-                                    <hr  class="result" style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
-                                </Grid>
-                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.probplot_chart_show ? 'block' : 'none')  }}>
-                                        Probability Plot of Selected data
-                                    </Typography>
-                                    <div style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }} >
-                                        <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
-
-                                    </div>
-                                    <hr  class="result" style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }}/>
-                                </Grid>
-                            </Grid>
+                                                </div>
+                                                <hr  class="result" style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }}/>
+                                            </Grid>
+                                        </Grid>
+                                )}
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <Box>
