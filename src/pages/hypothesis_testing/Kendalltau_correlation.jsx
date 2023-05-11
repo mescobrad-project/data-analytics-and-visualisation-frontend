@@ -6,12 +6,7 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    Card,
     Box,
-    CardContent,
-    ListItemText,
     MenuItem,
     Select,
     Typography, Tabs, Tab
@@ -115,28 +110,33 @@ class Kendalltau_correlation extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
+            file_names:[],
             initialdataset:[],
             test_data: {
-                DataFrame:[]
+                DataFrame:[],
             },
             //Values selected currently on the form
-            selected_method: "spearman",
+            selected_method: "kendall",
             selected_alternative: "two-sided",
-            selected_independent_variables: []
+            selected_independent_variables: [],
+            selected_variables: []
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
-        this.clear = this.clear.bind(this);
-        this.selectAll = this.selectAll.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
         // // Initialise component
         // // - values of channels from the backend
-        this.fetchColumnNames();
-        this.handleTabChange = this.handleTabChange.bind(this);
-
+        this.fetchFileNames();
     }
 
     /**
@@ -144,18 +144,44 @@ class Kendalltau_correlation extends React.Component {
      */
     async fetchColumnNames(url, config) {
         const params = new URLSearchParams(window.location.search);
+        this.setState({stats_show: false})
 
         API.get("return_columns",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({column_names: res.data.columns})
+        });
+    }
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
-            this.setState({column_names: res.data.columns})
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
-                    });
+            this.setState({tabvalue:0})
+        });
     }
 
     /**
@@ -164,6 +190,7 @@ class Kendalltau_correlation extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
+        this.setState({stats_show: false})
 
         // Send the request
         API.get("correlations_pingouin",
@@ -172,7 +199,7 @@ class Kendalltau_correlation extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        column_2: this.state.selected_independent_variables,
+                        column_2: this.state.selected_variables,
                         alternative: this.state.selected_alternative,
                         method: this.state.selected_method
                     },
@@ -182,7 +209,8 @@ class Kendalltau_correlation extends React.Component {
                 }
         ).then(res => {
             this.setState({test_data: res.data})
-            this.setState({tabvalue:0})
+            this.setState({stats_show: true})
+            this.setState({tabvalue:1})
         });
     }
 
@@ -190,54 +218,88 @@ class Kendalltau_correlation extends React.Component {
     /**
      * Update state when selection changes in the form
      */
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"),
+                    run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
+    }
+
+    /**
+     * Update state when selection changes in the form
+     */
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
+        var newArray = this.state.selected_variables.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_variables:newArray})
     }
     handleSelectAlternativeChange(event){
         this.setState( {selected_alternative: event.target.value})
     }
-    clear(){
-        this.setState({selected_independent_variables: []})
+    handleListDelete(event) {
+        var newArray = this.state.selected_variables.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_variables:newList})
     }
-    selectAll(){
-        this.setState({selected_independent_variables: this.state.column_names})
+    handleDeleteVariable(event) {
+        this.setState({selected_variables:[]})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.handleDeleteVariable()
+            this.setState({stats_show: false})
+        })
+    }
     render() {
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Kendall’s Correlation Parameterisation
+                            Kendall Tau Correlation Parameterisation
                         </Typography>
                         <hr/>
-                        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                            <FormHelperText>Selected Variables</FormHelperText>
-                            <List style={{fontSize:'9px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                                {this.state.selected_independent_variables.map((column) => (
-                                        <ListItem disablePadding
-                                        >
-                                            <ListItemText
-                                                    primaryTypographyProps={{fontSize: '10px'}}
-                                                    primary={'•  ' + column}
-                                            />
-
-                                        </ListItem>
-                                ))}
-                            </List>
-                        </FormControl>
-                        <hr/>
                         <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Variables</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
                                         value= {this.state.selected_independent_variables}
-                                        multiple
                                         label="Column"
                                         onChange={this.handleSelectIndependentVariableChange}
                                 >
@@ -246,12 +308,6 @@ class Kendalltau_correlation extends React.Component {
                                     ))}
                                 </Select>
                                 <FormHelperText>Select variables for correlation test</FormHelperText>
-                                <Button onClick={this.selectAll}>
-                                    Select All Variables
-                                </Button>
-                                <Button onClick={this.clear}>
-                                    Clear Selections
-                                </Button>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="alternative-selector-label">Alternative</InputLabel>
@@ -268,12 +324,43 @@ class Kendalltau_correlation extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
                             </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left", marginRight: "2px"}}
+                                    variant="contained" color="primary"
+                                    disabled={this.state.selected_variables.length < 2}
+                                    type="submit"
+                            >
                                 Submit
                             </Button>
                         </form>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed >
+                            </Button>
+                        </form>
+                        <br/>
+                        <br/>
+                        <hr/>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_variables.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
+                            </Button>
+                        </FormControl>
                     </Grid>
-                    <Grid item xs={9} >
+                    <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>
@@ -281,71 +368,40 @@ class Kendalltau_correlation extends React.Component {
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Results" {...a11yProps(0)} />
-                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
                                     {/*<Tab label="New Dataset" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
-                            <TabPanel value={this.state.tabvalue} index={0}>
-                                <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
-                                          zeroMinWidth
-                                          rowHeight={40}
-                                          className="datagrid"
-                                          rows= {this.state.test_data.DataFrame}
-                                          columns= {userColumns}
-                                          pageSize= {9}
-                                          rowsPerPageOptions={[9]}
-                                          components={{
-                                              Toolbar: CustomToolbar,
-                                          }}
-                                />
-                            </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
+                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    <Grid style={{display: (this.state.test_data['status']!=='Success' ? 'block' : 'none')}}>
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                    </Grid>
+                                    <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
+                                        <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                                  zeroMinWidth
+                                                  rowHeight={40}
+                                                  className="datagrid"
+                                                  rows= {this.state.test_data.DataFrame}
+                                                  columns= {userColumns}
+                                                  pageSize= {9}
+                                                  rowsPerPageOptions={[9]}
+                                                  components={{
+                                                      Toolbar: CustomToolbar,
+                                                  }}
+                                        />
+                                        <hr className="result"/>
+                                    </Grid>
+                                </Grid>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={0}>
                                 <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
                             </TabPanel>
                             {/*<TabPanel value={this.state.tabvalue} index={2}>*/}
                             {/*    Item Three*/}
                             {/*</TabPanel>*/}
                         </Box>
-                        {/*<div>*/}
-                        {/*    <Box*/}
-                        {/*            sx={{*/}
-                        {/*                display: 'flex',*/}
-                        {/*                flexDirection: 'row',*/}
-                        {/*                flexWrap: 'wrap',*/}
-                        {/*                alignContent: 'center',*/}
-                        {/*                justifyContent: 'flex-start',*/}
-                        {/*                alignItems: 'center',*/}
-                        {/*                p: 1,*/}
-                        {/*                m: 1,*/}
-                        {/*                bgcolor: 'background.paper',*/}
-                        {/*                Width: '95%',*/}
-                        {/*                borderRadius: 1,*/}
-                        {/*            }}*/}
-                        {/*    >*/}
-                        {/*        {this.state.test_data.DataFrame.map((item)=>{*/}
-                        {/*            return (*/}
-                        {/*                    <Card sx={{ minWidth: 100, borderRadius: 2, maxWidth:'33%', m:2}} variant="outlined">*/}
-                        {/*                        <CardContent>*/}
-                        {/*                            <Typography variant="h5" color="text.secondary" gutterBottom>*/}
-                        {/*                                {item.Cor.split("-")[0]}*/}
-                        {/*                                <br/>---Vs---*/}
-                        {/*                                <br/>{item.Cor.split("-")[1]}*/}
-                        {/*                                <br/>*/}
-                        {/*                                <hr/>*/}
-                        {/*                            </Typography>*/}
-                        {/*                            <Typography variant="body1">*/}
-                        {/*                                n = {item.n}<br/>*/}
-                        {/*                                r = {item.r}<br/>*/}
-                        {/*                                CI95% = {item['CI95%']}<br/>*/}
-                        {/*                                p-val = {item['p-val']}<br/>*/}
-                        {/*                                power = {item.power}<br/>*/}
-                        {/*                            </Typography>*/}
-                        {/*                        </CardContent>*/}
-                        {/*                    </Card>*/}
-                        {/*            )})}*/}
-                        {/*    </Box>*/}
-                        {/*</div>*/}
                     </Grid>
                 </Grid>
         )

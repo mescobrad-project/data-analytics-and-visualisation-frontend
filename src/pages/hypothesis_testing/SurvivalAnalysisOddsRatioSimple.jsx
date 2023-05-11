@@ -16,16 +16,19 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
         this.state = {
             // List of columns in dataset
             test_data: {
+                status:'',
+                result:{
                 odds_ratio:"",
                 lower_bound:"",
                 upper_bound:"",
-                standard_error:""
+                standard_error:""}
             },
             selected_exposed_with: "",
             selected_unexposed_with: "",
             selected_exposed_without: "",
             selected_unexposed_without: "",
-            selected_alpha: 0.05
+            selected_alpha: 0.05,
+            stats_show: false
         };
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,11 +37,13 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
         this.handleSelectExposedWithoutChange = this.handleSelectExposedWithoutChange.bind(this);
         this.handleSelectUnexposedWithoutChange = this.handleSelectUnexposedWithoutChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
     }
 
     async handleSubmit(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
+        this.setState({stats_show: false})
 
         // Send the request
         API.get("odds_ratio_function",
@@ -56,6 +61,7 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                 }
         ).then(res => {
             this.setState({test_data: res.data})
+            this.setState({stats_show: true})
         });
     }
 
@@ -77,7 +83,20 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
     }
-
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"),
+                    run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
+    }
     render() {
         return (
                 <Grid container direction="row">
@@ -92,6 +111,7 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                            labelid="exposed-with-selector-label"
                                            id="exposed-with-selector"
                                            value= {this.state.selected_exposed_with}
+                                           inputProps={{ inputmode: 'numeric', pattern: '[0-9]*' }}
                                            label="Exposed with"
                                            onChange={this.handleSelectExposedWithChange}
                                 />
@@ -103,6 +123,7 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                            labelid="Unexposed-with-selector-label"
                                            id="Unexposed-with-selector"
                                            value= {this.state.selected_unexposed_with}
+                                           inputProps={{ inputmode: 'numeric', pattern: '[0-9]*' }}
                                            label="Unexposed with"
                                            onChange={this.handleSelectUnexposedWithChange}
                                 />
@@ -113,6 +134,7 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                            labelid="Exposed-without-selector-label"
                                            id="Exposed-without-selector"
                                            value= {this.state.selected_exposed_without}
+                                           inputProps={{ inputmode: 'numeric', pattern: '[0-9]*' }}
                                            label="Exposed without"
                                            onChange={this.handleSelectExposedWithoutChange}
                                 />
@@ -123,6 +145,7 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                            labelid="Unexposed-without-selector-label"
                                            id="Unexposed-without-selector"
                                            value= {this.state.selected_unexposed_without}
+                                           inputProps={{ inputmode: 'numeric', pattern: '[0-9]*' }}
                                            label="Unexposed without"
                                            onChange={this.handleSelectUnexposedWithoutChange}
                                 />
@@ -138,8 +161,15 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                                 />
                                 <FormHelperText>Alpha value to calculate two-sided Wald confidence intervals.</FormHelperText>
                             </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left", marginRight: "2px"}}
+                                    variant="contained" color="primary" type="submit">
                                 Submit
+                            </Button>
+                        </form>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed >
                             </Button>
                         </form>
                     </Grid>
@@ -148,16 +178,21 @@ class SurvivalAnalysisOddsRatioSimple extends React.Component {
                             Result Visualisation
                         </Typography>
                         <hr/>
-                        <div>
-                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                Estimated odds ratio = { this.state.test_data.odds_ratio}</Typography>
-                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                Lower bound = {this.state.test_data.lower_bound}</Typography>
-                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                Upper bound = {this.state.test_data.upper_bound}</Typography>
-                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
-                                Standard error = {this.state.test_data.standard_error}</Typography>
-                        </div>
+                        <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                            <Grid style={{display: (this.state.test_data['status']!=='Success' ? 'block' : 'none')}}>
+                                <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                            </Grid>
+                            <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
+                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                    Estimated odds ratio = { this.state.test_data.result.odds_ratio}</Typography>
+                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                    Lower bound = {this.state.test_data.result.lower_bound}</Typography>
+                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                    Upper bound = {this.state.test_data.result.upper_bound}</Typography>
+                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >
+                                    Standard error = {this.state.test_data.result.standard_error}</Typography>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
         )

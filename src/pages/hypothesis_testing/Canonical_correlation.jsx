@@ -1,30 +1,23 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import "./linearmixedeffectsmodel.scss"
+import "./normality_tests.scss"
 import {
     Button,
     FormControl,
     FormHelperText,
     Grid,
-    InputLabel, List, ListItem, ListItemText,
+    InputLabel,
     MenuItem,
     Select,
     Tab,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Tabs,
     TextField,
     Typography
 } from "@mui/material";
 import JsonTable from "ts-react-json-table";
-import Paper from "@mui/material/Paper";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
-import { CSVLink, CSVDownload } from "react-csv"
+import { CSVLink } from "react-csv"
 import qs from "qs";
 
 function TabPanel(props) {
@@ -66,6 +59,7 @@ class Canonical_correlation extends React.Component {
         const params = new URLSearchParams(window.location.search);
         this.state = {
             test_data: {
+                status:'',
                 xweights: "",
                 yweights: "",
                 xloadings: "",
@@ -76,8 +70,8 @@ class Canonical_correlation extends React.Component {
                 Xc_df:"",
                 Yc_df:"",
             },
-            binary_columns: [],
-            columns: [],
+            column_names: [],
+            file_names:[],
             X_weights:"",
             Y_weights:"",
             X_loadings: "",
@@ -88,8 +82,10 @@ class Canonical_correlation extends React.Component {
             X_c_df:"",
             Y_c_df:"",
             selected_n_components: 2,
-            selected_independent_variables_1: [],
-            selected_independent_variables_2: [],
+            selected_independent_variables_1: '',
+            selected_independent_variables_1_wf: [],
+            selected_independent_variables_2: '',
+            selected_independent_variables_2_wf: [],
             stats_show: false,
             svg1_path : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XYcorr.svg',
@@ -103,42 +99,61 @@ class Canonical_correlation extends React.Component {
         };
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.handleSelectComponentsChange = this.handleSelectComponentsChange.bind(this);
         this.handleSelectIndependentVariable1Change = this.handleSelectIndependentVariable1Change.bind(this);
         this.handleSelectIndependentVariable2Change = this.handleSelectIndependentVariable2Change.bind(this);
-        this.fetchBinaryColumnNames();
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        this.fetchColumnNames();
         this.handleTabChange = this.handleTabChange.bind(this);
-        this.clearX = this.clearX.bind(this);
-        this.selectAllX = this.selectAllX.bind(this);
-        this.clearY = this.clearY.bind(this);
-        this.selectAllY = this.selectAllY.bind(this);
+
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleListDelete2 = this.handleListDelete2.bind(this);
+        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleDeleteVariable2 = this.handleDeleteVariable2.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.fetchFileNames();
     }
 
     async fetchColumnNames(url, config) {
         const params = new URLSearchParams(window.location.search);
+
         API.get("return_columns",
-                {params: {
+                {
+                    params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
-            this.setState({columns: res.data.columns})
-            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
+            this.setState({column_names: res.data.columns})
         });
     }
-
-    async fetchBinaryColumnNames(url, config) {
+    async fetchFileNames() {
         const params = new URLSearchParams(window.location.search);
-        API.get("return_binary_columns",
-                {params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
-            // console.log(res.data.columns)
-            this.setState({binary_columns: res.data.columns})
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
         });
     }
 
@@ -155,8 +170,8 @@ class Canonical_correlation extends React.Component {
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         n_components: this.state.selected_n_components,
-                        independent_variables_1: this.state.selected_independent_variables_1,
-                        independent_variables_2: this.state.selected_independent_variables_2,
+                        independent_variables_1: this.state.selected_independent_variables_1_wf,
+                        independent_variables_2: this.state.selected_independent_variables_2_wf,
                 },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
@@ -174,30 +189,45 @@ class Canonical_correlation extends React.Component {
             this.setState({X_c_df:JSON.parse(res.data.Xc_df)});
             this.setState({Y_c_df:JSON.parse(res.data.Yc_df)});
             this.setState({stats_show: true});
-            this.setState({tabvalue:0});
+            this.setState({tabvalue:1});
         });
     }
-
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        // We changed info file uploading process to the DataLake
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        console.log(this.state.output_return_data);
+        window.location.replace("/")
+    }
     /**
      * Update state when selection changes in the form
      */
     handleSelectIndependentVariable1Change(event){
-        if (event.target.value !== this.state.selected_independent_variables_2)
+        this.setState( {selected_independent_variables_1: event.target.value})
+        var newArray = this.state.selected_independent_variables_1_wf.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
         {
-            this.setState( {selected_independent_variables_1: event.target.value})
-        }else{
-            alert("You must select a different variable.")
-            return
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
         }
+        this.setState({selected_independent_variables_1_wf:newArray})
     }
     handleSelectIndependentVariable2Change(event){
-        if (event.target.value !== this.state.selected_independent_variables_1)
+        this.setState( {selected_independent_variables_2: event.target.value})
+        var newArray = this.state.selected_independent_variables_2_wf.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
         {
-            this.setState( {selected_independent_variables_2: event.target.value})
-        }else{
-            alert("You must select a different variable.")
-            return
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
         }
+        this.setState({selected_independent_variables_2_wf:newArray})
     }
     handleSelectComponentsChange(event){
         this.setState( {selected_n_components: event.target.value})
@@ -205,21 +235,38 @@ class Canonical_correlation extends React.Component {
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    clearX(){
-        this.setState({selected_independent_variables_1: []})
+    handleListDelete(event) {
+        var newArray = this.state.selected_independent_variables_1_wf.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_independent_variables_1_wf:newList})
     }
-    selectAllX(){
-        this.setState({selected_independent_variables_1: this.state.columns})
+    handleDeleteVariable(event) {
+        this.setState({selected_independent_variables_1_wf:[]})
     }
-    clearY(){
-        this.setState({selected_independent_variables_2: []})
+    handleListDelete2(event) {
+        var newArray = this.state.selected_independent_variables_2_wf.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_independent_variables_2_wf:newList})
     }
-    selectAllY(){
-        this.setState({selected_independent_variables_2: this.state.columns})
+    handleDeleteVariable2(event) {
+        this.setState({selected_independent_variables_2_wf:[]})
     }
-
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.handleDeleteVariable()
+            this.handleDeleteVariable2()
+            this.setState({stats_show: false})
+        })
+    }
     render() {
-
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
@@ -227,78 +274,51 @@ class Canonical_correlation extends React.Component {
                             Insert Parameters
                         </Typography>
                         <hr/>
-                        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                            <FormHelperText>Selected features in sample X</FormHelperText>
-                            <List style={{fontSize:'9px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                                {this.state.selected_independent_variables_1.map((column) => (
-                                        <ListItem disablePadding
-                                        >
-                                            <ListItemText
-                                                    primaryTypographyProps={{fontSize: '10px'}}
-                                                    primary={'•  ' + column}
-                                            />
-                                        </ListItem>
-                                ))}
-                            </List>
-                        </FormControl>
-                        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                            <FormHelperText>Selected targets in sample Y</FormHelperText>
-                            <List style={{fontSize:'9px', backgroundColor:"lightgrey", borderRadius:'10%'}}>
-                                {this.state.selected_independent_variables_2.map((column) => (
-                                        <ListItem disablePadding
-                                        >
-                                            <ListItemText
-                                                    primaryTypographyProps={{fontSize: '10px'}}
-                                                    primary={'•  ' + column}
-                                            />
-                                        </ListItem>
-                                ))}
-                            </List>
-                        </FormControl>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Features variables</InputLabel>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column-selector-label">Training vectors</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
                                         value= {this.state.selected_independent_variables_1}
-                                        multiple
                                         label="Column"
                                         onChange={this.handleSelectIndependentVariable1Change}
                                 >
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select variables for correlation test</FormHelperText>
-                                <Button onClick={this.selectAllX}>
-                                    Select All Variables
-                                </Button>
-                                <Button onClick={this.clearX}>
-                                    Clear Selections
-                                </Button>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Target variables</InputLabel>
+                                <InputLabel id="column-selector-label">Target vectors</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
                                         value= {this.state.selected_independent_variables_2}
-                                        multiple
                                         label="Column"
                                         onChange={this.handleSelectIndependentVariable2Change}
                                 >
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select variables for correlation test</FormHelperText>
-                                <Button onClick={this.selectAllY}>
-                                    Select All Variables
-                                </Button>
-                                <Button onClick={this.clearY}>
-                                    Clear Selections
-                                </Button>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
@@ -310,10 +330,60 @@ class Canonical_correlation extends React.Component {
                                 />
                                 <FormHelperText>Number of components to keep.</FormHelperText>
                             </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left", marginRight: "2px"}}
+                                    variant="contained" color="primary"
+                                    disabled={this.state.selected_independent_variables_1_wf.length < 1 |
+                                            this.state.selected_independent_variables_2_wf.length<1}
+                                    type="submit"
+                            >
                                 Submit
                             </Button>
                         </form>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed >
+                            </Button>
+                        </form>
+                        <br/>
+                        <br/>
+                        <hr/>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected Training vectors [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_independent_variables_1_wf.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
+                            </Button>
+                        </FormControl>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected Target vectors [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_independent_variables_2_wf.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete2}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
+                            </Button>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
@@ -323,151 +393,160 @@ class Canonical_correlation extends React.Component {
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Results" {...a11yProps(0)} />
-                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
                                     <Tab label="Transformed" {...a11yProps(2)} />
                                 </Tabs>
                             </Box>
-                            <TabPanel value={this.state.tabvalue} index={0}>
+                            <TabPanel value={this.state.tabvalue} index={1}>
                                 <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Grid>
-                                        <Grid container alignContent={'center'}>
-                                            <Grid item xs={5} >
-                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                    Correlation Matrix between the selected features of this dataset.
-                                                </Typography>
-                                                <div style={{alignSelf:'center'}}>
-                                                    <img src={this.state.svg1_path + "?random=" + new Date().getTime()}
-                                                         // srcSet={this.state.svg1_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                    {this.state.test_data['status']!=='Success' ? (
+                                            <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                    ) : (
+                                            <Grid>
+                                                <Grid container alignContent={'center'}>
+                                                    <Grid item xs={5} >
+                                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                            Correlation Matrix between the selected features of this dataset.
+                                                        </Typography>
+                                                        <div style={{alignSelf:'center'}}>
+                                                            <img src={this.state.svg1_path + "?random=" + new Date().getTime()}
+                                                                 // srcSet={this.state.svg1_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                                                 loading="lazy"
+                                                                 style={{zoom:'70%'}}
+                                                            />
+                                                        </div>
+                                                    </Grid>
+                                                    <Grid item xs={7} container direction="column">
+                                                        <Grid>
+                                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                                CCA coefficients.
+                                                                <br/><br/>
+                                                            </Typography>
+                                                            <img src={this.state.svg4_path + "?random=" + new Date().getTime()}
+                                                                    // srcSet={this.state.svg1_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                                                 loading="lazy"
+                                                                 style={{zoom:'70%'}}
+                                                            />
+                                                        </Grid>
+                                                        <Grid>
+                                                            <div style={{textAlign:"center"}}>
+                                                                <CSVLink data={this.state.Coeffic_df}
+                                                                         filename={"Coefficients.csv"}>Download</CSVLink></div>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.Coeffic_df}/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                                <hr className="result"/>
+                                                <Grid container>
+                                                    <Grid item xs={6} >
+                                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                            Correlations between the pairs of each dimension. </Typography>
+                                                        <img src={this.state.svg2_path + "?random=" + new Date().getTime()}
+                                                             // srcSet={this.state.svg2_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                                             loading="lazy"
+                                                             style={{zoom:'60%'}}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6} container direction="column">
+                                                        <Grid>
+                                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                                X singular vectors of the cross-covariance matrices of each iteration. </Typography>
+                                                            <div style={{textAlign:"center"}}>
+                                                                <CSVLink data={this.state.X_weights}
+                                                                         filename="X_weights.csv">Download</CSVLink></div>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.X_weights}/>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                                Y singular vectors of the cross-covariance matrices of each iteration.
+                                                            </Typography>
+                                                            <div style={{textAlign:"center"}}>
+                                                                <CSVLink data={this.state.Y_weights}
+                                                                         filename="Y_weights.csv">Download</CSVLink></div>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.Y_weights}/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                        Scatterplots of two pairs of canonical variates. </Typography>
+                                                    <img src={this.state.svg3_path + "?random=" + new Date().getTime()}
+                                                            // srcSet={this.state.svg3_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
                                                          loading="lazy"
-                                                         style={{zoom:'70%'}}
-                                                    />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={7} container direction="column">
-                                                <Grid>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                        CCA coefficients.
-                                                        <br/><br/>
-                                                    </Typography>
-                                                    <img src={this.state.svg4_path + "?random=" + new Date().getTime()}
-                                                            // srcSet={this.state.svg1_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
-                                                         loading="lazy"
-                                                         style={{zoom:'70%'}}
+                                                         style={{alignSelf: "center"}}
+                                                         style={{zoom:'60%'}}
                                                     />
                                                 </Grid>
-                                                <Grid>
-                                                    <div style={{textAlign:"center"}}>
-                                                        <CSVLink data={this.state.Coeffic_df}
-                                                                 filename={"Coefficients.csv"}>Download</CSVLink></div>
-                                                    <JsonTable className="jsonResultsTable" rows = {this.state.Coeffic_df}/>
+                                            {/*</Grid>*/}
+                                                <hr className="result"/>
+                                                <Grid container direction="row">
+                                                    <Grid item xs={3} >
+                                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                            The loadings of X.
+                                                            <br/><br/></Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.X_loadings}
+                                                                     filename={"X_loadings.csv"}>Download</CSVLink></div>
+                                                        <JsonTable className="jsonResultsTable" rows = {this.state.X_loadings}/>
+                                                    </Grid>
+                                                    <Grid item xs={3} >
+                                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                            The loadings of Y.
+                                                            <br/><br/></Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.Y_loadings}
+                                                                     filename={"Y_loadings.csv"}>Download</CSVLink></div>
+                                                        <JsonTable className="jsonResultsTable" rows = {this.state.Y_loadings}/>
+                                                    </Grid>
+                                                    <Grid item xs={3} >
+                                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                            The projection matrix used to transform X. </Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.X_rotations}
+                                                                     filename={"X_rotations.csv"}>Download</CSVLink></div>
+                                                        <JsonTable className="jsonResultsTable" rows = {this.state.X_rotations}/>
+                                                    </Grid>
+                                                    <Grid item xs={3} >
+                                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                            The projection matrix used to transform Y. </Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.Y_rotations}
+                                                                     filename={"Y_rotations.csv"}>Download</CSVLink></div>
+                                                        <JsonTable className="jsonResultsTable" rows = {this.state.Y_rotations}/>
+                                                    </Grid>
                                                 </Grid>
+                                                <hr className="result"/>
                                             </Grid>
-                                        </Grid>
-                                        <hr className="result"/>
-                                        <Grid container>
-                                            <Grid item xs={6} >
-                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                    Correlations between the pairs of each dimension. </Typography>
-                                                <img src={this.state.svg2_path + "?random=" + new Date().getTime()}
-                                                     // srcSet={this.state.svg2_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
-                                                     loading="lazy"
-                                                     style={{zoom:'60%'}}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6} container direction="column">
-                                                <Grid>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                        X singular vectors of the cross-covariance matrices of each iteration. </Typography>
-                                                    <div style={{textAlign:"center"}}>
-                                                        <CSVLink data={this.state.X_weights}
-                                                                 filename="X_weights.csv">Download</CSVLink></div>
-                                                    <JsonTable className="jsonResultsTable" rows = {this.state.X_weights}/>
-                                                </Grid>
-                                                <Grid>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                        Y singular vectors of the cross-covariance matrices of each iteration.
-                                                    </Typography>
-                                                    <div style={{textAlign:"center"}}>
-                                                        <CSVLink data={this.state.Y_weights}
-                                                                 filename="Y_weights.csv">Download</CSVLink></div>
-                                                    <JsonTable className="jsonResultsTable" rows = {this.state.Y_weights}/>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid>
-                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                Scatterplots of two pairs of canonical variates. </Typography>
-                                            <img src={this.state.svg3_path + "?random=" + new Date().getTime()}
-                                                    // srcSet={this.state.svg3_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
-                                                 loading="lazy"
-                                                 style={{alignSelf: "center"}}
-                                                 style={{zoom:'60%'}}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                    <hr className="result"/>
-                                    <Grid container direction="row">
-                                        <Grid item xs={3} >
-                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                The loadings of X.
-                                                <br/><br/></Typography>
-                                            <div style={{textAlign:"center"}}>
-                                                <CSVLink data={this.state.X_loadings}
-                                                         filename={"X_loadings.csv"}>Download</CSVLink></div>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.X_loadings}/>
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                The loadings of Y.
-                                                <br/><br/></Typography>
-                                            <div style={{textAlign:"center"}}>
-                                                <CSVLink data={this.state.Y_loadings}
-                                                         filename={"Y_loadings.csv"}>Download</CSVLink></div>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.Y_loadings}/>
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                The projection matrix used to transform X. </Typography>
-                                            <div style={{textAlign:"center"}}>
-                                                <CSVLink data={this.state.X_rotations}
-                                                         filename={"X_rotations.csv"}>Download</CSVLink></div>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.X_rotations}/>
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                The projection matrix used to transform Y. </Typography>
-                                            <div style={{textAlign:"center"}}>
-                                                <CSVLink data={this.state.Y_rotations}
-                                                         filename={"Y_rotations.csv"}>Download</CSVLink></div>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.Y_rotations}/>
-                                        </Grid>
-                                    </Grid>
-                                    <hr className="result"/>
+                                        )}
                                 </Grid>
                             </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={1}>
+                            <TabPanel value={this.state.tabvalue} index={0}>
                                 <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
-                                <Grid container direction="row">
-                                    <Grid item xs={6}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                            Transformed X. </Typography>
-                                        <div style={{textAlign:"center"}}>
-                                            <CSVLink data={this.state.X_c_df}
-                                                     filename={"Transformed_X.csv"}>Download</CSVLink></div>
-                                        <JsonTable className="jsonResultsTable" rows = {this.state.X_c_df}/>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                            Transformed Y. </Typography>
-                                        <div style={{textAlign:"center"}}>
-                                            <CSVLink data={this.state.Y_c_df}
-                                                 filename={"Transformed_Y.csv"}>Download</CSVLink></div>
-                                        <JsonTable className="jsonResultsTable" rows = {this.state.Y_c_df}/>
-                                    </Grid>
-                                </Grid>
+                                {this.state.test_data['status']!=='Success' ? (
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                ) : (
+                                        <Grid container direction="row">
+                                            <Grid item xs={6}>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                    Transformed X. </Typography>
+                                                <div style={{textAlign:"center"}}>
+                                                    <CSVLink data={this.state.X_c_df}
+                                                             filename={"Transformed_X.csv"}>Download</CSVLink></div>
+                                                <JsonTable className="jsonResultsTable" rows = {this.state.X_c_df}/>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
+                                                    Transformed Y. </Typography>
+                                                <div style={{textAlign:"center"}}>
+                                                    <CSVLink data={this.state.Y_c_df}
+                                                         filename={"Transformed_Y.csv"}>Download</CSVLink></div>
+                                                <JsonTable className="jsonResultsTable" rows = {this.state.Y_c_df}/>
+                                            </Grid>
+                                        </Grid>
+                                )}
                             </TabPanel>
                         </Box>
                     </Grid>

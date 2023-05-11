@@ -11,7 +11,6 @@ const LayoutMain = ({children}) => {
     useEffect(() => {
         // console.log(this.state.keycloak)
         // console.log(this.state.authenticated)
-        console.log("HELLO TEST")
 
         const keycloak = new Keycloak({
             "realm": "mescobrad",
@@ -29,8 +28,10 @@ const LayoutMain = ({children}) => {
     }, []);
 
     // TODO add a variable to check if file is downloaded from backend when applicable
-    if (true) {
-        if (true) return (
+    // if (keycloak) {
+    //     if (authenticated) return (
+        if (true) {
+            if (true) return (
                 <Grid container spacing={0} direction= "column">
                     <Grid item xs={12}>
                         <AppBarCustom/>
