@@ -116,7 +116,7 @@ StarBorderIcon.propTypes = {};
 class MRIViewer extends React.Component {
     constructor(props) {
         super(props);
-        let ip = "https://gui.platform.mes-cobrad.eu/#/"
+        let ip = "https://gui.platform.mes-cobrad.eu/"
         if (process.env.NEURODESK_BASEURL)
         {
             ip = process.env.NEURODESK_BASEURL

@@ -30,7 +30,7 @@ class EEGSelector extends React.Component {
     // }
     constructor(props) {
         const params = new URLSearchParams(window.location.search);
-        let ip = "https://gui.platform.mes-cobrad.eu/#/"
+        let ip = "https://gui.platform.mes-cobrad.eu/"
         if (process.env.NEURODESK_BASEURL)
         {
             ip = process.env.NEURODESK_BASEURL
