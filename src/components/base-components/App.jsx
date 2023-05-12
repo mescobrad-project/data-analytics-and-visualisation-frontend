@@ -113,6 +113,7 @@ import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_
 import BackAveragePage from "./BackAveragePage";
 import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min"
 import General_Stats_Max from "../../pages/hypothesis_testing/General_Stats_Max"
+import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -255,6 +256,7 @@ const App = () => {
                         <Route exact path="/General_Stats_Average" element={(<LayoutMain><General_Stats_Average/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Min" element={(<LayoutMain><General_Stats_Min/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Max" element={(<LayoutMain><General_Stats_Max/></LayoutMain>)}/>
+                        <Route exact path="/Actigraphy_Cosinor" element={(<LayoutMain><Actigraphy_Cosinor/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
