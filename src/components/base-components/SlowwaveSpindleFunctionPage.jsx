@@ -1,7 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
-import "../../pages/hypothesis_testing/linearmixedeffectsmodel.scss";
+import "../../pages/hypothesis_testing/normality_tests.scss";
 import {
     Button, Divider,
     FormControl,
@@ -499,6 +499,12 @@ TabPanel.propTypes = {
 class SlowwaveSpindleFunctionPage extends React.Component {
     constructor(props) {
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // Utils
             channels: [],
@@ -563,7 +569,16 @@ class SlowwaveSpindleFunctionPage extends React.Component {
             },
             //Values selected currently on the form
             selected_channel: "",
-
+            spindle_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/spindles.png',
+            slowave_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/slowwaves.png',
+            rose_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/rose_plot.png',
+            pac_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/pac_values.png',
+            extra_pac_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/extra_pac_values.png',
         };
 
         //Binding functions of the class
@@ -1330,11 +1345,15 @@ class SlowwaveSpindleFunctionPage extends React.Component {
 
                             <Grid item xs={6}
                                   style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                <img
-                                        src={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format`}
-                                        srcSet={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                        // alt={item.title}
-                                        loading="lazy"
+                                {/*<img*/}
+                                {/*        src={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format`}*/}
+                                {/*        srcSet={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                {/*        // alt={item.title}*/}
+                                {/*        loading="lazy"*/}
+                                {/*/>*/}
+                                <img src={this.state.slowave_plot_path + "?random=" + new Date().getTime()}
+                                     srcSet={this.state.slowave_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                     loading="lazy"
                                 />
                                 {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
                                 {/*           style={{zoom: '50%'}}/>*/}
@@ -1342,11 +1361,15 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             </Grid>
                             <Grid item xs={6}
                                   style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                <img
-                                        src={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format`}
-                                        srcSet={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                        // alt={item.title}
-                                        loading="lazy"
+                                {/*<img*/}
+                                {/*        src={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format`}*/}
+                                {/*        srcSet={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                {/*        // alt={item.title}*/}
+                                {/*        loading="lazy"*/}
+                                {/*/>*/}
+                                <img src={this.state.rose_plot_path + "?random=" + new Date().getTime()}
+                                     srcSet={this.state.rose_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                     loading="lazy"
                                 />
                                 {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
                                 {/*           style={{zoom: '50%'}}/>*/}
@@ -1387,11 +1410,15 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             </Typography>
                             <Grid item xs={6}
                                   style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                <img
-                                        src={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format`}
-                                        srcSet={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                        // alt={item.title}
-                                        loading="lazy"
+                                {/*<img*/}
+                                {/*        src={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format`}*/}
+                                {/*        srcSet={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                {/*        // alt={item.title}*/}
+                                {/*        loading="lazy"*/}
+                                {/*/>*/}
+                                <img src={this.state.spindle_plot_path + "?random=" + new Date().getTime()}
+                                     srcSet={this.state.spindle_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                     loading="lazy"
                                 />
                                 {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
                                 {/*           style={{zoom: '50%'}}/>*/}
@@ -1430,11 +1457,15 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             </Typography>
                             <Grid item xs={12}
                                   style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                <img
-                                        src={`http://localhost:8000/static/pac_values.png?w=164&h=164&fit=crop&auto=format`}
-                                        srcSet={`http://localhost:8000/static/pac_values.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                        // alt={item.title}
-                                        loading="lazy"
+                                {/*<img*/}
+                                {/*        src={`http://localhost:8000/static/pac_values.png?w=164&h=164&fit=crop&auto=format`}*/}
+                                {/*        srcSet={`http://localhost:8000/static/pac_values.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                {/*        // alt={item.title}*/}
+                                {/*        loading="lazy"*/}
+                                {/*/>*/}
+                                <img src={this.state.pac_plot_path + "?random=" + new Date().getTime()}
+                                     srcSet={this.state.pac_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                     loading="lazy"
                                 />
                                 {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
                                 {/*           style={{zoom: '50%'}}/>*/}
@@ -1448,11 +1479,15 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             </Typography>
                             <Grid item xs={12}
                                   style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                <img
-                                        src={`http://localhost:8000/static/extra_pac_values.png?w=164&h=164&fit=crop&auto=format`}
-                                        srcSet={`http://localhost:8000/static/extra_pac_values.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                        // alt={item.title}
-                                        loading="lazy"
+                                {/*<img*/}
+                                {/*        src={`http://localhost:8000/static/extra_pac_values.png?w=164&h=164&fit=crop&auto=format`}*/}
+                                {/*        srcSet={`http://localhost:8000/static/extra_pac_values.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+                                {/*        // alt={item.title}*/}
+                                {/*        loading="lazy"*/}
+                                {/*/>*/}
+                                <img src={this.state.extra_pac_plot_path + "?random=" + new Date().getTime()}
+                                     srcSet={this.state.extra_pac_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                     loading="lazy"
                                 />
                                 {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
                                 {/*           style={{zoom: '50%'}}/>*/}

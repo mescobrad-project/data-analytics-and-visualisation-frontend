@@ -74,6 +74,7 @@ class Homoscedasticity extends React.Component {
             column_names: [],
             file_names:[],
             test_data: {
+                status:'',
                 statistic: "",
                 p_value: "",
                 variance: []
@@ -333,8 +334,8 @@ class Homoscedasticity extends React.Component {
                         </form>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show}>
-                                Proceed >
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                            Proceed
                             </Button>
                         </form>
                         <br/>
@@ -377,25 +378,29 @@ class Homoscedasticity extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <div className="datatable">
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} >
-                                            Variance of Selected Variables
-                                        </Typography>
-                                        <DataGrid sx={{width:'80%', height:'210px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
-                                                rowHeight={30}
-                                                className="datagrid"
-                                                rows= {this.state.test_data.variance}
-                                                columns= {userColumns}
-                                                pageSize= {12}
-                                                rowsPerPageOptions={[5]}
-                                        />
-                                        <hr className="result"
-                                            />
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >{this.state.selected_method}{"'s test statistic:"}  { this.state.test_data.statistic}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >P-value: {this.state.test_data.p_value}</Typography>
-                                    </div>
-                                </Grid>
+                                {this.state.test_data['status']!=='Success' ? (
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                ) : (
+                                        <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                            <div className="datatable">
+                                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} >
+                                                    Variance of Selected Variables
+                                                </Typography>
+                                                <DataGrid sx={{width:'80%', height:'210px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
+                                                        rowHeight={30}
+                                                        className="datagrid"
+                                                        rows= {this.state.test_data.variance}
+                                                        columns= {userColumns}
+                                                        pageSize= {12}
+                                                        rowsPerPageOptions={[5]}
+                                                />
+                                                <hr className="result"
+                                                    />
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >{this.state.selected_method}{"'s test statistic:"}  { this.state.test_data.statistic}</Typography>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >P-value: {this.state.test_data.p_value}</Typography>
+                                            </div>
+                                        </Grid>
+                                )}
                             </TabPanel>
                         </Grid>
                     </Grid>
