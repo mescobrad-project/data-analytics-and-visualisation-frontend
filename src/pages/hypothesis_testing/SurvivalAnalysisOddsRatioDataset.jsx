@@ -165,7 +165,7 @@ class SurvivalAnalysisOddsRatioDataset extends React.Component {
                         // time: 'None',
                         reference: this.state.selected_reference,
                         alpha: this.state.selected_alpha,
-                        method:'risk_difference'
+                        method:'odds_ratio'
                         }
                 }
         ).then(res => {

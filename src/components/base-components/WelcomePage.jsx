@@ -14,6 +14,7 @@ import {red} from "@mui/material/colors";
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average";
 import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min";
+import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
 
 
 // import {useHistory} from "react-router-dom";
@@ -368,6 +369,15 @@ function WelcomePage() {
                         >
                             Actigraphy General Viewer
                         </Button>
+                        <Button
+                                // variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_cosinor", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy Cosinor
+                        </Button>
+
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
@@ -801,17 +811,12 @@ function WelcomePage() {
                                     Classification analysis (LDA)
                                 </Button>
                                 {/*<Button*/}
-                                {/*        // component={Link}*/}
-                                {/*        // variant="h6"*/}
-                                {/*        // href="/SVC"*/}
                                 {/*        size="medium"*/}
+                                {/*        fullWidth*/}
                                 {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                                {/*        onClick={redirectToPage.bind(this,1,1, 2, "SVC", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
-
+                                {/*        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "SVC", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}*/}
                                 {/*>*/}
-                                {/*    /!*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*!/*/}
-                                {/*        SVC*/}
-                                {/*    /!*</ListItemButton>/*!/*/}
+                                {/*    Classification analysis (SVC)*/}
                                 {/*</Button>*/}
                             </AccordionDetails>
                         </Accordion>
@@ -1027,6 +1032,17 @@ function WelcomePage() {
                                 >
                                     Linear Mixed Effects Model
                                 </Button>
+                                <Button
+                                        // component={Link}
+                                        // variant="h6"
+                                        // href="/LinearRegression"
+                                        size="medium"
+                                        fullWidth
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "GrangerAnalysis", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Granger Analysis
+                                </Button>
                             </AccordionDetails>
                         </Accordion>
                         <Accordion>
@@ -1213,6 +1229,20 @@ function WelcomePage() {
                             >
                                 {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
                                 Factor Analysis
+                                {/*</ListItemButton>*/}
+                            </Button>
+                            <Button
+                                    // component={Link}
+                                    // variant="h6"
+                                    // href="/LinearRegression"
+                                    size="medium"
+                                    endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                    // onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                    onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "ChooseFactors", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                    fullWidth
+                            >
+                                {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                                Choose Number of Factors
                                 {/*</ListItemButton>*/}
                             </Button>
                             <AccordionDetails orientation="vertical">
