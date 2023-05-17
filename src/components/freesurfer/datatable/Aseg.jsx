@@ -12,8 +12,8 @@ class Aseg extends React.Component {
         this.fetchData();
     }
 
-    async fetchData(url, config) {
-        API.get("return_reconall_stats/aseg"
+    async fetchData() {
+        API.get("/return_aseg_stats"
         )}
     render () {
         return(
