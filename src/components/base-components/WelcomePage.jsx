@@ -395,7 +395,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 3, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,2, 2, 1, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Recon-All Results
                         </Button>
