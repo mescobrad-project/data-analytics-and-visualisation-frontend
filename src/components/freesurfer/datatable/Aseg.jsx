@@ -17,7 +17,14 @@ class Aseg extends React.Component {
     }
 
     async fetchData() {
-        API.get("/return_aseg_stats"
+        const params = new URLSearchParams(window.location.search);
+        API.get("/return_aseg_stats",{
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                    }
+                }
         )}
     render () {
         return(
