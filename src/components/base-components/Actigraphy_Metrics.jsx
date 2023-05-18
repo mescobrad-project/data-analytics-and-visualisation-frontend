@@ -135,7 +135,7 @@ class Actigraphy_Metrics extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select Variables for Cosinor
+                            Select Variables
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -286,58 +286,78 @@ class Actigraphy_Metrics extends React.Component {
                                                 })}
                                             </Table>
                                         </TableContainer>
-                                        <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}></TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>IS</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>ISm</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>ISp</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>IV</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>IVm</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>IVp</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>L5</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>L5p</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>M10</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>M10p</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>RA</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>RAp</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>pRA</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>pAR</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>ADAT</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>ADATp</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>kRA</TableCell>
-                                                        <TableCell className="tableHeadCell" sx={{width:'10%'}}>kAR</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                { this.state.test_data.Result.map((item) => {
-                                                    return (
+                                        { this.state.test_data.Result.map((item) => {return (
+                                                <Grid>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        IS:   {item.IS}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        ISm:   {item.ISm}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        IV:   {item.IV}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        IVm:   {item.IVm}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        L5:   {item.L5}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        M10:   {item.M10}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        RA:   {item.RA}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        ADAT:   {item.ADAT}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        kRA:   {item.kRA}</Typography>
+                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        kAR:   {item.kAR}</Typography>
+                                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                        <Table>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}></TableCell>*/}
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>IS</TableCell>*/}
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>ISm</TableCell>*/}
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>ISp</TableCell>
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>IV</TableCell>*/}
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>IVm</TableCell>*/}
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>IVp</TableCell>
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>L5</TableCell>*/}
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>L5p</TableCell>
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>M10</TableCell>*/}
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>M10p</TableCell>
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>RA</TableCell>*/}
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>RAp</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>pRA</TableCell>
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>pAR</TableCell>
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>ADAT</TableCell>*/}
+                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>ADATp</TableCell>
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>kRA</TableCell>*/}
+                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>kAR</TableCell>*/}
+                                                                </TableRow>
+                                                            </TableHead>
                                                             <TableRow>
-                                                                <TableCell className="tableCell">{item.id}</TableCell>
-                                                                <TableCell className="tableCell">{item.IS}</TableCell>
-                                                                <TableCell className="tableCell">{item.ISm}</TableCell>
+                                                                {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
+                                                                {/*<TableCell className="tableCell">{item.IS}</TableCell>*/}
+                                                                {/*<TableCell className="tableCell">{item.ISm}</TableCell>*/}
                                                                 <TableCell className="tableCell">{item.ISp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.IV}</TableCell>
-                                                                <TableCell className="tableCell">{item.IVm}</TableCell>
+                                                                {/*<TableCell className="tableCell">{item.IV}</TableCell>*/}
+                                                                {/*<TableCell className="tableCell">{item.IVm}</TableCell>*/}
                                                                 <TableCell className="tableCell">{item.IVp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.L5}</TableCell>
+                                                                {/*<TableCell className="tableCell">{item.L5}</TableCell>*/}
                                                                 <TableCell className="tableCell">{item.L5p.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.M10}</TableCell>
+                                                                {/*<TableCell className="tableCell">{item.M10}</TableCell>*/}
                                                                 <TableCell className="tableCell">{item.M10p.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.RA}</TableCell>
+                                                                {/*<TableCell className="tableCell">{item.RA}</TableCell>*/}
                                                                 <TableCell className="tableCell">{item.RAp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
                                                                 <TableCell className="tableCell">{item.pRA.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
                                                                 <TableCell className="tableCell">{item.pAR.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.ADAT}</TableCell>
+                                                                {/*<TableCell className="tableCell">{item.ADAT}</TableCell>*/}
                                                                 <TableCell className="tableCell">{item.ADATp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.kRA}</TableCell>
-                                                                <TableCell className="tableCell">{item.kAR}</TableCell>
+                                                                {/*<TableCell className="tableCell">{item.kRA}</TableCell>*/}
+                                                                {/*<TableCell className="tableCell">{item.kAR}</TableCell>*/}
                                                             </TableRow>
-                                                    );
-                                                })}
-                                            </Table>
-                                        </TableContainer>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Grid>
+                                        )})}
                                     </Grid>
                                 </div>
                                     )}
