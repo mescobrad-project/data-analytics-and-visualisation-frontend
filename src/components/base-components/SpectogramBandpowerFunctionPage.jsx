@@ -30,6 +30,7 @@ import {GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-gri
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
 import qs from "qs";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const style = {
     position: 'absolute',
@@ -469,10 +470,12 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                     type="submit">
                                 Submit
                             </Button>
-                            <Button onClick={this.debug} variant="contained" color="secondary"
-                                    sx={{margin: "8px", float: "right"}}>
-                                Debug
-                            </Button>
+                            <ProceedButton></ProceedButton>
+
+                            {/*<Button onClick={this.debug} variant="contained" color="secondary"*/}
+                            {/*        sx={{margin: "8px", float: "right"}}>*/}
+                            {/*    Debug*/}
+                            {/*</Button>*/}
                         </form>
                         <form onSubmit={async (event) => {
                             event.preventDefault();

@@ -38,6 +38,7 @@ import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class ArtifactsFunctionPage extends React.Component {
 
@@ -481,6 +482,9 @@ class ArtifactsFunctionPage extends React.Component {
                                     sx={{margin: "8px", float: "right"}}>
                                 Apply Changes>
                             </Button>
+
+                            <ProceedButton></ProceedButton>
+
                         </Grid>
                         <Grid item xs={8} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             <Grid container direction="row">

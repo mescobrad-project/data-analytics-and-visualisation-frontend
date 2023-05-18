@@ -17,6 +17,7 @@ import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -319,6 +320,8 @@ class BackAveragePage extends React.Component {
                             </Button>
 
                         </form>
+                        <ProceedButton></ProceedButton>
+
                     </Grid>
 
                     <Grid item xs={8}>
