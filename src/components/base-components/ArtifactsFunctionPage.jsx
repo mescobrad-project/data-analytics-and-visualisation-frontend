@@ -43,6 +43,11 @@ class ArtifactsFunctionPage extends React.Component {
 
     constructor(props) {
         super(props);
+        let ip = "http://localhost:8080/"
+        if (process.env.NEURODESK_BASEURL)
+        {
+            ip = process.env.NEURODESK_BASEURL
+        }
         this.state = {
             //Channel Select order modal
             checked: [],
@@ -58,7 +63,8 @@ class ArtifactsFunctionPage extends React.Component {
 
             selected_components_type: "",
             selected_components: "",
-            selected_repair_method: ""
+            selected_repair_method: "",
+            path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
         };
 
         //Binding functions of the class
@@ -497,7 +503,8 @@ class ArtifactsFunctionPage extends React.Component {
 
                             <Grid container direction="row">
                                 <Grid item xs={12} sx={{height: "85vh"}}>
-                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                                    <iframe src={this.state.path}
+                                            style={{width: "100%", height: "100%", marginLeft: "0%"}}></iframe>
                                     {/*<iframe src="http://10.129.150.120:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>*/}
                                 </Grid>
                             </Grid>

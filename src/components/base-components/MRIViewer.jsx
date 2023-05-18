@@ -114,11 +114,18 @@ function StarBorderIcon(props) {
 StarBorderIcon.propTypes = {};
 
 class MRIViewer extends React.Component {
-        constructor(props) {
+    constructor(props) {
         super(props);
+        let ip = "http://localhost:8080/"
+        if (process.env.NEURODESK_BASEURL)
+        {
+            ip = process.env.NEURODESK_BASEURL
+        }
         this.state = {
             //Channel Select order modal
-            open_modal: false
+            open_modal: false,
+            path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
+
         };
 
         //Binding functions of the class
@@ -281,7 +288,8 @@ class MRIViewer extends React.Component {
                         <Grid item xs={10} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black", height: "92vh"}}>
                             <Grid container sx={{height: "100%"}} direction="column">
                                 <Grid item xs={12} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black", height: "100vh"}}>
-                                    <iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>
+                                    <iframe src={this.state.path}
+                                            style={{width: "100%", height: "100%", marginLeft: "0%"}}></iframe>
                                 </Grid>
                             </Grid>
                                     {/*<iframe src="http://localhost:8080/#/?username=user&password=password&hostname=Desktop Auto-Resolution" style={{width: "100%", height: "100%" , marginLeft: "0%"}}></iframe>*/}
