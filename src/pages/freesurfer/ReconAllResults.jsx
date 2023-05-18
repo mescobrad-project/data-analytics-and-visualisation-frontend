@@ -2,6 +2,7 @@ import "./reconallresults.scss"
 import Samseg_Whole_Brain_Measurements_Widget from "../../components/freesurfer/widget/Samseg_whole_brain_measurements_widget";
 import React from 'react';
 import ReconallVolumeDatatable from "../../components/freesurfer/datatable/ReconallVolumeDatatable";
+import Aseg from "../../components/freesurfer/datatable/Aseg";
 
 
 function importAll(r) {
@@ -34,6 +35,11 @@ class ReconAllResults extends React.Component {
                                     <img className="image" src={image}/>
                             ))}
                         </div>
+                        <h3>Aseg segmentation - Volume (mm3)</h3>
+                        <div className="Aseg">
+                            <Aseg/>
+                        </div>
+
 
                         {/*<div className="listContainer">*/}
                         {/*    <div className="listTitle">*/}
