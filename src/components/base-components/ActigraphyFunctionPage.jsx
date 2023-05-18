@@ -19,11 +19,13 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, TextField, Typography
+    Select, Tab, Tabs, TextField, Typography
 } from "@mui/material";
 import JsonTable from "ts-react-json-table";
 import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
+import {Box} from "@mui/system";
+import PropTypes from "prop-types";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 const params = new URLSearchParams(window.location.search);
 
@@ -50,11 +52,49 @@ async function redirectToPage(workflow_id, run_id, step_id, function_name, bucke
     });
 }
 
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
 class ActigraphyFunctionPage extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            tabvalue: 0,
+            results_show: false,
+            start_date: "None",
+            end_date: "None",
+            algorithm: "None",
             actigraphy_visualisation_1: 'http://localhost:8000/static/runtime_config/workflow_'
                                         + params.get("workflow_id") + '/run_' + params.get("run_id")
                                         + '/step_' + params.get("step_id") + '/output/1_actigraphy_visualisation.png',
@@ -88,6 +128,9 @@ class ActigraphyFunctionPage extends React.Component {
             crespo_assessment: 'http://localhost:8000/static/runtime_config/workflow_'
                     + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/crespo_assessment.png',
+            assessment: 'http://localhost:8000/static/runtime_config/workflow_'
+                    + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/assessment.png',
         };
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -95,15 +138,45 @@ class ActigraphyFunctionPage extends React.Component {
         this.handleSubmitSadehScripp = this.handleSubmitSadehScripp.bind(this);
         this.handleSubmitOakley = this.handleSubmitOakley.bind(this);
         this.handleSubmitCrespo = this.handleSubmitCrespo.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleSubmitAssessment = this.handleSubmitAssessment.bind(this);
+        this.handleSelectAssessmentChange = this.handleSelectAssessmentChange.bind(this);
+        this.handleSelectStartDateChange = this.handleSelectStartDateChange.bind(this);
+        this.handleSelectEndDateChange = this.handleSelectEndDateChange.bind(this);
     }
 
     async handleSubmit() {
         const params = new URLSearchParams(window.location.search);
+        this.setState({results_show: true})
         API.get("/return_weekly_activity", {
             params: {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
-                step_id: params.get("step_id")
+                step_id: params.get("step_id"),
+                start_date: this.state.start_date,
+                end_date: this.state.end_date
+            }
+        }).then(res => {
+            console.log("ACTIGRAPHIES")
+            console.log(res.data)
+            // this.setState({result_spindles: res.data})
+            // this.setState({result_spindles_dataframe_1_table: JSON.parse(res.data.data_frame_1)})
+            // // this.setState({result_spindles_dataframe_2_table: JSON.parse(res.data.data_frame_2)})
+            //
+            // console.log( JSON.parse(res.data["data_frame_1"]))
+
+        });
+    }
+
+    async handleSubmitAssessment() {
+        const params = new URLSearchParams(window.location.search);
+        this.setState({results_show: true})
+        API.get("/return_assessment_algorithm", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                algorithm: this.state.algorithm
             }
         }).then(res => {
             console.log("ACTIGRAPHIES")
@@ -173,6 +246,22 @@ class ActigraphyFunctionPage extends React.Component {
         });
     }
 
+    handleSelectAssessmentChange(event){
+        this.setState({algorithm: event.target.value})
+    }
+
+    handleSelectStartDateChange(event){
+        this.setState({start_date: event.target.value})
+    }
+
+    handleSelectEndDateChange(event){
+        this.setState({end_date: event.target.value})
+    }
+
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
+
     render() {
         return (
         <Grid container direction="row">
@@ -193,22 +282,17 @@ class ActigraphyFunctionPage extends React.Component {
                     </Typography>
                 <hr/>
                 <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                    <FormHelperText>Selected Dates</FormHelperText>
-                    {/*<List style={{fontSize:'9px', backgroundColor:"powderblue", borderRadius:'10%'}}>*/}
-                    {/*    {this.state.selected_independent_variables.map((column) => (*/}
-                    {/*            <ListItem disablePadding*/}
-                    {/*            >*/}
-                    {/*                <ListItemText*/}
-                    {/*                        primaryTypographyProps={{fontSize: '10px'}}*/}
-                    {/*                        primary={'•  ' + column}*/}
-                    {/*                />*/}
-                    {/*            </ListItem>*/}
-                    {/*    ))}*/}
-                    {/*</List>*/}
+                    <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>
+                    <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                        Dates: {this.state.start_date} - {this.state.end_date}
+                    </List>
+                    <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                        Assessment Algorithm: {this.state.algorithm}
+                    </List>
                 </FormControl>
                 <hr/>
                 <hr/>
-                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmit();this.handleSubmitCK();this.handleSubmitSadehScripp();this.handleSubmitOakley();this.handleSubmitCrespo()}}>
+                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmit();this.handleSubmitAssessment()}}>
                     {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
                     {/*    <InputLabel id="column-selector-label">Columns</InputLabel>*/}
                     {/*    <Select*/}
@@ -235,42 +319,58 @@ class ActigraphyFunctionPage extends React.Component {
                     {/*    </Button>*/}
                     {/*</FormControl>*/}
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                        <InputLabel id="rotation-label">Start Date</InputLabel>
+                        <InputLabel id="startdate-label">Start Date</InputLabel>
                         <Select
-                                labelId="rotation-label"
-                                id="rotation-selector"
-                                value= {this.state.selected_rotation}
-                                label="rotation"
-                                onChange={this.handleSelectRotationChange}
+                                labelId="startdate-label"
+                                id="startdate-selector"
+                                value= {this.state.start_date}
+                                label="startdate"
+                                onChange={this.handleSelectStartDateChange}
                         >
-                            <MenuItem value={"2022-07-18 12:00:00"}><em>2022-07-18 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-19 12:00:00"}><em>2022-07-19 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-21 12:00:00"}><em>2022-07-21 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-22 12:00:00"}><em>2022-07-22 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-23 12:00:00"}><em>2022-07-23 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-24 12:00:00"}><em>2022-07-24 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/18 12:00:00"}><em>2022-07-18 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/19 12:00:00"}><em>2022-07-19 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07-20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/21 12:00:00"}><em>2022-07-21 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/22 12:00:00"}><em>2022-07-22 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/23 12:00:00"}><em>2022-07-23 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/24 12:00:00"}><em>2022-07-24 12:00:00</em></MenuItem>
                         </Select>
                         <FormHelperText>Select the dates to visualise the actigraphy data.</FormHelperText>
                     </FormControl>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                        <InputLabel id="rotation-label">End Date</InputLabel>
+                        <InputLabel id="enddate-label">End Date</InputLabel>
                         <Select
-                                labelId="rotation-label"
-                                id="rotation-selector"
-                                value= {this.state.selected_rotation}
-                                label="rotation"
-                                onChange={this.handleSelectRotationChange}
+                                labelId="enddate-label"
+                                id="enddate-selector"
+                                value= {this.state.end_date}
+                                label="enddate"
+                                onChange={this.handleSelectEndDateChange}
                         >
-                            <MenuItem value={"2022-07-18 12:00:00"}><em>2022-07-18 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-19 12:00:00"}><em>2022-07-19 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-21 12:00:00"}><em>2022-07-21 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-22 12:00:00"}><em>2022-07-22 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-23 12:00:00"}><em>2022-07-23 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022-07-24 12:00:00"}><em>2022-07-24 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/18 12:00:00"}><em>2022-07-18 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/19 12:00:00"}><em>2022-07-19 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/21 12:00:00"}><em>2022-07-21 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/22 12:00:00"}><em>2022-07-22 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/23 12:00:00"}><em>2022-07-23 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/24 12:00:00"}><em>2022-07-24 12:00:00</em></MenuItem>
                         </Select>
                         <FormHelperText>Select the dates to visualise the actigraphy data.</FormHelperText>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                        <InputLabel id="rotation-label">Assessment Algorithm</InputLabel>
+                        <Select
+                                labelId="assessment-label"
+                                id="assessment-selector"
+                                value= {this.state.algorithm}
+                                label="assessment"
+                                onChange={this.handleSelectAssessmentChange}
+                        >
+                            <MenuItem value={"Cole - Kripke"}><em>Cole - Kripke</em></MenuItem>
+                            <MenuItem value={"Sadeh - Scripp"}><em>Sadeh - Scripp</em></MenuItem>
+                            <MenuItem value={"Oakley"}><em>Oakley</em></MenuItem>
+                            <MenuItem value={"Crespo"}><em>Crespo</em></MenuItem>
+                        </Select>
+                        <FormHelperText>Select the assessment algorithm to run on the dataset.</FormHelperText>
                     </FormControl>
                     <Button variant="contained" color="primary" type="submit">
                         Submit
@@ -288,33 +388,139 @@ class ActigraphyFunctionPage extends React.Component {
                     Show results
                 </Button>
             </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Actigraphy Assessment Algorithms
+                        Actigraphy Assessment Algorithms Results
                     </Typography>
                     <hr/>
-                    {/*<img src={this.state.cole_kripke_assessment} align={'center'}/>*/}
-                    {/*<img src={this.state.sadeh_scripp_assessment} align={'center'}/>*/}
-                    {/*<img src={this.state.oakley_assessment} align={'center'}/>*/}
-                    {/*<img src={this.state.crespo_assessment} align={'center'}/>*/}
+                    <Box sx={{ width: '100%' }}>
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <Tabs scrollable={true} value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                <Tab label="Initial" {...a11yProps(0)} />
+                                <Tab label="Results" {...a11yProps(1)} />
+                            </Tabs>
+                        </Box>
+
+                    </Box>
+                    <TabPanel value={this.state.tabvalue} index={0}>
+                    </TabPanel>
+                    <TabPanel value={this.state.tabvalue} index={1}>
+                        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                            {this.state.algorithm} Results Day 1
+                        </Typography>
+                        {/*<Grid item xs={2}*/}
+                        {/*      style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}} alignContent={'right'}>*/}
+                        <img src={this.state.assessment + "?random=" + new Date().getTime()}
+                             srcSet={this.state.assessment + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                             loading="lazy"
+                        />
+                        <hr className="result"/>
+                    </TabPanel>
                 </Grid>
-                <Grid item xs={4} sx={{ borderRight: "1px solid grey"}} alignContent={'right'}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Actigraphy Visualisations
-                    </Typography>
-                    <hr/>
-                    {/*<img src={this.state.actigraphy_visualisation_1} srcSet={this.state.actigraphy_visualisation_1} align={'right'} loading="lazy"/>*/}
-                    <img src={this.state.actigraphy_visualisation_1 + "?random=" + new Date().getTime()}
-                         srcSet={this.state.actigraphy_visualisation_1 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                         loading="lazy"
-                    />
-                    {/*<img src={this.state.actigraphy_visualisation_2} align={'right'} loading="lazy"/>*/}
-                    {/*<img src={this.state.actigraphy_visualisation_3} align={'right'} loading="lazy"/>*/}
-                    {/*<img src={this.state.actigraphy_visualisation_4} align={'right'} loading="lazy"/>*/}
-                    {/*<img src={this.state.actigraphy_visualisation_5} align={'right'} loading="lazy"/>*/}
-                    {/*<img src={this.state.actigraphy_visualisation_6} align={'right'} loading="lazy"/>*/}
-                    {/*<img src={this.state.actigraphy_visualisation_7} align={'right'} loading="lazy"/>*/}
-                </Grid>
+                {/*<Grid item xs={4} sx={{ borderRight: "1px solid grey"}} alignContent={'right'}>*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Actigraphy Visualisations*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Box sx={{ width: '100%' }}>*/}
+                {/*        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>*/}
+                {/*            <Tabs variant="scrollable" scrollButtons="auto" value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">*/}
+                {/*                <Tab label="Initial" {...a11yProps(0)} />*/}
+                {/*                <Tab label="Visualisation Results Day 1" {...a11yProps(1)} />*/}
+                {/*                <Tab label="Visualisation Results Day 2" {...a11yProps(2)} />*/}
+                {/*                <Tab label="Visualisation Results Day 3" {...a11yProps(3)} />*/}
+                {/*                <Tab label="Visualisation Results Day 4" {...a11yProps(4)} />*/}
+                {/*                <Tab label="Visualisation Results Day 5" {...a11yProps(5)} />*/}
+                {/*                <Tab label="Visualisation Results Day 6" {...a11yProps(6)} />*/}
+                {/*                <Tab label="Visualisation Results Day 7" {...a11yProps(7)} />*/}
+                {/*            </Tabs>*/}
+                {/*        </Box>*/}
+
+                {/*    </Box>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={0}>*/}
+                {/*    </TabPanel>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={1}>*/}
+                {/*        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                {/*            Visualisation Results Day 1*/}
+                {/*        </Typography>*/}
+                {/*        /!*<Grid item xs={2}*!/*/}
+                {/*        /!*      style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}} alignContent={'right'}>*!/*/}
+                {/*        <img src={this.state.actigraphy_visualisation_1 + "?random=" + new Date().getTime()}*/}
+                {/*             srcSet={this.state.actigraphy_visualisation_1 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                {/*             loading="lazy"*/}
+                {/*        />*/}
+                {/*        <hr className="result"/>*/}
+                {/*    </TabPanel>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={2}>*/}
+                {/*        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                {/*            Visualisation Results Day 2*/}
+                {/*        </Typography>*/}
+                {/*        <img src={this.state.actigraphy_visualisation_2 + "?random=" + new Date().getTime()}*/}
+                {/*             srcSet={this.state.actigraphy_visualisation_2 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                {/*             loading="lazy"*/}
+                {/*        />*/}
+                {/*        <hr className="result"/>*/}
+                {/*    </TabPanel>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={3}>*/}
+                {/*        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                {/*            Visualisation Results Day 3*/}
+                {/*        </Typography>*/}
+                {/*        <img src={this.state.actigraphy_visualisation_3 + "?random=" + new Date().getTime()}*/}
+                {/*             srcSet={this.state.actigraphy_visualisation_3 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                {/*             loading="lazy"*/}
+                {/*        />*/}
+                {/*        <hr className="result"/>*/}
+                {/*    </TabPanel>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={4}>*/}
+                {/*        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                {/*            Visualisation Results Day 4*/}
+                {/*        </Typography>*/}
+                {/*        <img src={this.state.actigraphy_visualisation_4 + "?random=" + new Date().getTime()}*/}
+                {/*             srcSet={this.state.actigraphy_visualisation_4 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                {/*             loading="lazy"*/}
+                {/*        />*/}
+                {/*        <hr className="result"/>*/}
+                {/*    </TabPanel>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={5}>*/}
+                {/*        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                {/*            Visualisation Results Day 5*/}
+                {/*        </Typography>*/}
+                {/*        <img src={this.state.actigraphy_visualisation_5 + "?random=" + new Date().getTime()}*/}
+                {/*             srcSet={this.state.actigraphy_visualisation_5 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                {/*             loading="lazy"*/}
+                {/*        />*/}
+                {/*        <hr className="result"/>*/}
+                {/*    </TabPanel>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={6}>*/}
+                {/*        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                {/*            Visualisation Results Day 6*/}
+                {/*        </Typography>*/}
+                {/*        <img src={this.state.actigraphy_visualisation_6 + "?random=" + new Date().getTime()}*/}
+                {/*             srcSet={this.state.actigraphy_visualisation_6 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                {/*             loading="lazy"*/}
+                {/*        />*/}
+                {/*        <hr className="result"/>*/}
+                {/*    </TabPanel>*/}
+                {/*    <TabPanel value={this.state.tabvalue} index={7}>*/}
+                {/*        <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                {/*            Visualisation Results Day 7*/}
+                {/*        </Typography>*/}
+                {/*        <img src={this.state.actigraphy_visualisation_7 + "?random=" + new Date().getTime()}*/}
+                {/*             srcSet={this.state.actigraphy_visualisation_7 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                {/*             loading="lazy"*/}
+                {/*        />*/}
+                {/*        <hr className="result"/>*/}
+                {/*    </TabPanel>*/}
+
+                {/*    /!*<img src={this.state.actigraphy_visualisation_1} srcSet={this.state.actigraphy_visualisation_1} align={'right'} loading="lazy"/>*!/*/}
+
+                {/*    /!*<img src={this.state.actigraphy_visualisation_2} align={'right'} loading="lazy"/>*!/*/}
+                {/*    /!*<img src={this.state.actigraphy_visualisation_3} align={'right'} loading="lazy"/>*!/*/}
+                {/*    /!*<img src={this.state.actigraphy_visualisation_4} align={'right'} loading="lazy"/>*!/*/}
+                {/*    /!*<img src={this.state.actigraphy_visualisation_5} align={'right'} loading="lazy"/>*!/*/}
+                {/*    /!*<img src={this.state.actigraphy_visualisation_6} align={'right'} loading="lazy"/>*!/*/}
+                {/*    /!*<img src={this.state.actigraphy_visualisation_7} align={'right'} loading="lazy"/>*!/*/}
+                {/*</Grid>*/}
         </Grid>
         );
     }
