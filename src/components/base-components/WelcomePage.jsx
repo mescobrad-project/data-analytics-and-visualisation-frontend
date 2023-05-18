@@ -1311,6 +1311,22 @@ function WelcomePage() {
                         >
                             EEG Viewer - EDF with marks (anon14.edf)
                         </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,3, 3, 3, "back_average", ["saved"], ["anon14.edf"])}
+                        >
+                            Back Average
+                        </Button>
+                        <Button
+                                // variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,4, 4, 4, "power_spectral_density_main", ["saved"], ["anon14.edf"])}
+                        >
+                            Power Spectral Density - Main
+                        </Button>
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
