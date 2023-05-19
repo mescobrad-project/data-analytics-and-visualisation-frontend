@@ -53,6 +53,7 @@ import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_compar
 import SpindleDetection from "./SpindleDetection";
 import SlowWaves from "./SlowWaves";
 import ActrigraphyViewer from "./ActrigraphyViewer";
+import ActigraphyFunctionPage from "./ActigraphyFunctionPage";
 import Level from "./Level";
 import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
@@ -114,6 +115,7 @@ import BackAveragePage from "./BackAveragePage";
 import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min"
 import General_Stats_Max from "../../pages/hypothesis_testing/General_Stats_Max"
 import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
+import Actigraphy_Metrics from "./Actigraphy_Metrics";
 import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
 import GrangerAnalysisFunctionPage from "./GrangerAnalysisFunctionPage";
 
@@ -208,6 +210,8 @@ const App = () => {
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_test" element={(<LayoutMain><test/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_page" element={(<LayoutMain><ActigraphyFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
                         <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/artifacts" element={(<LayoutMain><ArtifactsFunctionPage/></LayoutMain>)}/>
@@ -259,6 +263,7 @@ const App = () => {
                         <Route exact path="/General_Stats_Min" element={(<LayoutMain><General_Stats_Min/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Max" element={(<LayoutMain><General_Stats_Max/></LayoutMain>)}/>
                         <Route exact path="/Actigraphy_Cosinor" element={(<LayoutMain><Actigraphy_Cosinor/></LayoutMain>)}/>
+                        <Route exact path="/Actigraphy_Metrics" element={(<LayoutMain><Actigraphy_Metrics/></LayoutMain>)}/>
                         <Route exact path="/ChooseFactors" element={(<LayoutMain><ChooseFactorsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GrangerAnalysis" element={(<LayoutMain><GrangerAnalysisFunctionPage/></LayoutMain>)}/>
                     </Routes>

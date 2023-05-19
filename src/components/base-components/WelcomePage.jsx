@@ -15,6 +15,7 @@ import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/Survival
 import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average";
 import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min";
 import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
+import Actigraphy_Metrics from "./Actigraphy_Metrics";
 
 
 // import {useHistory} from "react-router-dom";
@@ -370,6 +371,14 @@ function WelcomePage() {
                             Actigraphy General Viewer
                         </Button>
                         <Button
+                                // variant="outlined"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"])}
+                        >
+                            New Actigraphy Page
+                        </Button>
+                        <Button
                                 // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
@@ -377,7 +386,14 @@ function WelcomePage() {
                         >
                             Actigraphy Cosinor
                         </Button>
-
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_metrics", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy Metrics
+                        </Button>
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
@@ -1294,6 +1310,22 @@ function WelcomePage() {
                                 onClick={redirectToPage.bind(this,2, 2, 2, "eeg_viewer", ["saved"], ["anon14.edf"])}
                         >
                             EEG Viewer - EDF with marks (anon14.edf)
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,3, 3, 3, "back_average", ["saved"], ["anon14.edf"])}
+                        >
+                            Back Average
+                        </Button>
+                        <Button
+                                // variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,4, 4, 4, "power_spectral_density_main", ["saved"], ["anon14.edf"])}
+                        >
+                            Power Spectral Density - Main
                         </Button>
                     </ButtonGroup>
                     <ButtonGroup

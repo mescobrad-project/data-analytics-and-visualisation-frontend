@@ -10,6 +10,7 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageList from "@mui/material/ImageList";
 import * as PropTypes from "prop-types";
 import EEGSelector from "./EEGSelector";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const style = {
     position: 'absolute',
@@ -116,7 +117,7 @@ StarBorderIcon.propTypes = {};
 class MRIViewer extends React.Component {
     constructor(props) {
         super(props);
-        let ip = "http://localhost:8080/"
+        let ip = "https://gui.platform.mes-cobrad.eu/"
         if (process.env.NEURODESK_BASEURL)
         {
             ip = process.env.NEURODESK_BASEURL
@@ -199,6 +200,7 @@ class MRIViewer extends React.Component {
                                     sx={{margin: "8px", float: "right"}}>
                                 Restart View App >
                             </Button>
+                            <ProceedButton></ProceedButton>
 
                             <Button variant="contained" color="primary" onClick={this.handleModalOpen}>How to: Tutorial</Button>
                             <Modal

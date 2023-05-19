@@ -23,6 +23,7 @@ import ImageListItem from '@mui/material/ImageListItem'
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class FreesurferReconFunctionPage extends React.Component {
     constructor(props) {
@@ -456,6 +457,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                     sx={{margin: "8px"}}>
                                 Check out Results
                             </Button>
+                            <ProceedButton></ProceedButton>
 
                         </Grid>
                         <Grid item xs={6}>

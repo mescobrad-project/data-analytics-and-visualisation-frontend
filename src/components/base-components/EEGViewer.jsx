@@ -11,6 +11,7 @@ import ImageList from "@mui/material/ImageList";
 import * as PropTypes from "prop-types";
 import EEGSelector from "./EEGSelector";
 import {Autocomplete} from "@mui/lab";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const style = {
     position: 'absolute',
@@ -202,6 +203,7 @@ class EEGViewer extends React.Component {
                                     </Select>
                                     {/*<FormHelperText>Select Channel for Periodogram</FormHelperText>*/}
                                 </FormControl>
+                                <ProceedButton></ProceedButton>
 
 
                                 {/*<Autocomplete*/}
