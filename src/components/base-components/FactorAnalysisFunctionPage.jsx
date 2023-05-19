@@ -25,6 +25,7 @@ import EEGSelectModal from "../ui-components/EEGSelectModal";
 import qs from "qs";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const params = new URLSearchParams(window.location.search);
 
@@ -361,6 +362,8 @@ class FactorAnalysisFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
+
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

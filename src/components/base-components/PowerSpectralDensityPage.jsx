@@ -24,6 +24,7 @@ import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {Box} from "@mui/system";
 import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 
 // const alpha_delta_ratio_table_columns = [
 //     {
@@ -1073,6 +1074,8 @@ class PowerSpectralDensityPage extends React.Component {
                             </Button>
 
                         </form>
+                        <ProceedButton></ProceedButton>
+
                     </Grid>
 
                     <Grid item xs={8}>

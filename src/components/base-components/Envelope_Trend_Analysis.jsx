@@ -15,6 +15,7 @@ import {
 
 import LineChart from "../ui-components/LineChart";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class EnvelopeTrendAnalysis extends React.Component {
     constructor(props) {
@@ -213,6 +214,7 @@ class EnvelopeTrendAnalysis extends React.Component {
                             Submit
                         </Button>
                     </form>
+                    <ProceedButton></ProceedButton>
                 </Grid>
                 <Grid item xs={8}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

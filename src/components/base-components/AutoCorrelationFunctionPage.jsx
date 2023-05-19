@@ -26,6 +26,7 @@ import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksCh
 import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {useLocation} from "react-router-dom";
 import {GridCell} from "@mui/x-data-grid";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const style = {
     position: 'absolute',
@@ -43,8 +44,8 @@ const style = {
 class AutoCorrelationFunctionPage extends React.Component {
     constructor(props) {
         super(props);
-        let ip = "http://127.0.0.1:8000/";
         const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/";
         if (process.env.REACT_APP_BASEURL)
         {
             ip = process.env.REACT_APP_BASEURL
@@ -465,16 +466,17 @@ class AutoCorrelationFunctionPage extends React.Component {
                         <Button sx={{float: "left",marginLeft: "2px"}}  variant="contained" color="primary" type="submit">
                             Submit
                         </Button>
+                        <ProceedButton></ProceedButton>
                     </form>
-                    <form onSubmit={async (event) => {
-                        event.preventDefault();
-                        window.location.replace("/")
-                        // Send the request
-                    }}>
-                        <Button sx={{float: "right",marginRight: "2px"}} variant="contained" color="primary" type="submit">
-                            Proceed >
-                        </Button>
-                    </form>
+                    {/*<form onSubmit={async (event) => {*/}
+                    {/*    event.preventDefault();*/}
+                    {/*    window.location.replace("/")*/}
+                    {/*    // Send the request*/}
+                    {/*}}>*/}
+                    {/*    <Button sx={{float: "right",marginRight: "2px"}} variant="contained" color="primary" type="submit">*/}
+                    {/*        Proceed >*/}
+                    {/*    </Button>*/}
+                    {/*</form>*/}
                 </Grid>
 
                 {/*<Divider/>*/}

@@ -21,6 +21,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class AsymmetryIndicesFunctionPage extends React.Component {
     constructor(props){
@@ -368,6 +369,8 @@ class AsymmetryIndicesFunctionPage extends React.Component {
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
+                            <ProceedButton></ProceedButton>
+
                         </form>
                     </Grid>
                     <Grid item xs={8}>

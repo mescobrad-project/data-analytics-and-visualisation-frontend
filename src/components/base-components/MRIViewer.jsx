@@ -10,6 +10,7 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageList from "@mui/material/ImageList";
 import * as PropTypes from "prop-types";
 import EEGSelector from "./EEGSelector";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const style = {
     position: 'absolute',
@@ -199,6 +200,7 @@ class MRIViewer extends React.Component {
                                     sx={{margin: "8px", float: "right"}}>
                                 Restart View App >
                             </Button>
+                            <ProceedButton></ProceedButton>
 
                             <Button variant="contained" color="primary" onClick={this.handleModalOpen}>How to: Tutorial</Button>
                             <Modal
