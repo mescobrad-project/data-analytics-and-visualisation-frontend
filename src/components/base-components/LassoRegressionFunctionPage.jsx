@@ -73,6 +73,8 @@ class LassoRegressionFunctionPage extends React.Component {
             selected_alpha: "1",
             selected_max_iter: "1000",
             selected_independent_variables: [],
+            selected_independent_variable: "",
+            selected_file_name: "",
 
             coefficients: "",
             intercept: "",
@@ -97,7 +99,8 @@ class LassoRegressionFunctionPage extends React.Component {
 
             // Hide/show results
             LassoRegression_show : false,
-            LassoRegression_step2_show: false
+            LassoRegression_step2_show: false,
+            status: ""
 
 
         };
@@ -106,20 +109,18 @@ class LassoRegressionFunctionPage extends React.Component {
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.clear = this.clear.bind(this);
-        this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleScatter = this.handleScatter.bind(this);
 
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
         this.handleListDelete = this.handleListDelete.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
-        this.fetchFileNames();
 
 
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
@@ -127,6 +128,7 @@ class LassoRegressionFunctionPage extends React.Component {
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         // Initialise component
         // - values of channels from the backend
+        this.fetchFileNames();
         this.fetchColumnNames();
 
     }
@@ -172,35 +174,38 @@ class LassoRegressionFunctionPage extends React.Component {
                 return qs.stringify(params, { arrayFormat: "repeat" })
             }
         }).then(res => {
-            const resultJson = res.data;
+            const resultJson = res.data['Result'];
+            const status = res.data['status'];
             console.log(resultJson)
-            console.log('Test')
+            console.log(status)
 
 
 
             // console.log("")
             // console.log(temp_array)
 
+            this.setState({status: status})
+            if (status === 'Success') {
+                this.setState({coefficients: resultJson['coefficients']})
+                this.setState({intercept: resultJson['intercept']})
+                this.setState({dataframe: resultJson['dataframe']})
+                this.setState({skew: resultJson['skew']})
+                this.setState({kurtosis: resultJson['kurtosis']})
+                this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
+                this.setState({jarque_bera_p: resultJson['Jarque Bera p-value']})
+                this.setState({omnibus_test_stat: resultJson['Omnibus test statistic']})
+                this.setState({omnibus_test_p: resultJson['Omnibus test p-value']})
+                this.setState({durbin_watson: resultJson['Durbin Watson']})
+                this.setState({actual_values: resultJson['actual_values']})
+                this.setState({predicted_values: resultJson['predicted values']})
+                this.setState({residuals: resultJson['residuals']})
+                this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
+                this.setState({df_scatter: resultJson['values_df']})
+                this.setState({values_dict: resultJson['values_dict']})
+                this.setState({values_columns: resultJson['values_columns']})
 
-            this.setState({coefficients: resultJson['coefficients']})
-            this.setState({intercept: resultJson['intercept']})
-            this.setState({dataframe: resultJson['dataframe']})
-            this.setState({skew: resultJson['skew']})
-            this.setState({kurtosis: resultJson['kurtosis']})
-            this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
-            this.setState({jarque_bera_p: resultJson['Jarque Bera p-value']})
-            this.setState({omnibus_test_stat: resultJson['Omnibus test statistic']})
-            this.setState({omnibus_test_p: resultJson['Omnibus test p-value']})
-            this.setState({durbin_watson: resultJson['Durbin Watson']})
-            this.setState({actual_values: resultJson['actual_values']})
-            this.setState({predicted_values: resultJson['predicted values']})
-            this.setState({residuals: resultJson['residuals']})
-            this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
-            this.setState({df_scatter: resultJson['values_df']})
-            this.setState({values_dict: resultJson['values_dict']})
-            this.setState({values_columns: resultJson['values_columns']})
-
-            this.setState({LassoRegression_show: true})
+                this.setState({LassoRegression_show: true})
+            }
             this.setState({tabvalue:1})
 
 
@@ -315,44 +320,39 @@ class LassoRegressionFunctionPage extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_dependent_variable=""
-            this.state.selected_independent_variables=[]
+            this.setState({selected_independent_variables: []})
+            this.setState({selected_independent_variable: ""})
+            this.setState({selected_dependent_variable: ""})
             this.state.LassoRegression_show=false
-            this.state.LassoRegression_step2_show=false
+            this.state.Lasso_regression_step2_show=false
         })
     }
+
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
     handleListDelete(event) {
-        var newArray = this.state.selected_independent_variables.slice();
+        let newArray = this.state.selected_independent_variables.slice();
         const ind = newArray.indexOf(event.target.id);
         let newList = newArray.filter((x, index)=>{
             return index!==ind
         })
         this.setState({selected_independent_variables:newList})
     }
-
-
-    handleSelectDependentVariableChange(event){
-        this.setState({selected_dependent_variable: event.target.value})
+    handleSelectVariableNameChange(event){
+        this.setState( {selected_independent_variable: event.target.value})
+        let newArray = this.state.selected_independent_variables.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_independent_variables:newArray})
     }
-    handleSelectAlphaChange(event){
-        this.setState({selected_alpha: event.target.value})
-    }
-    handleSelectMaxIterChange(event){
-        this.setState({selected_max_iter: event.target.value})
-    }
-
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
-    }
-
+    // handleSelectRegularizationChange(event){
+    //     this.setState({selected_regularization: event.target.value})
+    // }
     clear(){
         this.setState({selected_independent_variables: []})
-    }
-    selectAll(){
-        this.setState({selected_independent_variables: this.state.columns})
     }
 
     handleSelectXAxisnChange(event){
@@ -360,6 +360,12 @@ class LassoRegressionFunctionPage extends React.Component {
     }
     handleSelectYAxisnChange(event){
         this.setState({selected_y_axis: event.target.value})
+    }
+    handleSelectAlphaChange(event){
+        this.setState({selected_alpha: event.target.value})
+    }
+    handleSelectMaxIterChange(event){
+        this.setState({selected_max_iter: event.target.value})
     }
 
 
@@ -410,10 +416,9 @@ class LassoRegressionFunctionPage extends React.Component {
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        multiple
+                                        value= {this.state.selected_independent_variable}
                                         label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        onChange={this.handleSelectVariableNameChange}
                                 >
 
                                     {this.state.column_names.map((column) => (
@@ -467,14 +472,11 @@ class LassoRegressionFunctionPage extends React.Component {
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
                                                     onClick={this.handleListDelete}>
-                                                {this.state.selected_file_name + "--" + column}
+                                                {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.selectAll}>
-                                Select All
-                            </Button>
                             <Button onClick={this.clear}>
                                 Clear All
                             </Button>
@@ -558,45 +560,57 @@ class LassoRegressionFunctionPage extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
-                                <div style={{display: (this.state.LassoRegression_show ? 'block' : 'none')}}>
-                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
+                                <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
+                                    <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
+                                    <div style={{display: (this.state.LassoRegression_show ? 'block' : 'none')}}>
+                                        <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
+                                            <Table>
+                                                <TableRow>
+                                                    <TableCell><strong>Intercept:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Skew:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Kurtosis:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Omnibus test statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Omnibus test p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Durbin Watson:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                            </Table>
+                                        </TableContainer>
+                                    </div>
+                                </div>
+                                <div style={{display: (this.state.status !== 'Success' ? 'block': 'none')}}>
+                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
                                         <Table>
                                             <TableRow>
-                                                <TableCell><strong>Intercept:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Skew:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Kurtosis:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Omnibus test statistic:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Durbin Watson:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
+                                                <TableCell><strong>Error:</strong></TableCell>
+                                                <TableCell>{this.state.status}</TableCell>
                                             </TableRow>
                                         </Table>
                                     </TableContainer>
