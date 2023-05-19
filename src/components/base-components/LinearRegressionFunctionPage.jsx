@@ -76,7 +76,9 @@ class LinearRegressionFunctionPage extends React.Component {
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_independent_variables: [],
+            selected_independent_variable: "",
             selected_regularization: "False",
+            selected_file_name: "",
 
             influence_points: [],
             first_table: [],
@@ -125,21 +127,21 @@ class LinearRegressionFunctionPage extends React.Component {
             goldfeld_order:"",
             // Hide/show results
             LinearRegression_show : false,
-            linear_regression_step2_show: false
+            linear_regression_step2_show: false,
+            status: ""
 
 
         };
 
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
-        this.handleSelectRegularizationChange = this.handleSelectRegularizationChange.bind(this);
+        // this.handleSelectRegularizationChange = this.handleSelectRegularizationChange.bind(this);
         this.clear = this.clear.bind(this);
-        this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleScatter = this.handleScatter.bind(this);
 
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
         this.handleListDelete = this.handleListDelete.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
@@ -193,59 +195,63 @@ class LinearRegressionFunctionPage extends React.Component {
                 return qs.stringify(params, { arrayFormat: "repeat" })
             }
         }).then(res => {
-            const resultJson = res.data;
+            const resultJson = res.data['Result'];
+            const status = res.data['status'];
             console.log(resultJson)
+            console.log(status)
             console.log('Test')
 
 
 
             // console.log("")
             // console.log(temp_array)
+            this.setState({status: status})
+            if (status === 'Success') {
+                this.setState({influence_points: resultJson['DataFrame with all available influence results']})
+                this.setState({first_table: resultJson['first_table']})
+                this.setState({second_table: resultJson['second table']})
+                this.setState({third_table: resultJson['third table']['Values']})
+                this.setState({white_test: resultJson['dataframe white test']})
+                this.setState({dep_variable: resultJson['dep']})
+                this.setState({model: resultJson['model']})
+                this.setState({method: resultJson['method']})
+                this.setState({date: resultJson['date']})
+                this.setState({time: resultJson['time']})
+                this.setState({no_observations: resultJson['no_obs']})
+                this.setState({df_resid: resultJson['resid']})
+                this.setState({df_mod: resultJson['df_model']})
+                this.setState({cov_type: resultJson['cov_type']})
+                this.setState({r_sq: resultJson['r_squared']})
+                this.setState({adj_r_sq: resultJson['adj_r_squared']})
+                this.setState({f_stat: resultJson['f_stat']})
+                this.setState({prob_f: resultJson['prob_f']})
+                this.setState({log_like: resultJson['log_like']})
+                this.setState({aic: resultJson['aic']})
+                this.setState({bic: resultJson['bic']})
+                this.setState({omnibus: resultJson['omnibus']})
+                this.setState({prob_omni: resultJson['prob_omni']})
+                this.setState({skew: resultJson['skew']})
+                this.setState({kurtosis: resultJson['kurtosis']})
+                this.setState({durbin: resultJson['durbin']})
+                this.setState({jb: resultJson['jb']})
+                this.setState({prob_jb: resultJson['prob_jb']})
+                this.setState({cond: resultJson['cond']})
+                this.setState({test_stat: resultJson['test_stat']})
+                this.setState({test_stat_p: resultJson['test_stat_p']})
+                this.setState({white_f_stat: resultJson['white_f_stat']})
+                this.setState({white_prob_f: resultJson['white_prob_f']})
+                this.setState({infl_cols: resultJson['influence_columns']})
+                this.setState({influence_dict: resultJson['influence_dict']})
+                this.setState({bresuch_lagrange: resultJson['bresuch_lagrange']})
+                this.setState({bresuch_p_value: resultJson['bresuch_p_value']})
+                this.setState({bresuch_f_value: resultJson['bresuch_f_value']})
+                this.setState({bresuch_f_p_value: resultJson['bresuch_f_p_value']})
+                this.setState({goldfeld_p_value: resultJson['Goldfeld-Quandt p-value']})
+                this.setState({goldfeld_f_value: resultJson['Goldfeld-Quandt F-value']})
+                this.setState({goldfeld_order: resultJson['Goldfeld-Quandt ordering used in the alternative']})
 
-            this.setState({influence_points: resultJson['DataFrame with all available influence results']})
-            this.setState({first_table: resultJson['first_table']})
-            this.setState({second_table: resultJson['second table']})
-            this.setState({third_table: resultJson['third table']['Values']})
-            this.setState({white_test: resultJson['dataframe white test']})
-            this.setState({dep_variable: resultJson['dep']})
-            this.setState({model: resultJson['model']})
-            this.setState({method: resultJson['method']})
-            this.setState({date: resultJson['date']})
-            this.setState({time: resultJson['time']})
-            this.setState({no_observations: resultJson['no_obs']})
-            this.setState({df_resid: resultJson['resid']})
-            this.setState({df_mod: resultJson['df_model']})
-            this.setState({cov_type: resultJson['cov_type']})
-            this.setState({r_sq: resultJson['r_squared']})
-            this.setState({adj_r_sq: resultJson['adj_r_squared']})
-            this.setState({f_stat: resultJson['f_stat']})
-            this.setState({prob_f: resultJson['prob_f']})
-            this.setState({log_like: resultJson['log_like']})
-            this.setState({aic: resultJson['aic']})
-            this.setState({bic: resultJson['bic']})
-            this.setState({omnibus: resultJson['omnibus']})
-            this.setState({prob_omni: resultJson['prob_omni']})
-            this.setState({skew: resultJson['skew']})
-            this.setState({kurtosis: resultJson['kurtosis']})
-            this.setState({durbin: resultJson['durbin']})
-            this.setState({jb: resultJson['jb']})
-            this.setState({prob_jb: resultJson['prob_jb']})
-            this.setState({cond: resultJson['cond']})
-            this.setState({test_stat: resultJson['test_stat']})
-            this.setState({test_stat_p: resultJson['test_stat_p']})
-            this.setState({white_f_stat: resultJson['white_f_stat']})
-            this.setState({white_prob_f: resultJson['white_prob_f']})
-            this.setState({infl_cols: resultJson['influence_columns']})
-            this.setState({influence_dict: resultJson['influence_dict']})
-            this.setState({bresuch_lagrange: resultJson['bresuch_lagrange']})
-            this.setState({bresuch_p_value: resultJson['bresuch_p_value']})
-            this.setState({bresuch_f_value: resultJson['bresuch_f_value']})
-            this.setState({bresuch_f_p_value: resultJson['bresuch_f_p_value']})
-            this.setState({goldfeld_p_value: resultJson['Goldfeld-Quandt p-value']})
-            this.setState({goldfeld_f_value: resultJson['Goldfeld-Quandt F-value']})
-            this.setState({goldfeld_order: resultJson['Goldfeld-Quandt ordering used in the alternative']})
-
-            this.setState({LinearRegression_show: true})
+                this.setState({LinearRegression_show: true})
+            }
             this.setState({tabvalue:1})
 
 
@@ -355,35 +361,39 @@ class LinearRegressionFunctionPage extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_dependent_variable=""
-            this.state.selected_independent_variables=[]
+            this.setState({selected_independent_variables: []})
+            this.setState({selected_independent_variable: ""})
+            this.setState({selected_dependent_variable: ""})
             this.state.LinearRegression_show=false
             this.state.linear_regression_step2_show=false
         })
     }
+
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
     handleListDelete(event) {
-        var newArray = this.state.selected_independent_variables.slice();
+        let newArray = this.state.selected_independent_variables.slice();
         const ind = newArray.indexOf(event.target.id);
         let newList = newArray.filter((x, index)=>{
             return index!==ind
         })
         this.setState({selected_independent_variables:newList})
     }
-
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
+    handleSelectVariableNameChange(event){
+        this.setState( {selected_independent_variable: event.target.value})
+        let newArray = this.state.selected_independent_variables.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_independent_variables:newArray})
     }
-    handleSelectRegularizationChange(event){
-        this.setState({selected_regularization: event.target.value})
-    }
+    // handleSelectRegularizationChange(event){
+    //     this.setState({selected_regularization: event.target.value})
+    // }
     clear(){
         this.setState({selected_independent_variables: []})
-    }
-    selectAll(){
-        this.setState({selected_independent_variables: this.state.column_names})
     }
 
     handleSelectXAxisnChange(event){
@@ -452,10 +462,9 @@ class LinearRegressionFunctionPage extends React.Component {
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        multiple
+                                        value= {this.state.selected_independent_variable}
                                         label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        onChange={this.handleSelectVariableNameChange}
                                 >
 
                                     {this.state.column_names.map((column) => (
@@ -466,21 +475,21 @@ class LinearRegressionFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Independent Variables</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="regularization-label">Regularization</InputLabel>
-                                <Select
-                                        labelId="regularization-label"
-                                        id="regularization-selector"
-                                        value= {this.state.selected_regularization}
-                                        label="regularization"
-                                        onChange={this.handleSelectRegularizationChange}
-                                >
-                                    {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
-                                    <MenuItem value={"False"}><em>False</em></MenuItem>
-                                    <MenuItem value={"True"}><em>True</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Select if you want to add regularization</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="regularization-label">Regularization</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="regularization-label"*/}
+                            {/*            id="regularization-selector"*/}
+                            {/*            value= {this.state.selected_regularization}*/}
+                            {/*            label="regularization"*/}
+                            {/*            onChange={this.handleSelectRegularizationChange}*/}
+                            {/*    >*/}
+                            {/*        /!*<MenuItem value={"none"}><em>None</em></MenuItem>*!/*/}
+                            {/*        <MenuItem value={"False"}><em>False</em></MenuItem>*/}
+                            {/*        <MenuItem value={"True"}><em>True</em></MenuItem>*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select if you want to add regularization</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
                                 {/*|| !this.state.selected_method*/}
@@ -502,14 +511,11 @@ class LinearRegressionFunctionPage extends React.Component {
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
                                                     onClick={this.handleListDelete}>
-                                                {this.state.selected_file_name + "--" + column}
+                                                {column}
                                             </Button>
                                     ))}
                                 </span>
                                 </div>
-                                <Button onClick={this.selectAll}>
-                                    Select All
-                                </Button>
                                 <Button onClick={this.clear}>
                                     Clear All
                                 </Button>
@@ -590,195 +596,206 @@ class LinearRegressionFunctionPage extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
-                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                        <Table>
-                                            <TableRow>
-                                                <TableCell><strong>Dependent Variable:</strong></TableCell>
-                                                <TableCell>{this.state.dep_variable}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Model:</strong></TableCell>
-                                                <TableCell>{this.state.model}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Method:</strong></TableCell>
-                                                <TableCell>{this.state.method}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Date:</strong></TableCell>
-                                                <TableCell>{this.state.date}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Time:</strong></TableCell>
-                                                <TableCell>{this.state.time}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>No. Observations:</strong></TableCell>
-                                                <TableCell>{this.state.no_observations}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Df Residuals:</strong></TableCell>
-                                                <TableCell>{this.state.df_resid}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Df Model:</strong></TableCell>
-                                                <TableCell>{this.state.df_mod}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Covariance Type:</strong></TableCell>
-                                                <TableCell>{this.state.cov_type}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>R-squared:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.r_sq).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Adjusted R-squared:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.adj_r_sq).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>F-statistic:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.f_stat).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Prob (F-statistic):</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.prob_f).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Log-Likelihood:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.log_like).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>AIC:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.aic).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>BIC:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.bic).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                                <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
-                                <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
-                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                        <Table>
-                                            <TableRow>
-                                                <TableCell><strong>Omnnibus:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.omnibus).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Prob(Omnibus):</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.prob_omni).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Skew:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Kurtosis:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Durbin-Watson:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.durbin).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Jarque-Bera (JB):</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.jb).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Prob(JB):</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.prob_jb).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Cond. No.:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.cond).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                                <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
-                                <br/>
-                                <div className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}
-                                     dangerouslySetInnerHTML={{__html: this.state.second_table}}/>
-                                <br/>
-                                <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
-                                <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                        White test (test for heteroscedasticity)
-                                    </Typography>
-                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                        <Table>
-                                            <TableRow>
-                                                <TableCell><strong>Test Statistic:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.test_stat).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Test Statistic p-value:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.test_stat_p).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>F-Statistic:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.white_f_stat).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>F-Test p-value:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.white_prob_f).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                        </Table>
-                                    </TableContainer>
-                                    <hr className="result"/>
-                                    <div>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                            Goldfeld-Quandt (test for heteroscedasticity)
-                                        </Typography>
+                                <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
+                                    <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
                                         <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
                                             <Table>
                                                 <TableRow>
-                                                    <TableCell><strong>Goldfeld-Quandt p-value:</strong></TableCell>
-                                                    <TableCell>{Number.parseFloat(this.state.goldfeld_p_value).toFixed(5)}</TableCell>
+                                                    <TableCell><strong>Dependent Variable:</strong></TableCell>
+                                                    <TableCell>{this.state.dep_variable}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
-                                                    <TableCell><strong>Goldfeld-Quandt F-Statistic:</strong></TableCell>
-                                                    <TableCell>{Number.parseFloat(this.state.goldfeld_f_value).toFixed(5)}</TableCell>
+                                                    <TableCell><strong>Model:</strong></TableCell>
+                                                    <TableCell>{this.state.model}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
-                                                    <TableCell><strong>Goldfeld-Quandt ordering used in the alternative</strong></TableCell>
-                                                    <TableCell>{this.state.goldfeld_order}</TableCell>
+                                                    <TableCell><strong>Method:</strong></TableCell>
+                                                    <TableCell>{this.state.method}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Date:</strong></TableCell>
+                                                    <TableCell>{this.state.date}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Time:</strong></TableCell>
+                                                    <TableCell>{this.state.time}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>No. Observations:</strong></TableCell>
+                                                    <TableCell>{this.state.no_observations}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Df Residuals:</strong></TableCell>
+                                                    <TableCell>{this.state.df_resid}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Df Model:</strong></TableCell>
+                                                    <TableCell>{this.state.df_mod}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Covariance Type:</strong></TableCell>
+                                                    <TableCell>{this.state.cov_type}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>R-squared:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.r_sq).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Adjusted R-squared:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.adj_r_sq).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>F-statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.f_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Prob (F-statistic):</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.prob_f).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Log-Likelihood:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.log_like).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>AIC:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.aic).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>BIC:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.bic).toFixed(5)}</TableCell>
                                                 </TableRow>
                                             </Table>
                                         </TableContainer>
                                     </div>
-                                    <hr className="result"/>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                        Breusch-Pagan test (test for heteroscedasticity)
-                                    </Typography>
+                                    <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                                    <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
+                                        <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                            <Table>
+                                                <TableRow>
+                                                    <TableCell><strong>Omnnibus:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.omnibus).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Prob(Omnibus):</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.prob_omni).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Skew:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Kurtosis:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Durbin-Watson:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.durbin).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Jarque-Bera (JB):</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.jb).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Prob(JB):</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.prob_jb).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Cond. No.:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.cond).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                            </Table>
+                                        </TableContainer>
+                                    </div>
+                                    <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                                    <br/>
+                                    <div className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}
+                                         dangerouslySetInnerHTML={{__html: this.state.second_table}}/>
+                                    <br/>
+                                    <hr className="result" style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}/>
+                                    <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
+                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                            White test (test for heteroscedasticity)
+                                        </Typography>
+                                        <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                            <Table>
+                                                <TableRow>
+                                                    <TableCell><strong>Test Statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.test_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Test Statistic p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.test_stat_p).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>F-Statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.white_f_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>F-Test p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.white_prob_f).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                            </Table>
+                                        </TableContainer>
+                                        <hr className="result"/>
+                                        <div>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                                Goldfeld-Quandt (test for heteroscedasticity)
+                                            </Typography>
+                                            <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                                <Table>
+                                                    <TableRow>
+                                                        <TableCell><strong>Goldfeld-Quandt p-value:</strong></TableCell>
+                                                        <TableCell>{Number.parseFloat(this.state.goldfeld_p_value).toFixed(5)}</TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell><strong>Goldfeld-Quandt F-Statistic:</strong></TableCell>
+                                                        <TableCell>{Number.parseFloat(this.state.goldfeld_f_value).toFixed(5)}</TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell><strong>Goldfeld-Quandt ordering used in the alternative</strong></TableCell>
+                                                        <TableCell>{this.state.goldfeld_order}</TableCell>
+                                                    </TableRow>
+                                                </Table>
+                                            </TableContainer>
+                                        </div>
+                                        <hr className="result"/>
+                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                            Breusch-Pagan test (test for heteroscedasticity)
+                                        </Typography>
+                                        <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                            <Table>
+                                                <TableRow>
+                                                    <TableCell><strong>Lagrange Multiplier Statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.bresuch_lagrange).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Lagrange Multiplier Statistic p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.bresuch_p_value).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>F-Statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.bresuch_f_value).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>F-Test p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.bresuch_f_p_value).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                            </Table>
+                                        </TableContainer>
+                                        <hr className="result"/>
+
+
+                                        <hr/>
+                                    </div>
+                                </div>
+                                <div style={{display: (this.state.status !== 'Success' ? 'block': 'none')}}>
                                     <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
                                         <Table>
                                             <TableRow>
-                                                <TableCell><strong>Lagrange Multiplier Statistic:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.bresuch_lagrange).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>Lagrange Multiplier Statistic p-value:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.bresuch_p_value).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>F-Statistic:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.bresuch_f_value).toFixed(5)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><strong>F-Test p-value:</strong></TableCell>
-                                                <TableCell>{Number.parseFloat(this.state.bresuch_f_p_value).toFixed(5)}</TableCell>
+                                                <TableCell>{this.state.status}</TableCell>
                                             </TableRow>
                                         </Table>
                                     </TableContainer>
-                                    <hr className="result"/>
-
-
-                                    <hr/>
                                 </div>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
