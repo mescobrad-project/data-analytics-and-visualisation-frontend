@@ -5,7 +5,8 @@ import "./samseg_whole_brain_measurements_widget.scss"
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 
 class Samseg_whole_brain_measurements_widget extends React.Component {
-    requested_file
+    requested_file;
+    hemisphere;
     constructor(props) {
         super(props);
         this.state = {
@@ -14,9 +15,13 @@ class Samseg_whole_brain_measurements_widget extends React.Component {
         };
 
         this.fetchData = this.fetchData.bind(this);
+        this.renderIconColor = this.renderIconColor.bind(this);
+        this.hemisphereName = this.hemisphereName.bind(this)
+
         // Initialise component
         // - values of channels from the backend
         this.requested_file = this.props.requested_file
+        this.hemisphere = this.props.hemisphere
         this.fetchData();
     }
 
@@ -38,12 +43,26 @@ class Samseg_whole_brain_measurements_widget extends React.Component {
         });
     }
 
+    renderIconColor = (hemisphere) => {
+        let icon_color = "red"
+        if (hemisphere == 'Right')
+        { icon_color="green"}
+        return icon_color
+    }
+
+    hemisphereName = (hemisphere) => {
+        if (hemisphere == 'Right')
+        { return " - Right Hemisphere"}
+        else if (hemisphere == 'Left')
+        { return " - Left Hemisphere"}
+        else return ""
+    }
 
     render() {
             return (
                     <div className="samseg_whole_brain_measurements_widget">
                         <div className="left">
-                            <span className="title">Whole Brain Measurements</span>
+                            <span className="title">Whole Brain Measurements{this.hemisphereName(this.hemisphere)}</span>
                             {
                                 Object.keys(this.state.whole_brain_measurements_data).map((key, index) => (
                                         <p className="left"><strong>{key} : </strong>{this.state.whole_brain_measurements_data[key]}</p>
@@ -53,7 +72,7 @@ class Samseg_whole_brain_measurements_widget extends React.Component {
                         <div className="right">
                             <PsychologyOutlinedIcon
                                     className="icon"
-                                    style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color:"green"}}
+                                    style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color:this.renderIconColor(this.hemisphere)}}
                             />
                         </div>
                     </div>
