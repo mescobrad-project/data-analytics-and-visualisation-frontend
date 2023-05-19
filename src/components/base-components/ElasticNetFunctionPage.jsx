@@ -424,7 +424,7 @@ class ElasticNetFunctionPage extends React.Component {
                                             </MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Dependent Variable (Categorical)</FormHelperText>
+                                <FormHelperText>Select Dependent Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
@@ -634,7 +634,6 @@ class ElasticNetFunctionPage extends React.Component {
                                     <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
                                         <Table>
                                             <TableRow>
-                                                <TableCell><strong>Error:</strong></TableCell>
                                                 <TableCell>{this.state.status}</TableCell>
                                             </TableRow>
                                         </Table>

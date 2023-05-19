@@ -609,7 +609,6 @@ class LassoRegressionFunctionPage extends React.Component {
                                     <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
                                         <Table>
                                             <TableRow>
-                                                <TableCell><strong>Error:</strong></TableCell>
                                                 <TableCell>{this.state.status}</TableCell>
                                             </TableRow>
                                         </Table>
