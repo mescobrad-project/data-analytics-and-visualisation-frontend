@@ -39,6 +39,11 @@ class Actigraphy_Metrics extends React.Component {
             // selected_metric:'Is',
             selected_freq_offset: 'Hour',
             stats_show:false,
+            svg_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/pRA.svg',
+            svg_path2 : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/pAR.svg',
+
         };
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -497,10 +502,22 @@ class Actigraphy_Metrics extends React.Component {
                                                                 <JsonTable className="jsonResultsTable"
                                                                            rows = {JSON.parse(item.pRA)}/>
                                                             </div>
+                                                            <div style={{padding:'20px', display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                                <img src={this.state.svg_path + "?random=" + new Date().getTime()}
+                                                                     srcSet={this.state.svg_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                                     loading="lazy"
+                                                                />
+                                                            </div>
                                                             <div style={{paddingLeft:'50px'}}>
                                                                 <p style={{paddingLeft:'10px'}}>Activity->Rest transition probability distribution (pAR):</p>
                                                                 <JsonTable className="jsonResultsTable"
                                                                            rows = {JSON.parse(item.pAR)}/>
+                                                            </div>
+                                                            <div style={{padding:'20px', display: (this.state.stats_show ? 'block' : 'none')}}>
+                                                                <img src={this.state.svg_path2 + "?random=" + new Date().getTime()}
+                                                                     srcSet={this.state.svg_path2 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                                     loading="lazy"
+                                                                />
                                                             </div>
                                                         </Grid>
                                                     </Grid>
