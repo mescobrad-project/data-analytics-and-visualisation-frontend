@@ -7,12 +7,13 @@ import {
     Grid,
     InputLabel,
     MenuItem,
-    Select, Table, TableCell, TableContainer, TableHead, TableRow, TextField,
+    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField,
     Typography
 } from "@mui/material";
 import {DataGrid, GridValueFormatterParams} from "@mui/x-data-grid";
 import json from "qs";
 import Paper from "@mui/material/Paper";
+import JsonTable from "ts-react-json-table";
 
 class Actigraphy_Metrics extends React.Component {
     constructor(props) {
@@ -202,7 +203,7 @@ class Actigraphy_Metrics extends React.Component {
                                         value= {this.state.selected_number_of_periods}
                                         inputProps={{ inputmode: 'numeric', pattern: '[0-9]*' }}
                                         label="Period offsets"
-                                        onChange={this.handleSelectComponentsChange}
+                                        onChange={this.handleSelectNoPeriods}
                                 />
                                 <FormHelperText>Number of Period offsets.</FormHelperText>
                             </FormControl>
@@ -259,7 +260,7 @@ class Actigraphy_Metrics extends React.Component {
                             ) : (
                                 <div>
                                     <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                        {this.state.selected_file_name}   + Metrics
+                                        {this.state.selected_file_name}    Metrics
                                     </Typography>
                                     <Grid container direction="row" style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
                                         <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
@@ -286,76 +287,223 @@ class Actigraphy_Metrics extends React.Component {
                                                 })}
                                             </Table>
                                         </TableContainer>
+                                        <hr className="result"/>
                                         { this.state.test_data.Result.map((item) => {return (
                                                 <Grid>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        IS:   {item.IS}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        ISm:   {item.ISm}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        IV:   {item.IV}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        IVm:   {item.IVm}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        L5:   {item.L5}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        M10:   {item.M10}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        RA:   {item.RA}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        ADAT:   {item.ADAT}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        kRA:   {item.kRA}</Typography>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                                        kAR:   {item.kAR}</Typography>
-                                                    <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
-                                                        <Table>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}></TableCell>*/}
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>IS</TableCell>*/}
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>ISm</TableCell>*/}
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>ISp</TableCell>
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>IV</TableCell>*/}
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>IVm</TableCell>*/}
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>IVp</TableCell>
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>L5</TableCell>*/}
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>L5p</TableCell>
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>M10</TableCell>*/}
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>M10p</TableCell>
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>RA</TableCell>*/}
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>RAp</TableCell>
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>pRA</TableCell>
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>pAR</TableCell>
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>ADAT</TableCell>*/}
-                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>ADATp</TableCell>
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>kRA</TableCell>*/}
-                                                                    {/*<TableCell className="tableHeadCell" sx={{width:'10%'}}>kAR</TableCell>*/}
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableRow>
-                                                                {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
-                                                                {/*<TableCell className="tableCell">{item.IS}</TableCell>*/}
-                                                                {/*<TableCell className="tableCell">{item.ISm}</TableCell>*/}
-                                                                <TableCell className="tableCell">{item.ISp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                {/*<TableCell className="tableCell">{item.IV}</TableCell>*/}
-                                                                {/*<TableCell className="tableCell">{item.IVm}</TableCell>*/}
-                                                                <TableCell className="tableCell">{item.IVp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                {/*<TableCell className="tableCell">{item.L5}</TableCell>*/}
-                                                                <TableCell className="tableCell">{item.L5p.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                {/*<TableCell className="tableCell">{item.M10}</TableCell>*/}
-                                                                <TableCell className="tableCell">{item.M10p.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                {/*<TableCell className="tableCell">{item.RA}</TableCell>*/}
-                                                                <TableCell className="tableCell">{item.RAp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.pRA.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                <TableCell className="tableCell">{item.pAR.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                {/*<TableCell className="tableCell">{item.ADAT}</TableCell>*/}
-                                                                <TableCell className="tableCell">{item.ADATp.map((item2)=>{return <pre>{item2}</pre>})}</TableCell>
-                                                                {/*<TableCell className="tableCell">{item.kRA}</TableCell>*/}
-                                                                {/*<TableCell className="tableCell">{item.kAR}</TableCell>*/}
-                                                            </TableRow>
-                                                        </Table>
-                                                    </TableContainer>
+                                                    <Typography variant="h5" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        Total activity</Typography>
+                                                    <Grid sx={{width:'95%'}}>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Total average daily activity (ADAT):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                               {Number.parseFloat(item.ADAT)}</Typography>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <div>
+                                                                <p style={{padding:'10px'}}>Total average daily activity per period (ADATp):</p>
+                                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}} direction="row">
+                                                                    {item.ADATp.map((index, item2)=>{return(
+                                                                        <Table>
+                                                                            <TableHead>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>Period {item2+1}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableCell">{Number.parseFloat(index)}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    )})}
+                                                                </TableContainer>
+                                                            </div>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <hr className="result"/>
+                                                    <Typography variant="h5" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        Non-parametric methods</Typography>
+                                                    <Grid sx={{width:'95%'}}>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Interdaily stability (IS):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                            {Number.parseFloat(item.IS).toFixed(4)}</Typography></Grid>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Average interdaily stability (ISm):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                            {Number.parseFloat(item.ISm).toFixed(4)}</Typography>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <div>
+                                                                <p style={{paddingLeft:'10px'}}>Interdaily stability per period:</p>
+                                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}} direction="row">
+                                                                    {item.ISp.map((index, item2)=>{return(
+                                                                        <Table>
+                                                                            <TableHead>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>Period {item2+1}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableCell">{Number.parseFloat(index).toFixed(4)}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    )})}
+                                                                </TableContainer>
+                                                            </div>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <hr/>
+                                                    <Grid sx={{width:'95%'}}>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Intradaily variability (IV):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                                {Number.parseFloat(item.IV).toFixed(4)}
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Average intradaily variability (IVm): </p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                                {Number.parseFloat(item.IVm).toFixed(4)}</Typography>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <div>
+                                                                <p style={{paddingLeft:'10px'}}>Intradaily variability per period:</p>
+                                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}} direction="row">
+                                                                    {item.IVp.map((index, item2)=>{return(
+                                                                        <Table>
+                                                                            <TableHead>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>Period {item2+1}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableCell">{Number.parseFloat(index).toFixed(4)}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    )})}
+                                                                </TableContainer>
+                                                            </div>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <hr/>
+                                                    <Grid sx={{width:'95%'}}>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Mean activity during the 5 least active hours of the day (L5):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                                {Number.parseFloat(item.L5).toFixed(4)}</Typography>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <div>
+                                                                <p style={{paddingLeft:'10px'}}>L5 per period:</p>
+                                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}} direction="row">
+                                                                    {item.L5p.map((index, item2)=>{return(
+                                                                        <Table>
+                                                                            <TableHead>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>Period {item2+1}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableCell">{Number.parseFloat(index).toFixed(4)}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    )})}
+                                                                </TableContainer>
+                                                            </div>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <hr/>
+                                                    <Grid sx={{width:'95%'}}>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Mean activity during the 10 most active hours of the day (M10):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                                {Number.parseFloat(item.M10).toFixed(4)}</Typography>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <div>
+                                                                <p style={{paddingLeft:'10px'}}>M10 per period:</p>
+                                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}} direction="row">
+                                                                    {item.M10p.map((index, item2)=>{return(
+                                                                        <Table>
+                                                                            <TableHead>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>Period {item2+1}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableCell">{Number.parseFloat(index).toFixed(4)}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    )})}
+                                                                </TableContainer>
+                                                            </div>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <hr/>
+                                                    <Grid sx={{width:'95%'}}>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Relative rest/activity amplitude (RA):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                               {Number.parseFloat(item.RA).toFixed(4)}</Typography>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <div>
+                                                                <p style={{paddingLeft:'10px'}}>RA per period:</p>
+                                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}} direction="row">
+                                                                    {item.RAp.map((index, item2)=>{return(
+                                                                        <Table>
+                                                                            <TableHead>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableHeadCell" sx={{width:'10%'}}>Period {item2+1}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                <TableRow>
+                                                                                    <TableCell className="tableCell">{Number.parseFloat(index).toFixed(4)}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    )})}
+                                                                </TableContainer>
+                                                            </div>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <hr className="result"/>
+                                                    <Typography variant="h5" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                        Transition probabilities</Typography>
+                                                    <Grid sx={{width:'95%'}}>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Rest->Activity transition probability (kRA):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                                {Number.parseFloat(item.kRA).toFixed(4)}</Typography>
+                                                        </Grid>
+                                                        <Grid container>
+                                                            <p style={{paddingLeft:'10px'}}>Rest->Activity transition probability (kAR):</p>
+                                                            <Typography variant="h6" color='black' sx={{ flexGrow: 1, textAlign: "Left", padding:'10px'}}>
+                                                                {Number.parseFloat(item.kAR).toFixed(4)}</Typography>
+                                                        </Grid>
+                                                        <Grid container direction='rows'>
+                                                            <div>
+                                                                <p style={{paddingLeft:'10px'}}>Rest->Activity transition probability distribution (pRA):</p>
+                                                                <JsonTable className="jsonResultsTable"
+                                                                           rows = {JSON.parse(item.pRA)}/>
+                                                            </div>
+                                                            <div style={{paddingLeft:'50px'}}>
+                                                                <p style={{paddingLeft:'10px'}}>Activity->Rest transition probability distribution (pAR):</p>
+                                                                <JsonTable className="jsonResultsTable"
+                                                                           rows = {JSON.parse(item.pAR)}/>
+                                                            </div>
+                                                        </Grid>
+                                                    </Grid>
                                                 </Grid>
                                         )})}
                                     </Grid>

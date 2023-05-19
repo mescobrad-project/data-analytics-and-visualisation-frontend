@@ -3,36 +3,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import React from "react";
 import API from "../../../axiosInstance";
 
-
-const userColumns = [
-    { field: "source_basename", headerName: "Source file", maxWidth: 500, minWidth: 140, //width: 500,
-        align: "left",
-        headerAlign: "left",
-        flex:2,
-        sortable: true},
-    {
-        field: "structure_name",
-        headerName: "Structure name",
-        maxWidth: 500, minWidth: 140, //width: 500,
-        align: "left",
-        headerAlign: "left",
-        flex:2
-    },
-    {
-        field: "Volume",
-        headerName: "Gray matter volume (mm^3)",
-        maxWidth: 500, minWidth: 80, //width: 500,
-        align: "center",
-        headerAlign: "left",
-        flex:1
-    }
-];
-
 class ReconallVolumeDatatable extends React.Component {
+    requested_file;
     constructor(props) {
         super(props);
-        this.state = { reconall_volume_data: [] };
+        this.state = { file_rows: [],
+                       file_columns: []};
         this.fetchData = this.fetchData.bind(this);
+        this.requested_file = this.props.requested_file
         this.fetchData();
     }
 
@@ -40,8 +18,18 @@ class ReconallVolumeDatatable extends React.Component {
      * Call backend endpoint to get channels of eeg
      */
     async fetchData(url, config) {
-        API.get("return_reconall_stats/structural_measurements", {}).then(res => {
-            this.setState({reconall_volume_data: res.data})
+        const params = new URLSearchParams(window.location.search);
+        API.get("/return_reconall_stats/table",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name: this.requested_file
+                    }
+                }).then(res => {
+            this.setState({file_rows: res.data["table"]})
+            this.setState({file_columns: res.data["columns"]})
         });
     }
     render () {
@@ -53,8 +41,8 @@ class ReconallVolumeDatatable extends React.Component {
                 <DataGrid
                         rowHeight={40}
                         className="datagrid"
-                        rows= {this.state.reconall_volume_data}
-                        columns= {userColumns}
+                        rows= {this.state.file_rows}
+                        columns= {this.state.file_columns}
                         pageSize= {12}
                         rowsPerPageOptions={[12]}
                 />
