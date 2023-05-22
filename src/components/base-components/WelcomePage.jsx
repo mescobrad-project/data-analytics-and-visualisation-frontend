@@ -284,7 +284,7 @@ function WelcomePage() {
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 4, "spectogram_bandpower", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"])}
                         >
-                            Spectogram Bandpower
+                            Spectrogram Bandpower
                         </Button>
                         <Button
                                 variant="contained"
@@ -428,7 +428,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 3, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,2, 2, 1, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
                         >
                             Recon-All Results
                         </Button>
@@ -1264,18 +1264,18 @@ function WelcomePage() {
                             <AccordionDetails orientation="vertical">
                             </AccordionDetails>
                         </Accordion>
-                        <Button
-                                // component={Link}
-                                // variant="h6"
-                                size="medium"
-                                fullWidth
-                                // href="/PCA"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1,1, 2, "PCA", ["saved"], ["demo_sample_questionnaire.csv"])}
+                        {/*<Button*/}
+                        {/*        // component={Link}*/}
+                        {/*        // variant="h6"*/}
+                        {/*        size="medium"*/}
+                        {/*        fullWidth*/}
+                        {/*        // href="/PCA"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 2, "PCA", ["saved"], ["demo_sample_questionnaire.csv"])}*/}
 
-                        >
-                            Principal Component Analysis
-                        </Button>
+                        {/*>*/}
+                        {/*    Principal Component Analysis*/}
+                        {/*</Button>*/}
 
                         {/*<Button*/}
                         {/*        size="medium"*/}
