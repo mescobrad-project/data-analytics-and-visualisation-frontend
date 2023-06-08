@@ -252,23 +252,9 @@ class RidgeRegressionFunctionPage extends React.Component {
 
     }
 
-
-
     /**
      * Update state when selection changes in the form
      */
-
-    async fetchColumnNames(url, config) {
-        const params = new URLSearchParams(window.location.search);
-        API.get("return_columns",
-                {params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
-                    }}).then(res => {
-            this.setState({columns: res.data.columns})
-        });
-    }
-
 
     async fetchColumnNames() {
         const params = new URLSearchParams(window.location.search);
