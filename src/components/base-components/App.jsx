@@ -118,6 +118,7 @@ import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
 import Actigraphy_Metrics from "./Actigraphy_Metrics";
 import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
 import GrangerAnalysisFunctionPage from "./GrangerAnalysisFunctionPage";
+import General_Stats_Zscore from "../../pages/hypothesis_testing/General_Stats_Zscore";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -262,6 +263,7 @@ const App = () => {
                         <Route exact path="/General_Stats_Average" element={(<LayoutMain><General_Stats_Average/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Min" element={(<LayoutMain><General_Stats_Min/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Max" element={(<LayoutMain><General_Stats_Max/></LayoutMain>)}/>
+                        <Route exact path="/General_Stats_Zscore" element={(<LayoutMain><General_Stats_Zscore/></LayoutMain>)}/>
                         <Route exact path="/Actigraphy_Cosinor" element={(<LayoutMain><Actigraphy_Cosinor/></LayoutMain>)}/>
                         <Route exact path="/Actigraphy_Metrics" element={(<LayoutMain><Actigraphy_Metrics/></LayoutMain>)}/>
                         <Route exact path="/ChooseFactors" element={(<LayoutMain><ChooseFactorsFunctionPage/></LayoutMain>)}/>
