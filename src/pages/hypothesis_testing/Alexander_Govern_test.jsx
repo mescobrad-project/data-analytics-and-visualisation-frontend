@@ -167,7 +167,7 @@ class Alexander_Govern_test extends React.Component {
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        window.location.replace("/")
+        // window.location.replace("/")
     }
     /**
      * Update state when selection changes in the form
