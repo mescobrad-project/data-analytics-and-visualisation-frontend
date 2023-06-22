@@ -8,9 +8,10 @@ services:
     container_name: analytics_frontend
     environment:
       REACT_APP_BASEURL: https://analyticsbk.platform.mes-cobrad.eu/
+      NEURODESK_BASEURL: https://gui.platform.mes-cobrad.eu/#/
 #      REACT_APP_BASEURL: https://docker_production-nginx-1:470/
 #      The react app baseurl refers actually to the backend url, name should be changed eventually
-      NEURODESK_BASEURL: https://gui.platform.mes-cobrad.eu/#/
+#      NEURODESK_BASEURL: https://gui.platform.mes-cobrad.eu/#/
 #      HTTPS: true
 #      SSL_CRT_FILE: ./docker/certs/self_ssl.pem
 #      SSL_KEY_FILE: ./docker/certs/self_ssl_key.pem
