@@ -11,7 +11,7 @@ import {
     ListItem,
     ListItemText,
     MenuItem, Paper,
-    Select, Table, TableCell, TableContainer, TableRow, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -23,13 +23,51 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 class GrangerAnalysisFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns sent by the backend
-            columns: [],
+            column_names: [],
+            file_names:[],
+            test_data: {
+                Dataframe:""
+            },
 
             //Values selected currently on the form
             selected_dependent_variable: "",
@@ -50,12 +88,24 @@ class GrangerAnalysisFunctionPage extends React.Component {
 
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
-        // this.handleSelectNumLagsChange = this.handleSelectNumLagsChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
+
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         // Initialise component
         // - values of channels from the backend
+
+        this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
+        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        // Initialise component
+        // - values of channels from the backend
+        this.fetchFileNames();
         this.fetchColumnNames();
 
     }
@@ -128,24 +178,6 @@ class GrangerAnalysisFunctionPage extends React.Component {
             // console.log(temp_array)
 
 
-            this.setState({coefficients: resultJson['coefficients']})
-            this.setState({intercept: resultJson['intercept']})
-            this.setState({dataframe: resultJson['dataframe']})
-            this.setState({skew: resultJson['skew']})
-            this.setState({kurtosis: resultJson['kurtosis']})
-            this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
-            this.setState({jarque_bera_p: resultJson['Jarque Bera p-value']})
-            this.setState({omnibus_test_stat: resultJson['Omnibus test statistic']})
-            this.setState({omnibus_test_p: resultJson['Omnibus test p-value']})
-            this.setState({durbin_watson: resultJson['Durbin Watson']})
-            this.setState({actual_values: resultJson['actual_values']})
-            this.setState({predicted_values: resultJson['predicted values']})
-            this.setState({residuals: resultJson['residuals']})
-            this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
-            this.setState({df_scatter: resultJson['values_df']})
-            this.setState({values_dict: resultJson['values_dict']})
-            this.setState({values_columns: resultJson['values_columns']})
-
             this.setState({GrangerAnalysis_show: true})
 
 
@@ -173,54 +205,89 @@ class GrangerAnalysisFunctionPage extends React.Component {
         console.log(this.state)
     }
 
-    async handleScatter(event) {
-        event.preventDefault();
-        let temp_array = []
-        console.log(this.state.values_dict)
-        for (let i = 0; i < this.state.values_dict[this.state.selected_x_axis].length; i++) {
-            let temp_object = {}
-
-            temp_object["xValue"] = this.state.values_dict[this.state.selected_x_axis][i]
-            temp_object["yValue"] = this.state.values_dict[this.state.selected_y_axis][i]
-
-            temp_array.push(temp_object)
-        }
-        console.log(temp_array)
-        this.setState({scatter_chart_data: temp_array})
-
-        this.setState({GrangerAnalysis_step2_show: true})
-
-    }
-
-
-
     /**
      * Update state when selection changes in the form
      */
 
-    async fetchColumnNames(url, config) {
+    async fetchColumnNames() {
         const params = new URLSearchParams(window.location.search);
+
         API.get("return_columns",
-                {params: {
+                {
+                    params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({column_names: res.data.columns})
+        });
+    }
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
                         step_id: params.get("step_id")
                     }}).then(res => {
-            this.setState({columns: res.data.columns})
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
         });
     }
 
-
-    handleSelectDependentVariableChange(event){
-        this.setState({selected_dependent_variable: event.target.value})
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
     }
-
+    handleSelectDependentVariableChange(event){
+        this.setState( {selected_dependent_variable: event.target.value})
+        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+    }
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variable: event.target.value})
+        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+    }
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.setState({selected_independent_variables: []})
+            this.setState({selected_independent_variable: ""})
+            this.setState({selected_dependent_variable: ""})
+            this.state.LassoRegression_show=false
+            this.state.Lasso_regression_step2_show=false
+        })
     }
 
-    // handleSelectNumLagsChange(event){
-    //     this.setState( {selected_max_lags: event.target.value})
-    // }
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
+
+
 
 
     render() {
@@ -233,6 +300,21 @@ class GrangerAnalysisFunctionPage extends React.Component {
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Predictor Variable</InputLabel>
                                 <Select
                                         labelId="dependent-variable-selector-label"
@@ -242,7 +324,7 @@ class GrangerAnalysisFunctionPage extends React.Component {
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
 
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
@@ -260,7 +342,7 @@ class GrangerAnalysisFunctionPage extends React.Component {
                                         onChange={this.handleSelectIndependentVariableChange}
                                 >
 
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
@@ -313,62 +395,44 @@ class GrangerAnalysisFunctionPage extends React.Component {
                     </Grid>
                     <Grid  item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Granger Analysis Result
+                            Granger Causality Tests Results
                         </Typography>
                         <hr/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
                         {/*    Welch Results*/}
                         {/*</Typography>*/}
 
-                        {/*<div style={{ display: (this.state.GrangerAnalysis_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
-                        {/*<div style={{ display: (this.state.GrangerAnalysis_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
-                        {/*<div style={{ display: (this.state.GrangerAnalysis_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
+                        {/*<div style={{ display: (this.state.LassoRegression_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
+                        {/*<div style={{ display: (this.state.LassoRegression_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
+                        {/*<div style={{ display: (this.state.LassoRegression_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
                         <hr style={{ display: (this.state.GrangerAnalysis_show ? 'block' : 'none') }}/>
-                        <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
-                        <div style={{display: (this.state.GrangerAnalysis_show ? 'block' : 'none')}}>
-                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Intercept:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Skew:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Kurtosis:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Omnibus test statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Durbin Watson:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                            <hr/>
-                            <div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
-                        </div>
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
+                                    <Tab label="New Dataset" {...a11yProps(2)} />
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={this.state.tabvalue} index={0}>
+                                <JsonTable className="jsonResultsTable"
+                                           rows = {this.state.initialdataset}/>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={1}>
+                                <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
+                                </div>
+                                <div style={{display: (this.state.status !== 'Success' ? 'block': 'none')}}>
+                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                        <Table>
+                                            <TableRow>
+                                                <TableCell>{this.state.status}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                            </TabPanel>
+                        </Box>
                     </Grid>
                 </Grid>
         )

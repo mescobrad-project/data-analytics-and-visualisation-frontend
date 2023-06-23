@@ -188,7 +188,7 @@ class LassoRegressionFunctionPage extends React.Component {
             if (status === 'Success') {
                 this.setState({coefficients: resultJson['coefficients']})
                 this.setState({intercept: resultJson['intercept']})
-                this.setState({dataframe: resultJson['dataframe']})
+                this.setState({dataframe: JSON.parse(resultJson['dataframe'])})
                 this.setState({skew: resultJson['skew']})
                 this.setState({kurtosis: resultJson['kurtosis']})
                 this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
@@ -200,7 +200,7 @@ class LassoRegressionFunctionPage extends React.Component {
                 this.setState({predicted_values: resultJson['predicted values']})
                 this.setState({residuals: resultJson['residuals']})
                 this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
-                this.setState({df_scatter: resultJson['values_df']})
+                this.setState({df_scatter: JSON.parse(resultJson['values_df'])})
                 this.setState({values_dict: resultJson['values_dict']})
                 this.setState({values_columns: resultJson['values_columns']})
 
@@ -434,6 +434,7 @@ class LassoRegressionFunctionPage extends React.Component {
                                         labelId="alpha-label"
                                         id="alpha-selector"
                                         value= {this.state.selected_alpha}
+                                        inputProps={{pattern: "[0-9]*[.]?[0-9]+"}}
                                         label="alpha"
                                         onChange={this.handleSelectAlphaChange}
                                 />
@@ -444,6 +445,7 @@ class LassoRegressionFunctionPage extends React.Component {
                                         labelId="max-iter-label"
                                         id="max-iter-selector"
                                         value= {this.state.selected_max_iter}
+                                        inputProps={{pattern: "[1-9][0-9]*"}}
                                         label="max-iter"
                                         onChange={this.handleSelectMaxIterChange}
                                 />
@@ -561,7 +563,7 @@ class LassoRegressionFunctionPage extends React.Component {
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
-                                    <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
                                     <div style={{display: (this.state.LassoRegression_show ? 'block' : 'none')}}>
                                         <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
                                             <Table>
@@ -581,10 +583,10 @@ class LassoRegressionFunctionPage extends React.Component {
                                                     <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
                                                     <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
                                                 </TableRow>
-                                                <TableRow>
-                                                    <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
-                                                </TableRow>
+                                                {/*<TableRow>*/}
+                                                {/*    <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>*/}
+                                                {/*    <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>*/}
+                                                {/*</TableRow>*/}
                                                 <TableRow>
                                                     <TableCell><strong>Omnibus test statistic:</strong></TableCell>
                                                     <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
@@ -616,7 +618,7 @@ class LassoRegressionFunctionPage extends React.Component {
                                 </div>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
-                                <div style={{display: (this.state.LassoRegression_show ? 'block' : 'none')}} dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
+                                <JsonTable className="jsonResultsTable" rows = {this.state.df_scatter}/>
                             </TabPanel>
                         </Box>
                     </Grid>

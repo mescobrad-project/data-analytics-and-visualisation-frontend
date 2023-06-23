@@ -118,6 +118,7 @@ import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
 import Actigraphy_Metrics from "./Actigraphy_Metrics";
 import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
 import GrangerAnalysisFunctionPage from "./GrangerAnalysisFunctionPage";
+import PoissonRegressionFunctionPage from "./PoissonRegressionFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -266,6 +267,7 @@ const App = () => {
                         <Route exact path="/Actigraphy_Metrics" element={(<LayoutMain><Actigraphy_Metrics/></LayoutMain>)}/>
                         <Route exact path="/ChooseFactors" element={(<LayoutMain><ChooseFactorsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GrangerAnalysis" element={(<LayoutMain><GrangerAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/PoissonRegression" element={(<LayoutMain><PoissonRegressionFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
