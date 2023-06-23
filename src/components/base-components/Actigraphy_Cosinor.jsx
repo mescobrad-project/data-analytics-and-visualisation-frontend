@@ -227,9 +227,12 @@ class Actigraphy_Cosinor extends React.Component {
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
                                             Report
                                         </Typography>
-                                        <div>
-                                            {this.state.test_data['report'].split('\n').map((item) =>{
-                                                return <Typography size={"small"} sx={{padding:'5px', fontSize:'12px',}}>{item}</Typography>})}
+                                        <div >
+                                            {this.state.test_data['report'].split('[[').map((item) =>
+                                                    <div> <strong style={{fontSize:'16px'}}>{item.split(']]')[0]}</strong>
+                                            { item.substring(item.indexOf(']]')+2).split('\n').map((subitem)=>
+                                                <Typography size={"small"} sx={{padding:'5px', fontSize:'16px',}}>{subitem.replace('^]]','')}</Typography>)}
+                                        </div>)}
                                         </div>
                                         <hr className="result"/>
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>

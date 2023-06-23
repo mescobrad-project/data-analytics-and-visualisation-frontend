@@ -7,13 +7,14 @@ import {
     Grid,
     InputLabel,
     MenuItem,
-    Select, Tab, Tabs,
+    Select, Tab, Tabs, TextField,
     Typography
 } from "@mui/material";
 import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
 import qs from "qs";
-import JsonTable from "ts-react-json-table";
+import {CSVLink} from "react-csv";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -48,7 +49,7 @@ function a11yProps(index) {
     };
 }
 
-class Alexander_Govern_test extends React.Component {
+class General_Stats_Zscore extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -56,12 +57,13 @@ class Alexander_Govern_test extends React.Component {
             column_names: [],
             file_names:[],
             test_data: [],
+            Results:[],
             //Values selected currently on the form
             selected_columns: [],
             selected_variables: [],
             selected_file_name: "",
+            selected_ddof: 0,
             selected_nan_policy:"omit",
-            selected_statistical_test:"Alexander Govern test",
             stats_show:false
         };
         //Binding functions of the class
@@ -70,13 +72,13 @@ class Alexander_Govern_test extends React.Component {
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
+
         this.handleListDelete = this.handleListDelete.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectColumnsChange = this.handleSelectColumnsChange.bind(this);
+        this.handleSelectDdofChange = this.handleSelectDdofChange.bind(this);
         this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
-
         // // Initialise component
         // // - values of channels from the backend
         this.handleTabChange = this.handleTabChange.bind(this);
@@ -133,28 +135,27 @@ class Alexander_Govern_test extends React.Component {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
+
         // Send the request
-        API.get("statistical_tests",
+        API.get("z_score",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        columns: this.state.selected_variables,
-                        nan_policy: this.state.selected_nan_policy,
-                        statistical_test: this.state.selected_statistical_test},
+                        dependent_variables: this.state.selected_variables,
+                        ddof: this.state.selected_ddof,
+                        nan_policy: this.state.selected_nan_policy},
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
-                    }
-                }
+                    }}
         ).then(res => {
-            this.setState({mean_std: JSON.parse(res.data.mean_std)})
+            this.setState({Results:JSON.parse(res.data.Dataframe)});
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
         });
     }
-
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
@@ -167,8 +168,9 @@ class Alexander_Govern_test extends React.Component {
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        // window.location.replace("/")
+        window.location.replace("/")
     }
+
     /**
      * Update state when selection changes in the form
      */
@@ -192,6 +194,9 @@ class Alexander_Govern_test extends React.Component {
     handleDeleteVariable(event) {
         this.setState({selected_variables:[]})
     }
+    handleSelectDdofChange(event){
+        this.setState( {selected_ddof: event.target.value})
+    }
     handleSelectNanPolicyChange(event){
         this.setState( {selected_nan_policy: event.target.value})
     }
@@ -202,8 +207,8 @@ class Alexander_Govern_test extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_variables=[]
-            this.setState({stats_show: false})
+            // this.state.selected_variables=[]
+            // this.setState({stats_show: false})
         })
     }
     render() {
@@ -211,7 +216,7 @@ class Alexander_Govern_test extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select Variables for Alexander Govern test
+                            Select variables for Z score
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -243,7 +248,7 @@ class Alexander_Govern_test extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Variable</FormHelperText>
+                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
@@ -259,12 +264,23 @@ class Alexander_Govern_test extends React.Component {
                                 </Select>
                                 <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
                             </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                {/*<InputLabel id="ddof-selector-label">alpha</InputLabel>*/}
+                                <TextField
+                                        labelid="ddof-selector-label"
+                                        id="ddof-selector"
+                                        value= {this.state.selected_ddof}
+                                        label="ddof parameter"
+                                        onChange={this.handleSelectDdofChange}
+                                />
+                                <FormHelperText>Degrees of freedom correction in the calculation of the standard deviation.</FormHelperText>
+                            </FormControl>
                             <hr/>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_variables.length < 2}
+                                    disabled={this.state.selected_variables.length < 1}
                                     type="submit"
-                            >
+                                    >
                                 Submit
                             </Button>
                         </form>
@@ -319,10 +335,13 @@ class Alexander_Govern_test extends React.Component {
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     </Grid>
                                     <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toFixed(5)}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toFixed(5)}</Typography>
-                                        <JsonTable className="jsonResultsTable"
-                                                   rows = {this.state.mean_std}/>
+                                        {/*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >*/}
+                                        {/*    Compute the min values of the selected variables. </Typography>*/}
+                                        <div style={{textAlign:"center"}}>
+                                            <CSVLink data={this.state.Results}
+                                                 filename={"Results.csv"}>Download</CSVLink>
+                                            <JsonTable className="jsonResultsTable" style={{width:'90%'}} rows = {this.state.Results}/>
+                                        </div>
                                     </Grid>
                                 </Grid>
                             </TabPanel>
@@ -333,4 +352,4 @@ class Alexander_Govern_test extends React.Component {
     }
 }
 
-export default Alexander_Govern_test;
+export default General_Stats_Zscore;
