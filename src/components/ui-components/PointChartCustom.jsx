@@ -11,13 +11,11 @@ import * as am5xy from "@amcharts/amcharts5/xy";
  */
 class PointChartCustom extends React.Component {
     static propTypes = {
-        /** Prop "chart_id" provides the id of the chart and needs to be unique in each page */
-        chart_id: PropTypes.string,
-        /** Prop "chart_data" provides the data of the chart, inside the array there should be an object with two keys
-         * yValue
-         * category
-         * */
-        chart_data: PropTypes.array
+        /** Provides the id of the chart and needs to be unique in each page. */
+        chart_id: { type: String, required: true },
+
+        /** Provides the data of the chart, inside the array there should be an object with two keys: yValue and category. */
+        chart_data: { type: Array, required: true }
     }
 
     constructor(props) {
@@ -39,10 +37,12 @@ class PointChartCustom extends React.Component {
                 wheelY: "zoomX",
                 scrollbarX: am5.Scrollbar.new(root, { orientation: "horizontal" }),
                 scrollbarY: am5.Scrollbar.new(root, { orientation: "vertical" }),
-                pinchZoomX:true
+                pinchZoomX:true,
+
             })
         );
-
+        // Format numbers
+        root.numberFormatter.set("numberFormat", "#.##");
 // Create axes
 // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
         let xRenderer = am5xy.AxisRendererX.new(root, {
@@ -73,7 +73,7 @@ class PointChartCustom extends React.Component {
         }));
 
         // Create series
-        let series = chart.series.push(am5xy.ColumnSeries.new(root, {
+        let series = chart.series.push(am5xy.LineSeries.new(root, {
             xAxis: xAxis,
             yAxis: yAxis,
             valueYField: "yValue",
@@ -83,15 +83,15 @@ class PointChartCustom extends React.Component {
                 labelText: "{valueY}"
             })
         }));
-        series.columns.template.setAll({
-            width: 0.5
-        });
-
+        // series.columns.template.setAll({
+        //     width: 0.5
+        // });
+        //
         series.bullets.push(function() {
             return am5.Bullet.new(root, {
                 locationY: 1,
                 sprite: am5.Circle.new(root, {
-                    radius: 5,
+                    radius: 2,
                     fill: series.get("fill")
                 })
             })
@@ -118,13 +118,9 @@ class PointChartCustom extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
-        //
-        console.log("UPDATED COMPONENT")
-        console.log(this.props.chart_data)
         if(this.props.chart_data){
-            console.log("------ENTERED-----")
-            this.xAxis.data.pushAll(this.props.chart_data)
-            this.series.data.pushAll(this.props.chart_data)
+            this.xAxis.data.setAll(this.props.chart_data)
+            this.series.data.setAll(this.props.chart_data)
         }
 
     }

@@ -131,14 +131,11 @@ class RangeAreaChartCustom extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
-        // if (oldProps.paddingRight !== this.props.paddingRight) {
-        //     this.chart.set("paddingRight", this.props.paddingRight);
-        // }
-        this.xAxis.data.pushAll(this.props.chart_data)
-        this.series1.data.pushAll(this.props.chart_data)
-        this.series2.data.pushAll(this.props.chart_data)
-        console.log("HERE23")
-        console.log(this.props.chart_data)
+        if(this.props.chart_data){
+            this.xAxis.data.setAll(this.props.chart_data)
+            this.series1.data.setAll(this.props.chart_data)
+            this.series2.data.setAll(this.props.chart_data)
+        }
     }
 
     componentWillUnmount() {

@@ -1,8 +1,9 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
+import "../../pages/hypothesis_testing/normality_tests.scss"
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -20,6 +21,7 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
 
 class PartialAutoCorrelationFunctionPage extends React.Component {
     constructor(props){
@@ -46,30 +48,23 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
             correlation_chart_show : false,
             confint_chart_show : false,
 
-
+            //Info from selector
+            file_used: null
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectNlagsChange = this.handleSelectNlagsChange.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
-
+        // this.fetchChannels();
     }
 
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
-    }
     
     /**
      * Process and send the request for auto correlation and handle the response
@@ -103,12 +98,16 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
             flag_alpha = true;
         }
 
+        const params = new URLSearchParams(window.location.search);
+
         console.log("METHOD VALUE")
         console.log( this.state.selected_method)
         // Send the request
         API.get("return_partial_autocorrelation",
             {
-                params: {input_name: this.state.selected_channel, input_method: this.state.selected_method,
+                params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
+                    input_name: this.state.selected_channel, input_method: this.state.selected_method,
                     input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}
             }
         ).then(res => {
@@ -183,27 +182,49 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
         this.setState( {selected_nlags: event.target.value})
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
+
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Data Preview
-                    </Typography>
-                    <hr/>
-                    <List>
-                        {this.state.channels.map((channel) => (
-                            <ListItem> <ListItemText primary={channel}/></ListItem>
-                        ))}
-                    </List>
-                </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Data Preview*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        File Name:*/}
+                {/*    </Typography>*/}
+                {/*    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        trial_av.edf*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Channels:*/}
+                {/*    </Typography>*/}
+                {/*    <List>*/}
+                {/*        {this.state.channels.map((channel) => (*/}
+                {/*                <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                {/*        ))}*/}
+                {/*    </List>*/}
+                {/*</Grid>*/}
+                <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Partial AutoCorrelation Parameterisation
                     </Typography>
-                    <hr/>
-                    <form onSubmit={this.handleSubmit}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                    <Divider/>
+                    <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                    <Divider/>
+                    <form onSubmit={this.handleSubmit}  style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
                                 labelId="channel-selector-label"
@@ -211,6 +232,7 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                                 value= {this.state.selected_channel}
                                 label="Channel"
                                 onChange={this.handleSelectChannelChange}
+                                size={"small"}
                             >
                                 <MenuItem value="">
                                     <em>None</em>
@@ -221,14 +243,15 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="method-selector-label">Missing</InputLabel>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                            <InputLabel id="method-selector-label">Methods</InputLabel>
                             <Select
                                 labelId="method-selector-label"
                                 id="method-selector"
                                 value= {this.state.selected_method}
                                 label="Method"
                                 onChange={this.handleSelectMethodChange}
+                                size={"small"}
                             >
                                 {/*<MenuItem value={"none"}><em>None</em></MenuItem>*/}
                                 <MenuItem value={"yw"}><em>Yule-Walker with sample-size adjustment</em></MenuItem>
@@ -242,7 +265,7 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>Specify which method for the calculations to use.</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             {/*<InputLabel id="alpha-selector-label">Alpha</InputLabel>*/}
                             <TextField
                                 // labelId="alpha-selector-label"
@@ -250,10 +273,12 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                                 value= {this.state.selected_alpha}
                                 label="Alpha"
                                 onChange={this.handleSelectAlphaChange}
+                                size={"small"}
                             />
-                            <FormHelperText>Alpha to be checked?</FormHelperText>
+                            <FormHelperText>The confidence intervals for the given level are
+                                returned</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             {/*<InputLabel id="nlags-selector-label">Nlags</InputLabel>*/}
                             <TextField
                                 // labelId="nlags-selector-label"
@@ -261,19 +286,20 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                                 value= {this.state.selected_nlags}
                                 label="Nlags"
                                 onChange={this.handleSelectNlagsChange}
+                                size={"small"}
                             />
-                            <FormHelperText>Nlags to be checked?</FormHelperText>
+                            <FormHelperText>Number of lags to return autocorrelation for</FormHelperText>
                         </FormControl>
                         <Button variant="contained" color="primary" type="submit">
                             Submit
                         </Button>
                     </form>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={8}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>
-                    <hr/>
+                    <hr  class="result"/>
                     <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
                         Correlation Results
                     </Typography>

@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -10,7 +10,7 @@ import {
     List,
     ListItem,
     ListItemText,
-    MenuItem,
+    MenuItem, Modal,
     Select, TextField, Typography
 } from "@mui/material";
 
@@ -20,11 +20,39 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import EEGSelector from "./EEGSelector";
+import {Box} from "@mui/system";
+import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+import EEGSelectModal from "../ui-components/EEGSelectModal";
+import {useLocation} from "react-router-dom";
+import {GridCell} from "@mui/x-data-grid";
+import ProceedButton from "../ui-components/ProceedButton";
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: "95%",
+    height: "95%",
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 class AutoCorrelationFunctionPage extends React.Component {
     constructor(props) {
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/";
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
+            // Utils
+            url_params: "",
             // List of channels sent by the backend
             channels: [],
 
@@ -54,10 +82,14 @@ class AutoCorrelationFunctionPage extends React.Component {
             qstat_chart_show : false,
             pvalues_chart_show : false,
 
+            //Info from selector
+            file_used: null,
+
+            autocorrelation_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/autocorrelation.png',
         };
 
         //Binding functions of the class
-        this.fetchChannels = this.fetchChannels.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
         this.handleSelectAdjustedChange = this.handleSelectAdjustedChange.bind(this);
@@ -67,19 +99,28 @@ class AutoCorrelationFunctionPage extends React.Component {
         this.handleSelectMissingChange = this.handleSelectMissingChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectNlagsChange = this.handleSelectNlagsChange.bind(this);
+        this.handleChannelChange = this.handleChannelChange.bind(this);
+        this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
+
+
         // Initialise component
         // - values of channels from the backend
-        this.fetchChannels();
+        // this.fetchChannels();
 
-    }
+        // this.setState({url_params: new URLSearchParams(window.location.search)})
+        // console.log(this.state.url_params)
+        // console.log(this.state.url_params.get("step_id"))
+        // const params = new URLSearchParams(window.location.search);
+        // const params1 = new URLSearchParams(window.location).get("step_id");
+        // console.log("window.location.search")
+        // console.log(window.location.search)
+        // console.log(this.state.url_params)
+        // console.log(this.state.url_params.get("step_id"))
+        // console.log(this.state.url_params.get("run_id"))
+        // console.log(params.toString())
 
-    /**
-     * Call backend endpoint to get channels of eeg
-     */
-    async fetchChannels(url, config) {
-        API.get("list/channels", {}).then(res => {
-            this.setState({channels: res.data.channels})
-        });
+        // this.setState(url_params = URLSearchParams(window.location.pathname))
+        // const params = new URLSearchParams(window.location.pathname);
     }
 
     /**
@@ -121,18 +162,26 @@ class AutoCorrelationFunctionPage extends React.Component {
         }
 
 
-
+        const params = new URLSearchParams(window.location.search);
         // Send the request
+        console.log("STUFF")
+        console.log(this.state.file_used)
         API.get("return_autocorrelation",
             {
-                params: {input_name: this.state.selected_channel, input_adjusted: this.state.selected_adjusted,
+                params: {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
+                    file_used: this.state.file_used,
+                    input_name: this.state.selected_channel,
+                    input_adjusted: this.state.selected_adjusted,
                     input_qstat: this.state.selected_qstat, input_fft: this.state.selected_fft,
                     input_bartlett_confint: this.state.selected_bartlett_confint, input_missing: this.state.selected_missing,
                     input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}
             }
         ).then(res => {
             const resultJson = res.data;
-
+            console.log("resultJson")
+            console.log(resultJson)
             // Show only relevant visualisations and load their data
             // Correlation chart always has results so should always be enabled
             this.setState({correlation_results: resultJson.values_autocorrelation})
@@ -237,27 +286,66 @@ class AutoCorrelationFunctionPage extends React.Component {
         this.setState( {selected_nlags: event.target.value})
     }
 
+    handleChannelChange(channel_new_value){
+        // console.log("CHANNELS")
+        this.setState({channels: channel_new_value})
+    }
+
+    handleFileUsedChange(file_used_new_value){
+        // console.log("CHANNELS")
+        this.setState({file_used: file_used_new_value})
+    }
+
     render() {
         return (
             <Grid container direction="row">
-                <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Data Preview
-                    </Typography>
-                    <hr/>
-                    <List>
-                        {this.state.channels.map((channel) => (
-                            <ListItem> <ListItemText primary={channel}/></ListItem>
-                        ))}
-                    </List>
-                </Grid>
-                <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                {/*<Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>*/}
+                {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Data Preview*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        File Name:*/}
+                {/*    </Typography>*/}
+                {/*    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        trial_av.edf*/}
+                {/*    </Typography>*/}
+                {/*    <hr/>*/}
+                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                {/*        Channels:*/}
+                {/*    </Typography>*/}
+                {/*    <List>*/}
+                {/*        {this.state.channels.map((channel) => (*/}
+                {/*            <ListItem> <ListItemText primary={channel}/></ListItem>*/}
+                {/*        ))}*/}
+                {/*    </List>*/}
+                {/*</Grid>*/}
+                <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         AutoCorrelation Parameterisation
                     </Typography>
-                    <hr/>
-                    <form onSubmit={this.handleSubmit}>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                    <Divider sx={{bgcolor: "black"}}/>
+                    <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
+                    {/*<Button variant="contained" color="primary" sx={{marginLeft: "25%"}} disabled={(this.state.selected_part_channel === "" ? true : false)} onClick={this.handleModalOpen}>Open modal</Button>*/}
+                    {/*<Modal*/}
+                    {/*        open={this.state.open_modal}*/}
+                    {/*        onClose={this.handleModalClose}*/}
+                    {/*        aria-labelledby="modal-modal-title"*/}
+                    {/*        aria-describedby="modal-modal-description"*/}
+                    {/*        // disableEnforceFocus={true}*/}
+                    {/*>*/}
+                    {/*    <Box sx={style}>*/}
+                    {/*        <Typography id="modal-modal-title" variant="h6" component="h2">*/}
+                    {/*            Select channels and time range | Print to EDF and Save*/}
+                    {/*        </Typography>*/}
+                    {/*        <EEGSelector/>*/}
+                    {/*    </Box>*/}
+                    {/*</Modal>*/}
+                    <Divider/>
+                    {/* The form only appears when this.state.channels has any value which happens only when the forms
+                    knows what file to access*/}
+                    <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="channel-selector-label">Channel</InputLabel>
                             <Select
                                 labelId="channel-selector-label"
@@ -275,7 +363,7 @@ class AutoCorrelationFunctionPage extends React.Component {
                             </Select>
                             <FormHelperText>Select Channel to Auto Correlate</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="adjusted-selector-label">Adjusted</InputLabel>
                             <Select
                                 labelId="adjusted-selector-label"
@@ -288,23 +376,24 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should channels be adjusted</FormHelperText>
+                            <FormHelperText>If True, then denominators for autocovariance are n-k, otherwise n</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
-                            <InputLabel id="qstat-selector-label">Qstat</InputLabel>
-                            <Select
-                                labelId="qstat-selector-label"
-                                id="qstat-selector"
-                                value= {this.state.selected_qstat}
-                                label="Qstat"
-                                onChange={this.handleSelectQstatChange}
-                            >
-                                <MenuItem value={"true"}><em>True</em></MenuItem>
-                                <MenuItem value={"false"}><em>False</em></MenuItem>
-                            </Select>
-                            <FormHelperText>Should Qstat be on?</FormHelperText>
-                        </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                        {/*    <InputLabel id="qstat-selector-label">Qstat</InputLabel>*/}
+                        {/*    <Select*/}
+                        {/*        labelId="qstat-selector-label"*/}
+                        {/*        id="qstat-selector"*/}
+                        {/*        value= {this.state.selected_qstat}*/}
+                        {/*        label="Qstat"*/}
+                        {/*        onChange={this.handleSelectQstatChange}*/}
+                        {/*    >*/}
+                        {/*        <MenuItem value={"true"}><em>True</em></MenuItem>*/}
+                        {/*        <MenuItem value={"false"}><em>False</em></MenuItem>*/}
+                        {/*    </Select>*/}
+                        {/*    <FormHelperText>If True, returns the Ljung-Box q statistic for each autocorrelation*/}
+                        {/*        coefficient</FormHelperText>*/}
+                        {/*</FormControl>*/}
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="fft-selector-label">FFT</InputLabel>
                             <Select
                                 labelId="fft-selector-label"
@@ -316,9 +405,9 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should FFT be on?</FormHelperText>
+                            <FormHelperText>If True, computes the ACF via FFT</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="bartlett-confint-selector-label">Bartlet</InputLabel>
                             <Select
                                 labelId="bartlett-confint-selector-label"
@@ -330,9 +419,9 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"true"}><em>True</em></MenuItem>
                                 <MenuItem value={"false"}><em>False</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should Bartlett Confint be on?</FormHelperText>
+                            <FormHelperText>Should confidence intervals be generated using Bartlett's formula?</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             <InputLabel id="missing-selector-label">Missing</InputLabel>
                             <Select
                                 labelId="missing-selector-label"
@@ -346,9 +435,9 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 <MenuItem value={"conservative"}><em>Conservative</em></MenuItem>
                                 <MenuItem value={"drop"}><em>Drop</em></MenuItem>
                             </Select>
-                            <FormHelperText>Should Bartlett Confint be on?</FormHelperText>
+                            <FormHelperText>How should missing values be treated?</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             {/*<InputLabel id="alpha-selector-label">Alpha</InputLabel>*/}
                             <TextField
                                 // labelId="alpha-selector-label"
@@ -356,61 +445,87 @@ class AutoCorrelationFunctionPage extends React.Component {
                                 value= {this.state.selected_alpha}
                                 label="Alpha"
                                 onChange={this.handleSelectAlphaChange}
+                                size={"small"}
                             />
-                            <FormHelperText>Alpha to be checked?</FormHelperText>
+                            <FormHelperText>The confidence intervals for the given level are
+                                returned</FormHelperText>
                         </FormControl>
-                        <FormControl sx={{m: 1, minWidth: 120}}>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                             {/*<InputLabel id="nlags-selector-label">Nlags</InputLabel>*/}
                             <TextField
                                 // labelId="nlags-selector-label"
                                 id="nlags-selector"
                                 value= {this.state.selected_nlags}
                                 label="Nlags"
+                                size={"small"}
                                 onChange={this.handleSelectNlagsChange}
                             />
-                            <FormHelperText>Nlags to be checked?</FormHelperText>
+                            <FormHelperText>Number of lags to return autocorrelation for</FormHelperText>
                         </FormControl>
-                        <Button variant="contained" color="primary" type="submit">
+                        <hr/>
+                        <Button sx={{float: "left",marginLeft: "2px"}}  variant="contained" color="primary" type="submit">
                             Submit
                         </Button>
+                        <ProceedButton></ProceedButton>
                     </form>
+                    {/*<form onSubmit={async (event) => {*/}
+                    {/*    event.preventDefault();*/}
+                    {/*    window.location.replace("/")*/}
+                    {/*    // Send the request*/}
+                    {/*}}>*/}
+                    {/*    <Button sx={{float: "right",marginRight: "2px"}} variant="contained" color="primary" type="submit">*/}
+                    {/*        Proceed >*/}
+                    {/*    </Button>*/}
+                    {/*</form>*/}
                 </Grid>
-                <Grid item xs={5}>
+
+                {/*<Divider/>*/}
+                <Grid xs={8}  direction='column'>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>
-                    <hr/>
-                    {/*<List>*/}
-                    {/*{this.state.correlation_results.map((result) => (*/}
-                    {/*    <ListItem> <ListItemText primary={result}/></ListItem>*/}
-                    {/*))}*/}
-                    {/*</List>*/}
-                    {/*// Probably should be removed to a new component !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
-                        Correlation Results
-                    </Typography>
-                    <div style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>
-                    <hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>
+                        <Divider sx={{bgcolor: "black"}}/>
+                    <Grid item xs={12} container direction='row'>
+                        <img src={this.state.autocorrelation_path + "?random=" + new Date().getTime()}
+                             srcSet={this.state.autocorrelation_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                             loading="lazy"
+                        />
+                    {/*    <Grid item xs={6}>*/}
+                    {/*        <Typography variant="h6" sx={{ textAlign: "center", borderRight: "1px solid black", flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*            Correlation Results*/}
+                    {/*        </Typography>*/}
+                    {/*        <div style={{ borderBottom: "1px solid black", borderRight: "1px solid black", display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>*/}
+                    {/*        /!*<hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>*!/*/}
+                    {/*        /!*<Divider sx={{bgcolor: "black"}}/>*!/*/}
+                    {/*        /!*<Divider orientation="vertical" variant="" sx={{bgcolor: "black"}}/>*!/*/}
+                    {/*    </Grid>*/}
+                    {/*    <Grid item xs={6}>*/}
+                    {/*        <Typography variant="h6" sx={{ textAlign: "center", borderLeft: "1px solid black", flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*            Confidence Interval*/}
+                    {/*        </Typography>*/}
+                    {/*        <div style={{  borderBottom: "1px solid black", borderLeft: "1px solid black", display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>*/}
 
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>
-                        Confidence Interval
-                    </Typography>
-                    <div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
-                    <hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>
-
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.qstat_chart_show ? 'block' : 'none')  }} noWrap>
-                        Qstat
-                    </Typography>
-                    <div style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="qstat_chart_id" chart_data={ this.state.qstat_chart_data}/></div>
-                    <hr style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}/>
-
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.pvalues_chart_show ? 'block' : 'none')  }} noWrap>
-                        Pvalues
-                    </Typography>
-                    <div style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="pvalues_chart_id" chart_data={ this.state.pvalues_chart_data}/></div>
-                    <hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>
-
+                    {/*        /!*<hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>*!/*/}
+                    {/*    </Grid>*/}
+                    {/*    <Grid item xs={6}>*/}
+                    {/*        <Typography variant="h6" sx={{ textAlign: "center", flexGrow: 1, borderRight: "1px solid black",  display: (this.state.qstat_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*            Qstat*/}
+                    {/*        </Typography>*/}
+                    {/*        <div style={{  borderTop: "1px solid black", borderRight: "1px solid black", display: (this.state.qstat_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="qstat_chart_id" chart_data={ this.state.qstat_chart_data}/></div>*/}
+                    {/*        /!*<hr style={{ display: (this.state.qstat_chart_show ? 'block' : 'none') }}/>*!/*/}
+                    {/*    </Grid>*/}
+                    {/*    <Grid item xs={6}>*/}
+                    {/*        <Typography variant="h6" sx={{ textAlign: "center", borderLeft: "1px solid black", flexGrow: 1, display: (this.state.pvalues_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*            Pvalues*/}
+                    {/*        </Typography>*/}
+                    {/*        <div style={{  borderTop: "1px solid black", borderLeft: "1px solid black", display: (this.state.pvalues_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="pvalues_chart_id" chart_data={ this.state.pvalues_chart_data}/></div>*/}
+                    {/*        /!*<hr style={{ display: (this.state.pvalues_chart_show ? 'block' : 'none') }}/>*!/*/}
+                    {/*    </Grid>*/}
+                    </Grid>
                 </Grid>
+                {/*<NewWindow>*/}
+                {/*    <EEGSelector/>*/}
+                {/*</NewWindow>*/}
             </Grid>
         )
     }
