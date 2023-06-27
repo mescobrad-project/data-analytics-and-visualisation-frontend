@@ -121,6 +121,7 @@ import GrangerAnalysisFunctionPage from "./GrangerAnalysisFunctionPage";
 import General_Stats_Zscore from "../../pages/hypothesis_testing/General_Stats_Zscore";
 import General_Stats_Std from "../../pages/hypothesis_testing/General_Stats_Std";
 import General_Stats_Cov from "../../pages/hypothesis_testing/General_Stats_Cov";
+import PoissonRegressionFunctionPage from "./PoissonRegressionFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -272,6 +273,7 @@ const App = () => {
                         <Route exact path="/Actigraphy_Metrics" element={(<LayoutMain><Actigraphy_Metrics/></LayoutMain>)}/>
                         <Route exact path="/ChooseFactors" element={(<LayoutMain><ChooseFactorsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GrangerAnalysis" element={(<LayoutMain><GrangerAnalysisFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/PoissonRegression" element={(<LayoutMain><PoissonRegressionFunctionPage/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
