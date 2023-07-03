@@ -7,6 +7,7 @@ import {Divider, Tab, Tabs, Typography, Grid} from "@mui/material";
 import {Box} from "@mui/system";
 import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import PropTypes from 'prop-types';
+import API from "../../axiosInstance";
 
 function a11yProps(index) {
     return {
@@ -64,7 +65,22 @@ class ReconAllResults extends React.Component {
             tabvalue: 0
         }
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.downloadData = this.downloadData.bind(this);
+        this.downloadData()
     }
+
+    async downloadData(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("/reconall_files_to_local",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                    }
+                });
+    }
+
     render() {
         return (
                 <div className="reconallresults">
