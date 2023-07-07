@@ -109,6 +109,7 @@ import Canonical_correlation from "../../pages/hypothesis_testing/Canonical_corr
 import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/SurvivalAnalysisKaplanMeier";
 import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysis'
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
+import Structural_Equation_Models_Optimization from "../../pages/hypothesis_testing/Structural_Equation_Models_Optimization";
 import Mixed_Anova from "../../pages/hypothesis_testing/Mixed_Anova"
 import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average"
 import BackAveragePage from "./BackAveragePage";
@@ -261,6 +262,7 @@ const App = () => {
                         <Route exact path="/power_spectral_density_main" element={(<LayoutMain><PowerSpectralDensityPage/></LayoutMain>)}/>
                         <Route exact path="/FactorAnalysis" element={(<LayoutMain><FactorAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GeneralizedEstimatingEquations" element={(<LayoutMain><GeneralizedEstimatingEquationsFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/Structural_Equation_Models_Optimization" element={(<LayoutMain><Structural_Equation_Models_Optimization/></LayoutMain>)}/>
                         <Route exact path="/Mixed_Anova" element={(<LayoutMain><Mixed_Anova/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Average" element={(<LayoutMain><General_Stats_Average/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Min" element={(<LayoutMain><General_Stats_Min/></LayoutMain>)}/>

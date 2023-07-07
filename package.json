@@ -19,6 +19,7 @@
     "dangerously-set-html-content": "^1.0.12",
     "emotion-theming": "^11.0.0",
     "eslint": "8.22.0",
+    "graphviz-react": "^1.2.5",
     "keycloak-js": "^20.0.3",
     "mpld3": "^0.5.8",
     "plotly.js": "^2.21.0",
