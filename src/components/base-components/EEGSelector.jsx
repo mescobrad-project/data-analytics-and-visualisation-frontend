@@ -23,6 +23,12 @@ const style = {
     p: 4,
 };
 
+let ip = "https://gui.platform.mes-cobrad.eu/"
+// let ip = "http://localhost:8080/"
+if (process.env.NEURODESK_BASEURL)
+{
+    ip = process.env.NEURODESK_BASEURL
+}
 class EEGSelector extends React.Component {
     // static propTypes = {
     //     step_id: PropTypes.string,
@@ -30,11 +36,6 @@ class EEGSelector extends React.Component {
     // }
     constructor(props) {
         const params = new URLSearchParams(window.location.search);
-        let ip = "https://gui.platform.mes-cobrad.eu/"
-        if (process.env.NEURODESK_BASEURL)
-        {
-            ip = process.env.NEURODESK_BASEURL
-        }
         super(props);
         this.state = {
             path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",

@@ -57,11 +57,11 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-class RidgeRegressionFunctionPage extends React.Component {
+
+class PoissonRegressionFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            // List of columns sent by the backend
             column_names: [],
             file_names:[],
             test_data: {
@@ -71,8 +71,7 @@ class RidgeRegressionFunctionPage extends React.Component {
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_alpha: "1",
-            selected_max_iter: "1000",
-            selected_solver: "auto",
+            selected_max_iter: "100",
             selected_independent_variables: [],
             selected_independent_variable: "",
             selected_file_name: "",
@@ -99,8 +98,9 @@ class RidgeRegressionFunctionPage extends React.Component {
             selected_y_axis: "",
 
             // Hide/show results
-            RidgeRegression_show : false,
-            RidgeRegression_step2_show: false
+            PoissonRegression_show : false,
+            PoissonRegression_step2_show: false,
+            status: ""
 
 
         };
@@ -109,7 +109,6 @@ class RidgeRegressionFunctionPage extends React.Component {
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
-        this.handleSelectSolverChange = this.handleSelectSolverChange.bind(this);
         this.clear = this.clear.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleScatter = this.handleScatter.bind(this);
@@ -122,7 +121,8 @@ class RidgeRegressionFunctionPage extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
-        
+
+
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -156,14 +156,14 @@ class RidgeRegressionFunctionPage extends React.Component {
         //     to_send_shrinkage_3 = parseFloat(this.state.selected_shrinkage_3)
         // }
 
-        this.setState({RidgeRegression_show: false})
+        this.setState({PoissonRegression_show: false})
 
 
 
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("ridge_regression", {
+        API.get("poisson_regression", {
             params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 dependent_variable: this.state.selected_dependent_variable,
@@ -188,7 +188,10 @@ class RidgeRegressionFunctionPage extends React.Component {
             if (status === 'Success') {
                 this.setState({coefficients: resultJson['coefficients']})
                 this.setState({intercept: resultJson['intercept']})
-                this.setState({dataframe: resultJson['dataframe']})
+                this.setState({dataframe: JSON.parse(resultJson['dataframe'])})
+                this.setState({df_scatter: JSON.parse(resultJson['df_for_scatter'])})
+                this.setState({values_dict: resultJson['values_dict']})
+                this.setState({values_columns: resultJson['values_columns']})
                 this.setState({skew: resultJson['skew']})
                 this.setState({kurtosis: resultJson['kurtosis']})
                 this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
@@ -200,11 +203,8 @@ class RidgeRegressionFunctionPage extends React.Component {
                 this.setState({predicted_values: resultJson['predicted values']})
                 this.setState({residuals: resultJson['residuals']})
                 this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
-                this.setState({df_scatter: resultJson['values_df']})
-                this.setState({values_dict: resultJson['values_dict']})
-                this.setState({values_columns: resultJson['values_columns']})
 
-                this.setState({RidgeRegression_show: true})
+                this.setState({PoissonRegression_show: true})
             }
             this.setState({tabvalue:1})
 
@@ -248,9 +248,11 @@ class RidgeRegressionFunctionPage extends React.Component {
         console.log(temp_array)
         this.setState({scatter_chart_data: temp_array})
 
-        this.setState({RidgeRegression_step2_show: true})
+        this.setState({PoissonRegression_step2_show: true})
 
     }
+
+
 
     /**
      * Update state when selection changes in the form
@@ -321,8 +323,8 @@ class RidgeRegressionFunctionPage extends React.Component {
             this.setState({selected_independent_variables: []})
             this.setState({selected_independent_variable: ""})
             this.setState({selected_dependent_variable: ""})
-            this.state.RidgeRegression_show=false
-            this.state.RidgeRegression_step2_show=false
+            this.state.PoissonRegression_show=false
+            this.state.Poisson_regression_step2_show=false
         })
     }
 
@@ -352,9 +354,6 @@ class RidgeRegressionFunctionPage extends React.Component {
     clear(){
         this.setState({selected_independent_variables: []})
     }
-    handleSelectSolverChange(event){
-        this.setState( {selected_solver: event.target.value})
-    }
 
     handleSelectXAxisnChange(event){
         this.setState({selected_x_axis: event.target.value})
@@ -362,7 +361,6 @@ class RidgeRegressionFunctionPage extends React.Component {
     handleSelectYAxisnChange(event){
         this.setState({selected_y_axis: event.target.value})
     }
-
     handleSelectAlphaChange(event){
         this.setState({selected_alpha: event.target.value})
     }
@@ -376,7 +374,7 @@ class RidgeRegressionFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Ridge Regression Parameterisation
+                            Poisson Regression Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -414,7 +412,7 @@ class RidgeRegressionFunctionPage extends React.Component {
                                 <FormHelperText>Select Dependent Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Columns</InputLabel>
+                                <InputLabel id="column-selector-label">Independent Variables</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
@@ -436,39 +434,22 @@ class RidgeRegressionFunctionPage extends React.Component {
                                         labelId="alpha-label"
                                         id="alpha-selector"
                                         value= {this.state.selected_alpha}
+                                        inputProps={{pattern: "[0-9]*[.]?[0-9]+"}}
                                         label="alpha"
                                         onChange={this.handleSelectAlphaChange}
                                 />
-                                <FormHelperText>Alpha</FormHelperText>
+                                <FormHelperText>Constant that multiplies the L2 penalty term and determines the regularization strength. alpha = 0 is equivalent to unpenalized GLMs. In this case, the design matrix X must have full column rank (no collinearities). Values of alpha must be in the range [0.0, inf).</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="max-iter-label"
                                         id="max-iter-selector"
                                         value= {this.state.selected_max_iter}
+                                        inputProps={{pattern: "[1-9][0-9]*"}}
                                         label="max-iter"
                                         onChange={this.handleSelectMaxIterChange}
                                 />
-                                <FormHelperText>Max Iterations</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="solver-selector-label">Solver</InputLabel>
-                                <Select
-                                        labelId="solver-selector-label"
-                                        id="solver-selector"
-                                        value= {this.state.selected_solver}
-                                        label="Solver"
-                                        onChange={this.handleSelectSolverChange}
-                                >
-                                    <MenuItem value={"auto"}><em>auto</em></MenuItem>
-                                    <MenuItem value={"svd"}><em>svd</em></MenuItem>
-                                    <MenuItem value={"cholesky"}><em>cholesky</em></MenuItem>
-                                    <MenuItem value={"sparse_cg"}><em>sparse_cg</em></MenuItem>
-                                    <MenuItem value={"lsqr"}><em>lsqr</em></MenuItem>
-                                    <MenuItem value={"sag"}><em>sag</em></MenuItem>
-                                    <MenuItem value={"lbfgs"}><em>lbfgs</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Select Solver</FormHelperText>
+                                <FormHelperText>The maximal number of iterations for the solver. Values must be in the range [1, inf).</FormHelperText>
                             </FormControl>
 
 
@@ -480,7 +461,7 @@ class RidgeRegressionFunctionPage extends React.Component {
                         </form>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.RidgeRegression_show}>
+                                    disabled={!this.state.PoissonRegression_show}>
                                 Proceed >
                             </Button>
                         </form>
@@ -504,8 +485,8 @@ class RidgeRegressionFunctionPage extends React.Component {
                         </FormControl>
                         <br/>
                         <br/>
-                        <div  style={{display: (this.state.RidgeRegression_show ? 'block' : 'none')}}>
-                            <hr style={{display: (this.state.RidgeRegression_show ? 'block' : 'none')}}/>
+                        <div  style={{display: (this.state.PoissonRegression_show ? 'block' : 'none')}}>
+                            <hr style={{display: (this.state.PoissonRegression_show ? 'block' : 'none')}}/>
                             <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                 Available Variables
                             </Typography>
@@ -550,24 +531,24 @@ class RidgeRegressionFunctionPage extends React.Component {
                                     Submit
                                 </Button>
                             </form>
-                            <div style={{ display: (this.state.RidgeRegression_step2_show ? 'block' : 'none') }}>
+                            <div style={{ display: (this.state.PoissonRegression_step2_show ? 'block' : 'none') }}>
                                 <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
                             </div>
                         </div>
                     </Grid>
                     <Grid  item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Ridge Regression Result
+                            Poisson Regression Results
                         </Typography>
                         <hr/>
                         {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>*/}
                         {/*    Welch Results*/}
                         {/*</Typography>*/}
 
-                        {/*<div style={{ display: (this.state.RidgeRegression_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
-                        {/*<div style={{ display: (this.state.RidgeRegression_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
-                        {/*<div style={{ display: (this.state.RidgeRegression_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
-                        <hr style={{ display: (this.state.Ridge_show ? 'block' : 'none') }}/>
+                        {/*<div style={{ display: (this.state.PoissonRegression_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
+                        {/*<div style={{ display: (this.state.PoissonRegression_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
+                        {/*<div style={{ display: (this.state.PoissonRegression_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
+                        <hr style={{ display: (this.state.PoissonRegression_show ? 'block' : 'none') }}/>
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
@@ -582,8 +563,8 @@ class RidgeRegressionFunctionPage extends React.Component {
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
-                                    <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
-                                    <div style={{display: (this.state.RidgeRegression_show ? 'block' : 'none')}}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
+                                    <div style={{display: (this.state.PoissonRegression_show ? 'block' : 'none')}}>
                                         <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
                                             <Table>
                                                 <TableRow>
@@ -602,17 +583,17 @@ class RidgeRegressionFunctionPage extends React.Component {
                                                     <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
                                                     <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
                                                 </TableRow>
-                                                <TableRow>
-                                                    <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
-                                                </TableRow>
+                                                {/*<TableRow>*/}
+                                                {/*    <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>*/}
+                                                {/*    <TableCell>{this.state.jarque_bera_p}</TableCell>*/}
+                                                {/*</TableRow>*/}
                                                 <TableRow>
                                                     <TableCell><strong>Omnibus test statistic:</strong></TableCell>
                                                     <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                                    <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
+                                                    <TableCell>{this.state.omnibus_test_p}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell><strong>Durbin Watson:</strong></TableCell>
@@ -637,8 +618,8 @@ class RidgeRegressionFunctionPage extends React.Component {
                                 </div>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
-                                <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
-                                    <div style={{display: (this.state.RidgeRegression_show ? 'block' : 'none')}} dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
+                                <div style={{display: (this.state.PoissonRegression_show ? 'block' : 'none')}}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.df_scatter}/>
                                 </div>
                             </TabPanel>
                         </Box>
@@ -648,4 +629,4 @@ class RidgeRegressionFunctionPage extends React.Component {
     }
 }
 
-export default RidgeRegressionFunctionPage;
+export default PoissonRegressionFunctionPage;

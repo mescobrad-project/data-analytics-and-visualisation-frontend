@@ -28,7 +28,7 @@ const LayoutMain = ({children}) => {
     }, []);
 
     // TODO add a variable to check if file is downloaded from backend when applicable
-    //if (keycloak) {
+    // if (keycloak) {
     //    if (authenticated) return (
     if (true) {
         if (true) return (
