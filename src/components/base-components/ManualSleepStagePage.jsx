@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import {
     Button, Divider, FormControl, FormHelperText,
-    Grid, IconButton, ImageListItemBar, InputLabel, MenuItem, Modal, Select, TextField,
+    Grid, IconButton, ImageListItemBar, InputLabel, List, ListItem, ListItemText, MenuItem, Modal, Select, TextField,
     Typography
 } from "@mui/material";
 import {Box, Stack} from "@mui/system";
@@ -123,7 +123,7 @@ class ManualSleepStagePage extends React.Component {
             open_modal: false,
             saved_montages: [],
             selected_montage: "",
-
+            available_hypnograms: [],
         };
 
         //Binding functions of the class
@@ -132,10 +132,12 @@ class ManualSleepStagePage extends React.Component {
         this.handleModalClose = this.handleModalClose.bind(this);
         this.fetchMontages = this.fetchMontages.bind(this);
         this.handleSelectMontage = this.handleSelectMontage.bind(this);
+        this.fetchAvailableHypnograms = this.fetchAvailableHypnograms.bind(this);
 
         // Initialise component
         // this.handleProcessOpenEEG();
         this.fetchMontages()
+        this.fetchAvailableHypnograms()
     }
 
 
@@ -153,6 +155,24 @@ class ManualSleepStagePage extends React.Component {
                     }
                 }
         ).then(res => {
+        });
+
+    }
+
+    async fetchAvailableHypnograms() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("/initialise_hypnograms",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                    }
+                }
+        ).then(res => {
+            console.log("Data")
+            console.log(res.data)
+            this.setState({available_hypnograms: res.data["available_hypnograms"]})
         });
 
     }
@@ -229,7 +249,15 @@ class ManualSleepStagePage extends React.Component {
 
                                 <Button variant="contained" color="primary" onClick={this.handleModalOpen}>How to:
                                     Tutorial</Button>
-
+                                <Divider sx={{bgcolor: "black", marginTop: "5px", marginBottom: "5px"}}/>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Available Hypnograms
+                                </Typography>
+                                <List>
+                                    {this.state.available_hypnograms.map((hypnogram) => (
+                                            <ListItem> <ListItemText primary={hypnogram}/></ListItem>
+                                    ))}
+                                </List>
 
 
                                 <Modal

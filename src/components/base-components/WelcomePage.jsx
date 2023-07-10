@@ -309,7 +309,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 5, "manual_sleep_stage_classification", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 7, "manual_sleep_stage_classification", ["saved", "saved", "saved", "saved"], ["psg1 anonym2.edf", "new_hypnogram.csv", "new_hypnogram1.csv", "new_hypnogram2.csv"])}
                         >
                             Manual Sleep Stage Classification
                         </Button>
