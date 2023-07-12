@@ -65,12 +65,14 @@ class LinearSVRRegressionFunctionPage extends React.Component {
         super(props);
         this.state = {
             // List of columns sent by the backend
-            columns: [],
-            initialdataset:[],
+            column_names: [],
+            file_names:[],
+            test_data: {
+                Dataframe:""
+            },
 
             //Values selected currently on the form
             selected_dependent_variable: "",
-            selected_alpha: "0.0001",
             selected_max_iter: "1000",
             selected_epsilon: "0",
             selected_C: "1",
@@ -107,23 +109,31 @@ class LinearSVRRegressionFunctionPage extends React.Component {
 
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.handleSelectEpsilonChange = this.handleSelectEpsilonChange.bind(this);
+        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.handleSelectLossChange = this.handleSelectLossChange.bind(this);
         this.handleSelectCChange = this.handleSelectCChange.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleScatter = this.handleScatter.bind(this);
+
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
 
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleScatter = this.handleScatter.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        this.handleTabChange = this.handleTabChange.bind(this);
         // Initialise component
         // - values of channels from the backend
+        this.fetchFileNames();
         this.fetchColumnNames();
 
     }
@@ -169,36 +179,39 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                 return qs.stringify(params, { arrayFormat: "repeat" })
             }
         }).then(res => {
-            const resultJson = res.data;
+            const resultJson = res.data['Result'];
+            const status = res.data['status'];
             console.log(resultJson)
-            console.log('Test')
+            console.log(status)
 
 
 
             // console.log("")
             // console.log(temp_array)
 
+            this.setState({status: status})
+            if (status === 'Success') {
+                this.setState({coefficients: resultJson['coefficients']})
+                this.setState({intercept: resultJson['intercept']})
+                this.setState({dataframe: JSON.parse(resultJson['dataframe'])})
+                this.setState({skew: resultJson['skew']})
+                this.setState({kurtosis: resultJson['kurtosis']})
+                this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
+                this.setState({jarque_bera_p: resultJson['Jarque-Bera p-value']})
+                this.setState({omnibus_test_stat: resultJson['Omnibus test statistic']})
+                this.setState({omnibus_test_p: resultJson['Omnibus test p-value']})
+                this.setState({durbin_watson: resultJson['Durbin Watson']})
+                this.setState({actual_values: resultJson['actual_values']})
+                this.setState({predicted_values: resultJson['predicted values']})
+                this.setState({residuals: resultJson['residuals']})
+                this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
+                this.setState({df_scatter: JSON.parse(resultJson['values_df'])})
+                this.setState({values_dict: resultJson['values_dict']})
+                this.setState({values_columns: resultJson['values_columns']})
 
-            this.setState({coefficients: resultJson['coefficients']})
-            this.setState({intercept: resultJson['intercept']})
-            this.setState({dataframe: JSON.parse(resultJson['dataframe'])})
-            this.setState({skew: resultJson['skew']})
-            this.setState({kurtosis: resultJson['kurtosis']})
-            this.setState({jarque_bera_stat: resultJson['Jarque Bera statistic']})
-            this.setState({jarque_bera_p: resultJson['Jarque-Bera p-value']})
-            this.setState({omnibus_test_stat: resultJson['Omnibus test statistic']})
-            this.setState({omnibus_test_p: resultJson['Omnibus test p-value']})
-            this.setState({durbin_watson: resultJson['Durbin Watson']})
-            this.setState({actual_values: resultJson['actual_values']})
-            this.setState({predicted_values: resultJson['predicted values']})
-            this.setState({residuals: resultJson['residuals']})
-            this.setState({coef_deter: resultJson['coefficient of determination (R^2)']})
-            this.setState({df_scatter: JSON.parse(resultJson['values_df'])})
-            this.setState({values_dict: resultJson['values_dict']})
-            this.setState({values_columns: resultJson['values_columns']})
-
-            this.setState({LinearSVRRegression_show: true})
-
+                this.setState({LinearSVRRegression_show: true})
+            }
+            this.setState({tabvalue:1})
 
 
 
@@ -243,47 +256,122 @@ class LinearSVRRegressionFunctionPage extends React.Component {
 
     }
 
-
-
     /**
      * Update state when selection changes in the form
      */
 
-    async fetchColumnNames(url, config) {
+    async fetchColumnNames() {
         const params = new URLSearchParams(window.location.search);
+
         API.get("return_columns",
-                {params: {
+                {
+                    params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
-            this.setState({columns: res.data.columns})
-            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
+            this.setState({column_names: res.data.columns})
         });
     }
 
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
 
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
+        });
+    }
+
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
+    }
     handleSelectDependentVariableChange(event){
-        this.setState({selected_dependent_variable: event.target.value})
+        this.setState( {selected_dependent_variable: event.target.value})
+        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
     }
-    handleSelectAlphaChange(event){
-        this.setState({selected_alpha: event.target.value})
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.setState({selected_independent_variables: []})
+            this.setState({selected_independent_variable: ""})
+            this.setState({selected_dependent_variable: ""})
+            this.state.LinearSVRRegression_show=false
+            this.state.LinearSVRRegression_step2_show=false
+        })
     }
+
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
+    handleListDelete(event) {
+        let newArray = this.state.selected_independent_variables.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_independent_variables:newList})
+    }
+    handleSelectVariableNameChange(event){
+        this.setState( {selected_independent_variable: event.target.value})
+        let newArray = this.state.selected_independent_variables.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_independent_variables:newArray})
+    }
+    // handleSelectRegularizationChange(event){
+    //     this.setState({selected_regularization: event.target.value})
+    // }
+
     handleSelectMaxIterChange(event){
         this.setState({selected_max_iter: event.target.value})
+    }
+    handleSelectEpsilonChange(event){
+        this.setState({selected_epsilon: event.target.value})
     }
 
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
     }
-    handleSelectEpsilonChange(event){
-        this.setState( {selected_solver: event.target.value})
-    }
+
     handleSelectLossChange(event){
-        this.setState({selected_loss: event.target.value})
+        this.setState( {selected_loss: event.target.value})
     }
+
     handleSelectCChange(event){
-        this.setState({selected_C: event.target.value})
+        this.setState( {selected_C: event.target.value})
     }
 
     clear(){
@@ -299,10 +387,6 @@ class LinearSVRRegressionFunctionPage extends React.Component {
     handleSelectYAxisnChange(event){
         this.setState({selected_y_axis: event.target.value})
     }
-    handleTabChange(event, newvalue){
-        this.setState({tabvalue: newvalue})
-    }
-
 
     render() {
         return (
@@ -312,22 +396,22 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                             LinearSVR Parameterisation
                         </Typography>
                         <hr/>
-                        <Grid container justifyContent = "center">
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <TextareaAutosize
-                                        area-label="textarea"
-                                        placeholder="Selected Independent Variables"
-                                        style={{ width: 200 }}
-                                        value={this.state.selected_independent_variables}
-                                        inputProps={
-                                            { readOnly: true, }
-                                        }
-                                />
-                                <FormHelperText>Selected Independent Variables</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                        <hr/>
                         <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Dependent Variable</InputLabel>
                                 <Select
@@ -338,48 +422,31 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
 
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Dependent Variable (Categorical)</FormHelperText>
+                                <FormHelperText>Select Dependent Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        multiple
+                                        value= {this.state.selected_independent_variable}
                                         label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        onChange={this.handleSelectVariableNameChange}
                                 >
 
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select Independent Variables</FormHelperText>
-                                <Button onClick={this.selectAll}>
-                                    Select All Variables
-                                </Button>
-                                <Button onClick={this.clear}>
-                                    Clear Selections
-                                </Button>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelId="alpha-label"
-                                        id="alpha-selector"
-                                        value= {this.state.selected_alpha}
-                                        label="alpha"
-                                        onChange={this.handleSelectAlphaChange}
-                                />
-                                <FormHelperText>Alpha</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
@@ -389,17 +456,18 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                         label="max-iter"
                                         onChange={this.handleSelectMaxIterChange}
                                 />
-                                <FormHelperText>Max Iterations</FormHelperText>
+                                <FormHelperText>The maximum number of iterations to be run.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="C-label"
                                         id="C-selector"
                                         value= {this.state.selected_C}
+                                        inputProps={{pattern: "[0-9]*[.]?[0-9]+"}}
                                         label="C"
                                         onChange={this.handleSelectCChange}
                                 />
-                                <FormHelperText>C</FormHelperText>
+                                <FormHelperText>Regularization parameter. The strength of the regularization is inversely proportional to C. Must be strictly positive.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="loss-label">Loss</InputLabel>
@@ -414,33 +482,52 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                     <MenuItem value={"epsilon_insensitive"}><em>epsilon insensitive</em></MenuItem>
                                     <MenuItem value={"squared_epsilon_insensitive"}><em>squared epsilon insensitive</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Specify which loss to use.</FormHelperText>
+                                <FormHelperText>Specifies the loss function. The epsilon-insensitive loss (standard SVR) is the L1 loss, while the squared epsilon-insensitive loss (‘squared_epsilon_insensitive’) is the L2 loss.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="epsilon-label"
                                         id="epsilon-selector"
                                         value= {this.state.selected_epsilon}
+                                        inputProps={{pattern: "[0-9]*[.]?[0-9]+"}}
                                         label="epsilon"
                                         onChange={this.handleSelectEpsilonChange}
                                 />
-                                <FormHelperText>Epsilon</FormHelperText>
+                                <FormHelperText>Epsilon parameter in the epsilon-insensitive loss function. Note that the value of this parameter depends on the scale of the target variable y. If unsure, set epsilon=0.</FormHelperText>
                             </FormControl>
 
 
-                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
+
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
+                                {/*|| !this.state.selected_method*/}
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.LinearSVRRegression_show}>
                                 Proceed >
                             </Button>
                         </form>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected independent variables [click to remove]</FormHelperText>
+                            <div>
+                                    <span>
+                                        {this.state.selected_independent_variables.map((column) => (
+                                                <Button variant="outlined" size="small"
+                                                        sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                        id={column}
+                                                        onClick={this.handleListDelete}>
+                                                    {column}
+                                                </Button>
+                                        ))}
+                                    </span>
+                            </div>
+                            <Button onClick={this.clear}>
+                                Clear All
+                            </Button>
+                        </FormControl>
                         <br/>
                         <br/>
                         <div  style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
@@ -506,77 +593,83 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.coefficients}</div>*/}
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
                         {/*<div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
-                        {/*<div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />*/}
-                        <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
-                        <hr style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none') }}/>
-                        <div style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
-                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Intercept:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Skew:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Kurtosis:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Omnibus test statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Durbin Watson:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                            <hr/>
-                            <Box sx={{ width: '100%' }}>
-                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                    <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                        <Tab label="Results" {...a11yProps(0)} />
-                                        <Tab label="Initial Dataset" {...a11yProps(1)} />
-                                    </Tabs>
-                                </Box>
-                                <TabPanel value={this.state.tabvalue} index={0}>
-                                    <Grid container direction="row">
-                                        <Grid sx={{ flexGrow: 1, textAlign: "center"}} >
-                                            <div style={{ display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
-                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
-                                                    Actual values, predicted values and residuals
-                                                </Typography>
-                                                <JsonTable className="jsonResultsTable" rows = {this.state.df_scatter}/>
-                                                {/*<div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />*/}
-                                            </div>
-                                        </Grid>
-                                    </Grid>
-                                </TabPanel>
-                                <TabPanel value={this.state.tabvalue} index={1}>
-                                    <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
-                                </TabPanel>
+                        <hr style={{ display: (this.state.LinearSVR_show ? 'block' : 'none') }}/>
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
+                                    <Tab label="New Dataset" {...a11yProps(2)} />
+                                </Tabs>
                             </Box>
-                            {/*<div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />*/}
-                        </div>
+                            <TabPanel value={this.state.tabvalue} index={0}>
+                                <JsonTable className="jsonResultsTable"
+                                           rows = {this.state.initialdataset}/>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={1}>
+                                <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
+                                    <div style={{display: (this.state.LinearSVRRegression_show ? 'block' : 'none')}}>
+                                        <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
+                                            <Table>
+                                                <TableRow>
+                                                    <TableCell><strong>Intercept:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Skew:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Kurtosis:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Omnibus test statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Omnibus test p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Durbin Watson:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                            </Table>
+                                        </TableContainer>
+                                        <hr/>
+                                        <div/>
+                                    </div>
+                                </div>
+                                <div style={{display: (this.state.status !== 'Success' ? 'block': 'none')}}>
+                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
+                                        <Table>
+                                            <TableRow>
+                                                <TableCell>{this.state.status}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={2}>
+                                <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.df_scatter}/>
+                                </div>
+                            </TabPanel>
+                        </Box>
                     </Grid>
                 </Grid>
         )
