@@ -5,6 +5,7 @@
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.26",
     "@amcharts/amcharts5": "^5.1.13",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@fontsource/roboto": "^4.5.8",
