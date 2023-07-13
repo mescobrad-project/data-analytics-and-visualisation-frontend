@@ -54,7 +54,7 @@ const titleBar = {
 var static_tutorial_ip = "http://127.0.0.1:8000/static/tutorials/";
 if (process.env.REACT_APP_BASEURL)
 {
-    static_tutorial_ip = process.env.REACT_APP_BASEURL
+    static_tutorial_ip = process.env.REACT_APP_BASEURL + "static/tutorials/";
 }
 
 const itemData = [
@@ -242,7 +242,7 @@ class ManualSleepStagePage extends React.Component {
     }
     handleModalOpen() {
         this.setState({open_modal: true})
-        this.handleGetChannelSignal()
+        // this.handleGetChannelSignal()
     }
 
     handleModalClose() {

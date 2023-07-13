@@ -118,9 +118,9 @@ class MRIViewer extends React.Component {
     constructor(props) {
         super(props);
         let ip = "https://gui.platform.mes-cobrad.eu/"
-        if (process.env.NEURODESK_BASEURL)
+        if (process.env.REACT_APP_NEURODESK_BASEURL)
         {
-            ip = process.env.NEURODESK_BASEURL
+            ip = process.env.REACT_APP_NEURODESK_BASEURL
         }
         this.state = {
             //Channel Select order modal
