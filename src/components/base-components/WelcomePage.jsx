@@ -19,6 +19,8 @@ import Actigraphy_Metrics from "./Actigraphy_Metrics";
 import General_Stats_Zscore from "../../pages/hypothesis_testing/General_Stats_Zscore";
 import General_Stats_Std from "../../pages/hypothesis_testing/General_Stats_Std";
 import General_Stats_Cov from "../../pages/hypothesis_testing/General_Stats_Cov";
+import Exploratory_Factor_Analysis_extract_latent_structure
+    from "../../pages/hypothesis_testing/Exploratory_Factor_Analysis_extract_latent_structure";
 
 
 // import {useHistory} from "react-router-dom";
@@ -713,6 +715,15 @@ function WelcomePage() {
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "structural_equation_models_optimization", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
                                 >
                                     Structural Equation Models Optimization
+                                </Button>
+                                <Button
+                                        variant="contained"
+                                        size="medium"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "exploratory_factor_analysis_extract_latent_structure", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv"])}
+                                >
+                                    Exploratory Factor Analysis extract latent structure
                                 </Button>
 
                             </AccordionDetails>

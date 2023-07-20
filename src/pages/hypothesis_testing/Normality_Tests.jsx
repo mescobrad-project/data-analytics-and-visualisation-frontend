@@ -78,11 +78,14 @@ class Normality_Tests extends React.Component {
                     skew: "",
                     kurtosis: "",
                     standard_deviation: "",
+                    sample_variance:'',
+                    standard_error:'',
                     median:"",
                     mean:"",
                     sample_N:"",
                     top_5:[],
-                    last_5:[]
+                    last_5:[],
+                    confidence_level:''
                 }
             },
             test_chart_data : [],
@@ -465,6 +468,9 @@ class Normality_Tests extends React.Component {
                                                                 <TableCell className="tableHeadCell">Mean</TableCell>
                                                                 <TableCell className="tableHeadCell">Median</TableCell>
                                                                 <TableCell className="tableHeadCell">Std. Deviation</TableCell>
+                                                                <TableCell className="tableHeadCell">Std Error</TableCell>
+                                                                <TableCell className="tableHeadCell">Sample Variance</TableCell>
+                                                                <TableCell className="tableHeadCell">Confidence Level</TableCell>
                                                                 <TableCell className="tableHeadCell">Skewness</TableCell>
                                                                 <TableCell className="tableHeadCell">Kurtosis</TableCell>
                                                             </TableRow>
@@ -473,11 +479,14 @@ class Normality_Tests extends React.Component {
                                                             <TableRow>
                                                                 <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
                                                                 <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_error).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.sample_variance).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.confidence_level).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(8)}</TableCell>
                                                             </TableRow>
                                                         </TableBody>
                                                     </Table>
@@ -562,10 +571,10 @@ class Normality_Tests extends React.Component {
                                                     <TableBody>
                                                         <TableRow>
                                                             <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
-                                                            <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.statistic).toFixed(5)}</TableCell>
+                                                            <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.statistic).toFixed(8)}</TableCell>
                                                             <TableCell className="tableCell" >{ this.state.test_data.results.sample_N - 1}</TableCell>
-                                                            <TableCell className="tableCell" >{ Number.parseFloat(this.state.alpha).toFixed(5)}</TableCell>
-                                                            <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.p_value).toFixed(5)}</TableCell>
+                                                            <TableCell className="tableCell" >{ Number.parseFloat(this.state.alpha).toFixed(8)}</TableCell>
+                                                            <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.p_value).toFixed(8)}</TableCell>
                                                             <TableCell className="tableCell"  style={{ color: (this.state.test_data.Description==="Sample looks Gaussian (fail to reject H0)" ? 'Red' : 'Green') }}>{this.state.test_data.Description}</TableCell>
                                                         </TableRow>
                                                     </TableBody>

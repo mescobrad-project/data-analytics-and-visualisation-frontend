@@ -271,6 +271,9 @@ class Structural_Equation_Models_Optimization extends React.Component {
             this.state.created_latent_variables=[]
             this.state.create_model_checked=false
             this.state.insert_latent=""
+            this.state.selected_right_variables=[]
+            this.state.selected_left_variables=[]
+            this.handleDeleteAllRules()
         })
     }
     handleDeleteLatentVariable(event) {
@@ -460,11 +463,11 @@ class Structural_Equation_Models_Optimization extends React.Component {
                                             </Grid>
                                             <Grid sx={{paddingTop: '12px'}}>
                                                 <Card >
-                                                    <CardContent sx={{m: 1, width:'100%'}}>
+                                                    <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
                                                         <Typography variant="h5" component="div">
                                                             Instance of SEM. </Typography>
                                                         {this.state.test_data.graph!=="" ? (
-                                                                <Graphviz dot={this.state.test_data.graph} options={{height:'600px', width:'1000px'}} />
+                                                                <Graphviz dot={this.state.test_data.graph} options={{height:'700px', width:'700px'}} />
                                                         ):(<br/>)}
                                                     </CardContent>
                                                 </Card>
