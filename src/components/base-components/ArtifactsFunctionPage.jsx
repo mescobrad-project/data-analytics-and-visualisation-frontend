@@ -45,9 +45,9 @@ class ArtifactsFunctionPage extends React.Component {
     constructor(props) {
         super(props);
         let ip = "http://localhost:8080/"
-        if (process.env.NEURODESK_BASEURL)
+        if (process.env.REACT_APP_NEURODESK_BASEURL)
         {
-            ip = process.env.NEURODESK_BASEURL
+            ip = process.env.REACT_APP_NEURODESK_BASEURL
         }
         this.state = {
             //Channel Select order modal

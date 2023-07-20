@@ -127,11 +127,15 @@ class SleepStageClassificationPage extends React.Component {
             ip = process.env.REACT_APP_BASEURL
         }
         this.state = {
+            // File  variables
+            file_names : [],
+
             // List of channels sent by the backend
             channels: [],
             tabvalue: 0,
 
-            // EEG general variables
+            // Form  variables
+            selected_file_name: "",
             file_used: null,
             selected_eeg_channel: "",
             selected_eog_channel: "",
@@ -142,6 +146,13 @@ class SleepStageClassificationPage extends React.Component {
             result_sleep_stage_confidence: [],
             result_sleep_stage: [],
 
+            //Misc paths
+            // Redirected query parameter is used to inform the new page
+            // that it has been redirected from the current page and not from
+            // the worklflow manager so it needs to retrive the file from the
+            // interim storage
+            manual_classification_url :
+                    window.location.href.replace("sleep_stage_classification", "manual_sleep_stage_classification") + "&redirected=1",
             //Plot paths
             base_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id") + '/step_' + params.get("step_id") + '/output',
         };
@@ -153,6 +164,8 @@ class SleepStageClassificationPage extends React.Component {
         this.handleSelectEEGChannelChange = this.handleSelectEEGChannelChange.bind(this);
         this.handleSelectEOGChannelChange = this.handleSelectEOGChannelChange.bind(this);
         this.handleSelectEMGChannelChange = this.handleSelectEMGChannelChange.bind(this);
+        this.redirectToManualClassification = this.redirectToManualClassification.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
 
         this.handleChannelChange = this.handleChannelChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
@@ -160,7 +173,7 @@ class SleepStageClassificationPage extends React.Component {
         this.handleFileUsedChange = this.handleFileUsedChange.bind(this);
         // Initialise component
         // - values of channels from the backend
-
+        this.fetchFileNames();
     }
 
     /**
@@ -206,6 +219,25 @@ class SleepStageClassificationPage extends React.Component {
      * Update state when selection changes in the form
      */
 
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+
+    redirectToManualClassification(){
+        console.log("REDIRECT")
+        console.log(this.state.manual_classification_url)
+        window.location.href = this.state.manual_classification_url
+    }
 
     handleSelectEEGChannelChange(event){
         this.setState( {selected_eeg_channel: event.target.value})
@@ -256,6 +288,21 @@ class SleepStageClassificationPage extends React.Component {
                         <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                         <Divider/>
                         <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="file-selector-label">File</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="file-selector-label"*/}
+                            {/*            id="file-selector"*/}
+                            {/*            value= {this.state.selected_file_name}*/}
+                            {/*            label="File Variable"*/}
+                            {/*            onChange={this.handleSelectFileNameChange}*/}
+                            {/*    >*/}
+                            {/*        {this.state.file_names.map((column) => (*/}
+                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select file to use</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="channel-selector-label">Channel</InputLabel>
                                 <Select
@@ -317,6 +364,10 @@ class SleepStageClassificationPage extends React.Component {
                             </Button>
 
                         </form>
+                        <Button  variant="contained" size="medium"
+                                 onClick={this.redirectToManualClassification}>
+                              Proceed to Hypnogram Viewer and Manual Classification >
+                        </Button>
                         <ProceedButton></ProceedButton>
 
                     </Grid>
