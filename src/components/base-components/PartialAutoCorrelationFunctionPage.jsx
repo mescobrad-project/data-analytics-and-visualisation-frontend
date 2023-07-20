@@ -26,7 +26,15 @@ import EEGSelectModal from "../ui-components/EEGSelectModal";
 class PartialAutoCorrelationFunctionPage extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/";
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
+            // Utils
+            url_params: "",
             // List of channels sent by the backend
             channels: [],
 
@@ -49,7 +57,10 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
             confint_chart_show : false,
 
             //Info from selector
-            file_used: null
+            file_used: null,
+
+            partial_autocorrelation_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/partial_autocorrelation.png',
         };
 
         //Binding functions of the class
@@ -105,10 +116,14 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
         // Send the request
         API.get("return_partial_autocorrelation",
             {
-                params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                params: {
+                    workflow_id: params.get("workflow_id"),
+                    run_id: params.get("run_id"),
                     step_id: params.get("step_id"),
-                    input_name: this.state.selected_channel, input_method: this.state.selected_method,
-                    input_alpha: to_send_input_alpha, input_nlags: to_send_input_nlags}
+                    input_name: this.state.selected_channel,
+                    input_method: this.state.selected_method,
+                    input_alpha: to_send_input_alpha,
+                    input_nlags: to_send_input_nlags}
             }
         ).then(res => {
             const resultJson = res.data;
@@ -299,18 +314,25 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                         Result Visualisation
                     </Typography>
-                    <hr  class="result"/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>
-                        Correlation Results
-                    </Typography>
-                    <div style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>
-                    <hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>
+                    <Divider sx={{bgcolor: "black"}}/>
+                    <Grid item xs={12} container direction='row'>
+                        <img src={this.state.partial_autocorrelation_path + "?random=" + new Date().getTime()}
+                             srcSet={this.state.partial_autocorrelation_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                             loading="lazy"
+                        />
+                    </Grid>
+                    {/*<hr  class="result"/>*/}
+                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.correlation_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*    Correlation Results*/}
+                    {/*</Typography>*/}
+                    {/*<div style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="correlation_chart_id" chart_data={ this.state.correlation_chart_data}/></div>*/}
+                    {/*<hr style={{ display: (this.state.correlation_chart_show ? 'block' : 'none') }}/>*/}
 
-                    <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>
-                        Confidence Interval
-                    </Typography>
-                    <div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>
-                    <hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>
+                    {/*<Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.confint_chart_show ? 'block' : 'none')  }} noWrap>*/}
+                    {/*    Confidence Interval*/}
+                    {/*</Typography>*/}
+                    {/*<div style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}><RangeAreaChartCustom chart_id="confint_chart_id" chart_data={ this.state.confint_chart_data}/></div>*/}
+                    {/*<hr style={{ display: (this.state.confint_chart_show ? 'block' : 'none') }}/>*/}
                 </Grid>
             </Grid>
         )
