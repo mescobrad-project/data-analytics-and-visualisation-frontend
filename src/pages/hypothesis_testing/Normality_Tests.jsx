@@ -92,7 +92,7 @@ class Normality_Tests extends React.Component {
             test_chart_data : [],
             test_boxplot_chart_data: [],
             test_qqplot_chart_data : [],
-            test_probplot_chart_data : [],
+            // test_probplot_chart_data : [],
             test_Hplot_chart_data: [],
             alpha:"",
             //Values selected currently on the form
@@ -109,7 +109,7 @@ class Normality_Tests extends React.Component {
             histogram_chart_show: false,
             boxplot_chart_show: false,
             qqplot_chart_show: false,
-            probplot_chart_show: false,
+            // probplot_chart_show: false,
             stats_show:false,
             output_return_data:''
         };
@@ -184,7 +184,7 @@ class Normality_Tests extends React.Component {
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
         this.setState({qqplot_chart_show: false})
-        this.setState({probplot_chart_show: false})
+        // this.setState({probplot_chart_show: false})
         this.setState({stats_show: false})
         // Send the request
         API.get("normality_tests",
@@ -206,13 +206,13 @@ class Normality_Tests extends React.Component {
             this.setState({histogram_chart_show: true})
             this.setState({boxplot_chart_show: true})
             this.setState({qqplot_chart_show: true})
-            this.setState({probplot_chart_show: true})
+            // this.setState({probplot_chart_show: true})
             this.setState({stats_show: true})
 
             this.setState({test_qqplot_chart_data: JSON.parse(resultJson['results']['qqplot'])})
             this.setState({test_Hplot_chart_data: JSON.parse(resultJson['results']['histogramplot'])})
             this.setState({test_boxplot_chart_data: JSON.parse(resultJson['results']['boxplot'])})
-            this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
+            // this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
 
             // We changed info file uploading process to the DataLake
             // const output_info = {
@@ -277,7 +277,7 @@ class Normality_Tests extends React.Component {
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
         this.setState({qqplot_chart_show: false})
-        this.setState({probplot_chart_show: false})
+        // this.setState({probplot_chart_show: false})
         this.setState({stats_show: false})
     }
     handleSelectColumnChange(event){
@@ -599,9 +599,9 @@ class Normality_Tests extends React.Component {
                                                             <Plot style={{width: '100%'}}
                                                                     data={this.state.test_Hplot_chart_data.data}
                                                                     layout={this.state.test_Hplot_chart_data.layout}/>
-                                                            <a href="https://chart-studio.plotly.com/create/?fid=PythonPlotBot:3167" target="_blank">
-                                                                Edit chart
-                                                            </a>
+                                                            {/*<a href="https://chart-studio.plotly.com/create/?fid=PythonPlotBot:3167" target="_blank">*/}
+                                                            {/*    Edit chart*/}
+                                                            {/*</a>*/}
                                                         </CardContent>
                                                     </Card>
                                                     {/*<hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>*/}
@@ -644,16 +644,16 @@ class Normality_Tests extends React.Component {
                                                         </CardContent>
                                                     </Card>
                                                 </Grid>
-                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
-                                                        Probability Plot of Selected data
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }} >
-                                                        <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
+                                                {/*<Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>*/}
+                                                {/*    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>*/}
+                                                {/*        Probability Plot of Selected data*/}
+                                                {/*    </Typography>*/}
+                                                {/*    <div style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }} >*/}
+                                                {/*        <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>*/}
 
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }}/>
-                                                </Grid>
+                                                {/*    </div>*/}
+                                                {/*    <hr  class="result" style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }}/>*/}
+                                                {/*</Grid>*/}
                                             </Grid>
                                         </Grid>
                                         )}
