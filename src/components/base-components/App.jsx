@@ -217,6 +217,12 @@ const App = () => {
                         <Route exact path="/back_average" element={(<LayoutMain><BackAveragePage/></LayoutMain>)}/>
                         <Route exact path="/sleep_stage_classification" element={(<LayoutMain><SleepStageClassificationPage/></LayoutMain>)}/>
                         <Route exact path="/manual_sleep_stage_classification" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_sensitivity_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_sensitivity_analysis_add_subject" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_sensitivity_analysis_add_subject_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_common_channels_across_subjects" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_analysis_sensitivity_add_subject_add_channels_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
