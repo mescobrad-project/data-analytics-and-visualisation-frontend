@@ -61,6 +61,11 @@ class PointBiserialCorrelation extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of columns in dataset
             column_names: [],
@@ -101,13 +106,13 @@ class PointBiserialCorrelation extends React.Component {
             selected_variable2: "",
             selected_file_name: "",
             stats_show: false,
-            svg_Scatter_Two_Variables : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_Scatter_Two_Variables : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/Scatter_Two_Variables.svg',
-            svg_BoxPlot : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_BoxPlot : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/BoxPlot.svg',
-            svg_HistogramPlot_GroupA : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_HistogramPlot_GroupA : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/HistogramPlot_GroupA.svg',
-            svg_HistogramPlot_GroupB : 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg_HistogramPlot_GroupB : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/HistogramPlot_GroupB.svg',
 // remove_outliers: true
         };

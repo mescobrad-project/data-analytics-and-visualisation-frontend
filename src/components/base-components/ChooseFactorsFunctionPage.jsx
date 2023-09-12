@@ -61,15 +61,9 @@ function a11yProps(index) {
     };
 }
 
-class FactorAnalysisFunctionPage extends React.Component {
+class ChooseFactorsFunctionPage extends React.Component {
     constructor(props){
         super(props);
-        const params = new URLSearchParams(window.location.search);
-        let ip = "http://127.0.0.1:8000/"
-        if (process.env.REACT_APP_BASEURL)
-        {
-            ip = process.env.REACT_APP_BASEURL
-        }
         this.state = {
             // List of columns sent by the backend
             columns: [],
@@ -84,33 +78,17 @@ class FactorAnalysisFunctionPage extends React.Component {
             selected_independent_variables: [],
 
             // Values returned from backend
-            factor_analysis_chart_data : [],
+            choose_factors_chart_data : [],
             correlation_matrix: [],
-            df_com_eigen: "",
-            df_factor_variances: "",
-            df_new_dataset: "",
-            df_structure: "",
-            df_rotation: "",
-            rotation: "",
-            factor_corr_matrix: [],
+            df_orig_eigen_values: "",
 
             // path to visualisations sent from backend
-            corr_path: ip + 'static/runtime_config/workflow_'
+            factor_eigen_path: 'http://localhost:8000/static/runtime_config/workflow_'
                     + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/correlation_matrix.png',
-            factor_corr_path: ip + 'static/runtime_config/workflow_'
-                    + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/factor_correlation_matrix.png',
-
-            factor_loadings: "",
-
-
-
+                    + '/step_' + params.get("step_id") + '/output/factor_eigen_values.png',
 
             // Visualisation Hide/Show values
-            factor_analysis_show : false,
-
-            test_chart_html: [],
+            choose_factors_show: false,
         };
 
         //Binding functions of the class
@@ -148,13 +126,13 @@ class FactorAnalysisFunctionPage extends React.Component {
         event.preventDefault();
 
         //Reset view of optional visualisations preview
-        this.setState({factor_analysis_chart_show: false})
+        this.setState({choose_factors_chart_show: false})
 
 
 
         const params = new URLSearchParams(window.location.search);
         // Send the request
-        API.get("calculate_factor_analysis",
+        API.get("choose_number_of_factors",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
@@ -175,19 +153,8 @@ class FactorAnalysisFunctionPage extends React.Component {
             // console.log("")
             // console.log(temp_array)
 
-            this.setState({rotation: resultJson['rotation']})
-            this.setState({factor_loadings: JSON.parse(resultJson['factor_matrix'])})
-            this.setState({factor_analysis_show: true})
-            this.setState({correlation_matrix: resultJson['corr_matrix']})
-            this.setState({df_com_eigen: JSON.parse(resultJson['df_com_eigen'])})
-            this.setState({df_factor_variances: JSON.parse(resultJson['df_factor_variances'])})
-            this.setState({df_new_dataset: JSON.parse(resultJson['df_new_dataset'])})
-            this.setState({df_structure: JSON.parse(resultJson['df_structure'])})
-            this.setState({df_rotation: JSON.parse(resultJson['df_rotation'])})
-            this.setState({factor_corr_matrix: resultJson['factor_corr_matrix']})
-
-
-
+            this.setState({df_orig_eigen_values: JSON.parse(resultJson['df_orig_eigen_values'])})
+            this.setState({choose_factors_show: true})
 
         });
     }
@@ -236,7 +203,7 @@ class FactorAnalysisFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Factor Analysis Parameterisation
+                            Choose Number of Factors Parameterisation
                         </Typography>
                         <hr/>
                         <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
@@ -364,74 +331,24 @@ class FactorAnalysisFunctionPage extends React.Component {
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Factor Analysis Result
+                            Choose Number of Factors Results
                         </Typography>
                         <hr/>
-                        <div style={{display: (this.state.factor_analysis_show ? 'block' : 'none')}}>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                Factor Loadings
+                        <div style={{display: (this.state.choose_factors_show ? 'block' : 'none')}}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.choose_factors_show ? 'block' : 'none')  }}>
+                                Original Eigenvalues
                             </Typography>
-                            <JsonTable className="jsonResultsTable" rows = {this.state.factor_loadings}/>
-                            <hr className="result" style={{display: (this.state.factor_analysis_show ? 'block' : 'none')}}/>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                Correlation Matrix
+                            <JsonTable className="jsonResultsTable" rows = {this.state.df_orig_eigen_values}/>
+                            <hr className="result" style={{display: (this.state.choose_factors_show ? 'block' : 'none')}}/>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.choose_factors_show ? 'block' : 'none')  }}>
+                                Plotting of Eigenvalues vs Number of Factors
                             </Typography>
-                            {/*<div style={{ display: (this.state.factor_analysis_show ? 'block' : 'none') }}>*/}
+                            {/*<div style={{ display: (this.state.choose_factors_show ? 'block' : 'none') }}>*/}
                             {/*    <InnerHTML html={this.state.correlation_matrix}/>*/}
                             {/*    /!*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*!/*/}
                             {/*</div>*/}
-                            <img style={{ display: (this.state.factor_analysis_show ? 'block' : 'none'), alignItems: "center", justify:"center"}}
-                                 src={this.state.corr_path + "?random=" + new Date().getTime()}/>
-                            <div style={{display: (this.state.rotation !== 'None' ? 'block' : 'none')}}>
-                                <hr className="result"
-                                    style={{display: (this.state.factor_analysis_show ? 'block' : 'none')}}/>
-                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                    Rotation Matrix
-                                </Typography>
-                                <JsonTable className="jsonResultsTable" rows = {this.state.df_rotation}/>
-                                <div style={{display: (['promax', 'oblimin', 'quartimin'].includes(this.state.rotation) ? 'block' : 'none')}}>
-                                    <hr className="result"
-                                        style={{display: (this.state.factor_analysis_show ? 'block' : 'none')}}/>
-                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                        Factor Correlation Matrix
-                                    </Typography>
-                                    <img style={{ display: (this.state.factor_analysis_show ? 'block' : 'none'), alignSelf: 'center' }}
-                                         src={this.state.factor_corr_path + "?random=" + new Date().getTime()}/>
-                                    {/*<InnerHTML html={this.state.factor_corr_matrix}/>*/}
-                                    <div style={{display: (this.state.rotation === 'promax' ? 'block' : 'none')}}>
-                                        <hr className="result"
-                                            style={{display: (this.state.factor_analysis_show ? 'block' : 'none')}}/>
-                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                            Structure Loading Matrix
-                                        </Typography>
-                                        <JsonTable className="jsonResultsTable" rows = {this.state.df_structure}/>
-                                    </div>
-                                </div>
-                            </div>
-                            {/*<div style={{display: (!['oblique', 'None', 'promax'].includes(this.state.rotation) ? 'block' : 'none')}}>*/}
-                            {/*    <hr/>*/}
-                            {/*    <JsonTable className="jsonResultsTable" rows = {this.state.df_rotation}/>*/}
-                            {/*</div>*/}
-                            <hr  class="result" style={{ display: (this.state.factor_analysis_show ? 'block' : 'none') }}/>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                Communalities, Eigenvalues and Uniquenesses, given the factor loading matrix
-                            </Typography>
-                            <JsonTable className="jsonResultsTable" rows = {this.state.df_com_eigen}/>
-                            <hr  class="result" style={{ display: (this.state.factor_analysis_show ? 'block' : 'none') }}/>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                Factor Variance Information
-                            </Typography>
-                            <JsonTable className="jsonResultsTable" rows = {this.state.df_factor_variances}/>
-                            <hr  class="result" style={{ display: (this.state.factor_analysis_show ? 'block' : 'none') }}/>
-                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.factor_analysis_show ? 'block' : 'none')  }}>
-                                Latent Variables
-                            </Typography>
-                            <JsonTable className="jsonResultsTable" rows = {this.state.df_new_dataset}/>
-                            <hr className="result" style={{display: (this.state.factor_analysis_show ? 'block' : 'none')}}/>
-
-
-
-
+                            <img style={{ display: (this.state.choose_factors_show ? 'block' : 'none'), alignItems: "center", justify:"center"}}
+                                 src={this.state.factor_eigen_path + "?random=" + new Date().getTime()}/>
                         </div>
                     </Grid>
                 </Grid>
@@ -439,4 +356,4 @@ class FactorAnalysisFunctionPage extends React.Component {
     }
 }
 
-export default FactorAnalysisFunctionPage;
+export default ChooseFactorsFunctionPage;

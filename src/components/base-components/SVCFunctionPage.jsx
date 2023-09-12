@@ -208,19 +208,7 @@ class SVCFunctionPage extends React.Component {
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={2}  sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Available Variables
-                        </Typography>
-
-                        <hr/>
-                        <List>
-                            {this.state.columns.map((column) => (
-                                    <ListItem> <ListItemText primary={column}/></ListItem>
-                            ))}
-                        </List>
-                    </Grid>
-                    <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
+                    <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             SVC Parameterisation
                         </Typography>
@@ -241,7 +229,7 @@ class SVCFunctionPage extends React.Component {
                         </Grid>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Dependent Variable</InputLabel>
                                 <Select
                                         labelId="dependent-variable-selector-label"
@@ -259,7 +247,7 @@ class SVCFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Dependent Variable (Categorical)</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="degree-label"
                                         id="degree-selector"
@@ -269,7 +257,7 @@ class SVCFunctionPage extends React.Component {
                                 />
                                 <FormHelperText>Degree</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="max-iter-label"
                                         id="max-iter-selector"
@@ -279,7 +267,7 @@ class SVCFunctionPage extends React.Component {
                                 />
                                 <FormHelperText>Max Iter</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="C-label"
                                         id="c-selector"
@@ -289,7 +277,7 @@ class SVCFunctionPage extends React.Component {
                                 />
                                 <FormHelperText>C</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="coef0-label"
                                         id="coef0-selector"
@@ -299,7 +287,7 @@ class SVCFunctionPage extends React.Component {
                                 />
                                 <FormHelperText>Coef0</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="gamma-label">Gamma</InputLabel>
                                 <Select
                                         labelId="gamma-label"
@@ -313,7 +301,7 @@ class SVCFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Specify which gamma to use.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="kernel-label">Kernel</InputLabel>
                                 <Select
                                         labelId="kernel-label"
@@ -330,7 +318,7 @@ class SVCFunctionPage extends React.Component {
                                 <FormHelperText>Specify which kernel to use.</FormHelperText>
                             </FormControl>
 
-                            <FormControl sx={{m: 1, minWidth: 120, maxWidth: 250}}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
@@ -361,7 +349,7 @@ class SVCFunctionPage extends React.Component {
                             </Button>
                         </form>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             SVC Result
                         </Typography>
