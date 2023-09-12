@@ -22,6 +22,7 @@ import mpld3 from 'mpld3';
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class StftFunctionPage extends React.Component {
     constructor(props){
@@ -407,6 +408,8 @@ class StftFunctionPage extends React.Component {
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
+                            <ProceedButton></ProceedButton>
+
                         </form>
                     </Grid>
                     <Grid item xs={8}>

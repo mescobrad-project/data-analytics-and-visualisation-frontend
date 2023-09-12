@@ -19,6 +19,7 @@ import {
 
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class FindPeaksPage extends React.Component {
     constructor(props){
@@ -620,6 +621,8 @@ class FindPeaksPage extends React.Component {
                             Submit
                         </Button>
                     </form>
+                    <ProceedButton></ProceedButton>
+
                 </Grid>
                 <Grid item xs={8} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

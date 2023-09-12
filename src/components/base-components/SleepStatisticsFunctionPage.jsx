@@ -29,6 +29,7 @@ import {useLocation} from "react-router-dom";
 import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const style = {
     position: 'absolute',
@@ -453,10 +454,12 @@ class SleepStatisticsFunctionPage extends React.Component {
                                     type="submit">
                                 Submit
                             </Button>
-                            <Button onClick={this.debug} variant="contained" color="secondary"
-                                    sx={{margin: "8px", float: "right"}}>
-                                Debug
-                            </Button>
+                            <ProceedButton></ProceedButton>
+
+                            {/*<Button onClick={this.debug} variant="contained" color="secondary"*/}
+                            {/*        sx={{margin: "8px", float: "right"}}>*/}
+                            {/*    Debug*/}
+                            {/*</Button>*/}
                         </form>
                         <form onSubmit={async (event) => {
                             event.preventDefault();

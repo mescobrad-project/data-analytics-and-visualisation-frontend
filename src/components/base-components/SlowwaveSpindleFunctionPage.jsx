@@ -29,6 +29,7 @@ import {useLocation} from "react-router-dom";
 import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const style = {
     position: 'absolute',
@@ -1313,6 +1314,8 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                 Proceed >
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
+
                     </Grid>
 
                     {/*<Divider/>*/}

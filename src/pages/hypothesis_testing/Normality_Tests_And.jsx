@@ -16,13 +16,14 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    Tabs, Tab
+    Tabs, Tab, CardContent, Card
 } from "@mui/material";
 import InnerHTML from "dangerously-set-html-content";
 import Paper from "@mui/material/Paper";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
+import Plot from "react-plotly.js";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -86,7 +87,7 @@ class Normality_Tests_And extends React.Component {
             test_chart_data : [],
             test_boxplot_chart_data: [],
             test_qqplot_chart_data : [],
-            test_probplot_chart_data : [],
+            // test_probplot_chart_data : [],
             test_Hplot_chart_data: [],
             alpha:"",
             //Values selected currently on the form
@@ -99,7 +100,7 @@ class Normality_Tests_And extends React.Component {
             histogram_chart_show: false,
             boxplot_chart_show: false,
             qqplot_chart_show: false,
-            probplot_chart_show: false,
+            // probplot_chart_show: false,
             stats_show:false,
         };
         this.state = empty_state
@@ -164,7 +165,7 @@ class Normality_Tests_And extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
+            this.setState({tabvalue:0})
         });
     }
     /**
@@ -176,7 +177,7 @@ class Normality_Tests_And extends React.Component {
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
         this.setState({qqplot_chart_show: false})
-        this.setState({probplot_chart_show: false})
+        // this.setState({probplot_chart_show: false})
         this.setState({stats_show: false})
         this.setState({histogram_chart_show: false})
         // Send the request
@@ -196,19 +197,19 @@ class Normality_Tests_And extends React.Component {
 
             const resultJson = res.data;
             // console.log(resultJson)
-            this.setState({tabvalue:0})
+            this.setState({tabvalue:1})
 
             // this.setState({test_chart_data: temp_array_chart})
             this.setState({histogram_chart_show: true})
             this.setState({boxplot_chart_show: true})
             this.setState({qqplot_chart_show: true})
-            this.setState({probplot_chart_show: true})
+            // this.setState({probplot_chart_show: true})
             this.setState({stats_show: true})
 
-            this.setState({test_qqplot_chart_data: resultJson['results']['qqplot']})
-            this.setState({test_Hplot_chart_data: resultJson['results']['histogramplot']})
-            this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
-            this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
+            this.setState({test_qqplot_chart_data: JSON.parse(resultJson['results']['qqplot'])})
+            this.setState({test_Hplot_chart_data: JSON.parse(resultJson['results']['histogramplot'])})
+            this.setState({test_boxplot_chart_data: JSON.parse(resultJson['results']['boxplot'])})
+            // this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
             // var maxCols = 10;
             // function getHistogramData(source) {
             //     // Init
@@ -278,7 +279,7 @@ class Normality_Tests_And extends React.Component {
         this.setState({histogram_chart_show: false})
         this.setState({boxplot_chart_show: false})
         this.setState({qqplot_chart_show: false})
-        this.setState({probplot_chart_show: false})
+        // this.setState({probplot_chart_show: false})
         this.setState({stats_show: false})
     }
 
@@ -382,12 +383,12 @@ class Normality_Tests_And extends React.Component {
                         <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Results" {...a11yProps(0)} />
-                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
                                     {/*<Tab label="Transformed" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
-                            <TabPanel value={this.state.tabvalue} index={0}>
+                            <TabPanel value={this.state.tabvalue} index={1}>
                                 {this.state.test_data['status']!=='Success' ? (
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                 ) : (
@@ -541,52 +542,49 @@ class Normality_Tests_And extends React.Component {
                                                 </TableContainer>
                                             </div>
                                             <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
-                                            <Grid>
-                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.histogram_chart_show ? 'block' : 'none')  }}>
-                                                        Histogram of Selected data
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
-                                                        <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
-                                                        {/*<HistogramChartCustom chart_id="histogram_chart_id" chart_data={ this.state.test_chart_data}/>*/}
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>
+                                            <Grid container>
+                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Card style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
+                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                            <Typography variant="h5" component="div">
+                                                                Histogram of Selected data. </Typography>
+                                                            <Plot style={{width: '100%'}}
+                                                                  data={this.state.test_Hplot_chart_data.data}
+                                                                  layout={this.state.test_Hplot_chart_data.layout}/>
+                                                            {/*<a href="https://chart-studio.plotly.com/create/?fid=PythonPlotBot:3167" target="_blank">*/}
+                                                            {/*    Edit chart*/}
+                                                            {/*</a>*/}
+                                                        </CardContent>
+                                                    </Card>
                                                 </Grid>
-                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.boxplot_chart_show ? 'block' : 'none')  }}>
-                                                        Box Plot of Selected data
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
-                                                        <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
-                                                        {/*<ClusteredBoxPlot chart_id="boxplot_chart_id" chart_data={ this.state.test_boxplot_chart_data}/>*/}
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}/>
+                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
+                                                   <Card style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
+                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                            <Typography variant="h5" component="div">
+                                                                Box Plot of Selected data. </Typography>
+                                                            <Plot style={{width: '100%'}}
+                                                                  data={this.state.test_boxplot_chart_data.data}
+                                                                  layout={this.state.test_boxplot_chart_data.layout}/>
+                                                        </CardContent>
+                                                    </Card>
                                                 </Grid>
-                                            </Grid>
-                                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.qqplot_chart_show ? 'block' : 'none')  }}>
-                                                    Q-Q Plot of Selected data
-                                                </Typography>
-                                                <div style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }} >
-                                                    <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
-
-                                                </div>
-                                                <hr  class="result" style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}/>
-                                            </Grid>
-                                            <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.probplot_chart_show ? 'block' : 'none')  }}>
-                                                    Probability Plot of Selected data
-                                                </Typography>
-                                                <div style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }} >
-                                                    <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
-
-                                                </div>
-                                                <hr  class="result" style={{ display: (this.state.probplot_chart_show ? 'block' : 'none') }}/>
+                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Card style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}>
+                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                            <Typography variant="h5" component="div">
+                                                                Q-Q Plot of Selected data. </Typography>
+                                                            <Plot style={{width: '100%'}}
+                                                                  data={this.state.test_qqplot_chart_data.data}
+                                                                  layout={this.state.test_qqplot_chart_data.layout}/>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                 )}
+                                <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
                             </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={1}>
+                            <TabPanel value={this.state.tabvalue} index={0}>
                                 <Box>
                                     <JsonTable className="jsonResultsTable"
                                                rows = {this.state.initialdataset}/>

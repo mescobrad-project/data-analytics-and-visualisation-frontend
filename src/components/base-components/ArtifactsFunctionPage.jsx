@@ -38,15 +38,16 @@ import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class ArtifactsFunctionPage extends React.Component {
 
     constructor(props) {
         super(props);
         let ip = "http://localhost:8080/"
-        if (process.env.NEURODESK_BASEURL)
+        if (process.env.REACT_APP_NEURODESK_BASEURL)
         {
-            ip = process.env.NEURODESK_BASEURL
+            ip = process.env.REACT_APP_NEURODESK_BASEURL
         }
         this.state = {
             //Channel Select order modal
@@ -481,6 +482,9 @@ class ArtifactsFunctionPage extends React.Component {
                                     sx={{margin: "8px", float: "right"}}>
                                 Apply Changes>
                             </Button>
+
+                            <ProceedButton></ProceedButton>
+
                         </Grid>
                         <Grid item xs={8} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>
                             <Grid container direction="row">

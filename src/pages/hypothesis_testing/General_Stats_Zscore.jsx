@@ -1,23 +1,19 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import "./normality_tests.scss"
 import {
     Button,
     FormControl,
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
     Select, Tab, Tabs, TextField,
     Typography
 } from "@mui/material";
 import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
 import qs from "qs";
-import JsonTable from "ts-react-json-table";
 import {CSVLink} from "react-csv";
 
 function TabPanel(props) {
@@ -52,40 +48,37 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-class Multiple_comparisons extends React.Component {
+
+class General_Stats_Zscore extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns in dataset
             column_names: [],
             file_names:[],
-            test_data: {
-                status:'',
-                rejected:[],
-                corrected_p_values:[]
-            },
+            test_data: [],
+            Results:[],
             //Values selected currently on the form
             selected_columns: [],
             selected_variables: [],
             selected_file_name: "",
-            selected_alpha: 0.05,
-            selected_method: "Bonferroni",
+            selected_ddof: 0,
+            selected_nan_policy:"omit",
             stats_show:false
         };
         //Binding functions of the class
-        // this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
+
         this.handleListDelete = this.handleListDelete.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectColumnsChange = this.handleSelectColumnsChange.bind(this);
-        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
-        this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
+        this.handleSelectDdofChange = this.handleSelectDdofChange.bind(this);
+        this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         this.handleTabChange = this.handleTabChange.bind(this);
@@ -135,7 +128,6 @@ class Multiple_comparisons extends React.Component {
             this.setState({tabvalue:0})
         });
     }
-
     /**
      * Process and send the request for auto correlation and handle the response
      */
@@ -143,29 +135,22 @@ class Multiple_comparisons extends React.Component {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
-        // let data_to_send = {
-        //     workflow_id: params.get("workflow_id"),
-        //     run_id: params.get("run_id"),
-        //     step_id: params.get("step_id"),
-        //     p_value: this.state.selected_variables,
-        //     method: this.state.selected_method,
-        //     alpha: this.state.selected_alpha
-        // }
 
-        API.get("multiple_comparisons",
+        // Send the request
+        API.get("z_score",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        p_value: this.state.selected_variables,
-                        method: this.state.selected_method,
-                        alpha: this.state.selected_alpha},
+                        dependent_variables: this.state.selected_variables,
+                        ddof: this.state.selected_ddof,
+                        nan_policy: this.state.selected_nan_policy},
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
-                    }
-                }).then(res =>{
-            this.setState({Results: JSON.parse(res.data.result)})
+                    }}
+        ).then(res => {
+            this.setState({Results:JSON.parse(res.data.Dataframe)});
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
@@ -189,15 +174,6 @@ class Multiple_comparisons extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    // handleSelectColumnChange(event){
-    //     this.setState( {selected_column: event.target.value})
-    // }
-    handleSelectMethodChange(event){
-        this.setState( {selected_method: event.target.value})
-    }
-    handleSelectAlphaChange(event){
-        this.setState( {selected_alpha: event.target.value})
-    }
     handleSelectColumnsChange(event){
         this.setState( {selected_columns: event.target.value})
         var newArray = this.state.selected_variables.slice();
@@ -218,6 +194,12 @@ class Multiple_comparisons extends React.Component {
     handleDeleteVariable(event) {
         this.setState({selected_variables:[]})
     }
+    handleSelectDdofChange(event){
+        this.setState( {selected_ddof: event.target.value})
+    }
+    handleSelectNanPolicyChange(event){
+        this.setState( {selected_nan_policy: event.target.value})
+    }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
@@ -225,8 +207,8 @@ class Multiple_comparisons extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_variables=[]
-            this.setState({stats_show: false})
+            // this.state.selected_variables=[]
+            // this.setState({stats_show: false})
         })
     }
     render() {
@@ -234,7 +216,7 @@ class Multiple_comparisons extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select Variable for Multiple Tests and P-Value Correction
+                            Select variables for Z score
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -266,46 +248,39 @@ class Multiple_comparisons extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Variable</FormHelperText>
+                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="method-selector-label">Method</InputLabel>
+                                <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
                                 <Select
-                                        labelId="method-selector-label"
-                                        id="method-selector"
-                                        value= {this.state.selected_method}
-                                        label="Method"
-                                        onChange={this.handleSelectMethodChange}
+                                        labelid="nanpolicy-selector-label"
+                                        id="nanpolicy-selector"
+                                        value= {this.state.selected_nan_policy}
+                                        label="Nan_policy"
+                                        onChange={this.handleSelectNanPolicyChange}
                                 >
-                                    <MenuItem value={"Bonferroni"}><em>Bonferroni: one-step correction</em></MenuItem>
-                                    <MenuItem value={"sidak"}><em>Sidak</em></MenuItem>
-                                    <MenuItem value={"holm-sidak"}><em>Holm-Sidak</em></MenuItem>
-                                    <MenuItem value={"holm"}><em>Holm</em></MenuItem>
-                                    <MenuItem value={"simes-hochberg"}><em>Simes-Hochberg</em></MenuItem>
-                                    <MenuItem value={"benjamini-hochberg"}><em>Benjamini-Hochberg</em></MenuItem>
-                                    <MenuItem value={"benjamini-yekutieli"}><em>Benjamini-Yekutieli</em></MenuItem>
-                                    <MenuItem value={"fdr_tsbh"}><em>fdr_tsbh</em></MenuItem>
-                                    <MenuItem value={"fdr_tsbky"}><em>fdr_tsbky: two stage fdr correction (non-negative)</em></MenuItem>
+                                    <MenuItem value={"propagate"}><em>propagate</em></MenuItem>
+                                    <MenuItem value={"omit"}><em>omit</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Method used for testing and adjustment of pvalues.</FormHelperText>
+                                <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                {/*<InputLabel id="alpha-selector-label">alpha</InputLabel>*/}
+                                {/*<InputLabel id="ddof-selector-label">alpha</InputLabel>*/}
                                 <TextField
-                                        labelid="alpha-selector-label"
-                                        id="alpha-selector"
-                                        value= {this.state.selected_alpha}
-                                        label="alpha parameter"
-                                        onChange={this.handleSelectAlphaChange}
+                                        labelid="ddof-selector-label"
+                                        id="ddof-selector"
+                                        value= {this.state.selected_ddof}
+                                        label="ddof parameter"
+                                        onChange={this.handleSelectDdofChange}
                                 />
-                                <FormHelperText>Family-wise error rate, e.g. 0.1.</FormHelperText>
+                                <FormHelperText>Degrees of freedom correction in the calculation of the standard deviation.</FormHelperText>
                             </FormControl>
                             <hr/>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_variables.length !== 1}
+                                    disabled={this.state.selected_variables.length < 1}
                                     type="submit"
-                            >
+                                    >
                                 Submit
                             </Button>
                         </form>
@@ -355,19 +330,20 @@ class Multiple_comparisons extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                {this.state.test_data['status']!=='Success' ? (
+                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    <Grid style={{display: (this.state.test_data['status']!=='Success' ? 'block' : 'none')}}>
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
-                                ) : (
-                                        <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                            <Grid>
-                                                <div style={{textAlign:"center"}}>
-                                                    <CSVLink data={this.state.Results}
-                                                             filename={"Results.csv"}>Download</CSVLink>
-                                                    <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
-                                                </div>
-                                            </Grid>
-                                        </Grid>
-                                )}
+                                    </Grid>
+                                    <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
+                                        {/*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >*/}
+                                        {/*    Compute the min values of the selected variables. </Typography>*/}
+                                        <div style={{textAlign:"center"}}>
+                                            <CSVLink data={this.state.Results}
+                                                 filename={"Results.csv"}>Download</CSVLink>
+                                            <JsonTable className="jsonResultsTable" style={{width:'90%'}} rows = {this.state.Results}/>
+                                        </div>
+                                    </Grid>
+                                </Grid>
                             </TabPanel>
                         </Grid>
                     </Grid>
@@ -376,4 +352,4 @@ class Multiple_comparisons extends React.Component {
     }
 }
 
-export default Multiple_comparisons;
+export default General_Stats_Zscore;

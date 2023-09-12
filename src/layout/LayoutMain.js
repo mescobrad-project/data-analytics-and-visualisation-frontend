@@ -28,10 +28,10 @@ const LayoutMain = ({children}) => {
     }, []);
 
     // TODO add a variable to check if file is downloaded from backend when applicable
+    // if (keycloak) {
+    //    if (authenticated) return (
     if (true) {
         if (true) return (
-        // if (true) {
-        //     if (true) return (
                 <Grid container spacing={0} direction= "column">
                     <Grid item xs={12}>
                         <AppBarCustom/>
