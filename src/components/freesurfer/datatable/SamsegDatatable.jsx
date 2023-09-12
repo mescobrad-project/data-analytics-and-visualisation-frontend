@@ -32,7 +32,14 @@ class SamsegDatatable extends React.Component {
      * Call backend endpoint to get channels of eeg
      */
     async fetchData(url, config) {
-        API.get("return_samseg_result", {}).then(res => {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_samseg_result", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                file_name: this.requested_file
+            }}).then(res => {
             this.setState({samseg_data: res.data})
         });
     }
