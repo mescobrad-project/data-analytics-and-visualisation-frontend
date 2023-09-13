@@ -63,6 +63,11 @@ class Structural_Equation_Models_Optimization extends React.Component {
             test_data: {
                 status:'',
                 fit_results:[],
+                inspect_means:[],
+                estimate_means:[],
+                factors:[],
+                calc_stats:[],
+                robust:[],
                 graph:""
             },
             graphplot:'',
@@ -72,7 +77,8 @@ class Structural_Equation_Models_Optimization extends React.Component {
             selected_structural_part:[],
             selected_covariances_part:[],
             selected_merged_variables:[],
-            selected_rule_type:'',
+            selected_rule_type:'=~',
+            selected_objective_function:'MLW',
             create_new_rule:'',
             created_rules: [],
             insert_latent:'',
@@ -80,6 +86,11 @@ class Structural_Equation_Models_Optimization extends React.Component {
             selected_model: "",
             selected_left_variables:[],
             selected_right_variables: [],
+            Inspect_means:[],
+            Estimate_means:[],
+            Factors:[],
+            Calc_stats:[],
+            Robust:[],
             // Results:[],
             stats_show: false,
             modal_open: false,
@@ -98,9 +109,7 @@ class Structural_Equation_Models_Optimization extends React.Component {
             //         'y3 ~~ y7\n' +
             //         'y4 ~~ y8\n' +
             //         'y6 ~~ y8'
-            mod:'# measurement model\n' +
-                    '# regressions\n' +
-                    '# residual correlations\n',
+            mod:'',
             // svg_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
             //         + '/step_' + params.get("step_id") + '/output/t.svg',
         };
@@ -113,6 +122,7 @@ class Structural_Equation_Models_Optimization extends React.Component {
         this.handleSelectedLeftVariableChange = this.handleSelectedLeftVariableChange.bind(this);
         this.handleSelectRightVariableChange = this.handleSelectRightVariableChange.bind(this);
         this.handleSelectRuleTypeChange = this.handleSelectRuleTypeChange.bind(this);
+        this.handleSelectObjectiveFunctionChange = this.handleSelectObjectiveFunctionChange.bind(this);
         this.handleMergeVariableLists = this.handleMergeVariableLists.bind(this);
         this.handleInsertLatentChange = this.handleInsertLatentChange.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
@@ -196,7 +206,7 @@ class Structural_Equation_Models_Optimization extends React.Component {
                         step_id: params.get("step_id"),
                         file: this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
                         model: this.state.mod,
-                        // model: this.state.selected_model,
+                        obj_func: this.state.selected_objective_function,
                     },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
@@ -205,6 +215,11 @@ class Structural_Equation_Models_Optimization extends React.Component {
         ).then(res => {
             this.setState({test_data: res.data})
             this.setState({graphplot:res.data.graph});
+            this.setState({Inspect_means: JSON.parse(res.data.inspect_means)})
+            this.setState({Estimate_means: JSON.parse(res.data.estimate_means)})
+            this.setState({Factors: JSON.parse(res.data.factors)})
+            this.setState({Calc_stats: JSON.parse(res.data.calc_stats)})
+            this.setState({Robust: JSON.parse(res.data.robust)})
             this.setState({stats_show: true})
             this.setState({tabvalue:2})
         });
@@ -243,6 +258,9 @@ class Structural_Equation_Models_Optimization extends React.Component {
     handleSelectRuleTypeChange(event){
         this.setState({selected_rule_type:event.target.value})
     }
+    handleSelectObjectiveFunctionChange(event){
+        this.setState({selected_objective_function:event.target.value})
+    }
     handleInsertLatentChange(event){
         this.setState( {insert_latent: event.target.value})
     }
@@ -253,6 +271,9 @@ class Structural_Equation_Models_Optimization extends React.Component {
             this.state.created_latent_variables=[]
             this.state.create_model_checked=false
             this.state.insert_latent=""
+            this.state.selected_right_variables=[]
+            this.state.selected_left_variables=[]
+            this.handleDeleteAllRules()
         })
     }
     handleDeleteLatentVariable(event) {
@@ -350,6 +371,27 @@ class Structural_Equation_Models_Optimization extends React.Component {
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="type-selector-label">
+                                    Select Operator
+                                </InputLabel>
+                                <Select
+                                        labelId="type-selector-label"
+                                        id="type-selector"
+                                        value= {this.state.selected_objective_function}
+                                        label="type"
+                                        onChange={this.handleSelectObjectiveFunctionChange}
+
+                                >
+                                    <MenuItem value={"MLW"}><em>Wishart loglikelihood (MLW)</em></MenuItem>
+                                    <MenuItem value={"ULS"}><em>Unweighted Least Squares (ULS)</em></MenuItem>
+                                    <MenuItem value={"GLS"}><em>Generalized Least Squares (GLS)</em></MenuItem>
+                                    <MenuItem value={"WLS"}><em>Weighted Least Squares (WLS)</em></MenuItem>
+                                    <MenuItem value={"DWLS"}><em>Diagonally Weighted Least Squares (DWLS)</em></MenuItem>
+                                    <MenuItem value={"FIML"}><em>Full Information Maximum Likelihood (FIML)</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Select operator.</FormHelperText>
+                            </FormControl>
                             <hr/>
                             <Card variant="outlined">
                                 <CardContent>
@@ -395,38 +437,107 @@ class Structural_Equation_Models_Optimization extends React.Component {
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={2}>
-                                {/*<Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>*/}
-                                {/*    <Grid>*/}
-                                {/*        /!*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >*!/*/}
-                                {/*        /!*    Compute the min values of the selected variables. </Typography>*!/*/}
-                                {/*        <div style={{textAlign:"center"}}>*/}
-                                {/*            <CSVLink data={this.state.Results}*/}
-                                {/*                     filename={"Results.csv"}>Download</CSVLink>*/}
-                                {/*            <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>*/}
-                                {/*        </div>*/}
-                                {/*    </Grid>*/}
-                                {/*</Grid>*/}
                                 {this.state.test_data['status']!=='Success' ? (
-                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
-                                            Status :  { this.state.test_data['status']}</Typography>
+                                        <TextField sx={{flexGrow: 1, textAlign: "Left", padding:'20px', width:'100%', borderRadius: '25px'}}
+                                                   value={'Status :  '+this.state.test_data['status']}
+                                                   multiline={2}
+                                                   variant="outlined"
+                                                   label='Error'
+                                                   InputProps={{ inputProps: { style: {backgroundColor:'lightgrey' ,color: 'darkred' }}}}>
+                                            </TextField>
                                 ) : (
-                                        <div>
-                                            <Card>
-                                                <CardContent>
-                                                    <Typography variant="h5" component="div">
-                                                        Fitted model optimization results
-                                                    </Typography>
-                                                    <TextField
-                                                            sx={{m: 1, width:'100%'}}
-                                                            multiline={5}
-                                                            value={this.state.test_data.fit_results}
-                                                    />
-                                                </CardContent>
-                                            </Card>
-                                        {this.state.test_data.graph!=="" ? (
-                                            <Graphviz dot={this.state.test_data.graph} />
-                                                ):(<br/>)}
-                                        </div>
+                                        <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                            <Grid>
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="div">
+                                                            Fitted model optimization results
+                                                        </Typography>
+                                                        <TextField
+                                                                sx={{m: 1, width:'100%'}}
+                                                                multiline={5}
+                                                                value={this.state.test_data.fit_results}
+                                                        />
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid sx={{paddingTop: '12px'}}>
+                                                <Card >
+                                                    <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                        <Typography variant="h5" component="div">
+                                                            Instance of SEM. </Typography>
+                                                        {this.state.test_data.graph!=="" ? (
+                                                                <Graphviz dot={this.state.test_data.graph} options={{height:'700px', width:'700px'}} />
+                                                        ):(<br/>)}
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid sx={{paddingTop: '12px'}}>
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="div">
+                                                            Inspect parameters estimate. </Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.Inspect_means}
+                                                                     filename={"inspect_means.csv"}>Download</CSVLink>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.Inspect_means}/>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid sx={{paddingTop: '12px'}}>
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="div">
+                                                            Estimate means. </Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.Estimate_means}
+                                                                     filename={"estimate_means.csv"}>Download</CSVLink>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.Estimate_means}/>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid sx={{paddingTop: '12px'}}>
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="div">
+                                                            Factor scores estimation. </Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.Factors}
+                                                                     filename={"Factors.csv"}>Download</CSVLink>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.Factors}/>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid sx={{paddingTop: '12px'}}>
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="div">
+                                                            Fit indices. </Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.Calc_stats}
+                                                                     filename={"Calc_stats.csv"}>Download</CSVLink>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.Calc_stats}/>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid sx={{paddingTop: '12px'}}>
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography variant="h5" component="div">
+                                                            Robust standard errors ( apply Huber-White correction to standard errors estimation). </Typography>
+                                                        <div style={{textAlign:"center"}}>
+                                                            <CSVLink data={this.state.Robust}
+                                                                     filename={"Robust.csv"}>Download</CSVLink>
+                                                            <JsonTable className="jsonResultsTable" rows = {this.state.Robust}/>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                        </Grid>
                                 )}
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={0}>
@@ -532,6 +643,7 @@ class Structural_Equation_Models_Optimization extends React.Component {
                                                                                 value= {this.state.selected_rule_type}
                                                                                 label="type"
                                                                                 onChange={this.handleSelectRuleTypeChange}
+
                                                                         >
                                                                             <MenuItem value={"=~"}><em>Measurement (=~)</em></MenuItem>
                                                                             <MenuItem value={"~"}><em>Regression (~)</em></MenuItem>

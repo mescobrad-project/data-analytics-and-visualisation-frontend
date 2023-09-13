@@ -110,11 +110,14 @@ import SurvivalAnalysisKaplanMeier from "../../pages/hypothesis_testing/Survival
 import Mediation_Analysis from '../../pages/hypothesis_testing/Mediation_Analysis'
 import GeneralizedEstimatingEquationsFunctionPage from "./GeneralizedEstimatingEquationsFunctionPage";
 import Structural_Equation_Models_Optimization from "../../pages/hypothesis_testing/Structural_Equation_Models_Optimization";
+import Exploratory_Factor_Analysis_extract_latent_structure from "../../pages/hypothesis_testing/Exploratory_Factor_Analysis_extract_latent_structure";
 import Mixed_Anova from "../../pages/hypothesis_testing/Mixed_Anova"
 import General_Stats_Average from "../../pages/hypothesis_testing/General_Stats_Average"
 import BackAveragePage from "./BackAveragePage";
 import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min"
 import General_Stats_Max from "../../pages/hypothesis_testing/General_Stats_Max"
+import ActigraphyMasking from "./ActigraphyMasking";
+import ActigraphyAnalysis from "./ActigraphyAnalysis";
 import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
 import Actigraphy_Metrics from "./Actigraphy_Metrics";
 import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
@@ -216,11 +219,19 @@ const App = () => {
                         <Route exact path="/back_average" element={(<LayoutMain><BackAveragePage/></LayoutMain>)}/>
                         <Route exact path="/sleep_stage_classification" element={(<LayoutMain><SleepStageClassificationPage/></LayoutMain>)}/>
                         <Route exact path="/manual_sleep_stage_classification" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_sensitivity_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_sensitivity_analysis_add_subject" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_sensitivity_analysis_add_subject_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_common_channels_across_subjects" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_analysis_sensitivity_add_subject_add_channels_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
                         <Route exact path="/actigraphy_test" element={(<LayoutMain><test/></LayoutMain>)}/>
                         <Route exact path="/actigraphy_page" element={(<LayoutMain><ActigraphyFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_masking" element={(<LayoutMain><ActigraphyMasking/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_analysis" element={(<LayoutMain><ActigraphyAnalysis/></LayoutMain>)}/>
                         <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
                         <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/artifacts" element={(<LayoutMain><ArtifactsFunctionPage/></LayoutMain>)}/>
@@ -268,6 +279,7 @@ const App = () => {
                         <Route exact path="/FactorAnalysis" element={(<LayoutMain><FactorAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GeneralizedEstimatingEquations" element={(<LayoutMain><GeneralizedEstimatingEquationsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/Structural_Equation_Models_Optimization" element={(<LayoutMain><Structural_Equation_Models_Optimization/></LayoutMain>)}/>
+                        <Route exact path="/Exploratory_Factor_Analysis_extract_latent_structure" element={(<LayoutMain><Exploratory_Factor_Analysis_extract_latent_structure/></LayoutMain>)}/>
                         <Route exact path="/Mixed_Anova" element={(<LayoutMain><Mixed_Anova/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Average" element={(<LayoutMain><General_Stats_Average/></LayoutMain>)}/>
                         <Route exact path="/General_Stats_Min" element={(<LayoutMain><General_Stats_Min/></LayoutMain>)}/>

@@ -151,6 +151,7 @@ class ScatterPlot extends React.Component {
     // Function that shows only the first half of chart on load
     zoomOnUpdate() {
         // this.dateAxis.zoomToCategories("0",String(this.props.chart_data.length/2) )
+        this.dateAxis = {}
         this.dateAxis.start = 0;
         this.dateAxis.end = 0.5;
 
