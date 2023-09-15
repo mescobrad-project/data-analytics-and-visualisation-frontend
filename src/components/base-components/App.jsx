@@ -128,6 +128,7 @@ import General_Stats_Cov from "../../pages/hypothesis_testing/General_Stats_Cov"
 import PoissonRegressionFunctionPage from "./PoissonRegressionFunctionPage";
 import SleepStageClassificationPage from "./SleepStageClassificationPage";
 import ManualSleepStagePage from "./ManualSleepStagePage";
+import TSNE from "../../pages/hypothesis_testing/TSNE";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -271,6 +272,7 @@ const App = () => {
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisTimeVaryingCovariates" element={(<LayoutMain><SurvivalAnalysisTimeVaryingCovariates/></LayoutMain>)}/>
                         <Route exact path="/PrincipalComponentAnalysis" element={(<LayoutMain><PrincipalComponentAnalysis/></LayoutMain>)}/>
+                        <Route exact path="/TSNE" element={(<LayoutMain><TSNE/></LayoutMain>)}/>
                         <Route exact path="/sleep_statistic" element={(<LayoutMain><SleepStatisticsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/spectogram_bandpower" element={(<LayoutMain><SpectogramBandpowerFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/slowwave_spindle" element={(<LayoutMain><SlowwaveSpindleFunctionPage/></LayoutMain>)}/>

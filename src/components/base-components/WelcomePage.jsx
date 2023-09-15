@@ -516,7 +516,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_masking", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_masking", ["saved"], ["psg1 anonym2.edf"],[])}
                         >
                             Actigraphy Masking
                         </Button>
@@ -524,7 +524,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_analysis", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_analysis", ["saved"], ["psg1 anonym2.edf"],[])}
                         >
                             Actigraphy Analysis
                        </Button>
@@ -1487,6 +1487,15 @@ function WelcomePage() {
                         >
                             Principal Component Analysis
                         </Button>
+                        <Button
+                                size="medium"
+                                variant="contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "tsne",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                        >
+                            t-distributed Stochastic Neighbor Embedding
+                        </Button>
+
                         {/*<Button*/}
                         {/*        variant="contained"*/}
                         {/*        size="medium"*/}
