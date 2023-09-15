@@ -168,7 +168,7 @@ class Independent_t_test extends React.Component {
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        window.location.replace("/")
+        window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
     }
 
     /**

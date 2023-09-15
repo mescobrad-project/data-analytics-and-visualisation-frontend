@@ -191,7 +191,7 @@ class SurvivalAnalysisIncidenceRateDifferenceDataset extends React.Component {
             this.setState({output_return_data: res.data})
         });
         console.log(this.state.output_return_data);
-        window.location.replace("/")
+        window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
     }
     /**
      * Update state when selection changes in the form
