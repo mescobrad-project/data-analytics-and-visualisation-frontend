@@ -783,11 +783,11 @@ class ActigraphyFunctionPage extends React.Component {
                     </Button>
                     <hr/>
                 </form>
-                <Button variant="contained" color="primary" type="button" size="large"
-                        onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"])}
-                >
-                    Show results
-                </Button>
+                {/*<Button variant="contained" color="primary" type="button" size="large"*/}
+                {/*        onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"])}*/}
+                {/*>*/}
+                {/*    Show results*/}
+                {/*</Button>*/}
             </Grid>
                 <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -802,9 +802,9 @@ class ActigraphyFunctionPage extends React.Component {
                                 <Tab label="Assessment Algorithms" {...a11yProps(2)} />
                                 <Tab label="Final Dataset" {...a11yProps(3)} />
                                 <Tab label="Final Visualisation Results" {...a11yProps(4)} />
-                                <Tab label="Functional Linear Modelling" {...a11yProps(5)} />
-                                <Tab label="Automatic Inactivity Mask (20m)" {...a11yProps(6)} />
-                                <Tab label="Add Mask Period" {...a11yProps(7)} />
+                                {/*<Tab label="Functional Linear Modelling" {...a11yProps(5)} />*/}
+                                {/*<Tab label="Automatic Inactivity Mask (20m)" {...a11yProps(6)} />*/}
+                                {/*<Tab label="Add Mask Period" {...a11yProps(7)} />*/}
                             </Tabs>
                         </Box>
 
@@ -1047,29 +1047,29 @@ class ActigraphyFunctionPage extends React.Component {
                         <Plot layout={this.state.final_layout_daily} data={this.state.final_data_plot_daily} config={this.state.configObj} onSelected={this.handleSelected}/>
                     </TabPanel>
 
-                    <TabPanel value={this.state.tabvalue} index={5}>
-                        <Plot layout={this.state.layout_fml} data={this.state.data_fml} config={this.state.configObj} onSelected={this.handleSelected}/>
-                    </TabPanel>
+                    {/*<TabPanel value={this.state.tabvalue} index={5}>*/}
+                    {/*    <Plot layout={this.state.layout_fml} data={this.state.data_fml} config={this.state.configObj} onSelected={this.handleSelected}/>*/}
+                    {/*</TabPanel>*/}
 
-                    <TabPanel value={this.state.tabvalue} index={6}>
-                        <Plot layout={this.state.layout_inactivity_mask} data={this.state.data_inactivity_mask} config={this.state.configObj} onSelected={this.handleSelected}/>
-                    </TabPanel>
+                    {/*<TabPanel value={this.state.tabvalue} index={6}>*/}
+                    {/*    <Plot layout={this.state.layout_inactivity_mask} data={this.state.data_inactivity_mask} config={this.state.configObj} onSelected={this.handleSelected}/>*/}
+                    {/*</TabPanel>*/}
 
-                    <TabPanel value={this.state.tabvalue} index={7}>
-                        <form onSubmit={(event) => {event.preventDefault();this.handleAddMaskPeriod();}}>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                                <FormHelperText><span style={{fontWeight: 'bold'}}>Select the period you want to mask (from start date to end date) (inclusive)</span></FormHelperText>
-                                Start Date:
-                                <input type={"text"} value={this.state.mask_period_start} onChange={this.handleMaskPeriodStartDateChange}/>
-                                End Date:
-                                <input type={"text"} value={this.state.mask_period_end} onChange={this.handleMaskPeriodEndDateChange}/>
-                            </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
-                                Submit
-                            </Button>
-                        </form>
-                        <Plot layout={this.state.layout_add_mask_period} data={this.state.data_add_mask_period} config={this.state.configObj} onSelected={this.handleSelected}/>
-                    </TabPanel>
+                    {/*<TabPanel value={this.state.tabvalue} index={7}>*/}
+                    {/*    <form onSubmit={(event) => {event.preventDefault();this.handleAddMaskPeriod();}}>*/}
+                    {/*        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >*/}
+                    {/*            <FormHelperText><span style={{fontWeight: 'bold'}}>Select the period you want to mask (from start date to end date) (inclusive)</span></FormHelperText>*/}
+                    {/*            Start Date:*/}
+                    {/*            <input type={"text"} value={this.state.mask_period_start} onChange={this.handleMaskPeriodStartDateChange}/>*/}
+                    {/*            End Date:*/}
+                    {/*            <input type={"text"} value={this.state.mask_period_end} onChange={this.handleMaskPeriodEndDateChange}/>*/}
+                    {/*        </FormControl>*/}
+                    {/*        <Button variant="contained" color="primary" type="submit">*/}
+                    {/*            Submit*/}
+                    {/*        </Button>*/}
+                    {/*    </form>*/}
+                    {/*    <Plot layout={this.state.layout_add_mask_period} data={this.state.data_add_mask_period} config={this.state.configObj} onSelected={this.handleSelected}/>*/}
+                    {/*</TabPanel>*/}
                 </Grid>
                 {/*<Grid item xs={4} sx={{ borderRight: "1px solid grey"}} alignContent={'right'}>*/}
                 {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
