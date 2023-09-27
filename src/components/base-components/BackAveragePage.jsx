@@ -17,6 +17,7 @@ import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -76,6 +77,7 @@ class BackAveragePage extends React.Component {
             // EEG general variables
             file_used: null,
             selected_channel: "",
+            channels_results_produced: [],
 
             // Back Average selection variables
             selected_time_before_event: '',
@@ -83,6 +85,8 @@ class BackAveragePage extends React.Component {
             selected_min_ptp_amplitude: '',
             selected_max_ptp_amplitude: '',
             selected_annotation_name: '',
+            selected_volt_display_minimum: '',
+            selected_volt_display_maximum: '',
 
             // Back Average form validation variables
             timeBeforeEventError: false,
@@ -92,10 +96,12 @@ class BackAveragePage extends React.Component {
             annotationNameError: false,
 
             //Plot paths
+            base_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id") + '/step_' + params.get("step_id") + '/output',
             back_average_plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/back_average_plot.png',
             back_average_plot_path_1: 'http://localhost:8000/static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/back_average_plot_f4.png',
+
         };
 
         //Binding functions of the class
@@ -107,6 +113,9 @@ class BackAveragePage extends React.Component {
         this.handleSelectMinPtpAmplitudeChange = this.handleSelectMinPtpAmplitudeChange.bind(this);
         this.handleSelectMaxPtpAmplitudeChange = this.handleSelectMaxPtpAmplitudeChange.bind(this);
         this.handleSelectAnnotationNameChange = this.handleSelectAnnotationNameChange.bind(this);
+
+        this.handleSelectVoltDisplayMinimumEventChange = this.handleSelectVoltDisplayMinimumEventChange.bind(this);
+        this.handleSelectVoltDisplayMaximumEventChange = this.handleSelectVoltDisplayMaximumEventChange.bind(this);
 
         this.validateAnnotationName = this.validateAnnotationName.bind(this);
         this.validateFloatNumber = this.validateFloatNumber.bind(this);
@@ -153,12 +162,16 @@ class BackAveragePage extends React.Component {
                 min_ptp_amplitude: parseFloat(this.state.selected_min_ptp_amplitude),
                 max_ptp_amplitude: parseFloat(this.state.selected_max_ptp_amplitude),
                 annotation_name: this.state.selected_annotation_name,
+                // Convert nan values from parseFloat to null if no value given
+                volt_display_minimum: parseFloat(this.state.selected_volt_display_minimum) || null,
+                volt_display_maximum: parseFloat(this.state.selected_volt_display_maximum) || null,
                 // Add other input parameters as required
                 // file_used: this.state.file_used
             }
         }).then(res => {
             const resultJson = res.data;
             console.log(resultJson)
+            this.setState({channels_results_produced: resultJson['channels']});
             // this.setState({result_periodogram_alpha_delta_ratio: resultJson['alpha_delta_ratio']});
             // this.setState({result_periodogram_alpha_delta_ratio_dataframe: JSON.parse(resultJson['alpha_delta_ratio_df'])});
         });
@@ -170,6 +183,15 @@ class BackAveragePage extends React.Component {
     handleSelectChannelChange(event){
         this.setState( {selected_channel: event.target.value})
     }
+
+    handleSelectVoltDisplayMinimumEventChange = (event) => {
+        this.setState({ selected_volt_display_minimum: event.target.value });
+    }
+
+    handleSelectVoltDisplayMaximumEventChange = (event) => {
+        this.setState({ selected_volt_display_maximum: event.target.value });
+    }
+
     handleSelectTimeBeforeEventChange = (event) => {
         this.setState({ selected_time_before_event: event.target.value });
     }
@@ -239,51 +261,51 @@ class BackAveragePage extends React.Component {
                         <EEGSelectModal handleChannelChange={this.handleChannelChange} handleFileUsedChange={this.handleFileUsedChange}/>
                         <Divider/>
                         <form onSubmit={this.handleSubmit} style={{ display: (this.state.channels.length != 0 ? 'block' : 'none') }}>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="channel-selector-label">Channel</InputLabel>
-                                <Select
-                                        labelId="channel-selector-label"
-                                        id="channel-selector"
-                                        value= {this.state.selected_channel}
-                                        label="Channel"
-                                        onChange={this.handleSelectChannelChange}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {this.state.channels.map((channel) => (
-                                            <MenuItem value={channel}>{channel}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select Channel to back average</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="channel-selector-label">Channel</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="channel-selector-label"*/}
+                            {/*            id="channel-selector"*/}
+                            {/*            value= {this.state.selected_channel}*/}
+                            {/*            label="Channel"*/}
+                            {/*            onChange={this.handleSelectChannelChange}*/}
+                            {/*    >*/}
+                            {/*        <MenuItem value="">*/}
+                            {/*            <em>None</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*        {this.state.channels.map((channel) => (*/}
+                            {/*                <MenuItem value={channel}>{channel}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select Channel to back average</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <FormControl sx={{m: 1, width:'90%'}} error={this.state.timeBeforeEventError}>
                                 <TextField
                                         id="time-before-event"
                                         value={this.state.selected_time_before_event}
-                                        label="Time Before Event"
+                                        label="Time Before Event (s)"
                                         size={"small"}
                                         onChange={this.handleSelectTimeBeforeEventChange}
                                         // onBlur={() => this.validateFloatNumber(this.state.selected_time_before_event, 'timeBeforeEventError')}
                                 />
-                                <FormHelperText>Time before the event</FormHelperText>
+                                <FormHelperText>Time before the event (s)</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} error={this.state.timeAfterEventError}>
                                 <TextField
                                         id="time-after-event"
                                         value={this.state.selected_time_after_event}
-                                        label="Time After Event"
+                                        label="Time After Event (s)"
                                         size={"small"}
                                         onChange={this.handleSelectTimeAfterEventChange}
                                         // onBlur={() => this.validateFloatNumber(this.state.selected_time_after_event, 'timeAfterEventError')}
                                 />
-                                <FormHelperText>Time after the event</FormHelperText>
+                                <FormHelperText>Time after the event(s)</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} error={this.state.minPtpAmplitudeError}>
                                 <TextField
                                         id="min-ptp-amplitude"
                                         value={this.state.selected_min_ptp_amplitude}
-                                        label="Min PTP Amplitude"
+                                        label="Min PTP Amplitude (V)"
                                         size={"small"}
                                         onChange={this.handleSelectMinPtpAmplitudeChange}
                                         // onBlur={() => this.validateFloatNumber(this.state.selected_min_ptp_amplitude, 'minPtpAmplitudeError')}
@@ -294,7 +316,7 @@ class BackAveragePage extends React.Component {
                                 <TextField
                                         id="max-ptp-amplitude"
                                         value={this.state.selected_max_ptp_amplitude}
-                                        label="Max PTP Amplitude"
+                                        label="Max PTP Amplitude (V)"
                                         size={"small"}
                                         onChange={this.handleSelectMaxPtpAmplitudeChange}
                                         // onBlur={() => this.validateFloatNumber(this.state.selected_max_ptp_amplitude, 'maxPtpAmplitudeError')}
@@ -312,6 +334,28 @@ class BackAveragePage extends React.Component {
                                 />
                                 <FormHelperText>Annotation name</FormHelperText>
                             </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}}>
+                                <TextField
+                                        id="display-volt-minimum"
+                                        value={this.state.selected_volt_display_minimum}
+                                        label="Plot Display Volt Minimum (μV)"
+                                        size={"small"}
+                                        onChange={this.handleSelectVoltDisplayMinimumEventChange}
+                                        // onBlur={() => this.validateFloatNumber(this.state.selected_time_before_event, 'timeBeforeEventError')}
+                                />
+                                <FormHelperText>Plot Display Volt Minimum (μV)</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}}>
+                                <TextField
+                                        id="display-volt-maximum"
+                                        value={this.state.selected_volt_display_maximum}
+                                        label="Plot Display Volt Maximum (μV)"
+                                        size={"small"}
+                                        onChange={this.handleSelectVoltDisplayMaximumEventChange}
+                                        // onBlur={() => this.validateFloatNumber(this.state.selected_time_after_event, 'timeAfterEventError')}
+                                />
+                                <FormHelperText>Plot Display Volt Maximum (μV)</FormHelperText>
+                            </FormControl>
 
 
                             <Button variant="contained" color="primary" type="submit">
@@ -319,6 +363,8 @@ class BackAveragePage extends React.Component {
                             </Button>
 
                         </form>
+                        <ProceedButton></ProceedButton>
+
                     </Grid>
 
                     <Grid item xs={8}>
@@ -330,6 +376,7 @@ class BackAveragePage extends React.Component {
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
                                     <Tab label="Back Average Results" {...a11yProps(1)} />
+                                    <Tab label="Back Average Results Single Plots" {...a11yProps(2)} />
 
                                 </Tabs>
                             </Box>
@@ -346,6 +393,14 @@ class BackAveragePage extends React.Component {
                             {/*     srcSet={this.state.back_average_plot_path_1 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
                             {/*     loading="lazy"*/}
                             {/*/>*/}
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={2}>
+                            {this.state.channels_results_produced.map((channel_name) => (
+                                    <img src={this.state.base_plot_path + "/temp_plot_" + channel_name + ".png?random=" + new Date().getTime()}
+                                         srcSet={this.state.base_plot_path + "/temp_plot_" + channel_name + ".png?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                         loading="lazy"
+                                    />
+                            ))}
                         </TabPanel>
                         {/*<hr/>*/}
 

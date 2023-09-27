@@ -18,33 +18,35 @@ import PropTypes from "prop-types";
 
 const userColumns = [
     { field: "Source",
-        headerName: "Names of the factor considered", width: '35%',
+        headerName: "Names of the factor considered",
         align: "left",
         headerAlign: "left",
-        flex:3,
+        minWidth:100,
+        flex:2,
+        resizable:false,
         sortable: true},
     {
         field: "SS",
         headerName: "Sums of squares",
-        width: '5%',
+        // width: '5%',
         align: "center",
         headerAlign: "center",
-        flex:0.5,
+        flex:1,
         type: "number"
     },
     {
         field: "DF",
         headerName: "Degrees of freedom",
-        width: '10%',
+        // width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:0.5,
+        flex:1,
         type: "number"
     },
     {
         field: "F",
         headerName: "F-values",
-        width: '10%',
+        // width: '10%',
         align: "center",
         headerAlign: "center",
         flex:1,
@@ -53,7 +55,7 @@ const userColumns = [
     {
         field: "p-unc",
         headerName: "Uncorrected p-values",
-        width: '10%',
+        // width: '10%',
         align: "right",
         headerAlign: "center",
         flex:1,
@@ -62,7 +64,7 @@ const userColumns = [
     {
         field: "np2",
         headerName: "Partial eta-squared",
-        width: '10%',
+        // width: '10%',
         align: "right",
         headerAlign: "center",
         flex:1,

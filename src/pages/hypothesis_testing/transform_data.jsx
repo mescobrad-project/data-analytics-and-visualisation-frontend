@@ -1,7 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button,
+    Button, Card, CardContent,
     FormControl,
     FormHelperText,
     Grid,
@@ -15,6 +15,7 @@ import Paper from "@mui/material/Paper";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
+import Plot from "react-plotly.js";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -76,7 +77,7 @@ class Transform_data extends React.Component {
             // Values to pass to visualisations
             test_boxplot_chart_data: [],
             test_qqplot_chart_data : [],
-            test_probplot_chart_data : [],
+            // test_probplot_chart_data : [],
             test_Hplot_chart_data: [],
             test_transf_plot_chart_data: [],
             //Values selected currently on the form
@@ -103,6 +104,7 @@ class Transform_data extends React.Component {
         this.handleSelectLmbdaChange = this.handleSelectLmbdaChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         this.renderArrayValues = this.renderArrayValues.bind(this)
+        this.handleTabChange = this.handleTabChange.bind(this);
         this.fetchColumnNames();
         this.fetchFileNames();
     }
@@ -145,7 +147,7 @@ class Transform_data extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
+            this.setState({tabvalue:0})
         });
     }
     /**
@@ -180,6 +182,11 @@ class Transform_data extends React.Component {
         }
 
         //Reset view of optional visualisations preview
+        this.setState({histogram_chart_show: false})
+        this.setState({boxplot_chart_show: false})
+        this.setState({qqplot_chart_show: false})
+        // this.setState({probplot_chart_show: false})
+        this.setState({stats_show: false})
         this.setState({transformation_chart_show: false})
 
         // Send the request
@@ -196,7 +203,7 @@ class Transform_data extends React.Component {
         ).then(res => {
             this.setState({test_data: res.data})
             const resultJson = res.data;
-            this.setState({tabvalue:0})
+            this.setState({tabvalue:1})
             // console.log(resultJson)
             // console.log('Test')
             // let temp_array = []
@@ -217,12 +224,18 @@ class Transform_data extends React.Component {
             this.setState({min_confidence: resultJson['minimum confidence limit']})
             this.setState({max_confidence: resultJson['maximum confidence limit']})
 
+            this.setState({histogram_chart_show: true})
+            this.setState({boxplot_chart_show: true})
+            this.setState({qqplot_chart_show: true})
+            this.setState({transformation_chart_show: true})
+            // this.setState({probplot_chart_show: true})
             this.setState({stats_show: true})
-            this.setState({test_qqplot_chart_data: resultJson['results']['qqplot']})
-            this.setState({test_Hplot_chart_data: resultJson['results']['histogramplot']})
-            this.setState({test_boxplot_chart_data: resultJson['results']['boxplot']})
-            this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
-            this.setState({test_transf_plot_chart_data: resultJson['results']['transf_plot']})
+            this.setState({test_qqplot_chart_data: JSON.parse(resultJson['results']['qqplot'])})
+            this.setState({test_Hplot_chart_data: JSON.parse(resultJson['results']['histogramplot'])})
+            this.setState({test_boxplot_chart_data: JSON.parse(resultJson['results']['boxplot'])})
+            // this.setState({test_probplot_chart_data: resultJson['results']['probplot']})
+            this.setState({test_transf_plot_chart_data: JSON.parse(resultJson['results']['transf_plot'])})
+
         });
     }
     async handleProceed(event) {
@@ -245,14 +258,22 @@ class Transform_data extends React.Component {
     /**
      * Update state when selection changes in the form
      */
+    resetResultArea(){
+        this.setState({histogram_chart_show: false})
+        this.setState({boxplot_chart_show: false})
+        this.setState({qqplot_chart_show: false})
+        // this.setState({probplot_chart_show: false})
+        this.setState({transformation_chart_show: false})
+        this.setState({stats_show: false})
+    }
     handleSelectColumnChange(event){
         this.setState( {selected_column: event.target.value})
         this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
-        this.setState({stats_show: false})
+        this.resetResultArea()
     }
     handleSelectMethodChange(event){
         this.setState( {selected_method: event.target.value})
-        this.setState({stats_show: false})
+        this.resetResultArea()
         if (event.target.value==="Box-Cox"){
             this.setState({alpha_show:true});
             this.setState({lmbda_show:true});
@@ -268,11 +289,11 @@ class Transform_data extends React.Component {
     }
     handleSelectLmbdaChange(event){
         this.setState( {selected_lmbda: event.target.value})
-        this.setState({stats_show: false})
+        this.resetResultArea()
     }
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
-        this.setState({stats_show: false})
+        this.resetResultArea()
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
@@ -382,16 +403,16 @@ class Transform_data extends React.Component {
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
                             Result Visualisation
                         </Typography>
-                        <hr/>
+                        <hr className="result"/>
                         <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Results" {...a11yProps(0)} />
-                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
                                     {/*<Tab label="Transformed" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
-                            <TabPanel value={this.state.tabvalue} index={0}>
+                            <TabPanel value={this.state.tabvalue} index={1}>
                                 {this.state.test_data['status']!=='Success' ? (
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                 ) : (
@@ -414,6 +435,9 @@ class Transform_data extends React.Component {
                                                                 <TableCell className="tableHeadCell">Mean</TableCell>
                                                                 <TableCell className="tableHeadCell">Median</TableCell>
                                                                 <TableCell className="tableHeadCell">Std. Deviation</TableCell>
+                                                                <TableCell className="tableHeadCell">Std Error</TableCell>
+                                                                <TableCell className="tableHeadCell">Sample Variance</TableCell>
+                                                                <TableCell className="tableHeadCell">Confidence Level</TableCell>
                                                                 <TableCell className="tableHeadCell">Skewness</TableCell>
                                                                 <TableCell className="tableHeadCell">Kurtosis</TableCell>
                                                             </TableRow>
@@ -422,72 +446,71 @@ class Transform_data extends React.Component {
                                                             <TableRow>
                                                                 <TableCell className="tableCell" >{this.state.test_data.results.plot_column}</TableCell>
                                                                 <TableCell className="tableCell">{this.state.test_data.results.sample_N}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(5)}</TableCell>
-                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(5)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.mean).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.median).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_deviation).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.standard_error).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.sample_variance).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.confidence_level).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.skew).toFixed(8)}</TableCell>
+                                                                <TableCell className="tableCell">{ Number.parseFloat(this.state.test_data.results.kurtosis).toFixed(8)}</TableCell>
                                                             </TableRow>
                                                         </TableBody>
                                                     </Table>
                                                 </TableContainer>
                                             </div>
                                             <hr className="result" style={{display: (this.state.stats_show ? 'block' : 'none')}}/>
-                                            <Grid>
-                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                                        Histogram of Selected data
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
-                                                        <InnerHTML html={this.state.test_Hplot_chart_data} style={{zoom:'50%'}}/>
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                            <Grid container>
+                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Card style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}>
+                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                            <Typography variant="h5" component="div">
+                                                                Histogram of Selected data. </Typography>
+                                                            <Plot style={{width: '100%'}}
+                                                                  data={this.state.test_Hplot_chart_data.data}
+                                                                  layout={this.state.test_Hplot_chart_data.layout}/>
+                                                        </CardContent>
+                                                    </Card>
+                                                    {/*<hr  class="result" style={{ display: (this.state.histogram_chart_show ? 'block' : 'none') }}/>*/}
                                                 </Grid>
-                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                                        Box Plot of Selected data
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }}>
-                                                        <InnerHTML html={this.state.test_boxplot_chart_data} style={{zoom:'50%'}}/>
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Card style={{ display: (this.state.boxplot_chart_show ? 'block' : 'none') }}>
+                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                            <Typography variant="h5" component="div">
+                                                                Box Plot of Selected data. </Typography>
+                                                            <Plot style={{width: '100%'}}
+                                                                  data={this.state.test_boxplot_chart_data.data}
+                                                                  layout={this.state.test_boxplot_chart_data.layout}/>
+                                                        </CardContent>
+                                                    </Card>
                                                 </Grid>
-                                            </Grid>
-                                            <Grid>
-                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                                        Q-Q Plot of Selected data
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
-                                                        <InnerHTML html={this.state.test_qqplot_chart_data} style={{zoom:'50%'}}/>
-
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Card style={{ display: (this.state.qqplot_chart_show ? 'block' : 'none') }}>
+                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                            <Typography variant="h5" component="div">
+                                                                Q-Q Plot of Selected data. </Typography>
+                                                            <Plot style={{width: '100%'}}
+                                                                  data={this.state.test_qqplot_chart_data.data}
+                                                                  layout={this.state.test_qqplot_chart_data.layout}/>
+                                                        </CardContent>
+                                                    </Card>
                                                 </Grid>
-                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                                        Probability Plot of Selected data
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
-                                                        <InnerHTML html={this.state.test_probplot_chart_data} style={{zoom:'50%'}}/>
-
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
-                                                </Grid>
-                                                <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", display: (this.state.stats_show ? 'block' : 'none')  }}>
-                                                        Comparison of Data Transformation
-                                                    </Typography>
-                                                    <div style={{ display: (this.state.stats_show ? 'block' : 'none') }} >
-                                                        <InnerHTML html={this.state.test_transf_plot_chart_data} style={{zoom:'50%'}}/>
-                                                    </div>
-                                                    <hr  class="result" style={{ display: (this.state.stats_show ? 'block' : 'none') }}/>
+                                                <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
+                                                    <Card style={{ display: (this.state.transformation_chart_show ? 'block' : 'none') }}>
+                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                            <Typography variant="h5" component="div">
+                                                                Original vs Transformed values. </Typography>
+                                                            <Plot style={{width: '100%'}}
+                                                                  data={this.state.test_transf_plot_chart_data.data}
+                                                                  layout={this.state.test_transf_plot_chart_data.layout}/>
+                                                        </CardContent>
+                                                    </Card>
                                                 </Grid>
                                             </Grid>
                                         </Grid>
                                 )}
                             </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={1}>
+                            <TabPanel value={this.state.tabvalue} index={0}>
                                 <Box>
                                     <JsonTable className="jsonResultsTable"
                                                rows = {this.state.initialdataset}/>

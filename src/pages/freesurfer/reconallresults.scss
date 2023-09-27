@@ -1,3 +1,21 @@
+.loadingContainer {
+    flex-wrap: wrap;
+    /* for horizontal aligning of child divs */
+    justify-content: flex-start;
+    /* for vertical aligning */
+    align-items: center;
+    padding: 10%;
+
+    .reactLoading {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        align-self: flex-end;
+        text-align: center;
+    }
+}
+
 .reconallresults {
     display: flex;
     padding: 20px;
@@ -14,6 +32,9 @@
             justify-content: flex-start;
             /* for vertical aligning */
             align-items: center;
+        }
+        .aseg {
+            display: inline-block;
         }
 
         .images {
