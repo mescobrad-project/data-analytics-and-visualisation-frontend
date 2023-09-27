@@ -377,6 +377,7 @@ function WelcomePage() {
                         >
                             New Actigraphy Page
                         </Button>
+                        <Button
                                 // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
