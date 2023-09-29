@@ -303,7 +303,7 @@ function WelcomePage() {
                             Slow Waves / Spindles
                         </Button>
                         <Button
-                                variant="contained"
+                                // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 5, "sleep_stage_classification", ["saved"], ["psg1 anonym2.edf"], [])}
@@ -367,7 +367,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 8, "group_sleep_analysis",
+                                onClick={redirectToPage.bind(this,1, 1, 8, "group_sleep_analysis_sensitivity_add_subject_add_channels_final",
                                         ["saved",
                                     "saved",
                                     "saved",
@@ -417,53 +417,53 @@ function WelcomePage() {
                                             "group_2",
                                         ])}
                         >
-                           Group Sleep Analysis
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_sensitivity_analysis", ["saved"], ["psg1 anonym2.edf"], [])}
-                        >
                             Group Sleep Sensitivity Analysis
                         </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_sensitivity_analysis_add_subject", ["saved"], ["psg1 anonym2.edf"], [])}
-                        >
-                            Group Sleep Sensitivity Analysis Add Subject
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_sensitivity_analysis_add_subject_final", ["saved"], ["psg1 anonym2.edf"], [])}
-                        >
-                            Group Sleep Sensitivity Analysis Add Subject Final
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 1, "group_common_channels_across_subjects", ["saved"], ["psg1 anonym2.edf"], [])}
-                        >
-                            Group Sleep Sensitivity Analysis Across Subjects
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_analysis_sensitivity_add_subject_add_channels_final", ["saved"], ["psg1 anonym2.edf"], [])}
-                        >
-                            Group Sleep Sensitivity Analysis Add Subject Add Channels Final
-                        </Button>
+                        {/*<Button*/}
+                        {/*        variant="contained"*/}
+                        {/*        size="medium"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_sensitivity_analysis", ["saved"], ["psg1 anonym2.edf"], [])}*/}
+                        {/*>*/}
+                        {/*    Group Sleep Sensitivity Analysis*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        variant="contained"*/}
+                        {/*        size="medium"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_sensitivity_analysis_add_subject", ["saved"], ["psg1 anonym2.edf"], [])}*/}
+                        {/*>*/}
+                        {/*    Group Sleep Sensitivity Analysis Add Subject*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        variant="contained"*/}
+                        {/*        size="medium"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_sensitivity_analysis_add_subject_final", ["saved"], ["psg1 anonym2.edf"], [])}*/}
+                        {/*>*/}
+                        {/*    Group Sleep Sensitivity Analysis Add Subject Final*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        variant="contained"*/}
+                        {/*        size="medium"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "group_common_channels_across_subjects", ["saved"], ["psg1 anonym2.edf"], [])}*/}
+                        {/*>*/}
+                        {/*    Group Sleep Sensitivity Analysis Across Subjects*/}
+                        {/*</Button>*/}
+                        {/*<Button*/}
+                        {/*        variant="contained"*/}
+                        {/*        size="medium"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}*/}
+                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "group_sleep_analysis_sensitivity_add_subject_add_channels_final", ["saved"], ["psg1 anonym2.edf"], [])}*/}
+                        {/*>*/}
+                        {/*    Group Sleep Sensitivity Analysis Add Subject Add Channels Final*/}
+                        {/*</Button>*/}
                         {/*<Link*/}
                         {/*        component={Link}*/}
                         {/*        variant="h6"*/}
@@ -502,10 +502,10 @@ function WelcomePage() {
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"], [])}
                         >
-                            New Actigraphy Page
+                            Actigraphy Assessment Page
                         </Button>
                         <Button
-                                // variant="contained"
+                                variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_cosinor", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
@@ -521,7 +521,7 @@ function WelcomePage() {
                             Actigraphy Masking
                         </Button>
                         <Button
-                                // variant="outlined"
+                                variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_analysis", ["saved"], ["psg1 anonym2.edf"])}
@@ -529,7 +529,7 @@ function WelcomePage() {
                             Actigraphy Analysis
                        </Button>
                         <Button
-                                variant="contained"
+                                // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                 onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_metrics", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}

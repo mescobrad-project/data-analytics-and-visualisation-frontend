@@ -437,14 +437,14 @@ class ActigraphyAnalysis extends React.Component {
                         <Plot layout={this.state.layout_dfa_1} data={this.state.data_dfa_1} config={this.state.configObj} onSelected={this.handleSelected}/>
                         <Plot layout={this.state.layout_dfa_2} data={this.state.data_dfa_2} config={this.state.configObj} onSelected={this.handleSelected}/>
                         <Plot layout={this.state.layout_dfa_3} data={this.state.data_dfa_3} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Grid container direction="row">
-                            <Grid item xs={12} sx={{ borderRight: "1px solid grey"}}>
-                                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                    Activity & Assessment
-                                </Typography>
-                                <Plot layout={this.state.layout_day_1} data={this.state.data_day_1} config={this.state.configObj} onSelected={this.handleSelected}/>
-                            </Grid>
-                        </Grid>
+                        {/*<Grid container direction="row">*/}
+                        {/*    <Grid item xs={12} sx={{ borderRight: "1px solid grey"}}>*/}
+                        {/*        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                        {/*            Activity & Assessment*/}
+                        {/*        </Typography>*/}
+                        {/*        <Plot layout={this.state.layout_day_1} data={this.state.data_day_1} config={this.state.configObj} onSelected={this.handleSelected}/>*/}
+                        {/*    </Grid>*/}
+                        {/*</Grid>*/}
                     </TabPanel>
                 </Grid>
         </Grid>
