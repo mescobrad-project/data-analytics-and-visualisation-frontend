@@ -30,6 +30,7 @@ import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
 import ProceedButton from "../ui-components/ProceedButton";
+import qs from "qs";
 
 const style = {
     position: 'absolute',
@@ -95,6 +96,9 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         }
         this.state = {
             // Utils
+            selected_channels: [],
+            displayed_channel: "",
+            // available_channels: [],
             channels: [],
             tabvalue: 0,
 
@@ -104,6 +108,9 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.fetchChannels = this.fetchChannels.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
 
         this.fetchChannels()
     }
@@ -121,9 +128,15 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                 step_id: params.get("step_id"),
                 //TODO UPDATE THIS VARIABLE TO A PROPER ONE
                 sampling_frequency: 5,
-                channels_selection: null,
+                // channels_selection: null,
+                channels_selection: this.state.selected_channels,
+                // channels_selection: [],
                 // name: this.state.selected_channel,
                 // sampling_frequency: 1/30,
+            },
+            // This is used to pass parameters as list for fastapi to accept it correctly
+            paramsSerializer: params => {
+                return qs.stringify(params, { arrayFormat: "repeat" })
             }
         }).then(res => {
             console.log("Results")
@@ -147,8 +160,36 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         });
     }
 
+    handleListDelete(event) {
+        var newArray = this.state.selected_channels.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_channels:newList})
+    }
+
+    handleDeleteVariable(event) {
+        this.setState({selected_channels:[]})
+    }
+
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
+    }
+
+    handleSelectChannelChange(event){
+        this.setState({ selected_channels: [...this.state.selected_channels, event.target.value] })
+        this.setState({displayed_channel: event.target.value})
+        // this.setState( {selected_channel: event.target.value})
+        //
+        // this.setState( {available_channels: event.target.value})
+        // var newArray = this.state.selected_variables.slice();
+        // if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        // {
+        //     newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        // }
+        // this.setState({selected_variables:newArray})
+
     }
 
     debug = () => {
@@ -172,8 +213,42 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                             Group Sleep Analysis Parameterisation
                         </Typography>
                         <Divider sx={{bgcolor: "black"}}/>
-
-
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                            <InputLabel id="channel-selector-label">Channel</InputLabel>
+                            <Select
+                                    labelId="channel-selector-label"
+                                    id="channel-selector"
+                                    value= {this.state.displayed_channel}
+                                    label="Channel"
+                                    onChange={this.handleSelectChannelChange}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {this.state.channels.map((channel) => (
+                                        <MenuItem value={channel}>{channel}</MenuItem>
+                                ))}
+                            </Select>
+                            <FormHelperText>Select Channels to perform sleep analysis</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_channels.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
+                            </Button>
+                        </FormControl>
                         <Divider/>
                         {/* The form only appears when this.state.channels has any value which happens only when the forms
                     knows what file to access*/}
