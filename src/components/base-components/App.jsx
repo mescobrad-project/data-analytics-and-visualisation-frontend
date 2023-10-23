@@ -96,6 +96,7 @@ import FisherExact from "../../pages/hypothesis_testing/FisherExact";
 import McNemar from "../../pages/hypothesis_testing/McNemar";
 import Ancova from "../../pages/hypothesis_testing/Ancova"
 import Welch_Anova from "../../pages/hypothesis_testing/Welch_Anova"
+import Anova_RM from "../../pages/hypothesis_testing/Anova_RM"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
 import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
@@ -268,6 +269,7 @@ const App = () => {
                         <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
                         <Route exact path="/McNemar" element={(<LayoutMain><McNemar/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
+                        <Route exact path="/Anova_RM" element={(<LayoutMain><Anova_RM/></LayoutMain>)}/>
                         <Route exact path="/Welch_Anova" element={(<LayoutMain><Welch_Anova/></LayoutMain>)}/>
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>

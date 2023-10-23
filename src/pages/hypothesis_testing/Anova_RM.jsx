@@ -18,37 +18,37 @@ import PropTypes from "prop-types";
 
 const userColumns = [
     { field: "Source",
-        headerName: "Factor names",
-        align: "left",
-        headerAlign: "left",
-        flex:1,
+        headerName: "Within-group factor",
+        align: "right",
+        headerAlign: "center",
+        flex:0.9,
         resizable:false,
         sortable: true},
     {
         field: "ddof1",
-        headerName: "Degrees of freedom (numerator)",
-        // width: '5%',
-        align: "center",
+        headerName: "Degrees of Freedom (DoF)-numerator",
+        // width: '10%',
+        align: "right",
         headerAlign: "center",
-        flex:1,
+        flex:1.6,
         type: "number"
     },
     {
         field: "ddof2",
-        headerName: "Degrees of freedom (denominator)",
+        headerName: "DoF-denominator",
         // width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:1,
+        flex:0.8,
         type: "number"
     },
     {
         field: "F",
-        headerName: "F-values",
+        headerName: "F",
         // width: '10%',
         align: "center",
         headerAlign: "center",
-        flex:1,
+        flex:0.4,
         type: "number"
     },
     {
@@ -57,16 +57,25 @@ const userColumns = [
         // width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:1,
+        flex:0.95,
         type: "number"
     },
     {
         field: "np2",
-        headerName: "Partial eta-squared",
+        headerName: "Effect size",
         // width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:1,
+        flex:0.55,
+        type: "number"
+    },
+    {
+        field: "eps",
+        headerName: "Epsilon factor",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:0.65,
         type: "number"
     }];
 function TabPanel(props) {
@@ -100,7 +109,7 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-class Welch_Ancova extends React.Component {
+class Anova_RM extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -115,8 +124,12 @@ class Welch_Ancova extends React.Component {
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_dependent_variable_wf: "",
-            selected_between_factor: "",
-            selected_between_factor_wf: "",
+            selected_within_variables: "",
+            selected_within_variables_wf: [],
+            selected_subject_variable: "",
+            selected_subject_variable_wf: "",
+            selected_correction:"True",
+            selected_effsize:"np2",
             stats_show:false,
         };
         //Binding functions of the class
@@ -124,11 +137,16 @@ class Welch_Ancova extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectBetweenFactorChange = this.handleSelectBetweenFactorChange.bind(this);
+        this.handleSelectWithinVariableChange = this.handleSelectWithinVariableChange.bind(this);
+        this.handleSelectSubjectChange = this.handleSelectSubjectChange.bind(this);
+        this.handleSelectCorrectionChange = this.handleSelectCorrectionChange.bind(this);
+        this.handleSelectEffsizeChange = this.handleSelectEffsizeChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.fetchFileNames();
     }
@@ -185,23 +203,26 @@ class Welch_Ancova extends React.Component {
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
-        // TODO Add checks here
-
+        // TODO Add Checks!
         // Send the request
-        API.get("calculate_one_way_welch_anova",
+        API.get("calculate_anova_repeated_measures_pingouin",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         dv: this.state.selected_dependent_variable_wf,
-                        between: this.state.selected_between_factor_wf,
+                        subject: this.state.selected_subject_variable_wf,
+                        correction: this.state.selected_correction,
+                        within: this.state.selected_within_variables_wf,
+                        effsize: this.state.selected_effsize
                     },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
                     }
                 }
         ).then(res => {
+            console.log(res)
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
@@ -231,20 +252,47 @@ class Welch_Ancova extends React.Component {
         this.setState( {selected_dependent_variable: event.target.value})
         this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
-    handleSelectBetweenFactorChange(event){
-        this.setState( {selected_between_factor: event.target.value})
-        this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
+    handleSelectSubjectChange(event){
+        this.setState( {selected_subject_variable: event.target.value})
+        this.setState( {selected_subject_variable_wf: this.state.selected_file_name+"--"+event.target.value})
+    }
+    handleSelectCorrectionChange(event){
+        this.setState( {selected_correction: event.target.value})
+    }
+    handleSelectWithinVariableChange(event){
+        this.setState( {selected_within_variables: event.target.value})
+        var newArray = this.state.selected_within_variables_wf.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_within_variables_wf:newArray})
+    }
+    handleSelectEffsizeChange(event){
+        this.setState( {selected_effsize: event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-
+    handleListDelete(event) {
+        var newArray = this.state.selected_within_variables_wf.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_within_variables_wf:newList})
+    }
+    handleDeleteVariable(event) {
+        this.setState({selected_within_variables_wf:[]})
+    }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_dependent_variable_wf=""
-            this.state.selected_between_factor_wf=""
+            this.state.selected_subject_variable_wf=""
+            this.state.selected_within_variables_wf=""
+            this.handleDeleteVariable()
             this.setState({stats_show: false})
         })
     }
@@ -253,7 +301,7 @@ class Welch_Ancova extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Welch Anova Parameterisation
+                            Anova Repeated Measures
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -288,24 +336,69 @@ class Welch_Ancova extends React.Component {
                                 <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Between factor</InputLabel>
+                                <InputLabel id="within-selector-label">Within Variable(s)</InputLabel>
                                 <Select
-                                        labelId="Between-selector-label"
-                                        id="Between-selector"
-                                        value= {this.state.selected_between_factor}
-                                        label="Between factor"
-                                        onChange={this.handleSelectBetweenFactorChange}
+                                        labelId="within-selector-label"
+                                        id="within-selector"
+                                        value= {this.state.selected_within_variables}
+                                        label="Within Variable(s)"
+                                        onChange={this.handleSelectWithinVariableChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Name of column in data with the between factor.</FormHelperText>
+                                <FormHelperText>Select within variable(s)</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="subject-selector-label">Subject</InputLabel>
+                                <Select
+                                        labelId="Subject-selector-label"
+                                        id="Subject-selector"
+                                        value= {this.state.selected_subject_variable}
+                                        label="Between factor"
+                                        onChange={this.handleSelectSubjectChange}
+                                >
+                                    {this.state.column_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Name of column in data with the subject.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="correction-selector-label">correction</InputLabel>
+                                <Select
+                                        labelid="correction-selector-label"
+                                        id="correction-selector"
+                                        value= {this.state.selected_correction}
+                                        label="correction parameter"
+                                        onChange={this.handleSelectCorrectionChange}
+                                >
+                                    <MenuItem value={"True"}><em>True</em></MenuItem>
+                                    <MenuItem value={"False"}><em>False</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Whether to also return Greenhouse-Geisser corrected p-value. Must be ‘True’ or ‘False’.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="effsize-selector-label">effsize</InputLabel>
+                                <Select
+                                        labelid="effsize-selector-label"
+                                        id="effsize-selector"
+                                        value= {this.state.selected_effsize}
+                                        label="effsize parameter"
+                                        onChange={this.handleSelectEffsizeChange}
+                                >
+                                    <MenuItem value={"ng2"}><em>ng2</em></MenuItem>
+                                    <MenuItem value={"np2"}><em>np2</em></MenuItem>
+                                    <MenuItem value={"n2"}><em>n2</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Effect size. Must be ‘ng2’ (generalized eta-squared), or ‘np2’ (partial eta-squared), or ‘n2’ (eta-squared).</FormHelperText>
                             </FormControl>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
                                     disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_between_factor_wf.length < 1 }
+                                            this.state.selected_subject_variable_wf.length < 1 |
+                                            this.state.selected_within_variables_wf.length < 1 }
                                     type="submit"
                             >
                                 Submit
@@ -328,12 +421,30 @@ class Welch_Ancova extends React.Component {
                                 {this.state.selected_dependent_variable_wf}
                             </Button>
                         </Grid>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected within variables [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_within_variables_wf.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
+                            </Button>
+                        </FormControl>
                         <Grid>
-                            <FormHelperText>Between factor =</FormHelperText>
+                            <FormHelperText>Subject variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_between_factor_wf}>
-                                {this.state.selected_between_factor_wf}
+                                    id={this.state.selected_subject_variable_wf}>
+                                {this.state.selected_subject_variable_wf}
                             </Button>
                         </Grid>
                     </Grid>
@@ -384,4 +495,4 @@ class Welch_Ancova extends React.Component {
     }
 }
 
-export default Welch_Ancova;
+export default Anova_RM;
