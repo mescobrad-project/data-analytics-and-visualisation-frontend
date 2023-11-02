@@ -18,37 +18,47 @@ import PropTypes from "prop-types";
 
 const userColumns = [
     { field: "Source",
-        headerName: "Within-group factor",
+        headerName: "Factor names",
         align: "right",
         headerAlign: "center",
-        flex:0.9,
+        flex:0.8,
         resizable:false,
         sortable: true},
     {
-        field: "ddof1",
-        headerName: "Degrees of Freedom (DoF)-numerator",
+        field: "SS",
+        headerName: "Sums of squares",
         // width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:1.6,
+        flex:1,
         type: "number"
     },
     {
-        field: "ddof2",
-        headerName: "DoF-denominator",
+        field: "DF",
+        headerName: "Degrees of freedom",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "MS",
+        headerName: "Mean squares",
         // width: '10%',
         align: "right",
         headerAlign: "center",
         flex:0.8,
         type: "number"
     },
+
     {
         field: "F",
-        headerName: "F",
+        headerName: "F-values",
         // width: '10%',
         align: "center",
         headerAlign: "center",
-        flex:0.4,
+        flex:0.8,
         type: "number"
     },
     {
@@ -57,7 +67,7 @@ const userColumns = [
         // width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:0.95,
+        flex:1,
         type: "number"
     },
     {
@@ -66,7 +76,7 @@ const userColumns = [
         // width: '10%',
         align: "right",
         headerAlign: "center",
-        flex:0.55,
+        flex:0.6,
         type: "number"
     }];
 function TabPanel(props) {
