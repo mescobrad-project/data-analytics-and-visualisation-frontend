@@ -16,68 +16,6 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
 
-const userColumns = [
-    { field: "Source",
-        headerName: "Within-group factor",
-        align: "right",
-        headerAlign: "center",
-        flex:0.9,
-        resizable:false,
-        sortable: true},
-    {
-        field: "ddof1",
-        headerName: "Degrees of Freedom (DoF)-numerator",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1.6,
-        type: "number"
-    },
-    {
-        field: "ddof2",
-        headerName: "DoF-denominator",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:0.8,
-        type: "number"
-    },
-    {
-        field: "F",
-        headerName: "F",
-        // width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:0.4,
-        type: "number"
-    },
-    {
-        field: "p-unc",
-        headerName: "Uncorrected p-values",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:0.95,
-        type: "number"
-    },
-    {
-        field: "np2",
-        headerName: "Effect size",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:0.55,
-        type: "number"
-    },
-    {
-        field: "eps",
-        headerName: "Epsilon factor",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:0.65,
-        type: "number"
-    }];
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -115,6 +53,7 @@ class Anova_RM extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
+            user_columns: [],
             file_names:[],
             initialdataset:[],
             test_data: {
@@ -140,7 +79,7 @@ class Anova_RM extends React.Component {
         this.handleListDelete = this.handleListDelete.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
-
+        this.returnUserCols = this.returnUserCols.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectWithinVariableChange = this.handleSelectWithinVariableChange.bind(this);
@@ -203,7 +142,6 @@ class Anova_RM extends React.Component {
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
-        // TODO Add Checks!
         // Send the request
         API.get("calculate_anova_repeated_measures_pingouin",
                 {
@@ -226,6 +164,7 @@ class Anova_RM extends React.Component {
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
+            this.returnUserCols(res.data);
         });
     }
     async handleProceed(event) {
@@ -259,6 +198,25 @@ class Anova_RM extends React.Component {
     handleSelectCorrectionChange(event){
         this.setState( {selected_correction: event.target.value})
     }
+
+    returnUserCols(arr){
+        let local = []
+        arr.Columns.forEach((column, index) => {
+            local.push(
+                    {
+                        field: column.col,
+                        headerName: column.col,
+                        align: "right",
+                        headerAlign: "center",
+                        minWidth: 150,
+                    }
+            );
+        })
+        console.log(local)
+        console.log(this.state.user_columns)
+        this.setState({user_columns: local})
+    }
+
     handleSelectWithinVariableChange(event){
         this.setState( {selected_within_variables: event.target.value})
         var newArray = this.state.selected_within_variables_wf.slice();
@@ -470,11 +428,11 @@ class Anova_RM extends React.Component {
                                             <div className="datatable">
                                                 {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
                                                     <DataGrid sx={{width:'90%', height:'700px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
-                                                              zeroMinWidth
+                                                              size="large"
                                                               rowHeight={40}
                                                               className="datagrid"
                                                               rows= {this.state.test_data.DataFrame}
-                                                              columns= {userColumns}
+                                                              columns={this.state.user_columns}
                                                               pageSize= {15}
                                                               rowsPerPageOptions={[15]}
                                                     />
