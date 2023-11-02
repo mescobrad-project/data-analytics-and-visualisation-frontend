@@ -200,8 +200,6 @@ class Anova extends React.Component {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
-
-        // TODO Add Checks!
         // Send the request
         API.get("calculate_anova_pinguin",
                 {
