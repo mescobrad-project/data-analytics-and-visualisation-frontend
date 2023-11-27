@@ -282,6 +282,36 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
                                     >
+                                    <Tab label="Sensitivity 02 Sleep Statistics" {...a11yProps(1)} />
+                                    >
+                                    <Tab label="Sensitivity 03 Sleep Statistics" {...a11yProps(2)} />
+                                    >
+                                    <Tab label="Sleep Statistics" {...a11yProps(3)} />
+                                    >
+                                    <Tab label="Sensitivity 02 Worthless" {...a11yProps(4)} />
+                                    >
+                                    <Tab label="Sensitivity 03 Worthless" {...a11yProps(5)} />
+                                    >
+                                    <Tab label="Sensitivity 02 Sleep Matrix" {...a11yProps(6)} />
+                                    >
+                                    <Tab label="Sensitivity 03 Sleep Matrix" {...a11yProps(7)} />
+                                    >
+                                    <Tab label="Sleep Matrix" {...a11yProps(8)} />
+                                    >
+                                    <Tab label="Sleep Stability" {...a11yProps(9)} />
+                                    >
+                                    <Tab label="Sensitivity 02 Sleep Stability" {...a11yProps(10)} />
+                                    >
+                                    <Tab label="Sensitivity 03  Sleep Stability" {...a11yProps( 11)} />
+                                    >
+                                    <Tab label="Bandpower" {...a11yProps(12)} />
+                                    >
+                                    <Tab label="Sensitivity 02 Bandpower" {...a11yProps(13)} />
+                                    >
+                                    <Tab label="Sensitivity 03 Bandpower" {...a11yProps(14)} />
+                                    >
+                                    <Tab label="Initial Dataset" {...a11yProps(15)} />
+                                    >
                                 </Tabs>
                             </Box>
 
