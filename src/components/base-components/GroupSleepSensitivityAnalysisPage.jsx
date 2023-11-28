@@ -45,6 +45,1046 @@ const style = {
     p: 4,
 };
 
+const table_sensitivity_02_sleep_statistics = [
+    {
+        field: "subjects",
+        header_name: "Subjects",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "TIB",
+        header_name: "TIB",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "SPT",
+        header_name: "SPT",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "WASO",
+        header_name: "WASO",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "TST",
+        header_name: "TST",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "N1",
+        header_name: "N1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "N2",
+        header_name: "N2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "N3",
+        header_name: "N3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "REM",
+        header_name: "REM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "NREM",
+        header_name: "NREM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "SOL",
+        header_name: "SOL",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_N1",
+        header_name: "Lat_N1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_N2",
+        header_name: "Lat_N2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_N3",
+        header_name: "Lat_N3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_REM",
+        header_name: "Lat_REM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%N1',
+        header_name: "%N1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%N2',
+        header_name: "%N2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%N3',
+        header_name: "%N3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%REM',
+        header_name: "%REM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%NREM',
+        header_name: "%NREM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: 'SE',
+        header_name: "SE",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: 'SME',
+        header_name: "SME",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+]
+
+const table_sensitivity_03_sleep_statistics = [
+    {
+    field: "subjects",
+    header_name: "Subjects",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+    {
+        field: "TIB",
+        header_name: "TIB",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "SPT",
+        header_name: "SPT",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "WASO",
+        header_name: "WASO",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "TST",
+        header_name: "TST",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "N1",
+        header_name: "N1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "N2",
+        header_name: "N2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "N3",
+        header_name: "N3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "REM",
+        header_name: "REM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "NREM",
+        header_name: "NREM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "SOL",
+        header_name: "SOL",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_N1",
+        header_name: "Lat_N1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_N2",
+        header_name: "Lat_N2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_N3",
+        header_name: "Lat_N3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Lat_REM",
+        header_name: "Lat_REM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%N1',
+        header_name: "%N1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%N2',
+        header_name: "%N2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%N3',
+        header_name: "%N3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%REM',
+        header_name: "%REM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: '%NREM',
+        header_name: "%NREM",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: 'SE',
+        header_name: "SE",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: 'SME',
+        header_name: "SME",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+]
+
+const table_group_sleep_statistics = [
+{
+    field: "subjects",
+    header_name: "Subjects",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "TIB",
+    header_name: "TIB",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "SPT",
+    header_name: "SPT",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "WASO",
+    header_name: "WASO",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "TST",
+    header_name: "TST",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "N1",
+    header_name: "N1",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "N2",
+    header_name: "N2",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "N3",
+    header_name: "N3",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "REM",
+    header_name: "REM",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "NREM",
+    header_name: "NREM",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "SOL",
+    header_name: "SOL",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "Lat_N1",
+    header_name: "Lat_N1",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "Lat_N2",
+    header_name: "Lat_N2",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "Lat_N3",
+    header_name: "Lat_N3",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: "Lat_REM",
+    header_name: "Lat_REM",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: '%N1',
+    header_name: "%N1",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: '%N2',
+    header_name: "%N2",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: '%N3',
+    header_name: "%N3",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: '%REM',
+    header_name: "%REM",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: '%NREM',
+    header_name: "%NREM",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: 'SE',
+    header_name: "SE",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+{
+    field: 'SME',
+    header_name: "SME",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+}
+]
+
+const table_sensitivity_02_worthless = [
+        {
+    field: "0",
+    header_name: "0",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+    {
+        field: "1",
+        header_name: "1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "2",
+        header_name: "2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "3",
+        header_name: "3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "4",
+        header_name: "4",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+]
+
+const table_sensitivity_03_worthless = [
+    {
+        field: "0",
+        header_name: "0",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "1",
+        header_name: "1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "2",
+        header_name: "2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "3",
+        header_name: "3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "4",
+        header_name: "4",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+]
+
+const table_group_sleep_matrix = [
+        {
+    field: "0",
+    header_name: "0",
+    width: '10%',
+    align: "center",
+    header_align: "center",
+    flex:1
+},
+    {
+        field: "1",
+        header_name: "1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "2",
+        header_name: "2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "3",
+        header_name: "3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "4",
+        header_name: "4",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+]
+
+const table_sensitivity_02_sleep_matrix = [
+    {
+        field: "0",
+        header_name: "0",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "1",
+        header_name: "1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "2",
+        header_name: "2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "3",
+        header_name: "3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "4",
+        header_name: "4",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+
+]
+
+const table_sensitivity_03_sleep_matrix = [
+    {
+        field: "0",
+        header_name: "0",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "1",
+        header_name: "1",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "2",
+        header_name: "2",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "3",
+        header_name: "3",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "4",
+        header_name: "4",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+
+]
+
+const table_group_sleep_stability = [
+    {
+        field: "subjects",
+        header_name: "Subjects",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "0",
+        header_name: "0",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+
+]
+
+const table_sensitivity_02_sleep_stability = [
+    {
+        field: "subjects",
+        header_name: "Subjects",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "0",
+        header_name: "0",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+]
+
+const table_sensitivity_03_sleep_stability = [
+    {
+        field: "subjects",
+        header_name: "Subjects",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "0",
+        header_name: "0",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+]
+
+const table_group_bandpower = [
+    {
+        field: "Delta",
+        header_name: "Delta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Theta",
+        header_name: "Theta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Alpha",
+        header_name: "Alpha",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Sigma",
+        header_name: "Sigma",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Beta",
+        header_name: "Beta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Gamma",
+        header_name: "Gamma",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "TotalAbsPow",
+        header_name: "TotalAbsPow",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "FreqRes",
+        header_name: "FreqRes",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Relative",
+        header_name: "Relative",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+
+]
+
+const table_sensitivity_02_bandpower = [
+    {
+        field: "Delta",
+        header_name: "Delta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Theta",
+        header_name: "Theta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Alpha",
+        header_name: "Alpha",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Sigma",
+        header_name: "Sigma",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Beta",
+        header_name: "Beta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Gamma",
+        header_name: "Gamma",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "TotalAbsPow",
+        header_name: "TotalAbsPow",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "FreqRes",
+        header_name: "FreqRes",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Relative",
+        header_name: "Relative",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+
+]
+
+const table_sensitivity_03_bandpower = [
+    {
+        field: "Delta",
+        header_name: "Delta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Theta",
+        header_name: "Theta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Alpha",
+        header_name: "Alpha",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Sigma",
+        header_name: "Sigma",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Beta",
+        header_name: "Beta",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Gamma",
+        header_name: "Gamma",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "TotalAbsPow",
+        header_name: "TotalAbsPow",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "FreqRes",
+        header_name: "FreqRes",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    },
+    {
+        field: "Relative",
+        header_name: "Relative",
+        width: '10%',
+        align: "center",
+        header_align: "center",
+        flex:1
+    }
+
+]
+
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -98,6 +1138,25 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
             // Utils
             selected_channels: [],
             displayed_channel: "",
+            data_sensitivity_02_sleep_statistics : [],
+            data_sensitivity_03_sleep_statistics_first_half: [],
+            data_sensitivity_03_sleep_statistics_second_half: [],
+            data_group_sleep_statistics : [],
+            data_sensitivity_02_worthless : [],
+            data_sensitivity_03_worthless_first_half : [],
+            data_sensitivity_03_worthless_second_half : [],
+            data_group_sleep_matrix : [],
+            data_sensitivity_02_sleep_matrix : [],
+            data_sensitivity_03_sleep_matrix_first_half : [],
+            data_sensitivity_03_sleep_matrix_second_half : [],
+            data_group_sleep_stability : [],
+            data_sensitivity_02_sleep_stability : [],
+            data_sensitivity_03_sleep_stability_first_half : [],
+            data_sensitivity_03_sleep_stability_second_half : [],
+            data_group_bandpower : [],
+            data_sensitivity_02_bandpower : [],
+            data_sensitivity_03_bandpower_first_half : [],
+            data_sensitivity_03_bandpower_second_half : [],
             // available_channels: [],
             channels: [],
             tabvalue: 0,
@@ -141,6 +1200,29 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         }).then(res => {
             console.log("Results")
             console.log(res.data)
+            console.log(JSON.parse(res.data.result_sensitivity_02_sleep_statistics))
+            this.setState({data_sensitivity_02_sleep_statistics: JSON.parse(res.data.result_sensitivity_02_sleep_statistics)})
+            this.setState({data_sensitivity_03_sleep_statistics_first_half: JSON.parse(res.data.result_sensitivity_03_sleep_statistics_first_half_list)})
+            this.setState({data_sensitivity_03_sleep_statistics_second_half: JSON.parse(res.data.result_sensitivity_03_sleep_statistics_second_half_list)})
+            // this.setState({data_group_sleep_statistics: JSON.parse(res.data.result_group_sleep_statistics)})
+            this.setState({data_group_sleep_statistics: res.data.result_group_sleep_statistics})
+            this.setState({data_sensitivity_02_worthless: JSON.parse(res.data.result_sensitivity_02_worthless)})
+            this.setState({data_sensitivity_03_worthless_first_half: JSON.parse(res.data.result_sensitivity_03_worthless_first_half)})
+            this.setState({data_sensitivity_03_worthless_second_half: JSON.parse(res.data.result_sensitivity_03_worthless_second_half)})
+            // this.setState({data_group_sleep_matrix: JSON.parse(res.data.result_group_sleep_matrix)})
+            this.setState({data_group_sleep_matrix: res.data.result_group_sleep_matrix})
+            this.setState({data_sensitivity_02_sleep_matrix: JSON.parse(res.data.result_sensitivity_02_sleep_matrix)})
+            this.setState({data_sensitivity_03_sleep_matrix_first_half: JSON.parse(res.data.result_sensitivity_03_sleep_matrix_first_half)})
+            this.setState({data_sensitivity_03_sleep_matrix_second_half: JSON.parse(res.data.result_sensitivity_03_sleep_matrix_second_half)})
+            // this.setState({data_group_sleep_stability: JSON.parse(res.data.result_group_sleep_stability)})
+            this.setState({data_group_sleep_stability: res.data.result_group_sleep_stability})
+            this.setState({data_sensitivity_02_sleep_stability:JSON.parse( res.data.result_sensitivity_02_stability)})
+            this.setState({data_sensitivity_03_sleep_stability_first_half: JSON.parse(res.data.result_sensitivity_03_stability_first_half)})
+            this.setState({data_sensitivity_03_sleep_stability_second_half: JSON.parse(res.data.result_sensitivity_03_stability_second_half)})
+            this.setState({data_group_bandpower: JSON.parse(res.data.result_bandpower)})
+            this.setState({data_sensitivity_02_bandpower: JSON.parse(res.data.result_sensitivity_bandpower_02)})
+            this.setState({data_sensitivity_03_bandpower_first_half: JSON.parse(res.data.result_sensitivity_bandpower_03_first_half)})
+            this.setState({data_sensitivity_03_bandpower_second_half: JSON.parse(res.data.result_sensitivity_bandpower_03_second_half)})
         });
     }
 
@@ -317,8 +1399,335 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
 
                         </Box>
                         <TabPanel value={this.state.tabvalue} index={0}>
+                            {/*<DataGrid sx={{width:'90%', height:'500px', display: flex, marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
+                            {/*          zeroMinWidth*/}
+                            {/*          rowHeight={40}*/}
+                            {/*          className="datagrid"*/}
+                            {/*          rows= {this.state.result_slowave_dataframe_1_table}*/}
+                            {/*          columns= {result_slowave_dataframe_1_table}*/}
+                            {/*          pageSize= {10}*/}
+                            {/*          rowsPerPageOptions={[10]}*/}
+                            {/*          components={{*/}
+                            {/*              Toolbar: CustomToolbar,*/}
+                            {/*          }}*/}
+                            {/*/>*/}
                         </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={1}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_02_sleep_statistics}
+                                      columns= {table_sensitivity_02_sleep_statistics}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={2}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_sleep_statistics_first_half}
+                                      columns= {table_sensitivity_03_sleep_statistics}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
 
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_sleep_statistics_second_half}
+                                      columns= {table_sensitivity_03_sleep_statistics}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={3}>
+                            {this.state.data_group_sleep_statistics.map((data) => (
+                                <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                          zeroMinWidth
+                                          rowHeight={40}
+                                          className="datagrid"
+                                          rows= {JSON.parse(data)}
+                                          columns= {table_group_sleep_statistics}
+                                          pageSize= {10}
+                                          rowsPerPageOptions={[10]}
+                                          components={{
+                                              Toolbar: CustomToolbar,
+                                          }}
+                                />
+                            ))}
+                            {/*<DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
+                            {/*          zeroMinWidth*/}
+                            {/*          rowHeight={40}*/}
+                            {/*          className="datagrid"*/}
+                            {/*          rows= {this.state.data_group_sleep_statistics}*/}
+                            {/*          columns= {table_group_sleep_statistics}*/}
+                            {/*          pageSize= {10}*/}
+                            {/*          rowsPerPageOptions={[10]}*/}
+                            {/*          components={{*/}
+                            {/*              Toolbar: CustomToolbar,*/}
+                            {/*          }}*/}
+                            {/*/>*/}
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={4}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_02_worthless}
+                                      columns= {table_sensitivity_02_worthless}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={5}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_worthless_first_half}
+                                      columns= {table_sensitivity_03_worthless}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_worthless_second_half}
+                                      columns= {table_sensitivity_03_worthless}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={6}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_02_sleep_matrix}
+                                      columns= {table_sensitivity_02_sleep_matrix}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={7}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_sleep_matrix_first_half}
+                                      columns= {table_sensitivity_03_sleep_matrix}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_sleep_matrix_second_half}
+                                      columns= {table_sensitivity_03_sleep_matrix}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={8}>
+                            {this.state.data_group_sleep_matrix.map((data) => (
+                                <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                          zeroMinWidth
+                                          rowHeight={40}
+                                          className="datagrid"
+                                          rows= {JSON.parse(data)}
+                                          columns= {table_group_sleep_matrix}
+                                          pageSize= {10}
+                                          rowsPerPageOptions={[10]}
+                                          components={{
+                                              Toolbar: CustomToolbar,
+                                          }}
+                                />
+                            ))}
+
+                            {/*<DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
+                            {/*          zeroMinWidth*/}
+                            {/*          rowHeight={40}*/}
+                            {/*          className="datagrid"*/}
+                            {/*          rows= {this.state.data_group_sleep_matrix}*/}
+                            {/*          columns= {table_group_sleep_matrix}*/}
+                            {/*          pageSize= {10}*/}
+                            {/*          rowsPerPageOptions={[10]}*/}
+                            {/*          components={{*/}
+                            {/*              Toolbar: CustomToolbar,*/}
+                            {/*          }}*/}
+                            {/*/>*/}
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={9}>
+                            {this.state.data_group_sleep_stability.map((data) => (
+                                <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                          zeroMinWidth
+                                          rowHeight={40}
+                                          className="datagrid"
+                                          rows= {JSON.parse(data)}
+                                          columns= {table_group_sleep_stability}
+                                          pageSize= {10}
+                                          rowsPerPageOptions={[10]}
+                                          components={{
+                                              Toolbar: CustomToolbar,
+                                          }}
+                                />
+                            ))}
+
+                            {/*<DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
+                            {/*          zeroMinWidth*/}
+                            {/*          rowHeight={40}*/}
+                            {/*          className="datagrid"*/}
+                            {/*          rows= {this.state.data_group_sleep_stability}*/}
+                            {/*          columns= {table_group_sleep_stability}*/}
+                            {/*          pageSize= {10}*/}
+                            {/*          rowsPerPageOptions={[10]}*/}
+                            {/*          components={{*/}
+                            {/*              Toolbar: CustomToolbar,*/}
+                            {/*          }}*/}
+                            {/*/>*/}
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={10}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_02_sleep_stability}
+                                      columns= {table_sensitivity_02_sleep_stability}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={11}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_sleep_stability_first_half}
+                                      columns= {table_sensitivity_03_sleep_stability}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_sleep_stability_second_half}
+                                      columns= {table_sensitivity_03_sleep_stability}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={12}>
+                            {/*{this.state.data_group_bandpower.map((data) => (*/}
+                            {/*    <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
+                            {/*              zeroMinWidth*/}
+                            {/*              rowHeight={40}*/}
+                            {/*              className="datagrid"*/}
+                            {/*              rows= {JSON.parse(data)}*/}
+                            {/*              columns= {table_group_bandpower}*/}
+                            {/*              pageSize= {10}*/}
+                            {/*              rowsPerPageOptions={[10]}*/}
+                            {/*              components={{*/}
+                            {/*                  Toolbar: CustomToolbar,*/}
+                            {/*              }}*/}
+                            {/*    />*/}
+                            {/*))}*/}
+
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_group_bandpower}
+                                      columns= {table_group_bandpower}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={13}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_02_bandpower}
+                                      columns= {table_sensitivity_02_bandpower}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={this.state.tabvalue} index={14}>
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_bandpower_first_half}
+                                      columns= {table_sensitivity_03_bandpower}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
+                                      zeroMinWidth
+                                      rowHeight={40}
+                                      className="datagrid"
+                                      rows= {this.state.data_sensitivity_03_bandpower_second_half}
+                                      columns= {table_sensitivity_03_bandpower}
+                                      pageSize= {10}
+                                      rowsPerPageOptions={[10]}
+                                      components={{
+                                          Toolbar: CustomToolbar,
+                                      }}
+                            />
+                        </TabPanel>
 
                     </Grid>
                 </Grid>
