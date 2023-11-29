@@ -1137,7 +1137,12 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         this.state = {
             // Utils
             selected_channels: [],
+            group_names: [],
             displayed_channel: "",
+            tabvalue: 0,
+            channels: [],
+
+            // Results
             data_sensitivity_02_sleep_statistics : [],
             data_sensitivity_03_sleep_statistics_first_half: [],
             data_sensitivity_03_sleep_statistics_second_half: [],
@@ -1158,9 +1163,10 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
             data_sensitivity_03_bandpower_first_half : [],
             data_sensitivity_03_bandpower_second_half : [],
             // available_channels: [],
-            channels: [],
-            tabvalue: 0,
 
+            // Plot starting points
+            plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") ,
         };
 
         //Binding functions of the class
@@ -1186,7 +1192,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 //TODO UPDATE THIS VARIABLE TO A PROPER ONE
-                sampling_frequency: 5,
+                // sampling_frequency: 5,
                 // channels_selection: null,
                 channels_selection: this.state.selected_channels,
                 // channels_selection: [],
@@ -1238,6 +1244,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
 
         }).then(res => {
             this.setState({channels: res.data.channels})
+            this.setState({group_names: res.data.group_names})
             console.log(res.data.channels)
         });
     }
@@ -1290,7 +1297,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
     render() {
         return (
                 <Grid container direction="row">
-                    <Grid item xs={4} sx={{borderRight: "1px solid grey"}}>
+                    <Grid item xs={3} sx={{borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                             Group Sleep Analysis Parameterisation
                         </Typography>
@@ -1354,14 +1361,24 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                         </form>
                     </Grid>
 
-                    <Grid item xs={8}  direction='column'>
+                    <Grid item xs={9}  direction='column'>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                             Result Visualisation
                         </Typography>
                         <Divider sx={{bgcolor: "black"}}/>
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                <Tabs value={this.state.tabvalue}
+                                      onChange={this.handleTabChange}
+                                      aria-label="basic tabs example"
+                                      // variant="scrollable"
+                                      TabIndicatorProps={{ sx: { display: 'none' } }}
+                                      sx={{
+                                          '& .MuiTabs-flexContainer': {
+                                              flexWrap: 'wrap',
+                                          },
+                                      }}
+                                >
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
                                     >
                                     <Tab label="Sensitivity 02 Sleep Statistics" {...a11yProps(1)} />
@@ -1391,8 +1408,6 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                     <Tab label="Sensitivity 02 Bandpower" {...a11yProps(13)} />
                                     >
                                     <Tab label="Sensitivity 03 Bandpower" {...a11yProps(14)} />
-                                    >
-                                    <Tab label="Initial Dataset" {...a11yProps(15)} />
                                     >
                                 </Tabs>
                             </Box>
@@ -1605,6 +1620,22 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                           }}
                                 />
                             ))}
+                            {this.state.group_names.map((group_name) => (
+                                <React.Fragment>
+                                    <Typography variant="h5" sx={{flexGrow: 2, textAlign: "center"}} noWrap>
+                                       Sleep Matrix of group: {group_name}
+                                    </Typography>
+                                    <img src={this.state.plot_path + " /output/sleep_stage_"+ group_name +".png"+"?random=" + new Date().getTime()}
+                                         srcSet={this.state.plot_path + " /output/sleep_stage_"+ group_name +".png"+"?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                         loading="lazy"
+                                    />
+                                    <hr/>
+                                </React.Fragment>
+                                ))}
+
+
+
+
 
                             {/*<DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
                             {/*          zeroMinWidth*/}
