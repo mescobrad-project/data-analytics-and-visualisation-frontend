@@ -978,8 +978,9 @@ function WelcomePage() {
                                         Multiple Comparisons
                                     {/*</ListItemButton>*/}
                                 </Button>
+                                {/*<Divider/>*/}
                                 <Button
-                                        // variant="contained"
+                                        variant="contained"
                                         size="medium"
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                         fullWidth
@@ -987,14 +988,52 @@ function WelcomePage() {
                                 >
                                     Mixed ANOVA
                                 </Button>
+                                {/*<Divider/>*/}
                                 <Button
                                         size="medium"
-                                        variant="contained"
+                                        variant="outlined"
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                         fullWidth
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "ancova",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
                                 >
                                     Ancova
+                                </Button>
+                                {/*<Divider/>*/}
+                                <Button
+                                        size="medium"
+                                        variant="contained"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "welch_anova",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                                >
+                                    Welch Anova
+                                </Button>
+                                <Button
+                                        size="medium"
+                                        variant="outlined"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "anova_rm",["saved"], ["Sample_rep_measures.csv"], [])}
+                                >
+                                    Anova Repeated Measures
+                                </Button>
+                                <Button
+                                        size="medium"
+                                        variant="contained"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "anova",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                                >
+                                    One and M Way Anova
+                                </Button>
+                                <Button
+                                        size="medium"
+                                        variant="outlined"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "pairwise_tests",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                                >
+                                    Pairwise tests
                                 </Button>
                             </AccordionDetails>
                         </Accordion>
