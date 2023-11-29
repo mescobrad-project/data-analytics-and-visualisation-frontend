@@ -1349,16 +1349,6 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                             </Button>
                             <ProceedButton></ProceedButton>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary"
-                                    type="submit">
-                                Proceed >
-                            </Button>
-                        </form>
                     </Grid>
 
                     <Grid item xs={9}  direction='column'>
