@@ -26,7 +26,7 @@ const userColumns = [
         sortable: true},
     {
         field: "ddof1",
-        headerName: "Degrees of freedom (numerator)",
+        headerName: "DoF (numerator)",
         // width: '5%',
         align: "center",
         headerAlign: "center",
@@ -35,7 +35,7 @@ const userColumns = [
     },
     {
         field: "ddof2",
-        headerName: "Degrees of freedom (denominator)",
+        headerName: "DoF (denominator)",
         // width: '10%',
         align: "right",
         headerAlign: "center",
