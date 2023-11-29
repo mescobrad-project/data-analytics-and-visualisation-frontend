@@ -42,7 +42,7 @@ class EEGSelector extends React.Component {
         }
         super(props);
         this.state = {
-            path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
+            path : ip,
         };
 
         //Binding functions of the class
@@ -74,7 +74,7 @@ class EEGSelector extends React.Component {
                 <Grid container sx={{height: "100%"}} direction="column">
                     <Grid item xs={12}
                           sx={{borderRight: "1px solid grey", borderLeft: "2px solid black", height: "100vh"}}>
-                        <iframe src={this.state.path}
+                        <iframe src={this.state.path + "?username=user&password=password&hostname=Desktop Auto-Resolution"}
                                 style={{width: "100%", height: "100%", marginLeft: "0%"}}></iframe>
                     </Grid>
                 </Grid>
