@@ -1,9 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button, Divider,
-    Grid, Modal,
-    Typography
+    Grid
 } from "@mui/material";
 import {Box} from "@mui/system";
 import ImageListItem from "@mui/material/ImageListItem";

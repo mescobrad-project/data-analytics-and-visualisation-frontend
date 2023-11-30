@@ -12,7 +12,7 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography
+    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
 } from "@mui/material";
 
 import qs from "qs";

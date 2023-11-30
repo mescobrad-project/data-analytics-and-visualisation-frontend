@@ -3,16 +3,14 @@ import API from "../../axiosInstance";
 import InnerHTML from 'dangerously-set-html-content'
 import PropTypes from 'prop-types';
 import {
-    Button, Divider,
-    FormControl,
+    Button, FormControl,
     FormHelperText,
     Grid,
     InputLabel,
     List,
     ListItem,
     ListItemText,
-    MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextField, Typography
+    MenuItem, Select, TextField, Typography
 } from "@mui/material";
 import mpld3 from 'mpld3';
 // Amcharts

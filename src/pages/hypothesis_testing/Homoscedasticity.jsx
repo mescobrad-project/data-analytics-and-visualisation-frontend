@@ -6,12 +6,8 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, Tab, Tabs, TextareaAutosize, TextField,
-    Typography
+    Select, Tab, Tabs, Typography
 } from "@mui/material";
 import qs from "qs";
 import {DataGrid} from "@mui/x-data-grid";

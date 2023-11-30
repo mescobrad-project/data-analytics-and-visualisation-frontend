@@ -7,12 +7,7 @@ import {
     FormControl,
     FormHelperText,
     Grid,
-    InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem, Modal,
-    Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography
+    Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -26,7 +21,7 @@ import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {useLocation} from "react-router-dom";
-import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
 import ProceedButton from "../ui-components/ProceedButton";

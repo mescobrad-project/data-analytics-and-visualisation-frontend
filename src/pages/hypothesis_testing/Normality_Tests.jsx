@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import API from "../../axiosInstance";
 import "./normality_tests.scss"
 import {

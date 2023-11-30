@@ -8,12 +8,9 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, TextareaAutosize, TextField, Typography,
-    Table, TableHead, TableRow, TableBody, TableCell, TableContainer, Paper, Tabs, Tab
+    Select, Typography,
+    Table, TableRow, TableCell, TableContainer, Paper, Tabs, Tab
 } from "@mui/material";
 
 // Amcharts
@@ -26,7 +23,7 @@ import qs from "qs";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import {DataGrid} from "@mui/x-data-grid";
-import {Box, display} from "@mui/system";
+import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;

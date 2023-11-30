@@ -6,12 +6,8 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, Tab, Tabs, TextField,
-    Typography
+    Select, Tab, Tabs, Typography
 } from "@mui/material";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";

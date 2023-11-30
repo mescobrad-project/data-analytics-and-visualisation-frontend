@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Button, Divider, Grid, Modal, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
+import {Button} from "@mui/material";
 import API from "../../axiosInstance";
 
 class ProceedButton extends React.Component {
@@ -42,10 +42,25 @@ class ProceedButton extends React.Component {
                     }
 
                 }).then(res => {
+                    if(res.status === 200){
+                        // If succesfull follow up in the next step page in the workflow manager
+                        console.log("Task completed succesfully")
+                        window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+                    }else{
+                        // If there is an error completing the task iin the datalake we are probably
+                        // in a test case, so redirect to the home page
+                        console.log("Error completing task, please try again 1")
+                        window.location.replace("/")
+                    }
                     console.log(res)
-                    window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
                     // this.setState({channels: res.data.channels})
                     // this.props.handleChannelChange(res.data.channels)
+                }).catch(function (error) {
+                    if(error.status === 500) {
+                        console.log("Error completing task, please try again 2")
+                        window.location.replace("/")
+                    }
+
                 });
             } else {
                 console.log("Error saving data to datalake, please try again")

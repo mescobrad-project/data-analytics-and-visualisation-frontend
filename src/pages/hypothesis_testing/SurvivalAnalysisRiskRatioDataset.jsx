@@ -10,12 +10,6 @@ import {
     MenuItem,
     Select,
     Tab,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Tabs,
     TextField,
     Typography

@@ -7,11 +7,7 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
+    MenuItem, Select, Tab, Tabs, TextareaAutosize, Typography
 } from "@mui/material";
 
 // Amcharts
