@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
     Accordion, AccordionDetails, AccordionSummary,
     Button, ButtonGroup, Divider, Typography,
