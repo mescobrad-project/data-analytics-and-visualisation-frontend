@@ -25,10 +25,11 @@ import {
 } from "@mui/material";
 import JsonTable from "ts-react-json-table";
 import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
-import {LoadingButton} from "@mui/lab";
+import {DatePicker, DateTimePicker, LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
+// import DatePicker from 'react-date-picker';
 const params = new URLSearchParams(window.location.search);
 const slowave_table_1_columns = [
     {
@@ -247,6 +248,8 @@ class ActigraphyMasking extends React.Component {
             selected: "None",
             mask_period_start: "",
             mask_period_end: "",
+            datepicker_start: "",
+            datepicker_end: "",
             x_points: [],
             x2: "",
             data_inactivity_mask: [],
@@ -326,6 +329,14 @@ class ActigraphyMasking extends React.Component {
 
     handleMaskPeriodEndDateChange(event){
         this.setState({mask_period_end: event.target.value})
+    }
+
+    handleSelectDatePickerStartChange(event){
+        this.setState({datepicker_start: event.target.value})
+    }
+
+    handleSelectDatePickerEndChange(event){
+        this.setState({datepicker_end: event.target.value})
     }
 
     handleTabChange(event, newvalue){
@@ -436,7 +447,18 @@ class ActigraphyMasking extends React.Component {
                             <label>
                                 Start time:
                                 <input type="text" value={this.state.mask_period_start} onChange={this.handleMaskPeriodStartDateChange} />
+                                <DatePicker
+                                        selected={this.state.datepicker_start}
+                                        value={this.state.datepicker_start}
+                                        onChange={this.handleSelectDatePickerStartChange}
+                                        // timeInputLabel="Time:"
+                                        // dateFormat="MM/dd/yyyy h:mm aa"
+                                        // showTimeInput
+                                />
                             </label>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <DateTimePicker label="Basic date time picker" />
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'2%'}} size={"small"}>
                             </FormControl>
                             <label>
