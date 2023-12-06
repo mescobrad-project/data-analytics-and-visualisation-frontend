@@ -67,6 +67,7 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
             // List of columns sent by the backend
             columns: [],
             initialdataset:[],
+            file_names:[],
 
             //Values selected currently on the form
             selected_dependent_variable: "",
@@ -100,6 +101,12 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleScatter = this.handleScatter.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
 
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
@@ -107,6 +114,7 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
         // Initialise component
         // - values of channels from the backend
         this.fetchColumnNames();
+        this.fetchFileNames();
 
     }
 
@@ -167,10 +175,7 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
             this.setState({third_table: JSON.parse(resultJson['third_table'])})
 
             this.setState({GeneralizedEstimatingEquations_show: true})
-
-
-
-
+            this.setState({tabvalue:1})
         });
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
         //     method: "GET",
@@ -223,18 +228,92 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
         API.get("return_columns",
                 {params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({columns: res.data.columns})
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
+            this.setState({tabvalue:0})
         });
+    }
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
+        });
+    }
+
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        window.location.replace("/")
     }
 
 
     handleSelectDependentVariableChange(event){
         this.setState({selected_dependent_variable: event.target.value})
     }
+
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.setState({selected_independent_variables: []})
+            this.setState({selected_independent_variable: ""})
+            this.setState({selected_dependent_variable: ""})
+            this.state.GeneralizedEstimatingEquations_show=false
+            this.state.GeneralizedEstimatingEquations_step2_show=false
+        })
+    }
+
+    handleListDelete(event) {
+        let newArray = this.state.selected_independent_variables.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_independent_variables:newList})
+    }
+
+    handleSelectVariableNameChange(event){
+        this.setState( {selected_independent_variable: event.target.value})
+        let newArray = this.state.selected_independent_variables.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_independent_variables:newArray})
+    }
+
     handleSelectGroupChange(event){
         this.setState({selected_group: event.target.value})
     }
@@ -275,23 +354,22 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Generalized Estimating Equations Parameterisation
                         </Typography>
-                        <hr/>
-                        <Grid container justifyContent = "center">
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <TextareaAutosize
-                                        area-label="textarea"
-                                        placeholder="Selected Independent Variables"
-                                        style={{ width: 200 }}
-                                        value={this.state.selected_independent_variables}
-                                        inputProps={
-                                            { readOnly: true, }
-                                        }
-                                />
-                                <FormHelperText>Selected Independent Variables</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                        <hr/>
                         <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Dependent Variable</InputLabel>
                                 <Select
@@ -315,10 +393,9 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        multiple
+                                        value= {this.state.selected_independent_variable}
                                         label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        onChange={this.handleSelectVariableNameChange}
                                 >
 
                                     {this.state.columns.map((column) => (
@@ -328,12 +405,6 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
                                     ))}
                                 </Select>
                                 <FormHelperText>Select Independent Variables</FormHelperText>
-                                <Button onClick={this.selectAll}>
-                                    Select All Variables
-                                </Button>
-                                <Button onClick={this.clear}>
-                                    Clear Selections
-                                </Button>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="group-selector-label">Group</InputLabel>
@@ -391,19 +462,37 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
 
 
 
-                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
+                                {/*|| !this.state.selected_method*/}
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.GeneralizedEstimatingEquations_show}>
                                 Proceed >
                             </Button>
                         </form>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected independent variables [click to remove]</FormHelperText>
+                            <div>
+                                    <span>
+                                        {this.state.selected_independent_variables.map((column) => (
+                                                <Button variant="outlined" size="small"
+                                                        sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                        id={column}
+                                                        onClick={this.handleListDelete}>
+                                                    {column}
+                                                </Button>
+                                        ))}
+                                    </span>
+                            </div>
+                            <Button onClick={this.clear}>
+                                Clear All
+                            </Button>
+                        </FormControl>
+
                         <br/>
                         <br/>
                         {/*<div  style={{display: (this.state.GeneralizedEstimatingEquations_show ? 'block' : 'none')}}>*/}
@@ -470,15 +559,17 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
                         {/*<div style={{ display: (this.state.GeneralizedEstimatingEquations_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
                         {/*<div style={{ display: (this.state.GeneralizedEstimatingEquations_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
                         {/*<hr style={{ display: (this.state.GeneralizedEstimatingEquations_show ? 'block' : 'none') }}/>*/}
-                        <div style={{display: (this.state.GeneralizedEstimatingEquations_show ? 'block' : 'none')}}>
                             <Box sx={{ width: '100%' }}>
                                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                     <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                        <Tab label="Results" {...a11yProps(0)} />
-                                        <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                        <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                        <Tab label="Results" {...a11yProps(1)} />
                                     </Tabs>
                                 </Box>
                                 <TabPanel value={this.state.tabvalue} index={0}>
+                                    <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
+                                </TabPanel>
+                                <TabPanel value={this.state.tabvalue} index={1}>
                                     <Grid container direction="row">
                                         <Grid sx={{ flexGrow: 1, textAlign: "center"}} >
                                             <div style={{ display: (this.state.GeneralizedEstimatingEquations_show ? 'block' : 'none')}}>
@@ -493,11 +584,7 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
                                         </Grid>
                                     </Grid>
                                 </TabPanel>
-                                <TabPanel value={this.state.tabvalue} index={1}>
-                                    <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
-                                </TabPanel>
                             </Box>
-                        </div>
                     </Grid>
                 </Grid>
         )

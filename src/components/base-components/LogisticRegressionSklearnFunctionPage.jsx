@@ -11,7 +11,7 @@ import {
     ListItem,
     ListItemText,
     MenuItem, Paper,
-    Select, Table, TableCell, TableContainer, TableRow, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -23,13 +23,47 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
 
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 class LogisticRegressionSklearnFunctionPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns sent by the backend
             columns: [],
+            file_names:[],
 
             //Values selected currently on the form
             selected_dependent_variable: "",
@@ -56,6 +90,7 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
         //Binding functions of the class
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectCChange = this.handleSelectCChange.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
         this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.handleSelectSolverChange = this.handleSelectSolverChange.bind(this);
@@ -63,12 +98,17 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleScatter = this.handleScatter.bind(this);
-
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.handleSelectXAxisnChange = this.handleSelectXAxisnChange.bind(this);
         this.handleSelectYAxisnChange = this.handleSelectYAxisnChange.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this)
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this)
+        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this)
         // Initialise component
         // - values of channels from the backend
+        this.fetchFileNames();
         this.fetchColumnNames();
 
     }
@@ -77,7 +117,17 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
     //     console.log("DEBUG")
     //     console.log(this.state)
     // };
-
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.setState({selected_independent_variables: []})
+            this.setState({selected_independent_variable: ""})
+            this.setState({selected_dependent_variable: ""})
+            this.state.LogisticRegressionSK_show=false
+            this.state.LogisticRegressionSK_step2_show=false
+        })
+    }
 
     /**
      * Process and send the request for auto correlation and handle the response
@@ -137,7 +187,7 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
 
             this.setState({LogisticRegressionSklearn_show: true})
 
-
+            this.setState({tabvalue:1})
 
 
         });
@@ -181,7 +231,34 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
 
     }
 
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
 
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
+        });
+    }
 
     /**
      * Update state when selection changes in the form
@@ -192,10 +269,29 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
         API.get("return_columns",
                 {params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({columns: res.data.columns})
         });
+    }
+
+    handleListDelete(event) {
+        let newArray = this.state.selected_independent_variables.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_independent_variables:newList})
+    }
+    handleSelectVariableNameChange(event){
+        this.setState( {selected_independent_variable: event.target.value})
+        let newArray = this.state.selected_independent_variables.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_independent_variables:newArray})
     }
 
 
@@ -232,7 +328,9 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
     handleSelectYAxisnChange(event){
         this.setState({selected_y_axis: event.target.value})
     }
-
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
 
     render() {
         return (
@@ -259,6 +357,21 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="dependent-variable-selector-label">Dependent Variable</InputLabel>
                                 <Select
                                         labelId="dependent-variable-selector-label"
@@ -281,26 +394,25 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        multiple
+                                        value= {this.state.selected_independent_variable}
                                         label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        onChange={this.handleSelectVariableNameChange}
                                 >
 
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select Independent Variables</FormHelperText>
-                                <Button onClick={this.selectAll}>
+                            </FormControl>
+                            <Button onClick={this.selectAll}>
                                     Select All Variables
                                 </Button>
                                 <Button onClick={this.clear}>
                                     Clear Selections
                                 </Button>
-                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelId="C-label"
@@ -365,10 +477,16 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
                                 </Select>
                                 <FormHelperText>Select Solver</FormHelperText>
                             </FormControl>
-
-
-                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
+                            <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
+                                {/*|| !this.state.selected_method*/}
                                 Submit
+                            </Button>
+                        </form>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.LogisticRegressionSK_show}>
+                                Proceed >
                             </Button>
                         </form>
                         <form onSubmit={async (event) => {
@@ -376,9 +494,6 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
                             window.location.replace("/")
                             // Send the request
                         }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
-                                Proceed >
-                            </Button>
                         </form>
                         <br/>
                         <br/>
@@ -446,51 +561,62 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
                         {/*<div style={{ display: (this.state.LogisticRegressionSklearn_show ? 'block' : 'none') }}>{this.state.intercept}</div>*/}
                         {/*<div style={{ display: (this.state.LogisticRegressionSklearn_show ? 'block' : 'none') }}>{this.state.dataframe}</div>*/}
                         <hr style={{ display: (this.state.LogisticRegressionSklearn_show ? 'block' : 'none') }}/>
-                        <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
-                        <div style={{display: (this.state.LogisticRegressionSklearn_show ? 'block' : 'none')}}>
-                            <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
-                                <Table>
-                                    <TableRow>
-                                        <TableCell><strong>Intercept:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Skew:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Kurtosis:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Omnibus test statistic:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Omnibus test p-value:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Durbin Watson:</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
-                                        <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
-                                    </TableRow>
-                                </Table>
-                            </TableContainer>
-                            <hr/>
-                            <div dangerouslySetInnerHTML={{__html: this.state.df_scatter}} />
-                        </div>
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={this.state.tabvalue} index={0}>
+                                <JsonTable className="jsonResultsTable"
+                                           rows = {this.state.initialdataset}/>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={1}>
+                                <div dangerouslySetInnerHTML={{__html: this.state.dataframe}} />
+                                <hr style={{ display: (this.state.LogisticRegressionSK_show ? 'block' : 'none') }}/>
+                                        <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}}>
+                                            <Table>
+                                                <TableRow>
+                                                    <TableCell><strong>Intercept:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.intercept).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Skew:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.skew).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Kurtosis:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.kurtosis).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Jarque-Bera statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Jarque-Bera p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.jarque_bera_p).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Omnibus test statistic:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.omnibus_test_stat).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Omnibus test p-value:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.omnibus_test_p).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Durbin Watson:</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.durbin_watson).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell><strong>Coefficient of determination (R^2):</strong></TableCell>
+                                                    <TableCell>{Number.parseFloat(this.state.coef_deter).toFixed(5)}</TableCell>
+                                                </TableRow>
+                                            </Table>
+                                        </TableContainer>
+                            </TabPanel>
+                        </Box>
                     </Grid>
                 </Grid>
         )

@@ -1254,8 +1254,20 @@ function WelcomePage() {
                                     Logistic Regression Statsmodels
                                     {/*</ListItemButton>*/}
                                 </Button>
+                                <Button
+                                        // component={Link}
+                                        // variant="h6"
+                                        // href="/LinearRegression"
+                                        size="medium"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        onClick={redirectToPage.bind(this,1,1, 2, "LinearRegression", ["saved"], ["demo_sample_questionnaire.csv"])}
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "LogisticRegressionSklearn", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"])}
 
-
+                                >
+                                    {/*<ListItemButton sx={{borderBottom: "1px solid #1976d2", borderRadius: "10px"}} component={"a"}>*/}
+                                    Logistic Regression Sklearn
+                                    {/*</ListItemButton>*/}
+                                </Button>
                                 <Button
                                         size="medium"
 
