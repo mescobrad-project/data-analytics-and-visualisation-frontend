@@ -15,6 +15,7 @@ import JsonTable from "ts-react-json-table";
 import {CSVLink} from "react-csv";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -273,6 +274,7 @@ class Mixed_Anova extends React.Component {
                                 Submit
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>

@@ -15,6 +15,7 @@ import {CSVLink} from "react-csv";
 import {Box} from "@mui/system";
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -271,12 +272,7 @@ class General_Stats_Cov extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

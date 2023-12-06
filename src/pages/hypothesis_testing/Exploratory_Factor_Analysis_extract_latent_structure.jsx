@@ -15,6 +15,7 @@ import {CSVLink} from "react-csv";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import General_Stats_Cov from "./General_Stats_Cov";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -351,6 +352,7 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                                 Clear all
                             </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}}>
