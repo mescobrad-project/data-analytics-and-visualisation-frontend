@@ -95,6 +95,10 @@ import SurvivalAnalysisIncidenceRateDifferenceSimple
 import FisherExact from "../../pages/hypothesis_testing/FisherExact";
 import McNemar from "../../pages/hypothesis_testing/McNemar";
 import Ancova from "../../pages/hypothesis_testing/Ancova"
+import Welch_Anova from "../../pages/hypothesis_testing/Welch_Anova"
+import Anova_RM from "../../pages/hypothesis_testing/Anova_RM"
+import Pairwise_test from "../../pages/hypothesis_testing/Pairwise_test"
+import Anova from "../../pages/hypothesis_testing/Anova"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
 import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
@@ -268,6 +272,10 @@ const App = () => {
                         <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
                         <Route exact path="/McNemar" element={(<LayoutMain><McNemar/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
+                        <Route exact path="/Anova_RM" element={(<LayoutMain><Anova_RM/></LayoutMain>)}/>
+                        <Route exact path="/Pairwise_test" element={(<LayoutMain><Pairwise_test/></LayoutMain>)}/>
+                        <Route exact path="/Anova" element={(<LayoutMain><Anova/></LayoutMain>)}/>
+                        <Route exact path="/Welch_Anova" element={(<LayoutMain><Welch_Anova/></LayoutMain>)}/>
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisTimeVaryingCovariates" element={(<LayoutMain><SurvivalAnalysisTimeVaryingCovariates/></LayoutMain>)}/>
