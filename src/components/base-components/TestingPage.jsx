@@ -1,14 +1,6 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
-    Button, ButtonGroup, Divider,
-    Link,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    ListSubheader,
-    Typography
+    Button, ButtonGroup, Divider
 } from "@mui/material";
 import {display} from "@mui/system";
 import API from "../../axiosInstance";

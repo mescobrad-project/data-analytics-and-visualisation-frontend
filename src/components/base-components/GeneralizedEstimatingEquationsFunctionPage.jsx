@@ -7,11 +7,7 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
+    MenuItem, Select, Tab, Tabs, TextareaAutosize, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -25,6 +21,7 @@ import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 
 
 function TabPanel(props) {
@@ -395,15 +392,16 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={async (event) => {*/}
+                        {/*    event.preventDefault();*/}
+                        {/*    window.location.replace("/")*/}
+                        {/*    // Send the request*/}
+                        {/*}}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         {/*<div  style={{display: (this.state.GeneralizedEstimatingEquations_show ? 'block' : 'none')}}>*/}

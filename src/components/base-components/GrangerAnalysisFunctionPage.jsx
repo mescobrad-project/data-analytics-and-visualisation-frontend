@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
@@ -7,11 +7,8 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -25,6 +22,7 @@ import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -381,15 +379,16 @@ class GrangerAnalysisFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
+                        {/*<form onSubmit={async (event) => {*/}
+                        {/*    event.preventDefault();*/}
+                        {/*    window.location.replace("/")*/}
+                        {/*    // Send the request*/}
+                        {/*}}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                         <br/>
                         <br/>
                     </Grid>
