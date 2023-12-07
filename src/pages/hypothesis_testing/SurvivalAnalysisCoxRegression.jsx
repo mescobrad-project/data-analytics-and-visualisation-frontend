@@ -12,12 +12,13 @@ import {
     ListItem,
     ListItemText,
     MenuItem,
-    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography
+    Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
 } from "@mui/material";
 
 import qs from "qs";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 class SurvivalAnalysisCoxRegression extends React.Component {
     constructor(props){
@@ -481,6 +482,7 @@ class SurvivalAnalysisCoxRegression extends React.Component {
                                 Submit
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -570,9 +572,9 @@ class SurvivalAnalysisCoxRegression extends React.Component {
                                         return (
                                                 <TableRow>
                                                     <TableCell className="tableCell">{item.id}</TableCell>
-                                                    <TableCell className="tableCell">{Number.parseFloat(item.test_statistic).toFixed(6)}}</TableCell>
-                                                    <TableCell className="tableCell">{Number.parseFloat(item.p).toFixed(6)}}</TableCell>
-                                                    <TableCell className="tableCell">{Number.parseFloat(item['-log2(p)']).toFixed(6)}}</TableCell>
+                                                    <TableCell className="tableCell">{Number.parseFloat(item.test_statistic).toFixed(6)}</TableCell>
+                                                    <TableCell className="tableCell">{Number.parseFloat(item.p).toFixed(6)}</TableCell>
+                                                    <TableCell className="tableCell">{Number.parseFloat(item['-log2(p)']).toFixed(6)}</TableCell>
                                                 </TableRow>
                                         );
                                     })}

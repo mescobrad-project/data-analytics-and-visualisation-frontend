@@ -6,18 +6,15 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, Tab, Tabs, TextareaAutosize, TextField,
-    Typography
+    Select, Tab, Tabs, Typography
 } from "@mui/material";
 import qs from "qs";
 import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -367,6 +364,7 @@ class Homoscedasticity extends React.Component {
                                 Clear all
                             </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

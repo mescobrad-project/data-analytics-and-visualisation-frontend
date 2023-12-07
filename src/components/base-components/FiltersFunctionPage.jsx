@@ -20,6 +20,7 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class FiltersFunctionPage extends React.Component {
     constructor(props){
@@ -443,6 +444,7 @@ class FiltersFunctionPage extends React.Component {
                             Submit
                         </Button>
                     </form>
+                    <ProceedButton></ProceedButton>
                 </Grid>
                 <Grid item xs={5}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

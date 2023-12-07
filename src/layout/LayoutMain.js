@@ -1,5 +1,5 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {Grid, Container} from '@mui/material'
+import React, {useState, useEffect} from 'react';
+import {Grid} from '@mui/material'
 import AppBarCustom from "../components/ui-components/AppBarCustom";
 import Keycloak from "keycloak-js";
 import "../components/css/loading.css"

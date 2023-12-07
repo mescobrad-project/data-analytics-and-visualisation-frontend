@@ -21,6 +21,7 @@ import qs from "qs";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import Paper from "@mui/material/Paper";
+import ProceedButton from "../ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -414,12 +415,13 @@ class LDAFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.LDA_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.LDA_show || !(this.state.test_data.status==='Success')}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
+                        <ProceedButton disabled={!this.state.LDA_show || !(this.state.test_data.status==='Success')}></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

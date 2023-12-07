@@ -11,11 +11,64 @@ import {
     Typography
 } from "@mui/material";
 import qs from "qs";
+import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
-import ProceedButton from "../../components/ui-components/ProceedButton";
 
+const userColumns = [
+    { field: "Source",
+        headerName: "Factor names",
+        align: "left",
+        headerAlign: "left",
+        flex:1,
+        resizable:false,
+        sortable: true},
+    {
+        field: "ddof1",
+        headerName: "DoF (numerator)",
+        // width: '5%',
+        align: "center",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "ddof2",
+        headerName: "DoF (denominator)",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "F",
+        headerName: "F-values",
+        // width: '10%',
+        align: "center",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "p-unc",
+        headerName: "Uncorrected p-values",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "np2",
+        headerName: "Partial eta-squared",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    }];
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -35,7 +88,6 @@ function TabPanel(props) {
             </div>
     );
 }
-
 TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
@@ -48,22 +100,24 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-class Two_Related_samples_t_test extends React.Component {
+class Welch_Ancova extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns in dataset
             column_names: [],
             file_names:[],
-            test_data: [],
+            initialdataset:[],
+            test_data: {
+                status:'',
+                DataFrame:[]
+            },
             //Values selected currently on the form
-            selected_columns: [],
-            selected_variables: [],
-            selected_file_name: "",
-            selected_alternative: "two-sided",
-            selected_nan_policy:"omit",
-            selected_statistical_test:"t-test on TWO RELATED samples of scores",
-            stats_show:false
+            selected_dependent_variable: "",
+            selected_dependent_variable_wf: "",
+            selected_between_factor: "",
+            selected_between_factor_wf: "",
+            stats_show:false,
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -72,14 +126,9 @@ class Two_Related_samples_t_test extends React.Component {
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
 
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectColumnsChange = this.handleSelectColumnsChange.bind(this);
-        this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
-        this.handleSelectNanPolicyChange = this.handleSelectNanPolicyChange.bind(this);
-        // // Initialise component
-        // // - values of channels from the backend
+        this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
+        this.handleSelectBetweenFactorChange = this.handleSelectBetweenFactorChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.fetchFileNames();
     }
@@ -135,22 +184,24 @@ class Two_Related_samples_t_test extends React.Component {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
+
+        // TODO Add checks here
+
         // Send the request
-        API.get("statistical_tests",
+        API.get("calculate_one_way_welch_anova",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        columns: this.state.selected_variables,
-                        alternative: this.state.selected_alternative,
-                        nan_policy: this.state.selected_nan_policy,
-                        statistical_test: this.state.selected_statistical_test},
+                        dv: this.state.selected_dependent_variable_wf,
+                        between: this.state.selected_between_factor_wf,
+                    },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
-                    }}
+                    }
+                }
         ).then(res => {
-            this.setState({mean_std: JSON.parse(res.data.mean_std)})
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
@@ -159,63 +210,41 @@ class Two_Related_samples_t_test extends React.Component {
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
+        // We changed info file uploading process to the DataLake
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
         API.put("save_hypothesis_output",
                 {
-                    workflow_id: params.get("workflow_id"),
-                    run_id: params.get("run_id"),
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                     step_id: params.get("step_id")
                 }
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-
-    }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
+        console.log(this.state.output_return_data);
+        window.location.replace("/")
     }
 
     /**
      * Update state when selection changes in the form
      */
-    handleSelectColumnsChange(event){
-        this.setState( {selected_columns: event.target.value})
-        var newArray = this.state.selected_variables.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_variables:newArray})
+    handleSelectDependentVariableChange(event){
+        this.setState( {selected_dependent_variable: event.target.value})
+        this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
-    handleListDelete(event) {
-        var newArray = this.state.selected_variables.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_variables:newList})
-    }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
-    }
-    handleSelectAlternativeChange(event){
-        this.setState( {selected_alternative: event.target.value})
-    }
-    handleSelectNanPolicyChange(event){
-        this.setState( {selected_nan_policy: event.target.value})
+    handleSelectBetweenFactorChange(event){
+        this.setState( {selected_between_factor: event.target.value})
+        this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
+
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_variables=[]
+            this.state.selected_dependent_variable_wf=""
+            this.state.selected_between_factor_wf=""
             this.setState({stats_show: false})
         })
     }
@@ -224,7 +253,7 @@ class Two_Related_samples_t_test extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select TWO RELATED samples of scores for t-test
+                            Welch Anova Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -244,110 +273,109 @@ class Two_Related_samples_t_test extends React.Component {
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Column</InputLabel>
+                                <InputLabel id="column-selector-label">Dependent Variable</InputLabel>
                                 <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_columns}
-                                        label="Column"
-                                        onChange={this.handleSelectColumnsChange}
+                                        labelId="dependent-selector-label"
+                                        id="dependent-selector"
+                                        value= {this.state.selected_dependent_variable}
+                                        label="Dependent Variable"
+                                        onChange={this.handleSelectDependentVariableChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select Column 01 for correlation check</FormHelperText>
+                                <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="nanpolicy-selector-label">Nan policy</InputLabel>
+                                <InputLabel id="column-selector-label">Between factor</InputLabel>
                                 <Select
-                                        labelid="nanpolicy-selector-label"
-                                        id="nanpolicy-selector"
-                                        value= {this.state.selected_nan_policy}
-                                        label="Nan_policy"
-                                        onChange={this.handleSelectNanPolicyChange}
+                                        labelId="Between-selector-label"
+                                        id="Between-selector"
+                                        value= {this.state.selected_between_factor}
+                                        label="Between factor"
+                                        onChange={this.handleSelectBetweenFactorChange}
                                 >
-                                    <MenuItem value={"propagate"}><em>propagate</em></MenuItem>
-                                    <MenuItem value={"omit"}><em>omit</em></MenuItem>
+                                    {this.state.column_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
                                 </Select>
-                                <FormHelperText>Defines how to handle when input contains NaNs.</FormHelperText>
+                                <FormHelperText>Name of column in data with the between factor.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="alternative-selector-label">Alternative</InputLabel>
-                                <Select
-                                        labelid="alternative-selector-label"
-                                        id="alternative-selector"
-                                        value= {this.state.selected_alternative}
-                                        label="Alternative parameter"
-                                        onChange={this.handleSelectAlternativeChange}
-                                >
-                                    <MenuItem value={"two-sided"}><em>two-sided</em></MenuItem>
-                                    <MenuItem value={"less"}><em>less</em></MenuItem>
-                                    <MenuItem value={"greater"}><em>greater</em></MenuItem>
-                                </Select>
-                                <FormHelperText>Defines the alternative hypothesis. </FormHelperText>
-                            </FormControl>
-                            <hr/>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_variables.length !== 2}
+                                    disabled={this.state.selected_dependent_variable_wf.length < 1 |
+                                            this.state.selected_between_factor_wf.length < 1 }
                                     type="submit"
                             >
                                 Submit
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed >
+                            </Button>
+                        </form>
                         <br/>
                         <br/>
                         <hr/>
-                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
-                            <div>
-                                <span>
-                                    {this.state.selected_variables.map((column) => (
-                                            <Button variant="outlined" size="small"
-                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
-                                                    id={column}
-                                                    onClick={this.handleListDelete}>
-                                                {column}
-                                            </Button>
-                                    ))}
-                                </span>
-                            </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
+                        <Grid>
+                            <FormHelperText>Dependent variable =</FormHelperText>
+                            <Button variant="outlined" size="small"
+                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
+                                    id={this.state.selected_dependent_variable_wf}>
+                                {this.state.selected_dependent_variable_wf}
                             </Button>
-                        </FormControl>
+                        </Grid>
+                        <Grid>
+                            <FormHelperText>Between factor =</FormHelperText>
+                            <Button variant="outlined" size="small"
+                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
+                                    id={this.state.selected_between_factor_wf}>
+                                {this.state.selected_between_factor_wf}
+                            </Button>
+                        </Grid>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>
-                        <hr className="result"/>
+                        <hr/>
                         <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
                                     <Tab label="Results" {...a11yProps(1)} />
-                                    {/*<Tab label="New Dataset" {...a11yProps(2)} />*/}
+                                    {/*<Tab label="Transformed" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
-                            <TabPanel value={this.state.tabvalue} index={0}>
-                                <JsonTable className="jsonResultsTable"
-                                           rows = {this.state.initialdataset}/>
-                            </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Grid style={{display: (this.state.test_data['status']!=='Success' ? 'block' : 'none')}}>
-                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
-                                    </Grid>
-                                    <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toFixed(5)}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toFixed(5)}</Typography>
-                                        <JsonTable className="jsonResultsTable"
-                                                   rows = {this.state.mean_std}/>
-                                    </Grid>
+                                <Grid sx={{ flexGrow: 1, textAlign: "center"}}
+                                      style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    {this.state.test_data['status']!=='Success' ? (
+                                            <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                    ) : (
+                                            <div className="datatable">
+                                                {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
+                                                    <DataGrid sx={{width:'90%', height:'700px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
+                                                              zeroMinWidth
+                                                              rowHeight={40}
+                                                              className="datagrid"
+                                                              rows= {this.state.test_data.DataFrame}
+                                                              columns= {userColumns}
+                                                              pageSize= {15}
+                                                              rowsPerPageOptions={[15]}
+                                                    />
+                                                </div>
+                                    )}
                                 </Grid>
+                            </TabPanel>
+                            <TabPanel value={this.state.tabvalue} index={0}>
+                                <Box>
+                                    <JsonTable className="jsonResultsTable"
+                                               rows = {this.state.initialdataset}/>
+                                </Box>
                             </TabPanel>
                         </Grid>
                     </Grid>
@@ -356,4 +384,4 @@ class Two_Related_samples_t_test extends React.Component {
     }
 }
 
-export default Two_Related_samples_t_test;
+export default Welch_Ancova;

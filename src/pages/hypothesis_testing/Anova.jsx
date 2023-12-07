@@ -1,6 +1,5 @@
 import React from 'react';
 import API from "../../axiosInstance";
-import "./normality_tests.scss"
 import {
     Button,
     FormControl,
@@ -8,18 +7,78 @@ import {
     Grid,
     InputLabel,
     MenuItem,
-    Select,
-    Tab,
-    Tabs,
+    Select, Tab, Tabs,
     Typography
 } from "@mui/material";
-import JsonTable from "ts-react-json-table";
-import {Box} from "@mui/system";
-import PropTypes from "prop-types";
-import { CSVLink, CSVDownload } from "react-csv"
 import qs from "qs";
-import ProceedButton from "../../components/ui-components/ProceedButton";
+import {DataGrid} from "@mui/x-data-grid";
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+import PropTypes from "prop-types";
 
+const userColumns = [
+    { field: "Source",
+        headerName: "Factor names",
+        align: "right",
+        headerAlign: "center",
+        flex:0.8,
+        resizable:false,
+        sortable: true},
+    {
+        field: "SS",
+        headerName: "Sums of squares",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "DF",
+        headerName: "Degrees of freedom",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "MS",
+        headerName: "Mean squares",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:0.8,
+        type: "number"
+    },
+
+    {
+        field: "F",
+        headerName: "F-values",
+        // width: '10%',
+        align: "center",
+        headerAlign: "center",
+        flex:0.8,
+        type: "number"
+    },
+    {
+        field: "p-unc",
+        headerName: "Uncorrected p-values",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "np2",
+        headerName: "Effect size",
+        // width: '10%',
+        align: "right",
+        headerAlign: "center",
+        flex:0.6,
+        type: "number"
+    }];
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -39,7 +98,6 @@ function TabPanel(props) {
             </div>
     );
 }
-
 TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
@@ -52,60 +110,59 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-
-class Mediation_Analysis extends React.Component {
+class Anova extends React.Component {
     constructor(props){
         super(props);
-        const params = new URLSearchParams(window.location.search);
         this.state = {
-            test_data: {
-                status:'',
-                Result: "",
-                Result2: ""
-            },
-            columns: [],
+            // List of columns in dataset
+            column_names: [],
             file_names:[],
             initialdataset:[],
-            Results:"",
-            // Results2:"",
+            test_data: {
+                status:'',
+                DataFrame:[]
+            },
+            //Values selected currently on the form
             selected_dependent_variable: "",
             selected_dependent_variable_wf: "",
-            selected_exposure_variable: "",
-            selected_exposure_variable_wf: "",
-            selected_mediator_variable: "",
-            selected_mediator_variable_wf: [],
-            selected_independent_variables: [],
-            selected_independent_variables_wf: [],
-            stats_show: false,
+            selected_between_variables: "",
+            selected_between_variables_wf: [],
+            selected_ss_type:"2",
+            selected_effsize:"np2",
+            stats_show:false,
         };
         //Binding functions of the class
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectExposureVariableChange = this.handleSelectExposureVariableChange.bind(this);
-        this.handleSelectMediatorVariableChange = this.handleSelectMediatorVariableChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        this.handleTabChange = this.handleTabChange.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleListDelete = this.handleListDelete.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
-        this.handleListMediatorDelete = this.handleListMediatorDelete.bind(this);
-        this.handleDeleteMediatorVariable = this.handleDeleteMediatorVariable.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
+        this.handleSelectBetweenVariableChange = this.handleSelectBetweenVariableChange.bind(this);
+        this.handleSelectssTypeChange = this.handleSelectssTypeChange.bind(this);
+        this.handleSelectEffsizeChange = this.handleSelectEffsizeChange.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
         this.fetchFileNames();
     }
 
+    /**
+     * Call backend endpoint to get column names
+     */
     async fetchColumnNames(url, config) {
         const params = new URLSearchParams(window.location.search);
+
         API.get("return_columns",
-                {params: {
+                {
+                    params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
-            this.setState({columns: res.data.columns})
+            this.setState({column_names: res.data.columns})
         });
     }
     async fetchFileNames() {
@@ -135,39 +192,42 @@ class Mediation_Analysis extends React.Component {
             this.setState({tabvalue:0})
         });
     }
+
+    /**
+     * Process and send the request for auto correlation and handle the response
+     */
     async handleSubmit(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
-
         // Send the request
-        API.get("mediation_analysis",
+        API.get("calculate_anova_pinguin",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        dependent_1: this.state.selected_dependent_variable_wf,
-                        exposure: this.state.selected_exposure_variable_wf,
-                        mediator: this.state.selected_mediator_variable_wf,
-                        independent: this.state.selected_independent_variables_wf.length >0 ? this.state.selected_independent_variables_wf : null
-                },
+                        dependent_variable: this.state.selected_dependent_variable_wf,
+                        ss_type: this.state.selected_ss_type,
+                        between_factor: this.state.selected_between_variables_wf,
+                        effsize: this.state.selected_effsize
+                    },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
                     }
                 }
         ).then(res => {
-            this.setState({test_data: res.data});
-            this.setState({Results:JSON.parse(res.data.Result)});
-            // this.setState({Results2:JSON.parse(res.data.Result2)});
-            this.setState({stats_show: true});
-            this.setState({tabvalue:1});
+            console.log(res)
+            this.setState({test_data: res.data})
+            this.setState({stats_show: true})
+            this.setState({tabvalue:1})
         });
     }
-
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
+        // We changed info file uploading process to the DataLake
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
         API.put("save_hypothesis_output",
                 {
                     workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
@@ -177,77 +237,51 @@ class Mediation_Analysis extends React.Component {
             this.setState({output_return_data: res.data})
         });
         console.log(this.state.output_return_data);
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-
-    }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
+        window.location.replace("/")
     }
+
     /**
      * Update state when selection changes in the form
      */
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
-        var newArray = this.state.selected_independent_variables_wf.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_independent_variables_wf:newArray})
-    }
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
-        this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+ event.target.value})
+        this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
-    handleSelectExposureVariableChange(event){
-        this.setState( {selected_exposure_variable: event.target.value})
-        this.setState( {selected_exposure_variable_wf: this.state.selected_file_name+"--"+  event.target.value})
+    handleSelectssTypeChange(event){
+        this.setState( {selected_ss_type: event.target.value})
     }
-    handleSelectMediatorVariableChange(event){
-        this.setState( {selected_mediator_variable: event.target.value})
-        var newArray = this.state.selected_mediator_variable_wf.slice();
+    handleSelectBetweenVariableChange(event){
+        this.setState( {selected_between_variables: event.target.value})
+        var newArray = this.state.selected_between_variables_wf.slice();
         if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
         {
             newArray.push(this.state.selected_file_name+"--"+event.target.value);
         }
-        this.setState({selected_mediator_variable_wf:newArray})
+        this.setState({selected_between_variables_wf:newArray})
+    }
+    handleSelectEffsizeChange(event){
+        this.setState( {selected_effsize: event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
     handleListDelete(event) {
-        var newArray = this.state.selected_independent_variables_wf.slice();
+        var newArray = this.state.selected_between_variables_wf.slice();
         const ind = newArray.indexOf(event.target.id);
         let newList = newArray.filter((x, index)=>{
             return index!==ind
         })
-        this.setState({selected_independent_variables_wf:newList})
+        this.setState({selected_between_variables_wf:newList})
     }
     handleDeleteVariable(event) {
-        this.setState({selected_independent_variables_wf:[]})
-    }
-    handleListMediatorDelete(event) {
-        var newArray = this.state.selected_mediator_variable_wf.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_mediator_variable_wf:newList})
-    }
-    handleDeleteMediatorVariable(event) {
-        this.setState({selected_mediator_variable_wf:[]})
+        this.setState({selected_between_variables_wf:[]})
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_dependent_variable_wf = ""
-            this.handleDeleteMediatorVariable()
-            this.state.selected_exposure_variable_wf = ""
+            this.state.selected_dependent_variable_wf=""
+            this.state.selected_between_variables_wf=""
             this.handleDeleteVariable()
             this.setState({stats_show: false})
         })
@@ -256,8 +290,8 @@ class Mediation_Analysis extends React.Component {
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center", minWidth: 120}} noWrap>
-                            Insert Parameters
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                            One and M Way Anova
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -277,118 +311,95 @@ class Mediation_Analysis extends React.Component {
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="outcome-selector-label">Outcome variable</InputLabel>
+                                <InputLabel id="column-selector-label">Dependent Variable</InputLabel>
                                 <Select
-                                        labelId="outcome-selector-label"
-                                        id="outcome-selector"
+                                        labelId="dependent-selector-label"
+                                        id="dependent-selector"
                                         value= {this.state.selected_dependent_variable}
-                                        label="Outcome"
+                                        label="Dependent Variable"
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select outcome variable</FormHelperText>
+                                <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="predictor-selector-label">Predictor variable</InputLabel>
+                                <InputLabel id="between-selector-label">Between Variable(s)</InputLabel>
                                 <Select
-                                        labelId="predictor-selector-label"
-                                        id="predictor-selector"
-                                        value= {this.state.selected_exposure_variable}
-                                        label="predictor"
-                                        onChange={this.handleSelectExposureVariableChange}
+                                        labelId="between-selector-label"
+                                        id="between-selector"
+                                        value= {this.state.selected_between_variables}
+                                        label="Between Variable(s)"
+                                        onChange={this.handleSelectBetweenVariableChange}
                                 >
-                                    {this.state.columns.map((column) => (
+                                    {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select predictor variable</FormHelperText>
+                                <FormHelperText>Select between variable(s)</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="mediator-selector-label">Mediator variable(s)</InputLabel>
+                                <InputLabel id="ss_type-selector-label">ss_type</InputLabel>
                                 <Select
-                                        labelId="mediator-selector-label"
-                                        id="mediator-selector"
-                                        value= {this.state.selected_mediator_variable}
-                                        label="mediator"
-                                        onChange={this.handleSelectMediatorVariableChange}
+                                        labelid="ss_type-selector-label"
+                                        id="ss_type-selector"
+                                        value= {this.state.selected_ss_type}
+                                        label="ss_type parameter"
+                                        onChange={this.handleSelectssTypeChange}
                                 >
-                                    {this.state.columns.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
+                                    <MenuItem value={"1"}><em>1</em></MenuItem>
+                                    <MenuItem value={"2"}><em>2</em></MenuItem>
+                                    <MenuItem value={"3"}><em>3</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Select mediator variable(s).</FormHelperText>
+                                <FormHelperText>How the sums of squares is calculated for unbalanced design with 2 or more factors</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Covariate variables</InputLabel>
+                                <InputLabel id="effsize-selector-label">effsize</InputLabel>
                                 <Select
-                                        labelId="Covariate-selector-label"
-                                        id="Covariate-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        label="Covariate"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        labelid="effsize-selector-label"
+                                        id="effsize-selector"
+                                        value= {this.state.selected_effsize}
+                                        label="effsize parameter"
+                                        onChange={this.handleSelectEffsizeChange}
                                 >
-                                    {this.state.columns.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
+                                    <MenuItem value={"np2"}><em>np2</em></MenuItem>
+                                    <MenuItem value={"n2"}><em>n2</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Select Covariate variables</FormHelperText>
+                                <FormHelperText>Effect size. Must be ‘np2’ (partial eta-squared), or ‘n2’ (eta-squared).</FormHelperText>
                             </FormControl>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
                                     disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_mediator_variable_wf.length < 1 |
-                                            this.state.selected_exposure_variable_wf.length<1}
+                                            this.state.selected_between_variables_wf.length < 1 }
                                     type="submit"
                             >
                                 Submit
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed >
+                            </Button>
+                        </form>
                         <br/>
                         <br/>
                         <hr/>
                         <Grid>
-                            <FormHelperText>Outcome variable =</FormHelperText>
+                            <FormHelperText>Dependent variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
                                     id={this.state.selected_dependent_variable_wf}>
                                 {this.state.selected_dependent_variable_wf}
                             </Button>
                         </Grid>
-                        <Grid>
-                            <FormHelperText>Predictor variable =</FormHelperText>
-                            <Button variant="outlined" size="small"
-                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_exposure_variable_wf}>
-                                {this.state.selected_exposure_variable_wf}
-                            </Button>
-                        </Grid>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected Mediator variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected between variables [click to remove]</FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_mediator_variable_wf.map((column) => (
-                                            <Button variant="outlined" size="small"
-                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
-                                                    id={column}
-                                                    onClick={this.handleListMediatorDelete}>
-                                                {column}
-                                            </Button>
-                                    ))}
-                                </span>
-                            </div>
-                            <Button onClick={this.handleDeleteMediatorVariable}>
-                                Clear all
-                            </Button>
-                        </FormControl>
-                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected Independent variables [click to remove]</FormHelperText>
-                            <div>
-                                <span>
-                                    {this.state.selected_independent_variables_wf.map((column) => (
+                                    {this.state.selected_between_variables_wf.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
@@ -404,11 +415,11 @@ class Mediation_Analysis extends React.Component {
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>
-                        <hr className="result"/>
-                        <Box sx={{ width: '100%' }}>
+                        <hr/>
+                        <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
@@ -422,27 +433,32 @@ class Mediation_Analysis extends React.Component {
                                     {this.state.test_data['status']!=='Success' ? (
                                             <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     ) : (
-                                            <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                                <Grid>
-                                                    <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
-                                                        Mediation Results. </Typography>
-                                                    <div style={{textAlign:"center"}}>
-                                                        <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
-                                                        {/*<JsonTable className="jsonResultsTable" style={{columns: '25px'}} rows = {this.state.Results2}/>*/}
-                                                    </div>
-                                                </Grid>
-                                            </Grid>
+                                            <div className="datatable">
+                                                {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
+                                                    <DataGrid sx={{width:'90%', height:'700px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
+                                                              zeroMinWidth
+                                                              rowHeight={40}
+                                                              className="datagrid"
+                                                              rows= {this.state.test_data.DataFrame}
+                                                              columns= {userColumns}
+                                                              pageSize= {15}
+                                                              rowsPerPageOptions={[15]}
+                                                    />
+                                                </div>
                                     )}
                                 </Grid>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <JsonTable className="jsonResultsTable" rows = {this.state.initialdataset}/>
+                                <Box>
+                                    <JsonTable className="jsonResultsTable"
+                                               rows = {this.state.initialdataset}/>
+                                </Box>
                             </TabPanel>
-                        </Box>
+                        </Grid>
                     </Grid>
                 </Grid>
         )
     }
 }
 
-export default Mediation_Analysis;
+export default Anova;
