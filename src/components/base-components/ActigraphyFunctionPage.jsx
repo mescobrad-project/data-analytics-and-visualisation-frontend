@@ -735,7 +735,7 @@ class ActigraphyFunctionPage extends React.Component {
                         >
                             <MenuItem value={"2022/07/18 12:00:00"}><em>2022-07-18 12:00:00</em></MenuItem>
                             <MenuItem value={"2022/07/19 12:00:00"}><em>2022-07-19 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07-20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
+                            <MenuItem value={"2022/07/20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
                             <MenuItem value={"2022/07/21 12:00:00"}><em>2022-07-21 12:00:00</em></MenuItem>
                             <MenuItem value={"2022/07/22 12:00:00"}><em>2022-07-22 12:00:00</em></MenuItem>
                             <MenuItem value={"2022/07/23 12:00:00"}><em>2022-07-23 12:00:00</em></MenuItem>
