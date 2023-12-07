@@ -23,6 +23,7 @@ import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -507,6 +508,7 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                 Proceed >
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected independent variables [click to remove]</FormHelperText>
                             <div>

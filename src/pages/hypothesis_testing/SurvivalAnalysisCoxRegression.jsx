@@ -572,9 +572,9 @@ class SurvivalAnalysisCoxRegression extends React.Component {
                                         return (
                                                 <TableRow>
                                                     <TableCell className="tableCell">{item.id}</TableCell>
-                                                    <TableCell className="tableCell">{Number.parseFloat(item.test_statistic).toFixed(6)}}</TableCell>
-                                                    <TableCell className="tableCell">{Number.parseFloat(item.p).toFixed(6)}}</TableCell>
-                                                    <TableCell className="tableCell">{Number.parseFloat(item['-log2(p)']).toFixed(6)}}</TableCell>
+                                                    <TableCell className="tableCell">{Number.parseFloat(item.test_statistic).toFixed(6)}</TableCell>
+                                                    <TableCell className="tableCell">{Number.parseFloat(item.p).toFixed(6)}</TableCell>
+                                                    <TableCell className="tableCell">{Number.parseFloat(item['-log2(p)']).toFixed(6)}</TableCell>
                                                 </TableRow>
                                         );
                                     })}

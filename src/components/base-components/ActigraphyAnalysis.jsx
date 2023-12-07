@@ -23,6 +23,7 @@ import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
+import ProceedButton from "../ui-components/ProceedButton";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 const params = new URLSearchParams(window.location.search);
 const slowave_table_1_columns = [
@@ -401,6 +402,7 @@ class ActigraphyAnalysis extends React.Component {
                     </Button>
                     <hr/>
                 </form>
+                <ProceedButton></ProceedButton>
             </Grid>
                 <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

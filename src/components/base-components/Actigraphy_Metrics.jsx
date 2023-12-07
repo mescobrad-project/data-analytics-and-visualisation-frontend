@@ -14,7 +14,7 @@ import {DataGrid, GridValueFormatterParams} from "@mui/x-data-grid";
 import json from "qs";
 import Paper from "@mui/material/Paper";
 import JsonTable from "ts-react-json-table";
-
+import ProceedButton from "../ui-components/ProceedButton";
 class Actigraphy_Metrics extends React.Component {
     constructor(props) {
         super(props);

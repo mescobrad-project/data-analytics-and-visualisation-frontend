@@ -456,16 +456,8 @@ class SleepStatisticsFunctionPage extends React.Component {
                             {/*    Debug*/}
                             {/*</Button>*/}
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary"
-                                    type="submit">
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
+
                     </Grid>
 
                     {/*<Divider/>*/}

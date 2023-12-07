@@ -21,6 +21,7 @@ import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -505,6 +506,7 @@ class HuberRegressionFunctionPage extends React.Component {
                                 Clear All
                             </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <div  style={{display: (this.state.HuberRegression_show ? 'block' : 'none')}}>

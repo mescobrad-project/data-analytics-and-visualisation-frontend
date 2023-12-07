@@ -24,6 +24,7 @@ import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
+import ProceedButton from "../ui-components/ProceedButton";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 const params = new URLSearchParams(window.location.search);
 const slowave_table_1_columns = [
@@ -347,6 +348,7 @@ class ActigraphyMasking extends React.Component {
                         0345-024_18_07_2022_13_00_00_New_Analysis.csv
                     </Typography>
                 <hr/>
+                <ProceedButton></ProceedButton>
             </Grid>
                 <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

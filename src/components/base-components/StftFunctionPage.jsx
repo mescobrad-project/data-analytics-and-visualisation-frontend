@@ -405,9 +405,9 @@ class StftFunctionPage extends React.Component {
                             <Button variant="contained" color="primary" type="submit">
                                 Submit
                             </Button>
-                            <ProceedButton></ProceedButton>
-
                         </form>
+                        <ProceedButton></ProceedButton>
+
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

@@ -25,6 +25,7 @@ import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
+import ProceedButton from "../ui-components/ProceedButton";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 const params = new URLSearchParams(window.location.search);
 const slowave_table_1_columns = [
@@ -780,6 +781,7 @@ class ActigraphyFunctionPage extends React.Component {
                     </Button>
                     <hr/>
                 </form>
+                <ProceedButton></ProceedButton>
                 {/*<Button variant="contained" color="primary" type="button" size="large"*/}
                 {/*        onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"])}*/}
                 {/*>*/}

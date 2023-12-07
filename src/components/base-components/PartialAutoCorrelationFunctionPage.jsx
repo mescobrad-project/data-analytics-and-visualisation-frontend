@@ -19,6 +19,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class PartialAutoCorrelationFunctionPage extends React.Component {
     constructor(props){
@@ -306,6 +307,7 @@ class PartialAutoCorrelationFunctionPage extends React.Component {
                             Submit
                         </Button>
                     </form>
+                    <ProceedButton></ProceedButton>
                 </Grid>
                 <Grid item xs={8}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

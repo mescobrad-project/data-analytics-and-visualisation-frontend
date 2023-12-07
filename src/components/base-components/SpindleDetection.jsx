@@ -23,6 +23,7 @@ import InnerHTML from "dangerously-set-html-content";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import ProceedButton from "../ui-components/ProceedButton";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class SpindleDetection extends React.Component {
@@ -483,15 +484,8 @@ class SpindleDetection extends React.Component {
                             Submit
                         </Button>
                     </form>
-                    <form onSubmit={async (event) => {
-                        event.preventDefault();
-                        window.location.replace("/")
-                        // Send the request
-                    }}>
-                        <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
-                            Proceed >
-                        </Button>
-                    </form>
+                    <ProceedButton></ProceedButton>
+
                 </Grid>
                 {/*<Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>*/}
                 {/*    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}

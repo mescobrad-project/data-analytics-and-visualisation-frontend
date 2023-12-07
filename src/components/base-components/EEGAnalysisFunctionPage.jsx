@@ -36,6 +36,7 @@ import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
+import ProceedButton from "../ui-components/ProceedButton";
 const style = {
     position: 'absolute',
     top: '50%',
@@ -1066,6 +1067,8 @@ class EEGAnalysisFunctionPage extends React.Component {
                                 {/*    DEBUG>*/}
                                 {/*</Button>*/}
                             </form>
+                            <ProceedButton></ProceedButton>
+
                         </Grid>
                         {/*<Grid item xs={2} sx={{borderRight: "1px solid grey", borderLeft: "2px solid black"}}>*/}
                         {/*    <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}

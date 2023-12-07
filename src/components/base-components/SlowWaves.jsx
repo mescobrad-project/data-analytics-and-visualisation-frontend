@@ -21,6 +21,7 @@ import PointChartCustom from "../ui-components/PointChartCustom";
 import LineMultipleColorsChartCustom from "../ui-components/LineMultipleColorsChartCustom";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
+import ProceedButton from "../ui-components/ProceedButton";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class SlowWaves extends React.Component {
@@ -564,6 +565,8 @@ class SlowWaves extends React.Component {
                             Submit
                         </Button>
                     </form>
+                    <ProceedButton></ProceedButton>
+
                 </Grid>
                 <Grid item xs={8} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

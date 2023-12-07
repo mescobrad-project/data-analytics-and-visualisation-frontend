@@ -18,6 +18,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class SVCFunctionPage extends React.Component {
     constructor(props){
@@ -345,6 +346,7 @@ class SVCFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
