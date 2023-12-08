@@ -60,6 +60,7 @@ class Multiple_comparisons extends React.Component {
             column_names: [],
             file_names:[],
             test_data: {
+                status:'',
                 rejected:[],
                 corrected_p_values:[]
             },
@@ -354,15 +355,19 @@ class Multiple_comparisons extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
-                                    <Grid>
-                                        <div style={{textAlign:"center"}}>
-                                            <CSVLink data={this.state.Results}
-                                                     filename={"Results.csv"}>Download</CSVLink>
-                                            <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
-                                        </div>
-                                    </Grid>
-                                </Grid>
+                                {this.state.test_data['status']!=='Success' ? (
+                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                ) : (
+                                        <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                            <Grid>
+                                                <div style={{textAlign:"center"}}>
+                                                    <CSVLink data={this.state.Results}
+                                                             filename={"Results.csv"}>Download</CSVLink>
+                                                    <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
+                                                </div>
+                                            </Grid>
+                                        </Grid>
+                                )}
                             </TabPanel>
                         </Grid>
                     </Grid>
