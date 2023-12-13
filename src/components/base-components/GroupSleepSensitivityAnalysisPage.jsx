@@ -1141,6 +1141,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
             displayed_channel: "",
             tabvalue: 0,
             channels: [],
+            minutes_to_trim: 720,
 
             // Results
             data_sensitivity_02_sleep_statistics : [],
@@ -1174,6 +1175,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         this.fetchChannels = this.fetchChannels.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleMinutesTrimChange = this.handleMinutesTrimChange.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
 
@@ -1267,6 +1269,11 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         this.setState({tabvalue: newvalue})
     }
 
+
+    handleMinutesTrimChange(event){
+        this.setState( {minutes_to_trim: event.target.value})
+    }
+
     handleSelectChannelChange(event){
         this.setState({ selected_channels: [...this.state.selected_channels, event.target.value] })
         this.setState({displayed_channel: event.target.value})
@@ -1320,6 +1327,18 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                 ))}
                             </Select>
                             <FormHelperText>Select Channels to perform sleep analysis</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                            {/*<InputLabel id="alpha-selector-label">Alpha</InputLabel>*/}
+                            <TextField
+                                    // labelId="alpha-selector-label"
+                                    id="alpha-selector"
+                                    value= {this.state.minutes_to_trim}
+                                    label="Alpha"
+                                    onChange={this.handleMinutesTrimChange}
+                                    size={"small"}
+                            />
+                            <FormHelperText>At how many minutes should data be trimmed at</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected variables [click to remove]</FormHelperText>
