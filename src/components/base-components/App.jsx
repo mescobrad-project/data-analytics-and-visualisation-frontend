@@ -129,6 +129,7 @@ import PoissonRegressionFunctionPage from "./PoissonRegressionFunctionPage";
 import SleepStageClassificationPage from "./SleepStageClassificationPage";
 import ManualSleepStagePage from "./ManualSleepStagePage";
 import GroupSleepSensitivityAnalysisPage from "./GroupSleepSensitivityAnalysisPage";
+import EEGHypnoUpsampling from "./EEGHypnoUpsampling";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -221,6 +222,7 @@ const App = () => {
                         <Route exact path="/sleep_stage_classification" element={(<LayoutMain><SleepStageClassificationPage/></LayoutMain>)}/>
                         <Route exact path="/manual_sleep_stage_classification" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
                         <Route exact path="/group_sleep_analysis" element={(<LayoutMain><GroupSleepSensitivityAnalysisPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg_hypno_upsampling" element={(<LayoutMain><EEGHypnoUpsampling/></LayoutMain>)}/>
                         {/*<Route exact path="/group_sleep_sensitivity_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
                         {/*<Route exact path="/group_sleep_sensitivity_analysis_add_subject" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
                         {/*<Route exact path="/group_sleep_sensitivity_analysis_add_subject_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}

@@ -419,6 +419,73 @@ function WelcomePage() {
                         >
                             Group Sleep Sensitivity Analysis
                         </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                onClick={redirectToPage.bind(this,1, 1, 8, "eeg_hypno_upsampling",
+                                        ["saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved"], ["uu_sleep/Subject A_Sessio01.csv",
+                                            "uu_sleep/Subject A_Sessio01.fif",
+                                            "uu_sleep/Subject A_Sessio02.csv",
+                                            "uu_sleep/Subject A_Sessio02.fif",
+                                            "uu_sleep/Subject B_Sessio01.csv",
+                                            "uu_sleep/Subject B_Sessio01.fif",
+                                            "uu_sleep/Subject B_Sessio02.csv",
+                                            "uu_sleep/Subject B_Sessio02.fif",
+                                            "uu_sleep/Subject C_Sessio01.csv",
+                                            "uu_sleep/Subject C_Sessio01.fif",
+                                            "uu_sleep/Subject C_Sessio02.csv",
+                                            "uu_sleep/Subject C_Sessio02.fif",
+                                            "uu_sleep/Subject D_Sessio01.csv",
+                                            "uu_sleep/Subject D_Sessio01.fif",
+                                            "uu_sleep/Subject D_Sessio02.csv",
+                                            "uu_sleep/Subject D_Sessio02.fif",
+                                        ], ["1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                        ])}
+                        >
+                            EEG Upsampling - Group
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                onClick={redirectToPage.bind(this,1, 1, 14, "eeg_hypno_upsampling",
+                                        ["saved", "saved"], ["uu_sleep/Subject A_Sessio01.csv" , "uu_sleep/Subject A_Sessio01.fif"], [])}
+                        >
+                            EEG Upsampling - Single
+                        </Button>
                         {/*<Button*/}
                         {/*        variant="contained"*/}
                         {/*        size="medium"*/}
