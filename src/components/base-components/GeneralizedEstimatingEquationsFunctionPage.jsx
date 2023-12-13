@@ -68,10 +68,12 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
             columns: [],
             initialdataset:[],
             file_names:[],
+            output_return_data: [],
 
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_group: "",
+            selected_independent_variable: "",
             selected_independent_variables: [],
             selected_cov_struct: "independence",
             selected_family: "poisson",
@@ -95,7 +97,6 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
         this.handleSelectCovStructChange = this.handleSelectCovStructChange.bind(this);
         this.handleSelectFamilyChange = this.handleSelectFamilyChange.bind(this);
         this.handleSelectGroupChange = this.handleSelectGroupChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.clear = this.clear.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -323,10 +324,6 @@ class GeneralizedEstimatingEquationsFunctionPage extends React.Component {
     }
     handleSelectFamilyChange(event){
             this.setState({selected_family: event.target.value})
-    }
-
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
     }
 
     clear(){
