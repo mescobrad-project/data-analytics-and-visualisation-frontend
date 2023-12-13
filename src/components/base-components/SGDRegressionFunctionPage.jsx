@@ -7,11 +7,8 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -24,6 +21,7 @@ import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -600,12 +598,14 @@ class SGDRegressionFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.SGDRegression_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.SGDRegression_show}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
+                        <ProceedButton  disabled={!this.state.SGDRegression_show}></ProceedButton>
+
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected independent variables [click to remove]</FormHelperText>
                             <div>

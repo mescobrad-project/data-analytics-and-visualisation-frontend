@@ -7,9 +7,6 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
     Select, Tab,
     Table,
@@ -19,7 +16,6 @@ import {
     TableHead,
     TableRow,
     Tabs,
-    TextareaAutosize,
     TextField,
     Typography
 } from "@mui/material";
@@ -30,6 +26,7 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import Plot from "react-plotly.js";
 import {CSVLink} from "react-csv";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -364,12 +361,13 @@ class PrincipalComponentAnalysis extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}>
-                                Proceed
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}>*/}
+                        {/*        Proceed*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
+                        <ProceedButton disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

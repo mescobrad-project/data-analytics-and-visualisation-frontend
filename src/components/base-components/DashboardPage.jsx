@@ -1,7 +1,7 @@
 import React from 'react';
 import withRouter from '../withRouter';
 import GridLayout from "react-grid-layout";
-import {Button, Divider, Typography} from "@mui/material";
+import {Divider, Typography} from "@mui/material";
 import SamsegDatatable from "../freesurfer/datatable/SamsegDatatable";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import API from "../../axiosInstance";

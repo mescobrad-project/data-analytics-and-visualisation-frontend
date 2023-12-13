@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import {DataGrid, GridValueFormatterParams} from "@mui/x-data-grid";
 import json from "qs";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const columns = [
     // { field: "id", headerName: "ID", width: 70 },
@@ -192,12 +193,7 @@ class Actigraphy_Cosinor extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

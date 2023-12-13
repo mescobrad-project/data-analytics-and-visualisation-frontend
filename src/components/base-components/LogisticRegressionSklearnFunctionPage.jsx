@@ -7,9 +7,6 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem, Paper,
     Select, Table, TableCell, TableContainer, TableRow, TextareaAutosize, TextField, Typography
 } from "@mui/material";
@@ -23,6 +20,7 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
+import ProceedButton from "../ui-components/ProceedButton";
 
 class LogisticRegressionSklearnFunctionPage extends React.Component {
     constructor(props){
@@ -371,15 +369,17 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
+
+                        {/*<form onSubmit={async (event) => {*/}
+                        {/*    event.preventDefault();*/}
+                        {/*    window.location.replace("/")*/}
+                        {/*    // Send the request*/}
+                        {/*}}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                         <br/>
                         <br/>
                         {/*<div  style={{display: (this.state.LogisticRegressionSklearn_show ? 'block' : 'none')}}>*/}

@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import {
     Button, Divider,
-    Grid, IconButton, ImageListItemBar, Modal,
+    Grid, Modal,
     Typography
 } from "@mui/material";
 import {Box, Stack} from "@mui/system";
