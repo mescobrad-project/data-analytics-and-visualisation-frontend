@@ -11,7 +11,7 @@ import {
     ListItem,
     ListItemText,
     MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableHead, TableRow, Tabs, TextareaAutosize, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -65,13 +65,11 @@ class GrangerAnalysisFunctionPage extends React.Component {
             // List of columns sent by the backend
             column_names: [],
             file_names:[],
-            test_data: {
-                Dataframe:""
-            },
+            test_data: [],
 
             //Values selected currently on the form
-            selected_dependent_variable: "",
-            selected_independent_variable: "",
+            selected_predictor_variable: "",
+            selected_response_variable: "",
             // selected_max_lags: "",
             max_lags: [],
 
@@ -81,13 +79,14 @@ class GrangerAnalysisFunctionPage extends React.Component {
 
             // Hide/show results
             GrangerAnalysis_show : false,
-            GrangerAnalysis_step2_show: false
+            GrangerAnalysis_step2_show: false,
+            status: ""
 
 
         };
 
         //Binding functions of the class
-        this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
+        this.handleSelectPredictorVariableChange = this.handleSelectPredictorVariableChange.bind(this);
 
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
@@ -100,8 +99,8 @@ class GrangerAnalysisFunctionPage extends React.Component {
         // Initialise component
         // - values of channels from the backend
 
-        this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        this.handleSelectPredictorVariableChange = this.handleSelectPredictorVariableChange.bind(this);
+        this.handleSelectResponseVariableChange = this.handleSelectResponseVariableChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         // Initialise component
         // - values of channels from the backend
@@ -161,18 +160,21 @@ class GrangerAnalysisFunctionPage extends React.Component {
         API.get("granger_analysis", {
             params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
-                predictor_variable: this.state.selected_dependent_variable,
-                response_variable: this.state.selected_independent_variable,
+                predictor_variable: this.state.selected_file_name+"--"+this.state.selected_predictor_variable,
+                response_variable: this.state.selected_file_name+"--"+this.state.selected_response_variable,
                 num_lags: this.state.max_lags.map((value) => parseInt(value)) },
             paramsSerializer : params => {
                 return qs.stringify(params, { arrayFormat: "repeat" })
             }
         }).then(res => {
-            const resultJson = res.data;
+            const resultJson = res.data['lags'];
+            const status = res.data['status'];
             console.log(resultJson)
             console.log('Test')
 
-
+            this.setState({status: status})
+            this.setState({test_data: resultJson})
+            this.setState({tabvalue:1})
 
             // console.log("")
             // console.log(temp_array)
@@ -263,32 +265,24 @@ class GrangerAnalysisFunctionPage extends React.Component {
         });
         window.location.replace("/")
     }
-    handleSelectDependentVariableChange(event){
-        this.setState( {selected_dependent_variable: event.target.value})
-        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+    handleSelectPredictorVariableChange(event){
+        this.setState( {selected_predictor_variable: event.target.value})
     }
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variable: event.target.value})
-        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+    handleSelectResponseVariableChange(event){
+        this.setState( {selected_response_variable: event.target.value})
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.setState({selected_independent_variables: []})
-            this.setState({selected_independent_variable: ""})
-            this.setState({selected_dependent_variable: ""})
-            this.state.LassoRegression_show=false
-            this.state.Lasso_regression_step2_show=false
+            this.setState({selected_response_variable: ""})
+            this.setState({selected_predictor_variable: ""})
         })
     }
 
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-
-
-
 
     render() {
         return (
@@ -315,13 +309,13 @@ class GrangerAnalysisFunctionPage extends React.Component {
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="dependent-variable-selector-label">Predictor Variable</InputLabel>
+                                <InputLabel id="predictor-variable-selector-label">Predictor Variable</InputLabel>
                                 <Select
-                                        labelId="dependent-variable-selector-label"
-                                        id="dependent-variable-selector"
-                                        value= {this.state.selected_dependent_variable}
-                                        label="Dependent Variable"
-                                        onChange={this.handleSelectDependentVariableChange}
+                                        labelId="predictor-variable-selector-label"
+                                        id="predictor-variable-selector"
+                                        value= {this.state.selected_predictor_variable}
+                                        label="Predictor Variable"
+                                        onChange={this.handleSelectPredictorVariableChange}
                                 >
 
                                     {this.state.column_names.map((column) => (
@@ -333,13 +327,13 @@ class GrangerAnalysisFunctionPage extends React.Component {
                                 <FormHelperText>Select Predictor Variable</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="independent-variable-selector-label">Response Variable</InputLabel>
+                                <InputLabel id="response-variable-selector-label">Response Variable</InputLabel>
                                 <Select
-                                        labelId="independent-variable-selector-label"
-                                        id="independent-variable-selector"
-                                        value= {this.state.selected_independent_variable}
-                                        label="Independent Variable"
-                                        onChange={this.handleSelectIndependentVariableChange}
+                                        labelId="response-variable-selector-label"
+                                        id="response-variable-selector"
+                                        value= {this.state.selected_response_variable}
+                                        label="Response Variable"
+                                        onChange={this.handleSelectResponseVariableChange}
                                 >
 
                                     {this.state.column_names.map((column) => (
@@ -420,7 +414,40 @@ class GrangerAnalysisFunctionPage extends React.Component {
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
-                                    <JsonTable className="jsonResultsTable" rows = {this.state.dataframe}/>
+                                    <Grid container direction="row" style={{ display: (this.state.GrangerAnalysis_show ? 'block' : 'none') }}>
+                                        { this.state.test_data.map((item) => {
+                                            return (
+                                                        <TableContainer component={Paper} className="ExtremeValues" sx={{width:'80%'}} direction="row">
+                                                            <Table>
+                                                                <TableHead>
+                                                                     <TableRow>
+                                                                        <TableCell className="tableHeadCell" sx={{width:'15%'}}>number of lags {item.lag_num}</TableCell>
+                                                                        <TableCell className="tableHeadCell" sx={{width:'15%'}}>F</TableCell>
+                                                                         <TableCell className="tableHeadCell" sx={{width:'15%'}}>chi2</TableCell>
+                                                                         <TableCell className="tableHeadCell" sx={{width:'15%'}}>p</TableCell>
+                                                                        <TableCell className="tableHeadCell" sx={{width:'15%'}}>df</TableCell>
+                                                                        <TableCell className="tableHeadCell" sx={{width:'15%'}}>df_denom</TableCell>
+                                                                        <TableCell className="tableHeadCell" sx={{width:'15%'}}>df_num</TableCell>
+                                                                    </TableRow>
+                                                                </TableHead>
+                                                                { item.result.map((elem) => {
+                                                                    return (
+                                                                            <TableRow>
+                                                                                <TableCell className="tableCell">{elem.key}</TableCell>
+                                                                                <TableCell className="tableCell">{elem.F}</TableCell>
+                                                                                <TableCell className="tableCell">{elem.chi2}</TableCell>
+                                                                                <TableCell className="tableCell">{elem.p}</TableCell>
+                                                                                <TableCell className="tableCell">{elem.df}</TableCell>
+                                                                                <TableCell className="tableCell">{elem.df_denom}</TableCell>
+                                                                                <TableCell className="tableCell">{elem.df_num}</TableCell>
+                                                                            </TableRow>
+                                                                    );
+                                                                })}
+                                                            </Table>
+                                                        </TableContainer>
+                                                    );
+                                        })}
+                                    </Grid>
                                 </div>
                                 <div style={{display: (this.state.status !== 'Success' ? 'block': 'none')}}>
                                     <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
