@@ -15,6 +15,7 @@ import JsonTable from "ts-react-json-table";
 import {CSVLink} from "react-csv";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 import {DataGrid} from "@mui/x-data-grid";
 
 const userColumns = [
@@ -461,6 +462,7 @@ class Mixed_Anova extends React.Component {
                                 Submit
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>

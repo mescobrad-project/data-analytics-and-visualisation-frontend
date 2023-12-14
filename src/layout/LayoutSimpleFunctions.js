@@ -1,5 +1,5 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {Grid, Container} from '@mui/material'
+import React from 'react';
+import {Grid} from '@mui/material'
 
 const LayoutSimpleFunctions = ({leftColumn , mainContent , rightColumn}) => {
     return (

@@ -28,6 +28,7 @@ import {
 import qs from "qs";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 
@@ -63,6 +64,7 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
+
 
 class SurvivalAnalysisCoxRegression extends React.Component {
     constructor(props){
@@ -632,12 +634,7 @@ class SurvivalAnalysisCoxRegression extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                disabled={!this.state.cox_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected covariates [click to remove]</FormHelperText>
                             <div>
@@ -676,6 +673,7 @@ class SurvivalAnalysisCoxRegression extends React.Component {
                         </FormControl>
                         <br/>
                         <br/>
+
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

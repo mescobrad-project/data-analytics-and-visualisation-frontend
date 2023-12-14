@@ -7,11 +7,8 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextField, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -25,6 +22,7 @@ import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -482,12 +480,13 @@ class ElasticNetFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.ElasticNetRegression_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton disabled={!this.state.ElasticNetRegression_show}></ProceedButton>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.ElasticNetRegression_show}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected independent variables [click to remove]</FormHelperText>
                             <div>

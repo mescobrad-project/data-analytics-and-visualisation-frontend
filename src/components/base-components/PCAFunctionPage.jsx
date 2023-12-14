@@ -21,6 +21,7 @@ import {
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
+import ProceedButton from "../ui-components/ProceedButton";
 
 class PCAFunctionPage extends React.Component {
     constructor(props){
@@ -253,6 +254,7 @@ class PCAFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={5}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

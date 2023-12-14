@@ -7,11 +7,8 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, Tab, Tabs, TextField, Typography
+    Select, Tab, Tabs, Typography
 } from "@mui/material";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";

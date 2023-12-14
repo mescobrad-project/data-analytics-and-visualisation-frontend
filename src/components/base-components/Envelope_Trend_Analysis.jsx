@@ -6,9 +6,6 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
     Select, TextField, Typography
 } from "@mui/material";

@@ -7,9 +7,6 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem, Paper,
     Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Typography
 } from "@mui/material";
@@ -23,6 +20,7 @@ import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import qs from "qs";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import "../../pages/hypothesis_testing/normality_tests.scss"
+import ProceedButton from "../ui-components/ProceedButton";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 function TabPanel(props) {
@@ -483,18 +481,17 @@ class LogisticRegressionSklearnFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.LogisticRegressionSK_show}>
-                                Proceed >
-                            </Button>
-                        </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                        </form>
+                        <ProceedButton disabled={!this.state.LogisticRegressionSK_show}></ProceedButton>
+
+                        {/*<form onSubmit={async (event) => {*/}
+                        {/*    event.preventDefault();*/}
+                        {/*    window.location.replace("/")*/}
+                        {/*    // Send the request*/}
+                        {/*}}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                         <br/>
                         <br/>
                         {/*<div  style={{display: (this.state.LogisticRegressionSklearn_show ? 'block' : 'none')}}>*/}
