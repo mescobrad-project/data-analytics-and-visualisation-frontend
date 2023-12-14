@@ -1254,8 +1254,6 @@ function WelcomePage() {
                                     Logistic Regression Statsmodels
                                     {/*</ListItemButton>*/}
                                 </Button>
-
-
                                 <Button
                                         size="medium"
 
