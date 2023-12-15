@@ -540,18 +540,18 @@ class ActigraphyFunctionPage extends React.Component {
         });
     }
 
-    async handleChangeFinalCSV() {
-        const params = new URLSearchParams(window.location.search);
-        API.get("/change_final_csv", {
-            params: {
-                workflow_id: params.get("workflow_id"),
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id")
-            }
-        }).then(res => {
-            console.log("ACTIGRAPHIES_CHANGE_FINAL_CSV")
-        });
-    }
+    // async handleChangeFinalCSV() {
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.get("/change_final_csv", {
+    //         params: {
+    //             workflow_id: params.get("workflow_id"),
+    //             run_id: params.get("run_id"),
+    //             step_id: params.get("step_id")
+    //         }
+    //     }).then(res => {
+    //         console.log("ACTIGRAPHIES_CHANGE_FINAL_CSV")
+    //     });
+    // }
 
     async handleFML() {
         const params = new URLSearchParams(window.location.search);
@@ -723,7 +723,7 @@ class ActigraphyFunctionPage extends React.Component {
                 </FormControl>
                 <hr/>
                 <hr/>
-                <form onSubmit={(event) => {event.preventDefault();this.handleSubmit_daily();this.handleSubmitInitialDataset();this.handleSubmitVisualisationResults();this.handleFML();this.handleInactivityMask();}}>
+                <form onSubmit={(event) => {event.preventDefault();this.handleSubmit_daily();this.handleSubmitInitialDataset();this.handleSubmitVisualisationResults();}}>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                         <InputLabel id="startdate-label">Start Date</InputLabel>
                         <Select
@@ -826,7 +826,7 @@ class ActigraphyFunctionPage extends React.Component {
                                     Activity & Assessment
                                 </Typography>
                                 <Plot layout={this.state.layout_day_1} data={this.state.data_day_1} config={this.state.configObj} onSelected={this.handleSelected}/>
-                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleChangeFinalCSV();this.handleSubmitFinalVisualisationResults();}}>
+                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                         <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                         <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -856,7 +856,7 @@ class ActigraphyFunctionPage extends React.Component {
                                 <hr/>
 
                                 <Plot layout={this.state.layout_day_2} data={this.state.data_day_2} config={this.state.configObj} onSelected={this.handleSelected}/>
-                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleChangeFinalCSV();this.handleSubmitFinalVisualisationResults();}}>
+                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                         <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                         <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -886,7 +886,7 @@ class ActigraphyFunctionPage extends React.Component {
                                 <hr/>
 
                                 <Plot layout={this.state.layout_day_3} data={this.state.data_day_3} config={this.state.configObj} onSelected={this.handleSelected}/>
-                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleChangeFinalCSV();this.handleSubmitFinalVisualisationResults();}}>
+                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                         <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                         <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -916,7 +916,7 @@ class ActigraphyFunctionPage extends React.Component {
                                 <hr/>
 
                                 <Plot layout={this.state.layout_day_4} data={this.state.data_day_4} config={this.state.configObj} onSelected={this.handleSelected}/>
-                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleChangeFinalCSV();this.handleSubmitFinalVisualisationResults();}}>
+                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                         <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                         <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -946,7 +946,7 @@ class ActigraphyFunctionPage extends React.Component {
                                 <hr/>
 
                                 <Plot layout={this.state.layout_day_5} data={this.state.data_day_5} config={this.state.configObj} onSelected={this.handleSelected}/>
-                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleChangeFinalCSV();this.handleSubmitFinalVisualisationResults();}}>
+                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                         <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                         <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -976,7 +976,7 @@ class ActigraphyFunctionPage extends React.Component {
                                 <hr/>
 
                                 <Plot layout={this.state.layout_day_6} data={this.state.data_day_6} config={this.state.configObj} onSelected={this.handleSelected}/>
-                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleChangeFinalCSV();this.handleSubmitFinalVisualisationResults();}}>
+                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                         <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                         <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -1006,7 +1006,7 @@ class ActigraphyFunctionPage extends React.Component {
                                 <hr/>
 
                                 <Plot layout={this.state.layout_day_7} data={this.state.data_day_7} config={this.state.configObj} onSelected={this.handleSelected}/>
-                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleChangeFinalCSV();this.handleSubmitFinalVisualisationResults();}}>
+                                <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                         <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                         <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
