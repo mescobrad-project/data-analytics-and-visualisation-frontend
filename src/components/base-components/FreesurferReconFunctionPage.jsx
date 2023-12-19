@@ -11,8 +11,8 @@ import {
     List,
     ListItem,
     ListItemText,
-    MenuItem,
-    Select, TextareaAutosize, TextField, Toolbar, Typography
+    MenuItem, Paper,
+    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Toolbar, Typography
 } from "@mui/material";
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem'
@@ -24,6 +24,42 @@ import ImageListItem from '@mui/material/ImageListItem'
 import PointChartCustom from "../ui-components/PointChartCustom";
 import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 import ProceedButton from "../ui-components/ProceedButton";
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+import ScatterPlot from "../ui-components/ScatterPlot";
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+            <div
+                    role="tabpanel"
+                    hidden={value !== index}
+                    id={`simple-tabpanel-${index}`}
+                    aria-labelledby={`simple-tab-${index}`}
+                    {...other}
+            >
+                {value === index && (
+                        <Box sx={{ p: 3 }}>
+                            <Typography>{children}</Typography>
+                        </Box>
+                )}
+            </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 class FreesurferReconFunctionPage extends React.Component {
     constructor(props) {
@@ -37,16 +73,24 @@ class FreesurferReconFunctionPage extends React.Component {
         this.state = {
             // List of channels sent by the backend
             slices: [],
+            file_names: [],
 
             // Running status
             recon_started: false,
             samseg_started: false,
+
+            coreg_started: false,
+            vol2vol_started: false,
+            coreg_finished: false,
+            vol2vol_finished: false,
 
             // Logs status
             recon_finished: false,
             samseg_finished: false,
             recon_log_text: "",
             samseg_log_text: "",
+            vol2vol_log_text: "",
+            coreg_log_text: "",
 
             //Values selected currently on the form
             selected_test_name: "runId",
@@ -62,11 +106,16 @@ class FreesurferReconFunctionPage extends React.Component {
             //Variable that is either set by creating new process or checking status old one.
             selected_freesurfer_function_id_to_log: "",
 
+            selected_ref_file_name:"",
+            selected_target_file_name:"",
+            selected_flair_file_name:"",
+
             //Function to show/hide
             show_neurodesk: true,
 
             //Returned variables
             returned_status: "",
+            tabvalue: 0,
 
             itemData : [
                 {
@@ -92,10 +141,20 @@ class FreesurferReconFunctionPage extends React.Component {
         // this.sendToTop = this.sendToTop.bind(this);
         this.startRecon = this.startRecon.bind(this);
         this.startSamseg = this.startSamseg.bind(this);
+        this.startCoreg = this.startCoreg.bind(this);
+        this.startVol2vol = this.startVol2vol.bind(this);
+        this.startCoregistration = this.startCoregistration.bind(this);
         this.fetchReconLog = this.fetchReconLog.bind(this);
         this.fetchSamsegLog = this.fetchSamsegLog.bind(this);
         this.redirectToPage = this.redirectToPage.bind(this);
-
+        this.handleTabChange = this.handleTabChange.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.handleSelectFlairFileNameChange = this.handleSelectFlairFileNameChange.bind(this);
+        this.handleSelectTargetFileNameChange = this.handleSelectTargetFileNameChange.bind(this);
+        this.handleSelectRefFileNameChange = this.handleSelectRefFileNameChange.bind(this);
+        this.fetchCoregLog = this.fetchCoregLog.bind(this);
+        this.fetchVol2volLog = this.fetchVol2volLog.bind(this);
+        this.fetchFileNames();
         // Initialise component
         // - values of channels from the backend
 
@@ -169,6 +228,20 @@ class FreesurferReconFunctionPage extends React.Component {
     //
     // }
 
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("/list_nii_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+
     async startRecon(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
@@ -192,6 +265,73 @@ class FreesurferReconFunctionPage extends React.Component {
                 console.log(" Recon Failed")
             }
         });
+    }
+
+    async startCoreg(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        console.log(" Coreg Start")
+        API.get("/free_surfer/coreg",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        ref_file_name: this.state.selected_ref_file_name,
+                        flair_file_name: this.state.selected_flair_file_name
+                    }
+                }).then(res => {
+            const result = res.data;
+            if (result === "Success")
+            {
+                this.setState({coreg_started: true})
+                console.log(" Coreg Success")
+            }
+            else
+            {
+                console.log(" Coreg Failed")
+            }
+        });
+
+    }
+
+    async startVol2vol(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("/free_surfer/vol2vol",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        ref_file_name: this.state.selected_ref_file_name,
+                        flair_file_name: this.state.selected_flair_file_name,
+                        target_file_name: this.state.selected_target_file_name,
+                    }
+                }).then(res => {
+            const result = res.data;
+            if (result === "Success")
+            {
+                this.setState({vol2vol_started: true})
+                console.log(" vol2vol Success")
+            }
+            else
+            {
+                console.log(" vol2vol Failed")
+            }
+        });
+    }
+
+    async startCoregistration(event) {
+        event.preventDefault();
+        await this.startCoreg(event);
+
+        await this.startVol2vol(event);
+    }
+
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
     }
 
     async startSamseg(event) {
@@ -276,6 +416,74 @@ class FreesurferReconFunctionPage extends React.Component {
         });
     }
 
+    async fetchCoregLog(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("/free_surfer/log/vol2vol",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        output_file: "flairToT1_".concat(this.state.selected_ref_file_name.slice(-4), ".lta")
+                    }
+                }).then(res => {
+            const result = res.data;
+            if (result === true)
+            {
+                this.setState({coreg_finished: true})
+                this.setState({coreg_log_text: "coreg function has finished. Please check if vol2vol has also finished"})
+            }
+            else
+            {
+                this.setState({coreg_finished: false})
+                this.setState({coreg_log_text: "coreg function has not finished yet please press the \" Check Progress \" " +
+                            "button to check its progress again after a while"})
+            }
+        });
+    }
+
+    async fetchVol2volLog(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("/free_surfer/log/vol2vol",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        output_file: "flair_reg_".concat(this.state.selected_ref_file_name)
+                    }
+                }).then(res => {
+            const result = res.data;
+            if (result === true)
+            {
+                this.setState({vol2vol_finished: true})
+                this.setState({vol2vol_log_text: "vol2vol function has finished. Proceed to check the results"})
+            }
+            else
+            {
+                this.setState({vol2vol_finished: false})
+                this.setState({vol2vol_log_text: "vol2vol function has not finished yet please press the \" Check Progress \" " +
+                            "button to check its progress again after a while"})
+            }
+        });
+    }
+
+    handleSelectRefFileNameChange(event){
+        this.setState( {selected_ref_file_name: event.target.value})
+    }
+
+    handleSelectTargetFileNameChange(event){
+        this.setState( {selected_target_file_name: event.target.value})
+    }
+
+
+    handleSelectFlairFileNameChange(event){
+        this.setState( {selected_flair_file_name: event.target.value})
+    }
 
     async redirectToPage(workflow_id, run_id, step_id, function_name, bucket, file) {
         // Send the request
@@ -382,36 +590,15 @@ class FreesurferReconFunctionPage extends React.Component {
 
     render() {
         return (
-                <Grid container direction="column">
-                    <Grid container direction="row" >
-                        {/*<Grid item xs={2} sx={{borderRight: "1px solid grey"}}>*/}
-                        {/*    <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
-                        {/*        Data Preview*/}
-                        {/*    </Typography>*/}
-                        {/*    <Divider/>*/}
-                        {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
-                        {/*        File Name:*/}
-                        {/*    </Typography>*/}
-                        {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
-                        {/*        mri_example*/}
-                        {/*    </Typography>*/}
-                        {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
-                        {/*        File Type:*/}
-                        {/*    </Typography>*/}
-                        {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
-                        {/*        DICOM*/}
-                        {/*    </Typography>*/}
-                        {/*    <Divider/>*/}
-                        {/*    /!*Not sure if slices need to be displayed*!/*/}
-                        {/*    /!*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*!/*/}
-                        {/*    /!*    Slices:*!/*/}
-                        {/*    /!*</Typography>*!/*/}
-                        {/*    /!*<List>*!/*/}
-                        {/*    /!*    {this.state.channels.map((channel) => (*!/*/}
-                        {/*    /!*            <ListItem> <ListItemText primary={channel}/></ListItem>*!/*/}
-                        {/*    /!*    ))}*!/*/}
-                        {/*    /!*</List>*!/*/}
-                        {/*</Grid>*/}
+                <Box sx={{ width: '100%' }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                            <Tab label="Recon-All" {...a11yProps(0)} />
+                            <Tab label="Co-Registration" {...a11yProps(1)} />
+                            <Tab label="SAMSEG" {...a11yProps(2)} />
+                        </Tabs>
+                    </Box>
+                    <TabPanel value={this.state.tabvalue} index={0}>
                         <Grid item xs={6} sx={{borderRight: "1px solid grey", align: "center"}}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Freesurfer Cortical Reconstruction Process: recon-all
@@ -454,12 +641,138 @@ class FreesurferReconFunctionPage extends React.Component {
                             <Button  variant="contained" color="primary"
                                      onClick={this.redirectToPage.bind(this,1, 1, 3, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
                                      disabled={ (this.state.recon_finished ? false : "disabled")  }
-                                    sx={{margin: "8px"}}>
+                                     sx={{margin: "8px"}}>
                                 Check out Results
                             </Button>
                             <ProceedButton></ProceedButton>
-
                         </Grid>
+                    </TabPanel>
+                    <TabPanel value={this.state.tabvalue} index={1}>
+                        <Grid container direction="row">
+                            <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
+                                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                    Co-registration
+                                </Typography>
+                                <hr/>
+                                <form onSubmit={this.startCoregistration}>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="ref_file_name-selector-label">File</InputLabel>
+                                        <Select
+                                                labelId="ref_file_name-selector-label"
+                                                id="ref_file_name-selector"
+                                                value= {this.state.selected_ref_file_name}
+                                                label="Reference File name"
+                                                onChange={this.handleSelectRefFileNameChange}
+                                        >
+                                            {this.state.file_names.map((column) => (
+                                                    <MenuItem value={column}>{column}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>Select reference File name.</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="target_file_name-selector-label">File</InputLabel>
+                                        <Select
+                                                labelId="target_file_name-selector-label"
+                                                id="target_file_name-selector"
+                                                value= {this.state.selected_target_file_name}
+                                                label="Target File name"
+                                                onChange={this.handleSelectTargetFileNameChange}
+                                        >
+                                            {this.state.file_names.map((column) => (
+                                                    <MenuItem value={column}>{column}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>Select target File name.</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="flair_file_name-selector-label">File</InputLabel>
+                                        <Select
+                                                labelId="flair_file_name-selector-label"
+                                                id="flair_file_name-selector"
+                                                value= {this.state.selected_flair_file_name}
+                                                label="Flair File name"
+                                                    onChange={this.handleSelectFlairFileNameChange}
+                                        >
+                                            {this.state.file_names.map((column) => (
+                                                    <MenuItem value={column}>{column}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>Select flair File name.</FormHelperText>
+                                        <div style={{display: (this.state.coreg_started ? 'none' : 'block')}}>
+                                            <Button variant="contained" color="primary" type="submit">
+                                                Start Process
+                                            </Button>
+                                            <Divider/>
+                                        </div>
+                                    </FormControl>
+                                </form>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                    Co-registration Results
+                                </Typography>
+                                <hr/>
+
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Coreg Output Status
+                                </Typography>
+                                <Divider/>
+                                <br/>
+                                <TextareaAutosize
+                                        id = "coreg-status-text"
+                                        aria-label="Status Log"
+                                        placeholder="Status Log of coreg function"
+                                        value={this.state.coreg_log_text}
+                                        style={{
+                                            width: "90%",
+                                            backgroundColor: "black",
+                                            color: "white",
+                                            padding: "10px",
+                                            margin: "8px"
+                                        }}
+                                />
+                                <br/>
+                                <form onSubmit={this.fetchCoregLog}>
+                                    <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}>
+                                        Check Coreg progress
+                                    </Button>
+                                </form>
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Vol2vol Output Status
+                                </Typography>
+                                <Divider/>
+                                <br/>
+                                <TextareaAutosize
+                                        id = "vol2vol-status-text"
+                                        aria-label="Status Log"
+                                        placeholder="Status Log of vol2vol function"
+                                        value={this.state.vol2vol_log_text}
+                                        style={{
+                                            width: "90%",
+                                            backgroundColor: "black",
+                                            color: "white",
+                                            padding: "10px",
+                                            margin: "8px"
+                                        }}
+                                />
+                                <br/>
+                                <form onSubmit={this.fetchVol2volLog}>
+                                    <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}>
+                                        Check Vol2vol progress
+                                    </Button>
+                                </form>
+                                {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
+                                <Button  variant="contained" color="primary"
+                                         onClick={this.redirectToPage.bind(this,1, 1, 3, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
+                                         disabled={ (this.state.vol2vol_finished ? false : "disabled")  }
+                                         sx={{margin: "8px"}}>
+                                    Check out Results
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </TabPanel>
+                    <TabPanel value={this.state.tabvalue} index={2}>
                         <Grid item xs={6}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Sequence Adaptive Multimodal SEGmentation (SAMSEG)
@@ -505,42 +818,76 @@ class FreesurferReconFunctionPage extends React.Component {
                                 Check out Results
                             </Button>
                         </Grid>
+                    </TabPanel>
+                </Box>
 
-
-                    </Grid>
-                    {/*{this.state.show_neurodesk ? <Grid container direction="row">*/}
-                    {/*    <Grid item xs={12} sx={{height: "10vh", borderTop: "1px solid grey", borderBottom: "1px solid grey", backgroundColor: "#0099cc"}}>*/}
-                    {/*        <AppBar position="relative">*/}
-                    {/*            <Toolbar>*/}
-                    {/*                <Button onClick={this.sendToTop} variant="contained" color="secondary"*/}
-                    {/*                        sx={{margin: "8px", float: "right"}}>*/}
-                    {/*                    Back to Top >*/}
-                    {/*                </Button>*/}
-                    {/*            </Toolbar>*/}
-                    {/*        </AppBar>*/}
-                    {/*    </Grid>*/}
-                    {/*</Grid> : ""}*/}
-                    {/*{this.state.show_neurodesk ?*/}
-                    {/*<Grid container direction="row">*/}
-                    {/*    <Grid item xs={12} sx={{height: "90vh"}}>*/}
-                    {/*        <ImageList sx={{ width: 500, height: 200 }} cols={3} rowHeight={164}>*/}
-                    {/*            {this.state.itemData.map((item) => (*/}
-                    {/*                    <ImageListItem key={item.img}>*/}
-                    {/*                        <img*/}
-                    {/*                                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}*/}
-                    {/*                                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
-                    {/*                                alt={item.title}*/}
-                    {/*                                loading="lazy"*/}
-                    {/*                        />*/}
-                    {/*                    </ImageListItem>*/}
-                    {/*            ))}*/}
-                    {/*        </ImageList>*/}
-                    {/*        <iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "95%", height: "100%" , marginLeft: "2.5%"}}></iframe>*/}
-
-                    {/*    </Grid>*/}
-                    {/*</Grid> : "a"*/}
-                    {/*}*/}
-                </Grid>
+        // <Grid container direction="column">
+        //             <Grid container direction="row" >
+        //                 {/*<Grid item xs={2} sx={{borderRight: "1px solid grey"}}>*/}
+        //                 {/*    <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+        //                 {/*        Data Preview*/}
+        //                 {/*    </Typography>*/}
+        //                 {/*    <Divider/>*/}
+        //                 {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+        //                 {/*        File Name:*/}
+        //                 {/*    </Typography>*/}
+        //                 {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+        //                 {/*        mri_example*/}
+        //                 {/*    </Typography>*/}
+        //                 {/*    <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+        //                 {/*        File Type:*/}
+        //                 {/*    </Typography>*/}
+        //                 {/*    <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+        //                 {/*        DICOM*/}
+        //                 {/*    </Typography>*/}
+        //                 {/*    <Divider/>*/}
+        //                 {/*    /!*Not sure if slices need to be displayed*!/*/}
+        //                 {/*    /!*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*!/*/}
+        //                 {/*    /!*    Slices:*!/*/}
+        //                 {/*    /!*</Typography>*!/*/}
+        //                 {/*    /!*<List>*!/*/}
+        //                 {/*    /!*    {this.state.channels.map((channel) => (*!/*/}
+        //                 {/*    /!*            <ListItem> <ListItemText primary={channel}/></ListItem>*!/*/}
+        //                 {/*    /!*    ))}*!/*/}
+        //                 {/*    /!*</List>*!/*/}
+        //                 {/*</Grid>*/}
+        //
+        //
+        //
+        //             </Grid>
+        //             {/*{this.state.show_neurodesk ? <Grid container direction="row">*/}
+        //             {/*    <Grid item xs={12} sx={{height: "10vh", borderTop: "1px solid grey", borderBottom: "1px solid grey", backgroundColor: "#0099cc"}}>*/}
+        //             {/*        <AppBar position="relative">*/}
+        //             {/*            <Toolbar>*/}
+        //             {/*                <Button onClick={this.sendToTop} variant="contained" color="secondary"*/}
+        //             {/*                        sx={{margin: "8px", float: "right"}}>*/}
+        //             {/*                    Back to Top >*/}
+        //             {/*                </Button>*/}
+        //             {/*            </Toolbar>*/}
+        //             {/*        </AppBar>*/}
+        //             {/*    </Grid>*/}
+        //             {/*</Grid> : ""}*/}
+        //             {/*{this.state.show_neurodesk ?*/}
+        //             {/*<Grid container direction="row">*/}
+        //             {/*    <Grid item xs={12} sx={{height: "90vh"}}>*/}
+        //             {/*        <ImageList sx={{ width: 500, height: 200 }} cols={3} rowHeight={164}>*/}
+        //             {/*            {this.state.itemData.map((item) => (*/}
+        //             {/*                    <ImageListItem key={item.img}>*/}
+        //             {/*                        <img*/}
+        //             {/*                                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}*/}
+        //             {/*                                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
+        //             {/*                                alt={item.title}*/}
+        //             {/*                                loading="lazy"*/}
+        //             {/*                        />*/}
+        //             {/*                    </ImageListItem>*/}
+        //             {/*            ))}*/}
+        //             {/*        </ImageList>*/}
+        //             {/*        <iframe src="http://localhost:8080/#/?username=user&password=password" style={{width: "95%", height: "100%" , marginLeft: "2.5%"}}></iframe>*/}
+        //
+        //             {/*    </Grid>*/}
+        //             {/*</Grid> : "a"*/}
+        //             {/*}*/}
+        //         </Grid>
 
         )
     }
