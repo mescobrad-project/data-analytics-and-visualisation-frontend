@@ -127,8 +127,10 @@ class MRIViewerWin extends React.Component {
             //Channel Select order modal
             open_modal: false,
             path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
-
+            requested_file_1: this.props.requested_file_1,
+            requested_file_2: this.props.requested_file_2,
         };
+        console.log("here")
 
         //Binding functions of the class
         this.handleProcessOpenMRI = this.handleProcessOpenMRI.bind(this);
@@ -151,7 +153,8 @@ class MRIViewerWin extends React.Component {
                     params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        file_to_open: "flair_reg.nii",
+                        file_to_open: this.state.requested_file_1,
+                        file_to_open_2: this.state.requested_file_2,
                         // input_slices: this.state.selected_slice
                     }
                 }

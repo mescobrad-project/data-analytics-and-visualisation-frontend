@@ -1,6 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
+import MRIViewerWin from './MRIViewerWin';
 import {
     AppBar,
     Button, Divider,
@@ -83,6 +84,7 @@ class FreesurferReconFunctionPage extends React.Component {
             vol2vol_started: false,
             coreg_finished: false,
             vol2vol_finished: false,
+            coreg_results: false,
 
             // Logs status
             recon_finished: false,
@@ -154,6 +156,7 @@ class FreesurferReconFunctionPage extends React.Component {
         this.handleSelectRefFileNameChange = this.handleSelectRefFileNameChange.bind(this);
         this.fetchCoregLog = this.fetchCoregLog.bind(this);
         this.fetchVol2volLog = this.fetchVol2volLog.bind(this);
+        this.handleCoregProceed = this.handleCoregProceed.bind(this);
         this.fetchFileNames();
         // Initialise component
         // - values of channels from the backend
@@ -325,9 +328,14 @@ class FreesurferReconFunctionPage extends React.Component {
 
     async startCoregistration(event) {
         event.preventDefault();
-        await this.startCoreg(event);
-
-        await this.startVol2vol(event);
+        this.startCoreg(event)
+                .then(() => this.startVol2vol(event))
+                .then(() => {
+                    console.log("Coregistrtion functions completed successfully.");
+                })
+                .catch(error => {
+                    console.error("An error occurred:", error);
+                });
     }
 
     handleTabChange(event, newvalue){
@@ -404,7 +412,7 @@ class FreesurferReconFunctionPage extends React.Component {
             if (result === true)
             {
                 this.setState({samseg_finished: true})
-                this.setState({samseg_log_text: "Function has finished please press the \" Process \" button to" +
+                this.setState({samseg_log_text: "Function has finished press the \" Process \" button to" +
                             " proceed after both functions have completed successfully"})
             }
             else
@@ -419,27 +427,27 @@ class FreesurferReconFunctionPage extends React.Component {
     async fetchCoregLog(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
-
+        console.log("flairToT1_".concat(this.state.selected_ref_file_name.slice(0, -4), ".lta"))
         API.get("/free_surfer/log/vol2vol",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        output_file: "flairToT1_".concat(this.state.selected_ref_file_name.slice(-4), ".lta")
+                        output_file: "flairToT1_".concat(this.state.selected_ref_file_name.slice(0, -4), ".lta")
                     }
                 }).then(res => {
             const result = res.data;
             if (result === true)
             {
                 this.setState({coreg_finished: true})
-                this.setState({coreg_log_text: "coreg function has finished. Please check if vol2vol has also finished"})
+                this.setState({coreg_log_text: "coreg function has finished. Press \" Start vol2vol \" to proceed to vol2vol"})
             }
             else
             {
                 this.setState({coreg_finished: false})
-                this.setState({coreg_log_text: "coreg function has not finished yet please press the \" Check Progress \" " +
-                            "button to check its progress again after a while"})
+                this.setState({coreg_log_text: "coreg function has not finished yet, press \"Check coreg Progress\" " +
+                            "to check its progress again after a while"})
             }
         });
     }
@@ -466,14 +474,18 @@ class FreesurferReconFunctionPage extends React.Component {
             else
             {
                 this.setState({vol2vol_finished: false})
-                this.setState({vol2vol_log_text: "vol2vol function has not finished yet please press the \" Check Progress \" " +
-                            "button to check its progress again after a while"})
+                this.setState({vol2vol_log_text: "vol2vol function has not finished yet, press \"Check vol2vol Progress\" " +
+                            "to check its progress again after a while"})
             }
         });
     }
 
     handleSelectRefFileNameChange(event){
         this.setState( {selected_ref_file_name: event.target.value})
+    }
+
+    handleCoregProceed(event){
+        this.setState( {coreg_results: true})
     }
 
     handleSelectTargetFileNameChange(event){
@@ -654,7 +666,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                     Co-registration
                                 </Typography>
                                 <hr/>
-                                <form onSubmit={this.startCoregistration}>
+                                <form onSubmit={this.startCoreg}>
                                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                         <InputLabel id="ref_file_name-selector-label">File</InputLabel>
                                         <Select
@@ -699,12 +711,17 @@ class FreesurferReconFunctionPage extends React.Component {
                                             ))}
                                         </Select>
                                         <FormHelperText>Select flair File name.</FormHelperText>
-                                        <div style={{display: (this.state.coreg_started ? 'none' : 'block')}}>
-                                            <Button variant="contained" color="primary" type="submit">
-                                                Start Process
+                                            <Button variant="contained" color="primary" type="submit" disabled={this.state.coreg_started}>
+                                                Start Coreg
                                             </Button>
                                             <Divider/>
-                                        </div>
+                                    </FormControl>
+                                </form>
+                                <form onSubmit={this.startVol2vol}>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <Button variant="contained" color="primary" type="submit" disabled={!this.state.coreg_finished || this.state.vol2vol_started}>
+                                            Start Vol2vol
+                                        </Button>
                                     </FormControl>
                                 </form>
                             </Grid>
@@ -764,11 +781,14 @@ class FreesurferReconFunctionPage extends React.Component {
                                 </form>
                                 {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                                 <Button  variant="contained" color="primary"
-                                         onClick={this.redirectToPage.bind(this,1, 1, 3, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
+                                         onClick={this.state.handleCoregProceed}
                                          disabled={ (this.state.vol2vol_finished ? false : "disabled")  }
                                          sx={{margin: "8px"}}>
                                     Check out Results
                                 </Button>
+                                {this.state.coreg_results && (
+                                <MRIViewerWin requested_file_1={this.state.selected_ref_file_name} requested_file_2={"flair_reg_".concat(this.state.selected_ref_file_name)}/>
+                                        )}
                             </Grid>
                         </Grid>
                     </TabPanel>
