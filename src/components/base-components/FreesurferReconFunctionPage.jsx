@@ -112,6 +112,9 @@ class FreesurferReconFunctionPage extends React.Component {
             selected_target_file_name:"",
             selected_flair_file_name:"",
 
+            selected_input_file_name:"",
+            selected_input_flair_file_name:"",
+
             //Function to show/hide
             show_neurodesk: true,
 
@@ -157,6 +160,8 @@ class FreesurferReconFunctionPage extends React.Component {
         this.fetchCoregLog = this.fetchCoregLog.bind(this);
         this.fetchVol2volLog = this.fetchVol2volLog.bind(this);
         this.handleCoregProceed = this.handleCoregProceed.bind(this);
+        this.handleSelectInputFileNameChange = this.handleSelectInputFileNameChange.bind(this);
+        this.handleSelectInputFlairFileNameChange = this.handleSelectInputFlairFileNameChange.bind(this);
         this.fetchFileNames();
         // Initialise component
         // - values of channels from the backend
@@ -352,6 +357,8 @@ class FreesurferReconFunctionPage extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
+                        input_file_name: this.state.selected_input_file_name,
+                        input_flair_file_name: this.state.selected_input_flair_file_name,
                     }
                 }).then(res => {
             const result = res.data;
@@ -497,8 +504,21 @@ class FreesurferReconFunctionPage extends React.Component {
         this.setState( {selected_flair_file_name: event.target.value})
     }
 
-    async redirectToPage(workflow_id, run_id, step_id, function_name, bucket, file) {
+    handleSelectInputFileNameChange(event){
+        this.setState( {selected_input_file_name: event.target.value})
+    }
+
+    handleSelectInputFileNameChange(event){
+        this.setState( {selected_input_file_name: event.target.value})
+    }
+
+    handleSelectInputFlairFileNameChange(event){
+        this.setState( {selected_input_flair_file_name: event.target.value})
+    }
+
+    async redirectToPage(function_name, bucket, file) {
         // Send the request
+        const params = new URLSearchParams(window.location.search);
         let files_to_send = []
         for (let it=0 ; it< bucket.length;it++){
             files_to_send.push([bucket[it], file[it]])
@@ -506,9 +526,9 @@ class FreesurferReconFunctionPage extends React.Component {
 
         API.put("function/navigation/",
                 {
-                    workflow_id: workflow_id,
-                    run_id: run_id,
-                    step_id: step_id,
+                    workflow_id: params.get("workflow_id"),
+                    run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
                     function: function_name,
                     metadata: {
                         // [["saved"] , "demo_sample_questionnaire.csv"],
@@ -651,7 +671,7 @@ class FreesurferReconFunctionPage extends React.Component {
 
                             {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                             <Button  variant="contained" color="primary"
-                                     onClick={this.redirectToPage.bind(this,1, 1, 3, "recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
+                                     onClick={this.redirectToPage.bind(this,"recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
                                      disabled={ (this.state.recon_finished ? false : "disabled")  }
                                      sx={{margin: "8px"}}>
                                 Check out Results
@@ -793,54 +813,85 @@ class FreesurferReconFunctionPage extends React.Component {
                         </Grid>
                     </TabPanel>
                     <TabPanel value={this.state.tabvalue} index={2}>
-                        <Grid item xs={6}>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Sequence Adaptive Multimodal SEGmentation (SAMSEG)
-                            </Typography>
-                            <Divider/>
-                            <div style={{display: (this.state.samseg_started ? 'none' : 'block')}}>
+                        <Grid container direction="row">
+                            <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
+                                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                    Sequence Adaptive Multimodal SEGmentation (SAMSEG)
+                                </Typography>
+                                <hr/>
                                 <form onSubmit={this.startSamseg}>
-                                    <Button variant="contained" color="primary" type="submit">
-                                        Start Process
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="input_file_name-selector-label">File</InputLabel>
+                                        <Select
+                                                labelId="input_file_name-selector-label"
+                                                id="input_file_name-selector"
+                                                value= {this.state.selected_input_file_name}
+                                                label="input File name"
+                                                onChange={this.handleSelectInputFileNameChange}
+                                        >
+                                            {this.state.file_names.map((column) => (
+                                                    <MenuItem value={column}>{column}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>Select Input File name.</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="input_flair_file_name-selector-label">File</InputLabel>
+                                        <Select
+                                                labelId="input_flair_file_name-selector-label"
+                                                id="input_flair_file_name-selector"
+                                                value= {this.state.selected_input_flair_file_name}
+                                                label="input_flair File name"
+                                                onChange={this.handleSelectInputFlairFileNameChange}
+                                        >
+                                            {this.state.file_names.map((column) => (
+                                                    <MenuItem value={column}>{column}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>Select input flair File name.</FormHelperText>
+                                    </FormControl>
+                                    <Button variant="contained" color="primary" type="submit" disabled={this.state.samseg_started}>
+                                        Start Samseg
+                                    </Button>
+                                    <Divider/>
+                                </form>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    SAMSEG Output Status
+                                </Typography>
+                                <Divider/>
+                                <form onSubmit={this.fetchSamsegLog}>
+                                    <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}>
+                                        Check progress
                                     </Button>
                                 </form>
-                                <Divider/>
-                            </div>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                SAMSEG Output Status
-                            </Typography>
-                            <Divider/>
-                            <form onSubmit={this.fetchSamsegLog}>
-                                <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}>
-                                    Check progress
-                                </Button>
-                            </form>
 
-                            <br/>
-                            <TextareaAutosize
-                                    id = "recon-status-text"
-                                    aria-label="Status Log"
-                                    placeholder="Status Log of recon function"
-                                    value={this.state.samseg_log_text}
-                                    style={{
-                                        width: "90%",
-                                        backgroundColor: "black",
-                                        color: "white",
-                                        padding: "10px",
-                                        margin: "8px"
-                                    }}
-                            />
-                            {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
-                            <Button  variant="contained" color="primary"
-                                     onClick={this.redirectToPage.bind(this,1, 1, 3, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
-                                     disabled={ (this.state.samseg_finished ? false : "disabled")  }
-                                     sx={{margin: "8px"}}>
-                                Check out Results
-                            </Button>
+                                <br/>
+                                <TextareaAutosize
+                                        id = "recon-status-text"
+                                        aria-label="Status Log"
+                                        placeholder="Status Log of recon function"
+                                        value={this.state.samseg_log_text}
+                                        style={{
+                                            width: "90%",
+                                            backgroundColor: "black",
+                                            color: "white",
+                                            padding: "10px",
+                                            margin: "8px"
+                                        }}
+                                />
+                                {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
+                                <Button  variant="contained" color="primary"
+                                         onClick={this.redirectToPage.bind(this, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
+                                         disabled={ (this.state.samseg_finished ? false : "disabled")  }
+                                         sx={{margin: "8px"}}>
+                                    Check out Results
+                                </Button>
+                            </Grid>
                         </Grid>
                     </TabPanel>
                 </Box>
-
         // <Grid container direction="column">
         //             <Grid container direction="row" >
         //                 {/*<Grid item xs={2} sx={{borderRight: "1px solid grey"}}>*/}
