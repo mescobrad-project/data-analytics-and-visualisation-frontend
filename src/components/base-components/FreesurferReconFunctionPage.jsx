@@ -420,7 +420,7 @@ class FreesurferReconFunctionPage extends React.Component {
             {
                 this.setState({samseg_finished: true})
                 this.setState({samseg_log_text: "Function has finished press the \" Process \" button to" +
-                            " proceed after both functions have completed successfully"})
+                            " proceed to check the results"})
             }
             else
             {
@@ -492,6 +492,7 @@ class FreesurferReconFunctionPage extends React.Component {
     }
 
     handleCoregProceed(event){
+        console.log(this.state.coreg_results)
         this.setState( {coreg_results: true})
     }
 
@@ -523,6 +524,7 @@ class FreesurferReconFunctionPage extends React.Component {
         for (let it=0 ; it< bucket.length;it++){
             files_to_send.push([bucket[it], file[it]])
         }
+        console.log(files_to_send)
 
         API.put("function/navigation/",
                 {
@@ -671,12 +673,11 @@ class FreesurferReconFunctionPage extends React.Component {
 
                             {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                             <Button  variant="contained" color="primary"
-                                     onClick={this.redirectToPage.bind(this,"recon_all_results", ["saved"], ["psg1 anonym2.edf"])}
+                                     onClick={this.redirectToPage.bind(this,"recon_all_results", [], [])}
                                      disabled={ (this.state.recon_finished ? false : "disabled")  }
                                      sx={{margin: "8px"}}>
                                 Check out Results
                             </Button>
-                            <ProceedButton></ProceedButton>
                         </Grid>
                     </TabPanel>
                     <TabPanel value={this.state.tabvalue} index={1}>
@@ -801,7 +802,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                 </form>
                                 {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                                 <Button  variant="contained" color="primary"
-                                         onClick={this.state.handleCoregProceed}
+                                         onClick={this.handleCoregProceed}
                                          disabled={ (this.state.vol2vol_finished ? false : "disabled")  }
                                          sx={{margin: "8px"}}>
                                     Check out Results
@@ -883,7 +884,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                 />
                                 {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                                 <Button  variant="contained" color="primary"
-                                         onClick={this.redirectToPage.bind(this, "samseg_results", ["saved"], ["psg1 anonym2.edf"])}
+                                         onClick={this.redirectToPage.bind(this, "samseg_results", [], [])}
                                          disabled={ (this.state.samseg_finished ? false : "disabled")  }
                                          sx={{margin: "8px"}}>
                                     Check out Results
