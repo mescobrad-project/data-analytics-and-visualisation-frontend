@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
     Accordion, AccordionDetails, AccordionSummary,
     Button, ButtonGroup, Divider, Typography,
@@ -366,8 +366,8 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 8, "group_sleep_analysis_sensitivity_add_subject_add_channels_final",
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                onClick={redirectToPage.bind(this,1, 1, 8, "group_sleep_analysis",
                                         ["saved",
                                     "saved",
                                     "saved",
@@ -399,22 +399,22 @@ function WelcomePage() {
                                             "uu_sleep/Subject D_Sessio01.fif",
                                             "uu_sleep/Subject D_Sessio02.csv",
                                             "uu_sleep/Subject D_Sessio02.fif",
-                                        ], ["group_1",
-                                            "group_1",
-                                            "group_1",
-                                            "group_1",
-                                            "group_1",
-                                            "group_1",
-                                            "group_1",
-                                            "group_1",
-                                            "group_2",
-                                            "group_2",
-                                            "group_2",
-                                            "group_2",
-                                            "group_2",
-                                            "group_2",
-                                            "group_2",
-                                            "group_2",
+                                        ], ["1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
                                         ])}
                         >
                             Group Sleep Sensitivity Analysis
@@ -978,8 +978,9 @@ function WelcomePage() {
                                         Multiple Comparisons
                                     {/*</ListItemButton>*/}
                                 </Button>
+                                {/*<Divider/>*/}
                                 <Button
-                                        // variant="contained"
+                                        variant="contained"
                                         size="medium"
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                         fullWidth
@@ -987,14 +988,52 @@ function WelcomePage() {
                                 >
                                     Mixed ANOVA
                                 </Button>
+                                {/*<Divider/>*/}
                                 <Button
                                         size="medium"
-                                        variant="contained"
+                                        variant="outlined"
                                         endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
                                         fullWidth
                                         onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "ancova",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
                                 >
                                     Ancova
+                                </Button>
+                                {/*<Divider/>*/}
+                                <Button
+                                        size="medium"
+                                        variant="contained"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "welch_anova",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                                >
+                                    Welch Anova
+                                </Button>
+                                <Button
+                                        size="medium"
+                                        variant="outlined"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "anova_rm",["saved"], ["Sample_rep_measures.csv"], [])}
+                                >
+                                    Anova Repeated Measures
+                                </Button>
+                                <Button
+                                        size="medium"
+                                        variant="contained"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "anova",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                                >
+                                    One and M Way Anova
+                                </Button>
+                                <Button
+                                        size="medium"
+                                        variant="outlined"
+                                        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                        fullWidth
+                                        onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "pairwise_tests",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                                >
+                                    Pairwise tests
                                 </Button>
                             </AccordionDetails>
                         </Accordion>
@@ -1215,8 +1254,6 @@ function WelcomePage() {
                                     Logistic Regression Statsmodels
                                     {/*</ListItemButton>*/}
                                 </Button>
-
-
                                 <Button
                                         size="medium"
 

@@ -15,62 +15,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
-import ProceedButton from "../../components/ui-components/ProceedButton";
 
-const userColumns = [
-    { field: "Source",
-        headerName: "Names of the factor considered",
-        align: "left",
-        headerAlign: "left",
-        minWidth:100,
-        flex:2,
-        resizable:false,
-        sortable: true},
-    {
-        field: "SS",
-        headerName: "Sums of squares",
-        // width: '5%',
-        align: "center",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "DF",
-        headerName: "Degrees of freedom",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "F",
-        headerName: "F-values",
-        // width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "p-unc",
-        headerName: "Uncorrected p-values",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "np2",
-        headerName: "Partial eta-squared",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    }];
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -102,12 +47,13 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-class Ancova extends React.Component {
+class Anova_RM extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns in dataset
             column_names: [],
+            user_columns: [],
             file_names:[],
             initialdataset:[],
             test_data: {
@@ -117,10 +63,11 @@ class Ancova extends React.Component {
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_dependent_variable_wf: "",
-            selected_between_factor: "",
-            selected_between_factor_wf: "",
-            selected_covariate_variables: "",
-            selected_covariate_variables_wf: [],
+            selected_within_variables: "",
+            selected_within_variables_wf: [],
+            selected_subject_variable: "",
+            selected_subject_variable_wf: "",
+            selected_correction:"True",
             selected_effsize:"np2",
             stats_show:false,
         };
@@ -132,11 +79,12 @@ class Ancova extends React.Component {
         this.handleListDelete = this.handleListDelete.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
-
+        this.returnUserCols = this.returnUserCols.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectBetweenFactorChange = this.handleSelectBetweenFactorChange.bind(this);
-        this.handleSelectCovariateVariableChange = this.handleSelectCovariateVariableChange.bind(this);
+        this.handleSelectWithinVariableChange = this.handleSelectWithinVariableChange.bind(this);
+        this.handleSelectSubjectChange = this.handleSelectSubjectChange.bind(this);
+        this.handleSelectCorrectionChange = this.handleSelectCorrectionChange.bind(this);
         this.handleSelectEffsizeChange = this.handleSelectEffsizeChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.fetchFileNames();
@@ -194,35 +142,17 @@ class Ancova extends React.Component {
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
-        if (this.state.selected_dependent_variable_wf===this.state.selected_between_factor_wf)
-        {
-            alert("Variable <" + this.state.selected_dependent_variable_wf +"> can not be selected as " +
-                    "Dependent variable and Between factor. Please change your selection.")
-            return
-        }
-        if (this.state.selected_covariate_variables_wf.filter(item => item === this.state.selected_dependent_variable_wf).length > 0)
-        {
-            alert("Variable <" + this.state.selected_dependent_variable_wf +"> can not be selected as " +
-                    "Dependent and Covariant variable. Please change your selection.")
-            return
-        }
-        if (this.state.selected_covariate_variables_wf.filter(item => item === this.state.selected_between_factor_wf).length > 0)
-        {
-            alert("Variable <" + this.state.selected_between_factor_wf +"> can not be selected as " +
-                    "Between factor and Covariant variable. Please change your selection.")
-            return
-        }
-
         // Send the request
-        API.get("ancova",
+        API.get("calculate_anova_repeated_measures_pingouin",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         dv: this.state.selected_dependent_variable_wf,
-                        between: this.state.selected_between_factor_wf,
-                        covar: this.state.selected_covariate_variables_wf,
+                        subject: this.state.selected_subject_variable_wf,
+                        correction: this.state.selected_correction,
+                        within: this.state.selected_within_variables_wf,
                         effsize: this.state.selected_effsize
                     },
                     paramsSerializer : params => {
@@ -230,9 +160,11 @@ class Ancova extends React.Component {
                     }
                 }
         ).then(res => {
+            console.log(res)
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
+            this.returnUserCols(res.data);
         });
     }
     async handleProceed(event) {
@@ -259,18 +191,40 @@ class Ancova extends React.Component {
         this.setState( {selected_dependent_variable: event.target.value})
         this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
-    handleSelectBetweenFactorChange(event){
-        this.setState( {selected_between_factor: event.target.value})
-        this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
+    handleSelectSubjectChange(event){
+        this.setState( {selected_subject_variable: event.target.value})
+        this.setState( {selected_subject_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
-    handleSelectCovariateVariableChange(event){
-        this.setState( {selected_covariate_variables: event.target.value})
-        var newArray = this.state.selected_covariate_variables_wf.slice();
+    handleSelectCorrectionChange(event){
+        this.setState( {selected_correction: event.target.value})
+    }
+
+    returnUserCols(arr){
+        let local = []
+        arr.Columns.forEach((column, index) => {
+            local.push(
+                    {
+                        field: column.col,
+                        headerName: column.col,
+                        align: "right",
+                        headerAlign: "center",
+                        minWidth: 150,
+                    }
+            );
+        })
+        console.log(local)
+        console.log(this.state.user_columns)
+        this.setState({user_columns: local})
+    }
+
+    handleSelectWithinVariableChange(event){
+        this.setState( {selected_within_variables: event.target.value})
+        var newArray = this.state.selected_within_variables_wf.slice();
         if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
         {
             newArray.push(this.state.selected_file_name+"--"+event.target.value);
         }
-        this.setState({selected_covariate_variables_wf:newArray})
+        this.setState({selected_within_variables_wf:newArray})
     }
     handleSelectEffsizeChange(event){
         this.setState( {selected_effsize: event.target.value})
@@ -279,22 +233,23 @@ class Ancova extends React.Component {
         this.setState({tabvalue: newvalue})
     }
     handleListDelete(event) {
-        var newArray = this.state.selected_covariate_variables_wf.slice();
+        var newArray = this.state.selected_within_variables_wf.slice();
         const ind = newArray.indexOf(event.target.id);
         let newList = newArray.filter((x, index)=>{
             return index!==ind
         })
-        this.setState({selected_covariate_variables_wf:newList})
+        this.setState({selected_within_variables_wf:newList})
     }
     handleDeleteVariable(event) {
-        this.setState({selected_covariate_variables_wf:[]})
+        this.setState({selected_within_variables_wf:[]})
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_dependent_variable_wf=""
-            this.state.selected_between_factor_wf=""
+            this.state.selected_subject_variable_wf=""
+            this.state.selected_within_variables_wf=""
             this.handleDeleteVariable()
             this.setState({stats_show: false})
         })
@@ -304,7 +259,7 @@ class Ancova extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Ancova Parameterisation
+                            Anova Repeated Measures
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -339,34 +294,48 @@ class Ancova extends React.Component {
                                 <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Between factor</InputLabel>
+                                <InputLabel id="within-selector-label">Within Variable(s)</InputLabel>
                                 <Select
-                                        labelId="Between-selector-label"
-                                        id="Between-selector"
-                                        value= {this.state.selected_between_factor}
-                                        label="Between factor"
-                                        onChange={this.handleSelectBetweenFactorChange}
+                                        labelId="within-selector-label"
+                                        id="within-selector"
+                                        value= {this.state.selected_within_variables}
+                                        label="Within Variable(s)"
+                                        onChange={this.handleSelectWithinVariableChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Name of column in data with the between factor.</FormHelperText>
+                                <FormHelperText>Select within variable(s)</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="covariate-selector-label">Variable(s) with the covariate</InputLabel>
+                                <InputLabel id="subject-selector-label">Subject</InputLabel>
                                 <Select
-                                        labelId="covariate-selector-label"
-                                        id="covariate-selector"
-                                        value= {this.state.selected_covariate_variables}
-                                        label="Covariate"
-                                        onChange={this.handleSelectCovariateVariableChange}
+                                        labelId="Subject-selector-label"
+                                        id="Subject-selector"
+                                        value= {this.state.selected_subject_variable}
+                                        label="Between factor"
+                                        onChange={this.handleSelectSubjectChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select covariates</FormHelperText>
+                                <FormHelperText>Name of column in data with the subject.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="correction-selector-label">correction</InputLabel>
+                                <Select
+                                        labelid="correction-selector-label"
+                                        id="correction-selector"
+                                        value= {this.state.selected_correction}
+                                        label="correction parameter"
+                                        onChange={this.handleSelectCorrectionChange}
+                                >
+                                    <MenuItem value={"True"}><em>True</em></MenuItem>
+                                    <MenuItem value={"False"}><em>False</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Whether to also return Greenhouse-Geisser corrected p-value. Must be ‘True’ or ‘False’.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="effsize-selector-label">effsize</InputLabel>
@@ -377,22 +346,28 @@ class Ancova extends React.Component {
                                         label="effsize parameter"
                                         onChange={this.handleSelectEffsizeChange}
                                 >
+                                    <MenuItem value={"ng2"}><em>ng2</em></MenuItem>
                                     <MenuItem value={"np2"}><em>np2</em></MenuItem>
                                     <MenuItem value={"n2"}><em>n2</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Effect size. Must be ‘np2’ (partial eta-squared) or ‘n2’ (eta-squared).</FormHelperText>
+                                <FormHelperText>Effect size. Must be ‘ng2’ (generalized eta-squared), or ‘np2’ (partial eta-squared), or ‘n2’ (eta-squared).</FormHelperText>
                             </FormControl>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
                                     disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_between_factor_wf.length < 1 |
-                                            this.state.selected_covariate_variables_wf.length<1}
+                                            this.state.selected_subject_variable_wf.length < 1 |
+                                            this.state.selected_within_variables_wf.length < 1 }
                                     type="submit"
                             >
                                 Submit
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
+                                Proceed >
+                            </Button>
+                        </form>
                         <br/>
                         <br/>
                         <hr/>
@@ -404,19 +379,11 @@ class Ancova extends React.Component {
                                 {this.state.selected_dependent_variable_wf}
                             </Button>
                         </Grid>
-                        <Grid>
-                            <FormHelperText>Between factor =</FormHelperText>
-                            <Button variant="outlined" size="small"
-                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_between_factor_wf}>
-                                {this.state.selected_between_factor_wf}
-                            </Button>
-                        </Grid>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected within variables [click to remove]</FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_covariate_variables_wf.map((column) => (
+                                    {this.state.selected_within_variables_wf.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
@@ -430,6 +397,14 @@ class Ancova extends React.Component {
                                 Clear all
                             </Button>
                         </FormControl>
+                        <Grid>
+                            <FormHelperText>Subject variable =</FormHelperText>
+                            <Button variant="outlined" size="small"
+                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
+                                    id={this.state.selected_subject_variable_wf}>
+                                {this.state.selected_subject_variable_wf}
+                            </Button>
+                        </Grid>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -453,11 +428,11 @@ class Ancova extends React.Component {
                                             <div className="datatable">
                                                 {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
                                                     <DataGrid sx={{width:'90%', height:'700px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
-                                                              zeroMinWidth
+                                                              size="large"
                                                               rowHeight={40}
                                                               className="datagrid"
                                                               rows= {this.state.test_data.DataFrame}
-                                                              columns= {userColumns}
+                                                              columns={this.state.user_columns}
                                                               pageSize= {15}
                                                               rowsPerPageOptions={[15]}
                                                     />
@@ -478,4 +453,4 @@ class Ancova extends React.Component {
     }
 }
 
-export default Ancova;
+export default Anova_RM;

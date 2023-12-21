@@ -13,6 +13,7 @@ import {
 import {Box} from "@mui/system";
 import qs from "qs";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -294,6 +295,7 @@ class KMeansFunctionPage extends React.Component {
                                 Clear all
                             </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

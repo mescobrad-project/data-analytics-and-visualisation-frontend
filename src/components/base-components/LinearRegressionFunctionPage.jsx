@@ -8,12 +8,9 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, TextareaAutosize, TextField, Typography,
-    Table, TableHead, TableRow, TableBody, TableCell, TableContainer, Paper, Tabs, Tab
+    Select, Typography,
+    Table, TableRow, TableCell, TableContainer, Paper, Tabs, Tab
 } from "@mui/material";
 
 // Amcharts
@@ -26,8 +23,9 @@ import qs from "qs";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import {DataGrid} from "@mui/x-data-grid";
-import {Box, display} from "@mui/system";
+import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -568,6 +566,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                     Submit
                                 </Button>
                             </form>
+                            <ProceedButton></ProceedButton>
                             <div style={{ display: (this.state.linear_regression_step2_show ? 'block' : 'none') }}>
                                 <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
                             </div>

@@ -96,6 +96,10 @@ import SurvivalAnalysisIncidenceRateDifferenceSimple
 import FisherExact from "../../pages/hypothesis_testing/FisherExact";
 import McNemar from "../../pages/hypothesis_testing/McNemar";
 import Ancova from "../../pages/hypothesis_testing/Ancova"
+import Welch_Anova from "../../pages/hypothesis_testing/Welch_Anova"
+import Anova_RM from "../../pages/hypothesis_testing/Anova_RM"
+import Pairwise_test from "../../pages/hypothesis_testing/Pairwise_test"
+import Anova from "../../pages/hypothesis_testing/Anova"
 import LinearMixedEffectsModel from "../../pages/hypothesis_testing/LinearMixedEffectsModel";
 import SurvivalAnalysisCoxRegression from "../../pages/hypothesis_testing/SurvivalAnalysisCoxRegression"
 import SurvivalAnalysisTimeVaryingCovariates from "../../pages/hypothesis_testing/SurvivalAnalysisTimeVaryingCovariates"
@@ -129,6 +133,7 @@ import General_Stats_Cov from "../../pages/hypothesis_testing/General_Stats_Cov"
 import PoissonRegressionFunctionPage from "./PoissonRegressionFunctionPage";
 import SleepStageClassificationPage from "./SleepStageClassificationPage";
 import ManualSleepStagePage from "./ManualSleepStagePage";
+import GroupSleepSensitivityAnalysisPage from "./GroupSleepSensitivityAnalysisPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -220,12 +225,12 @@ const App = () => {
                         <Route exact path="/back_average" element={(<LayoutMain><BackAveragePage/></LayoutMain>)}/>
                         <Route exact path="/sleep_stage_classification" element={(<LayoutMain><SleepStageClassificationPage/></LayoutMain>)}/>
                         <Route exact path="/manual_sleep_stage_classification" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
-                        <Route exact path="/group_sleep_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
-                        <Route exact path="/group_sleep_sensitivity_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
-                        <Route exact path="/group_sleep_sensitivity_analysis_add_subject" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
-                        <Route exact path="/group_sleep_sensitivity_analysis_add_subject_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
-                        <Route exact path="/group_common_channels_across_subjects" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
-                        <Route exact path="/group_sleep_analysis_sensitivity_add_subject_add_channels_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
+                        <Route exact path="/group_sleep_analysis" element={(<LayoutMain><GroupSleepSensitivityAnalysisPage/></LayoutMain>)}/>
+                        {/*<Route exact path="/group_sleep_sensitivity_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
+                        {/*<Route exact path="/group_sleep_sensitivity_analysis_add_subject" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
+                        {/*<Route exact path="/group_sleep_sensitivity_analysis_add_subject_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
+                        {/*<Route exact path="/group_common_channels_across_subjects" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
+                        {/*<Route exact path="/group_sleep_analysis_sensitivity_add_subject_add_channels_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
                         {/*TODO LEVEL*/}
                         <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
                         <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
@@ -268,6 +273,10 @@ const App = () => {
                         <Route exact path="/FisherExact" element={(<LayoutMain><FisherExact/></LayoutMain>)}/>
                         <Route exact path="/McNemar" element={(<LayoutMain><McNemar/></LayoutMain>)}/>
                         <Route exact path="/Ancova" element={(<LayoutMain><Ancova/></LayoutMain>)}/>
+                        <Route exact path="/Anova_RM" element={(<LayoutMain><Anova_RM/></LayoutMain>)}/>
+                        <Route exact path="/Pairwise_test" element={(<LayoutMain><Pairwise_test/></LayoutMain>)}/>
+                        <Route exact path="/Anova" element={(<LayoutMain><Anova/></LayoutMain>)}/>
+                        <Route exact path="/Welch_Anova" element={(<LayoutMain><Welch_Anova/></LayoutMain>)}/>
                         <Route exact path="/LinearMixedEffectsModel" element={(<LayoutMain><LinearMixedEffectsModel/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisCoxRegression" element={(<LayoutMain><SurvivalAnalysisCoxRegression/></LayoutMain>)}/>
                         <Route exact path="/SurvivalAnalysisTimeVaryingCovariates" element={(<LayoutMain><SurvivalAnalysisTimeVaryingCovariates/></LayoutMain>)}/>

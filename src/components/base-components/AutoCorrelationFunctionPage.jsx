@@ -7,11 +7,7 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem, Modal,
-    Select, TextField, Typography
+    MenuItem, Select, TextField, Typography
 } from "@mui/material";
 
 // Amcharts

@@ -4,8 +4,7 @@ import API from "../../axiosInstance";
 
 // import PropTypes from 'prop-types';
 import {
-    Button, Divider,
-    FormControl,
+    Button, FormControl,
     FormHelperText,
     Grid,
     InputLabel,
@@ -22,6 +21,7 @@ import {
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import PointChartCustom from "../ui-components/PointChartCustom";
 import LineMultipleColorsChartCustom from "../ui-components/LineMultipleColorsChartCustom";
+import ProceedButton from "../ui-components/ProceedButton";
 // import RangeAreaChartCustom from "../ui-components/RangeAreaChartCustom";
 
 class Level extends React.Component {
@@ -485,6 +485,7 @@ class Level extends React.Component {
                             Submit
                         </Button>
                     </form>
+                    <ProceedButton></ProceedButton>
                 </Grid>
                 <Grid item xs={5} sx={{overflow:"auto"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
