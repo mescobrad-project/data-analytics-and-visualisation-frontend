@@ -51,6 +51,7 @@ import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
 import SpindleDetection from "./SpindleDetection";
+
 import SlowWaves from "./SlowWaves";
 import ActrigraphyViewer from "./ActrigraphyViewer";
 import ActigraphyFunctionPage from "./ActigraphyFunctionPage";
