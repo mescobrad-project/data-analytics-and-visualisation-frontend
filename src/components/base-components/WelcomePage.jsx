@@ -318,24 +318,24 @@ function WelcomePage() {
                         >
                             Manual Sleep Stage Classification
                         </Button>
-                        {/*<Button*/}
-                        {/*        variant="contained"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "slow_waves", ["saved"], ["psg1 anonym2.edf"], [])}*/}
-                        {/*>*/}
-                        {/*    Slow waves*/}
-                        {/*</Button>*/}
-                        {/*/!*<Divider/>*!/*/}
-                        {/*<Button*/}
-                        {/*        // variant="outlined"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "spindles", ["saved"], ["psg1 anonym2.edf"], [])}*/}
-                        {/*>*/}
-                        {/*    Spindles*/}
-                        {/*</Button>*/}
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 4, "slowwaves", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"], [])}
+                        >
+                            Slow waves
+                        </Button>
                         {/*<Divider/>*/}
+                        <Button
+                                // variant="outlined"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 4, "spindles", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"], [])}
+                        >
+                            Spindles
+                        </Button>
+                        <Divider/>
                         <Button
                                 // variant="contained"
                                 size="medium"
