@@ -73,6 +73,8 @@ class FactorAnalysisFunctionPage extends React.Component {
             // List of columns sent by the backend
             columns: [],
             initialdataset:[],
+            file_names:[],
+            Results:"",
 
             //Values selected currently on the form
             selected_use_smc: "True",
@@ -81,7 +83,7 @@ class FactorAnalysisFunctionPage extends React.Component {
             selected_method: "minres",
             selected_impute: "drop",
             selected_independent_variables: [],
-
+            selected_independent_variables_wf: [],
             // Values returned from backend
             factor_analysis_chart_data : [],
             correlation_matrix: [],
@@ -92,7 +94,6 @@ class FactorAnalysisFunctionPage extends React.Component {
             df_rotation: "",
             rotation: "",
             factor_corr_matrix: [],
-
             // path to visualisations sent from backend
             corr_path: ip + 'static/runtime_config/workflow_'
                     + params.get("workflow_id") + '/run_' + params.get("run_id")
@@ -103,12 +104,8 @@ class FactorAnalysisFunctionPage extends React.Component {
 
             factor_loadings: "",
 
-
-
-
             // Visualisation Hide/Show values
             factor_analysis_show : false,
-
             test_chart_html: [],
         };
 
@@ -121,13 +118,18 @@ class FactorAnalysisFunctionPage extends React.Component {
         this.handleSelectImputeChange = this.handleSelectImputeChange.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        this.clear = this.clear.bind(this);
-        this.selectAll = this.selectAll.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+
         this.handleSubmit = this.handleSubmit.bind(this);
         this.debug = this.debug.bind(this);
         // Initialise component
         // - values of channels from the backend
-        this.fetchColumnNames();
+        // this.fetchColumnNames();
+        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.fetchFileNames();
 
         // Initialise component
         // - values of channels from the backend
@@ -145,12 +147,8 @@ class FactorAnalysisFunctionPage extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
-
         //Reset view of optional visualisations preview
         this.setState({factor_analysis_chart_show: false})
-
-
-
         const params = new URLSearchParams(window.location.search);
         // Send the request
         API.get("calculate_factor_analysis",
@@ -160,7 +158,8 @@ class FactorAnalysisFunctionPage extends React.Component {
                         step_id: params.get("step_id"),
                         use_smc: this.state.selected_use_smc, n_factors: this.state.selected_n_factors,
                         rotation: this.state.selected_rotation, method: this.state.selected_method,
-                        impute: this.state.selected_impute, independent_variables: this.state.selected_independent_variables},
+                        impute: this.state.selected_impute, independent_variables: this.state.selected_independent_variables_wf.length >0 ? this.state.selected_independent_variables_wf : null
+                    },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
                     }
@@ -169,25 +168,17 @@ class FactorAnalysisFunctionPage extends React.Component {
             console.log(resultJson)
             console.log('Test')
 
-
-
-            // console.log("")
-            // console.log(temp_array)
-
-            this.setState({rotation: resultJson['rotation']})
-            this.setState({factor_loadings: JSON.parse(resultJson['factor_matrix'])})
+            this.setState({rotation: resultJson["Result"]['rotation']})
+            this.setState({factor_loadings: JSON.parse(resultJson["Result"]['factor_matrix'])})
             this.setState({factor_analysis_show: true})
-            this.setState({correlation_matrix: resultJson['corr_matrix']})
-            this.setState({df_com_eigen: JSON.parse(resultJson['df_com_eigen'])})
-            this.setState({df_factor_variances: JSON.parse(resultJson['df_factor_variances'])})
-            this.setState({df_new_dataset: JSON.parse(resultJson['df_new_dataset'])})
-            this.setState({df_structure: JSON.parse(resultJson['df_structure'])})
-            this.setState({df_rotation: JSON.parse(resultJson['df_rotation'])})
-            this.setState({factor_corr_matrix: resultJson['factor_corr_matrix']})
-
-
-
-
+            this.setState({correlation_matrix: resultJson["Result"]['corr_matrix']})
+            this.setState({df_com_eigen: JSON.parse(resultJson["Result"]['df_com_eigen'])})
+            this.setState({df_factor_variances: JSON.parse(resultJson["Result"]['df_factor_variances'])})
+            this.setState({df_new_dataset: JSON.parse(resultJson["Result"]['df_new_dataset'])})
+            this.setState({df_structure: JSON.parse(resultJson["Result"]['df_structure'])})
+            this.setState({df_rotation: JSON.parse(resultJson["Result"]['df_rotation'])})
+            this.setState({factor_corr_matrix: resultJson["Result"]['factor_corr_matrix']})
+            this.setState({factor_analysis_show: true})
         });
     }
     async fetchColumnNames(url, config) {
@@ -195,23 +186,72 @@ class FactorAnalysisFunctionPage extends React.Component {
         API.get("return_columns",
                 {params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id")
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({columns: res.data.columns})
         });
     }
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
 
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+    async fetchDatasetContent() {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_dataset",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
+            this.setState({tabvalue:0})
+        });
+    }
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("save_hypothesis_output",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        ).then(res => {
+            this.setState({output_return_data: res.data})
+        });
+        console.log(this.state.output_return_data);
+        window.location.replace("/")
+    }
     /**
      * Update state when selection changes in the form
      */
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
+        var newArray = this.state.selected_independent_variables_wf.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_independent_variables_wf:newArray})
     }
-    clear(){
-        this.setState({selected_independent_variables: []})
-    }
-    selectAll(){
-        this.setState({selected_independent_variables: this.state.columns})
+    handleListDelete(event) {
+        var newArray = this.state.selected_independent_variables_wf.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_independent_variables_wf:newList})
     }
     handleSelectUseSmcChange(event){
         this.setState( {selected_use_smc: event.target.value})
@@ -228,7 +268,20 @@ class FactorAnalysisFunctionPage extends React.Component {
     handleSelectImputeChange(event){
         this.setState( {selected_impute: event.target.value})
     }
-
+    handleTabChange(event, newvalue){
+        this.setState({tabvalue: newvalue})
+    }
+    handleDeleteVariable(event) {
+        this.setState({selected_independent_variables_wf:[]})
+    }
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchColumnNames()
+            this.fetchDatasetContent()
+            this.handleDeleteVariable()
+            this.setState({stats_show: false})
+        })
+    }
 
     render() {
         return (
@@ -238,29 +291,29 @@ class FactorAnalysisFunctionPage extends React.Component {
                             Factor Analysis Parameterisation
                         </Typography>
                         <hr/>
-                        <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                            <FormHelperText>Selected Variables</FormHelperText>
-                            <List style={{fontSize:'9px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                                {this.state.selected_independent_variables.map((column) => (
-                                        <ListItem disablePadding
-                                        >
-                                            <ListItemText
-                                                    primaryTypographyProps={{fontSize: '10px'}}
-                                                    primary={'•  ' + column}
-                                            />
-                                        </ListItem>
-                                ))}
-                            </List>
-                        </FormControl>
-                        <hr/>
                         <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="file-selector-label">File</InputLabel>
+                                <Select
+                                        labelId="file-selector-label"
+                                        id="file-selector"
+                                        value= {this.state.selected_file_name}
+                                        label="File Variable"
+                                        onChange={this.handleSelectFileNameChange}
+                                >
+                                    {this.state.file_names.map((column) => (
+                                            <MenuItem value={column}>{column}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select dataset.</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
                                         value= {this.state.selected_independent_variables}
-                                        multiple
+                                        // multiple
                                         label="Column"
                                         onChange={this.handleSelectIndependentVariableChange}
                                 >
@@ -361,7 +414,27 @@ class FactorAnalysisFunctionPage extends React.Component {
                             </Button>
                         </form>
                         <ProceedButton></ProceedButton>
-
+                        <br/>
+                        <br/>
+                        <hr/>
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected Independent variables [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_independent_variables_wf.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
+                            </Button>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

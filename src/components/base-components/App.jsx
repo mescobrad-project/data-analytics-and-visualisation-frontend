@@ -134,6 +134,7 @@ import SleepStageClassificationPage from "./SleepStageClassificationPage";
 import ManualSleepStagePage from "./ManualSleepStagePage";
 import TSNE from "../../pages/hypothesis_testing/TSNE";
 import GroupSleepSensitivityAnalysisPage from "./GroupSleepSensitivityAnalysisPage";
+import ValuesImputation from "../../pages/hypothesis_testing/ValuesImputation";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -303,6 +304,7 @@ const App = () => {
                         <Route exact path="/ChooseFactors" element={(<LayoutMain><ChooseFactorsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/GrangerAnalysis" element={(<LayoutMain><GrangerAnalysisFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/PoissonRegression" element={(<LayoutMain><PoissonRegressionFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/ValuesImputation" element={(<LayoutMain><ValuesImputation/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
