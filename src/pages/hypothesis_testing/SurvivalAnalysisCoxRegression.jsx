@@ -747,13 +747,13 @@ class SurvivalAnalysisCoxRegression extends React.Component {
                                             if (xfigure.figure_1) {
                                                 return (
                                                         <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                            <InnerHTML html={item.figure_1} style={{zoom:'50%'}}/>
+                                                            <InnerHTML html={item.figure_1} style={{zoom:'80%'}}/>
                                                             <hr className="result"/>
                                                         </Grid>)}
                                             if (xfigure.figure_2) {
                                                 return (
                                                         <Grid item xs={6} style={{ display: 'inline-block', padding:'20px'}}>
-                                                            <InnerHTML html={item.figure_2} style={{zoom:'50%'}}/>
+                                                            <InnerHTML html={item.figure_2} style={{zoom:'80%'}}/>
                                                             <hr className="result"/>
                                                         </Grid>)}
 
