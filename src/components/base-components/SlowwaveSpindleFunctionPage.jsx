@@ -612,6 +612,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         this.handleChangeSlowwaveIncludeLow = this.handleChangeSlowwaveIncludeLow.bind(this);
         this.handleChangeSlowwaveIncludeHigh = this.handleChangeSlowwaveIncludeHigh.bind(this);
         this.handleChangeSlowwaveOutliers = this.handleChangeSlowwaveOutliers.bind(this);
+        this.handleSelectFrequencyHypnoChange = this.handleSelectFrequencyHypnoChange.bind(this);
         this.handleChangeSlowwaveCoupling = this.handleChangeSlowwaveCoupling.bind(this);
         this.handleChangePacWindow = this.handleChangePacWindow.bind(this);
         this.handleChangePacStep = this.handleChangePacStep.bind(this);
@@ -861,6 +862,9 @@ class SlowwaveSpindleFunctionPage extends React.Component {
     handleChangeExtraPacWindow(event) {
         this.setState({extra_pac_window: event.target.value})
     }
+    handleSelectFrequencyHypnoChange(event) {
+        this.setState({general_sampling_freuency_hypno: event.target.value})
+    }
 
     handleChangeExtraPacStep(event) {
         this.setState({extra_pac_step: event.target.value})
@@ -940,7 +944,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                         value= {this.state.general_sampling_freuency_hypno}
                                         label="Sampling Frequency of Hypnogram"
                                         size={"small"}
-                                        onChange={this.handleSelectNlagsChange}
+                                        onChange={this.handleSelectFrequencyHypnoChange}
                                 />
                                 <FormHelperText>Current Sampling Frequency of Hypnogram</FormHelperText>
                             </FormControl>

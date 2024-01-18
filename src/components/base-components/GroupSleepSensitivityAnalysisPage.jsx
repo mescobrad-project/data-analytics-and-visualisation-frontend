@@ -1137,6 +1137,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
             displayed_channel: "",
             tabvalue: 0,
             channels: [],
+            minutes_to_trim: 720,
 
             // Results
             data_sensitivity_02_sleep_statistics : [],
@@ -1170,6 +1171,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         this.fetchChannels = this.fetchChannels.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleMinutesTrimChange = this.handleMinutesTrimChange.bind(this);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleSelectChannelChange = this.handleSelectChannelChange.bind(this);
 
@@ -1187,6 +1189,7 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
+                channels: [],
                 //TODO UPDATE THIS VARIABLE TO A PROPER ONE
                 // sampling_frequency: 5,
                 // channels_selection: null,
@@ -1262,6 +1265,11 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
         this.setState({tabvalue: newvalue})
     }
 
+
+    handleMinutesTrimChange(event){
+        this.setState( {minutes_to_trim: event.target.value})
+    }
+
     handleSelectChannelChange(event){
         this.setState({ selected_channels: [...this.state.selected_channels, event.target.value] })
         this.setState({displayed_channel: event.target.value})
@@ -1315,6 +1323,18 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                 ))}
                             </Select>
                             <FormHelperText>Select Channels to perform sleep analysis</FormHelperText>
+                        </FormControl>
+                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                            {/*<InputLabel id="alpha-selector-label">Alpha</InputLabel>*/}
+                            <TextField
+                                    // labelId="alpha-selector-label"
+                                    id="alpha-selector"
+                                    value= {this.state.minutes_to_trim}
+                                    label="Alpha"
+                                    onChange={this.handleMinutesTrimChange}
+                                    size={"small"}
+                            />
+                            <FormHelperText>At how many minutes should data be trimmed at</FormHelperText>
                         </FormControl>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected variables [click to remove]</FormHelperText>
@@ -1394,6 +1414,8 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                     <Tab label="Sensitivity 02 Bandpower" {...a11yProps(13)} />
                                     >
                                     <Tab label="Sensitivity 03 Bandpower" {...a11yProps(14)} />
+                                    >
+                                    <Tab label="Hypnograms" {...a11yProps(15)} />
                                     >
                                 </Tabs>
                             </Box>
@@ -1745,7 +1767,27 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                       }}
                             />
                         </TabPanel>
-
+                        <TabPanel value={this.state.tabvalue} index={15}>
+                            {this.state.group_names.map((group_name) => (
+                                    <React.Fragment>
+                                        <Typography variant="h5" sx={{flexGrow: 2, textAlign: "center"}} noWrap>
+                                            Hypnograms of group: {group_name}
+                                        </Typography>
+                                        {this.state.channels.map((channel_name, it) => (
+                                                <React.Fragment>
+                                                    <Typography variant="h5" sx={{flexGrow: 2, textAlign: "center"}} noWrap>
+                                                       Channel name: {channel_name}
+                                                    </Typography>
+                                                <img src={this.state.plot_path + " /output/hypnogram_"+ group_name + "_channel_num" + it+".png"+"?random=" + new Date().getTime()}
+                                                     srcSet={this.state.plot_path + " /output/hypnogram_"+ group_name + "_channel_num" + it+".png"+"?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                     loading="lazy"
+                                                />
+                                                </React.Fragment>
+                                        ))}
+                                        <hr/>
+                                    </React.Fragment>
+                            ))}
+                        </TabPanel>
                     </Grid>
                 </Grid>
         )
