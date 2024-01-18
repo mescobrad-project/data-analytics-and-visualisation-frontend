@@ -28,8 +28,17 @@ const userColumns = [
         resizable:false,
         sortable: true},
     {
-        field: "ddof1",
-        headerName: "Degrees of freedom (numerator)",
+        field: "SS",
+        headerName: "SS",
+        // width: '10%',
+        align: "center",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "DF1",
+        headerName: "DF1",
         // width: '5%',
         align: "center",
         headerAlign: "center",
@@ -37,9 +46,18 @@ const userColumns = [
         type: "number"
     },
     {
-        field: "ddof2",
-        headerName: "Degrees of freedom (denominator)",
+        field: "DF2",
+        headerName: "DF2",
         // width: '5%',
+        align: "center",
+        headerAlign: "center",
+        flex:1,
+        type: "number"
+    },
+    {
+        field: "MS",
+        headerName: "MS",
+        // width: '10%',
         align: "center",
         headerAlign: "center",
         flex:1,
@@ -49,14 +67,14 @@ const userColumns = [
         field: "F",
         headerName: "F-values",
         // width: '10%',
-        align: "center",
+        align: "right",
         headerAlign: "center",
         flex:1,
         type: "number"
     },
     {
         field: "p-unc",
-        headerName: "Uncorrected p-values",
+        headerName: "p-unc",
         // width: '10%',
         align: "right",
         headerAlign: "center",
@@ -65,7 +83,7 @@ const userColumns = [
     },
     {
         field: "np2",
-        headerName: "Partial eta-squared effect sizes",
+        headerName: "np2",
         // width: '10%',
         align: "right",
         headerAlign: "center",
@@ -74,43 +92,7 @@ const userColumns = [
     },
     {
         field: "eps",
-        headerName: "Greenhouse-Geisser epsilon factor (= index of sphericity)",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "p-GG-corr",
-        headerName: "Greenhouse-Geisser corrected p-values",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "W-spher",
-        headerName: "Sphericity test statistic",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "p-spher",
-        headerName: " p-value of the sphericity test",
-        // width: '5%',
-        align: "center",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "sphericity",
-        headerName: "sphericity of the data (boolean)",
+        headerName: "epsilon factor",
         // width: '10%',
         align: "right",
         headerAlign: "center",
@@ -162,7 +144,7 @@ class Mixed_Anova extends React.Component {
             selected_file_name: "",
             test_data: {
                 status:'',
-                Dataframe:""
+                Dataframe:[]
             },
             //Values selected currently on the form
             selected_dependent_variable: "",
@@ -342,7 +324,7 @@ class Mixed_Anova extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Ancova Parameterisation
+                            Mixed Anova Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -462,7 +444,6 @@ class Mixed_Anova extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <form onSubmit={this.handleProceed}>
                             <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
@@ -524,18 +505,21 @@ class Mixed_Anova extends React.Component {
                                     {this.state.test_data['status']!=='Success' ? (
                                             <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     ) : (
+                                            <Box sx={{ height: 400, width: '100%' }}>
                                             <div className="datatable">
                                                 {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
-                                                <DataGrid sx={{width:'90%', height:'700px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
+                                                <DataGrid sx={{width:'99%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto' }}
                                                           zeroMinWidth
                                                           rowHeight={40}
                                                           className="datagrid"
-                                                          rows= {this.state.test_data.DataFrame}
+                                                          rows= {this.state.test_data.Dataframe}
                                                           columns= {userColumns}
                                                           pageSize= {15}
                                                           rowsPerPageOptions={[15]}
                                                 />
                                             </div>
+                                            </Box>
+
                                     )}
                                 </Grid>
                             </TabPanel>
