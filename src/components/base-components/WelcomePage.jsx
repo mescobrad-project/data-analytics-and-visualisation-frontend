@@ -318,24 +318,24 @@ function WelcomePage() {
                         >
                             Manual Sleep Stage Classification
                         </Button>
-                        {/*<Button*/}
-                        {/*        variant="contained"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "slow_waves", ["saved"], ["psg1 anonym2.edf"], [])}*/}
-                        {/*>*/}
-                        {/*    Slow waves*/}
-                        {/*</Button>*/}
-                        {/*/!*<Divider/>*!/*/}
-                        {/*<Button*/}
-                        {/*        // variant="outlined"*/}
-                        {/*        size="medium"*/}
-                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
-                        {/*        onClick={redirectToPage.bind(this,1, 1, 1, "spindles", ["saved"], ["psg1 anonym2.edf"], [])}*/}
-                        {/*>*/}
-                        {/*    Spindles*/}
-                        {/*</Button>*/}
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 4, "slowwaves", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"], [])}
+                        >
+                            Slow waves
+                        </Button>
                         {/*<Divider/>*/}
+                        <Button
+                                // variant="outlined"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 4, "spindles", ["saved", "saved"], ["XX_Firsthalf_raw.fif", "XX_Firsthalf_Hypno.csv"], [])}
+                        >
+                            Spindles
+                        </Button>
+                        <Divider/>
                         <Button
                                 // variant="contained"
                                 size="medium"
@@ -418,6 +418,73 @@ function WelcomePage() {
                                         ])}
                         >
                             Group Sleep Sensitivity Analysis
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                onClick={redirectToPage.bind(this,1, 1, 8, "eeg_hypno_upsampling",
+                                        ["saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved",
+                                            "saved"], ["uu_sleep/Subject A_Sessio01.csv",
+                                            "uu_sleep/Subject A_Sessio01.fif",
+                                            "uu_sleep/Subject A_Sessio02.csv",
+                                            "uu_sleep/Subject A_Sessio02.fif",
+                                            "uu_sleep/Subject B_Sessio01.csv",
+                                            "uu_sleep/Subject B_Sessio01.fif",
+                                            "uu_sleep/Subject B_Sessio02.csv",
+                                            "uu_sleep/Subject B_Sessio02.fif",
+                                            "uu_sleep/Subject C_Sessio01.csv",
+                                            "uu_sleep/Subject C_Sessio01.fif",
+                                            "uu_sleep/Subject C_Sessio02.csv",
+                                            "uu_sleep/Subject C_Sessio02.fif",
+                                            "uu_sleep/Subject D_Sessio01.csv",
+                                            "uu_sleep/Subject D_Sessio01.fif",
+                                            "uu_sleep/Subject D_Sessio02.csv",
+                                            "uu_sleep/Subject D_Sessio02.fif",
+                                        ], ["1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "1",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                            "2",
+                                        ])}
+                        >
+                            EEG Upsampling - Group
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                onClick={redirectToPage.bind(this,1, 1, 14, "eeg_hypno_upsampling",
+                                        ["saved", "saved"], ["uu_sleep/Subject A_Sessio01.csv" , "uu_sleep/Subject A_Sessio01.fif"], [])}
+                        >
+                            EEG Upsampling - Single
                         </Button>
                         {/*<Button*/}
                         {/*        variant="contained"*/}
@@ -553,7 +620,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1,1, 3, "mri_viewer", ["saved"], ["ucl_test.nii"], [])}
+                                onClick={redirectToPage.bind(this,1,1, 3, "mri_viewer", ["saved", "saved", "saved", "saved"], ["006662_SpcIR-T2w_FLR.nii", "006662_T1w_MPR_RL.nii", "006984_SpcIR-T2w_FLR.nii" ,"006984_T1w_MPR_RL.nii"], [])}
                         >
                            MRI Viewer
                         </Button>
@@ -561,7 +628,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 3, "free_surfer", ["saved"], ["psg1 anonym2.edf"], [])}
+                                onClick={redirectToPage.bind(this,1, 1, 12, "free_surfer", ["saved", "saved", "saved", "saved"], ["006662_SpcIR-T2w_FLR.nii", "006662_T1w_MPR_RL.nii", "006984_SpcIR-T2w_FLR.nii" ,"006984_T1w_MPR_RL.nii"], [])}
                         >
                             Free Surfer
                         </Button>
@@ -1254,8 +1321,6 @@ function WelcomePage() {
                                     Logistic Regression Statsmodels
                                     {/*</ListItemButton>*/}
                                 </Button>
-
-
                                 <Button
                                         size="medium"
 

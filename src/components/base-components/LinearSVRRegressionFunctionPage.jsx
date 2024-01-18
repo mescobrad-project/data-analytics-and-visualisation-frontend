@@ -508,7 +508,6 @@ class LinearSVRRegressionFunctionPage extends React.Component {
                                 Proceed >
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected independent variables [click to remove]</FormHelperText>
                             <div>

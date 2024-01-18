@@ -51,6 +51,7 @@ import Wilcoxon_rank_sum_statistic from "../../pages/hypothesis_testing/Wilcoxon
 import One_way_chi_square_test from "../../pages/hypothesis_testing/One_way_chi_square_test";
 import Multiple_comparisons from "../../pages/hypothesis_testing/Multiple_comparisons";
 import SpindleDetection from "./SpindleDetection";
+
 import SlowWaves from "./SlowWaves";
 import ActrigraphyViewer from "./ActrigraphyViewer";
 import ActigraphyFunctionPage from "./ActigraphyFunctionPage";
@@ -133,6 +134,9 @@ import PoissonRegressionFunctionPage from "./PoissonRegressionFunctionPage";
 import SleepStageClassificationPage from "./SleepStageClassificationPage";
 import ManualSleepStagePage from "./ManualSleepStagePage";
 import GroupSleepSensitivityAnalysisPage from "./GroupSleepSensitivityAnalysisPage";
+import EEGHypnoUpsampling from "./EEGHypnoUpsampling";
+import SlowwaveFunctionPage from "./SlowwaveFunctionPage";
+import SpindleFunctionPage from "./SpindleFunctionPage";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -185,8 +189,8 @@ const App = () => {
                         <Route exact path="/mri" element={(<LayoutMain><MRIViewer/></LayoutMain>)}/>
                         <Route exact path="/eeg/pre" element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
 
-                        <Route exact path="/spindles" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>
-                        <Route exact path="/slowwaves" element={(<LayoutMain><SlowWaves/></LayoutMain>)}/>
+                        {/*<Route exact path="/spindles" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>*/}
+                        {/*<Route exact path="/slowwaves" element={(<LayoutMain><SlowWaves/></LayoutMain>)}/>*/}
                         {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
                         <Route exact path="/error" element={(<LayoutMain><PageError /></LayoutMain>)}/>
                         <Route exact path="/Freesurfer_ReconAll_Results" element={(<LayoutMain><Freesurfer_ReconAll_ResultsPage/></LayoutMain>)}/>
@@ -225,6 +229,7 @@ const App = () => {
                         <Route exact path="/sleep_stage_classification" element={(<LayoutMain><SleepStageClassificationPage/></LayoutMain>)}/>
                         <Route exact path="/manual_sleep_stage_classification" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>
                         <Route exact path="/group_sleep_analysis" element={(<LayoutMain><GroupSleepSensitivityAnalysisPage/></LayoutMain>)}/>
+                        <Route exact path="/eeg_hypno_upsampling" element={(<LayoutMain><EEGHypnoUpsampling/></LayoutMain>)}/>
                         {/*<Route exact path="/group_sleep_sensitivity_analysis" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
                         {/*<Route exact path="/group_sleep_sensitivity_analysis_add_subject" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
                         {/*<Route exact path="/group_sleep_sensitivity_analysis_add_subject_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
@@ -283,6 +288,8 @@ const App = () => {
                         <Route exact path="/sleep_statistic" element={(<LayoutMain><SleepStatisticsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/spectogram_bandpower" element={(<LayoutMain><SpectogramBandpowerFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/slowwave_spindle" element={(<LayoutMain><SlowwaveSpindleFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/slowwaves" element={(<LayoutMain><SlowwaveFunctionPage/></LayoutMain>)}/>
+                        <Route exact path="/spindles" element={(<LayoutMain><SpindleFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/testing" element={(<LayoutMain><TestingPage/></LayoutMain>)}/>
                         <Route exact path="/power_spectral_density_main" element={(<LayoutMain><PowerSpectralDensityPage/></LayoutMain>)}/>
                         <Route exact path="/FactorAnalysis" element={(<LayoutMain><FactorAnalysisFunctionPage/></LayoutMain>)}/>

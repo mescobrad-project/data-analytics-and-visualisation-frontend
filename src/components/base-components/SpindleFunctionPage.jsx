@@ -612,7 +612,6 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         this.handleChangeSlowwaveIncludeLow = this.handleChangeSlowwaveIncludeLow.bind(this);
         this.handleChangeSlowwaveIncludeHigh = this.handleChangeSlowwaveIncludeHigh.bind(this);
         this.handleChangeSlowwaveOutliers = this.handleChangeSlowwaveOutliers.bind(this);
-        this.handleSelectFrequencyHypnoChange = this.handleSelectFrequencyHypnoChange.bind(this);
         this.handleChangeSlowwaveCoupling = this.handleChangeSlowwaveCoupling.bind(this);
         this.handleChangePacWindow = this.handleChangePacWindow.bind(this);
         this.handleChangePacStep = this.handleChangePacStep.bind(this);
@@ -630,7 +629,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         event.preventDefault();
 
         await this.fetchSpindles();
-        await this.fetchSlowwave();
+        // await this.fetchSlowwave();
         await this.fetchPAC();
         await this.fetchPACExtra();
 
@@ -862,9 +861,6 @@ class SlowwaveSpindleFunctionPage extends React.Component {
     handleChangeExtraPacWindow(event) {
         this.setState({extra_pac_window: event.target.value})
     }
-    handleSelectFrequencyHypnoChange(event) {
-        this.setState({general_sampling_freuency_hypno: event.target.value})
-    }
 
     handleChangeExtraPacStep(event) {
         this.setState({extra_pac_step: event.target.value})
@@ -892,7 +888,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Slowwave/Spindle Parameterisation
+                            Spindle Parameterisation
                         </Typography>
                         <Divider sx={{bgcolor: "black"}}/>
 
@@ -944,7 +940,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                         value= {this.state.general_sampling_freuency_hypno}
                                         label="Sampling Frequency of Hypnogram"
                                         size={"small"}
-                                        onChange={this.handleSelectFrequencyHypnoChange}
+                                        onChange={this.handleSelectNlagsChange}
                                 />
                                 <FormHelperText>Current Sampling Frequency of Hypnogram</FormHelperText>
                             </FormControl>
@@ -1050,201 +1046,201 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             </FormControl>
                             <Divider/>
 
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Slowwaves Parameterisation
-                            </Typography>
+                            {/*<Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*    Slowwaves Parameterisation*/}
+                            {/*</Typography>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-freq-sw-low"
-                                        value= {this.state.slowwave_freq_sw_low}
-                                        label="Slowwave freq sw Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveFreqSwLow}
-                                />
-                                <FormHelperText>Slowwave Freq sw Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-freq-sw-high"
-                                        value= {this.state.slowwave_freq_sw_high}
-                                        label="Slowwave freq sw High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveFreqSwHigh}
-                                />
-                                <FormHelperText>Slowwave Freq sw High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-freq-sw-low"*/}
+                            {/*            value= {this.state.slowwave_freq_sw_low}*/}
+                            {/*            label="Slowwave freq sw Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveFreqSwLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Freq sw Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-freq-sw-high"*/}
+                            {/*            value= {this.state.slowwave_freq_sw_high}*/}
+                            {/*            label="Slowwave freq sw High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveFreqSwHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Freq sw High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-freq-dur-neg-low"
-                                        value= {this.state.slowwave_dur_neg_low}
-                                        label="Slowwave freq dur neg Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveDurNegLow}
-                                />
-                                <FormHelperText>Slowwave Dur Neg Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-freq-dur-neg-high"
-                                        value= {this.state.slowwave_dur_neg_high}
-                                        label="Slowwave dur neg High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveDurNegHigh}
-                                />
-                                <FormHelperText>Slowwave Dur Neg High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-freq-dur-neg-low"*/}
+                            {/*            value= {this.state.slowwave_dur_neg_low}*/}
+                            {/*            label="Slowwave freq dur neg Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveDurNegLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Dur Neg Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-freq-dur-neg-high"*/}
+                            {/*            value= {this.state.slowwave_dur_neg_high}*/}
+                            {/*            label="Slowwave dur neg High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveDurNegHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Dur Neg High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-freq-dur-pos-low"
-                                        value= {this.state.slowwave_dur_pos_low}
-                                        label="Slowwave freq dur pos Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveDurPosLow}
-                                />
-                                <FormHelperText>Slowwave Dur Pos Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-freq-dur-pos-high"
-                                        value= {this.state.slowwave_dur_pos_high}
-                                        label="Slowwave dur pos High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveDurPosHigh}
-                                />
-                                <FormHelperText>Slowwave Dur Pos High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-freq-dur-pos-low"*/}
+                            {/*            value= {this.state.slowwave_dur_pos_low}*/}
+                            {/*            label="Slowwave freq dur pos Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveDurPosLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Dur Pos Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-freq-dur-pos-high"*/}
+                            {/*            value= {this.state.slowwave_dur_pos_high}*/}
+                            {/*            label="Slowwave dur pos High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveDurPosHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Dur Pos High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-amp-neg-low"
-                                        value= {this.state.slowwave_amp_neg_low}
-                                        label="Slowwave amp neg Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveAmpNegLow}
-                                />
-                                <FormHelperText>Slowwave Amp Neg Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-amp-neg-high"
-                                        value= {this.state.slowwave_amp_neg_high}
-                                        label="Slowwave amp neg High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveAmpNegHigh}
-                                />
-                                <FormHelperText>Slowwave Amp Neg High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-amp-neg-low"*/}
+                            {/*            value= {this.state.slowwave_amp_neg_low}*/}
+                            {/*            label="Slowwave amp neg Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveAmpNegLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp Neg Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-amp-neg-high"*/}
+                            {/*            value= {this.state.slowwave_amp_neg_high}*/}
+                            {/*            label="Slowwave amp neg High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveAmpNegHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp Neg High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-amp-pos-low"
-                                        value= {this.state.slowwave_amp_pos_low}
-                                        label="Slowwave amp pos Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveAmpPosLow}
-                                />
-                                <FormHelperText>Slowwave Amp Pos Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-amp-pos-high"
-                                        value= {this.state.slowwave_amp_pos_high}
-                                        label="Slowwave amp pos High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveAmpPosHigh}
-                                />
-                                <FormHelperText>Slowwave Amp Pos High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-amp-pos-low"*/}
+                            {/*            value= {this.state.slowwave_amp_pos_low}*/}
+                            {/*            label="Slowwave amp pos Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveAmpPosLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp Pos Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-amp-pos-high"*/}
+                            {/*            value= {this.state.slowwave_amp_pos_high}*/}
+                            {/*            label="Slowwave amp pos High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveAmpPosHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp Pos High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-amp-ptp-low"
-                                        value= {this.state.slowwave_amp_ppt_low}
-                                        label="Slowwave amp ptp Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveAmpPptLow}
-                                />
-                                <FormHelperText>Slowwave Amp ptp Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-amp-ptp-high"
-                                        value= {this.state.slowwave_amp_ptp_high}
-                                        label="Slowwave amp ptp High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveAmpPptHigh}
-                                />
-                                <FormHelperText>Slowwave Amp ptp High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-amp-ptp-low"*/}
+                            {/*            value= {this.state.slowwave_amp_ppt_low}*/}
+                            {/*            label="Slowwave amp ptp Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveAmpPptLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp ptp Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-amp-ptp-high"*/}
+                            {/*            value= {this.state.slowwave_amp_ptp_high}*/}
+                            {/*            label="Slowwave amp ptp High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveAmpPptHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp ptp High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-include-low"
-                                        value= {this.state.slowwave_include_low}
-                                        label="Slowwave Include Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveIncludeLow}
-                                />
-                                <FormHelperText>Slowwave Amp ptp Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="slowwave-include-high"
-                                        value= {this.state.slowwave_include_high}
-                                        label="Slowwave Include High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSlowwaveIncludeHigh}
-                                />
-                                <FormHelperText>Slowwave Amp ptp High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-include-low"*/}
+                            {/*            value= {this.state.slowwave_include_low}*/}
+                            {/*            label="Slowwave Include Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveIncludeLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp ptp Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="slowwave-include-high"*/}
+                            {/*            value= {this.state.slowwave_include_high}*/}
+                            {/*            label="Slowwave Include High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSlowwaveIncludeHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Slowwave Amp ptp High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width: '90%'}} size={"small"}>
-                                <InputLabel id="slowwave-outliers-selector-label">Slowwave Outliers</InputLabel>
-                                <Select
-                                        labelId="slowwave-outliers-selector-label"
-                                        id="slowwave-outliers-selector"
-                                        value={this.state.slowwave_outliers}
-                                        label="Slowwave outliers"
-                                        onChange={this.handleChangeSlowwaveOutliers}
-                                >
-                                    <MenuItem value="false">
-                                        <em>False</em>
-                                    </MenuItem>
-                                    <MenuItem value="true">
-                                        <em>True</em>
-                                    </MenuItem>
-                                </Select>
-                                <FormHelperText>Slowwave Outliers </FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width: '90%'}} size={"small"}>
-                                <InputLabel id="slowwave-coupling-selector-label">Slowwave Coupling</InputLabel>
-                                <Select
-                                        labelId="slowwave-coupling-selector-label"
-                                        id="slowwave-coupling-selector"
-                                        value={this.state.slowwave_coupling}
-                                        label="Spindle coupling"
-                                        onChange={this.handleChangeSlowwaveCoupling}
-                                >
-                                    <MenuItem value="false">
-                                        <em>False</em>
-                                    </MenuItem>
-                                    <MenuItem value="true">
-                                        <em>True</em>
-                                    </MenuItem>
-                                </Select>
-                                <FormHelperText>Slowwave Coupling </FormHelperText>
-                            </FormControl>
-                            <Divider/>
+                            {/*<FormControl sx={{m: 1, width: '90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="slowwave-outliers-selector-label">Slowwave Outliers</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="slowwave-outliers-selector-label"*/}
+                            {/*            id="slowwave-outliers-selector"*/}
+                            {/*            value={this.state.slowwave_outliers}*/}
+                            {/*            label="Slowwave outliers"*/}
+                            {/*            onChange={this.handleChangeSlowwaveOutliers}*/}
+                            {/*    >*/}
+                            {/*        <MenuItem value="false">*/}
+                            {/*            <em>False</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*        <MenuItem value="true">*/}
+                            {/*            <em>True</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Slowwave Outliers </FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width: '90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="slowwave-coupling-selector-label">Slowwave Coupling</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="slowwave-coupling-selector-label"*/}
+                            {/*            id="slowwave-coupling-selector"*/}
+                            {/*            value={this.state.slowwave_coupling}*/}
+                            {/*            label="Spindle coupling"*/}
+                            {/*            onChange={this.handleChangeSlowwaveCoupling}*/}
+                            {/*    >*/}
+                            {/*        <MenuItem value="false">*/}
+                            {/*            <em>False</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*        <MenuItem value="true">*/}
+                            {/*            <em>True</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Slowwave Coupling </FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider/>*/}
 
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 PAC Parameterisation
@@ -1328,7 +1324,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
-                                    <Tab label="Slowwaves Results" {...a11yProps(1)} />
+                                    {/*<Tab label="Slowwaves Results" {...a11yProps(1)} />*/}
                                     <Tab label="Spindles results" {...a11yProps(2)} />
                                     <Tab label="PAC results" {...a11yProps(3)} />
                                     <Tab label="Extra PAC results" {...a11yProps(4)} />
@@ -1339,74 +1335,10 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                         </Box>
                         <TabPanel value={this.state.tabvalue} index={0}>
                         </TabPanel>
-                        <TabPanel value={this.state.tabvalue} index={1}>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Slowwaves Results
-                            </Typography>
-                            {/*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Circular Mean: { this.state.result_slowwave["circular_mean"]}</Typography>*/}
-                            {/*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}} >Vector Length: { this.state.result_slowwave["vector_length"]}</Typography>*/}
-
-                            <Grid item xs={6}
-                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                {/*<img*/}
-                                {/*        src={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format`}*/}
-                                {/*        srcSet={`http://localhost:8000/static/slowwaves.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
-                                {/*        // alt={item.title}*/}
-                                {/*        loading="lazy"*/}
-                                {/*/>*/}
-                                <img src={this.state.slowave_plot_path + "?random=" + new Date().getTime()}
-                                     srcSet={this.state.slowave_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                     loading="lazy"
-                                />
-                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
-                                {/*           style={{zoom: '50%'}}/>*/}
-                                <hr className="result"/>
-                            </Grid>
-                            <Grid item xs={6}
-                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                {/*<img*/}
-                                {/*        src={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format`}*/}
-                                {/*        srcSet={`http://localhost:8000/static/rose_plot.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
-                                {/*        // alt={item.title}*/}
-                                {/*        loading="lazy"*/}
-                                {/*/>*/}
-                                <img src={this.state.rose_plot_path + "?random=" + new Date().getTime()}
-                                     srcSet={this.state.rose_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                     loading="lazy"
-                                />
-                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
-                                {/*           style={{zoom: '50%'}}/>*/}
-                                <hr className="result"/>
-                            </Grid>
-                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
-                                      zeroMinWidth
-                                      rowHeight={40}
-                                      className="datagrid"
-                                      rows= {this.state.result_slowave_dataframe_1_table}
-                                      columns= {slowave_table_1_columns}
-                                      pageSize= {10}
-                                      rowsPerPageOptions={[10]}
-                                      components={{
-                                          Toolbar: CustomToolbar,
-                                      }}
-                            />
-
-                            {/*<DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
-                            {/*          zeroMinWidth*/}
-                            {/*          rowHeight={40}*/}
-                            {/*          className="datagrid"*/}
-                            {/*          rows= {this.state.result_slowave_dataframe_2_table}*/}
-                            {/*          columns= {slowave_table_2_columns}*/}
-                            {/*          pageSize= {10}*/}
-                            {/*          rowsPerPageOptions={[10]}*/}
-                            {/*          components={{*/}
-                            {/*              Toolbar: CustomToolbar,*/}
-                            {/*          }}*/}
-                            {/*/>*/}
 
 
-                            <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
-                        </TabPanel>
+                        {/*    <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>*/}
+                        {/*</TabPanel>*/}
                         <TabPanel value={this.state.tabvalue} index={2}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Spindles Results

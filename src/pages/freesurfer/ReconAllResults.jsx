@@ -3,7 +3,7 @@ import Samseg_Whole_Brain_Measurements_Widget from "../../components/freesurfer/
 import React from 'react';
 import ReconallVolumeDatatable from "../../components/freesurfer/datatable/ReconallVolumeDatatable";
 import Aseg from "../../components/freesurfer/datatable/Aseg";
-import {Divider, Tab, Tabs, Typography, Grid} from "@mui/material";
+import {Divider, Tab, Tabs, Typography, Grid, Button} from "@mui/material";
 import {Box} from "@mui/system";
 import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import PropTypes from 'prop-types';
@@ -68,6 +68,7 @@ class ReconAllResults extends React.Component {
         }
         this.handleTabChange = this.handleTabChange.bind(this);
         this.downloadData = this.downloadData.bind(this);
+        this.handleProceed = this.handleProceed.bind(this)
         this.downloadData()
     }
 
@@ -83,6 +84,18 @@ class ReconAllResults extends React.Component {
                 }).then(res => {
             this.setState({done: true})
         });
+    }
+
+    async handleProceed(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        API.put("reconall_files_to_datalake",
+                {
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                    step_id: params.get("step_id")
+                }
+        )
+        window.location.replace("/")
     }
 
     render() {
@@ -144,6 +157,11 @@ class ReconAllResults extends React.Component {
                                                     ))}
                                                 </div>
                                             </div>
+                                            <form onSubmit={this.handleProceed}>
+                                                <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
+                                                    Proceed >
+                                                </Button>
+                                            </form>
                                         </TabPanel>
                                         <TabPanel value={this.state.tabvalue} index={1}>
                                             <div className="reconallContainer">
