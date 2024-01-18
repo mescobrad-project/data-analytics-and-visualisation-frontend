@@ -127,11 +127,11 @@ class EEGSelectModal extends React.Component {
                         >
                             <ToggleButton value="original"  sx={{width: "50%"}} aria-label="left aligned" size={"small"}>
                                 <DescriptionIcon/>
-                                Use original file
+                                Use EEG File
                             </ToggleButton>
                             <ToggleButton value="printed" sx={{width: "50%"}} aria-label="right aligned" size={"small"}>
                                 <EditIcon/>
-                                Select specific timeframe/channels
+                                View/Edit EEG File
                             </ToggleButton>
                         </ToggleButtonGroup>
                         {/*<Button variant="contained" color="primary"*/}

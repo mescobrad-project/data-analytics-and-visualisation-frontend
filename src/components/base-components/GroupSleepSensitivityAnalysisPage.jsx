@@ -8,11 +8,7 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem, Modal,
-    Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography
+    MenuItem, Select, Tab, Tabs, Typography
 } from "@mui/material";
 
 // Amcharts
@@ -26,7 +22,7 @@ import {Box} from "@mui/system";
 import ChannelSignalPeaksChartCustom from "../ui-components/ChannelSignalPeaksChartCustom";
 import EEGSelectModal from "../ui-components/EEGSelectModal";
 import {useLocation} from "react-router-dom";
-import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import InnerHTML from "dangerously-set-html-content";
 import ProceedButton from "../ui-components/ProceedButton";
@@ -1368,16 +1364,6 @@ class GroupSleepSensitivityAnalysisPage extends React.Component {
                                 Submit
                             </Button>
                             <ProceedButton></ProceedButton>
-                        </form>
-                        <form onSubmit={async (event) => {
-                            event.preventDefault();
-                            window.location.replace("/")
-                            // Send the request
-                        }}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary"
-                                    type="submit">
-                                Proceed >
-                            </Button>
                         </form>
                     </Grid>
 

@@ -3,16 +3,14 @@ import API from "../../axiosInstance";
 import InnerHTML from 'dangerously-set-html-content'
 import PropTypes from 'prop-types';
 import {
-    Button, Divider,
-    FormControl,
+    Button, FormControl,
     FormHelperText,
     Grid,
     InputLabel,
     List,
     ListItem,
     ListItemText,
-    MenuItem, Paper,
-    Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextField, Typography
+    MenuItem, Select, TextField, Typography
 } from "@mui/material";
 import mpld3 from 'mpld3';
 // Amcharts
@@ -25,6 +23,7 @@ import EEGSelectModal from "../ui-components/EEGSelectModal";
 import qs from "qs";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 
 const params = new URLSearchParams(window.location.search);
 
@@ -328,6 +327,7 @@ class ChooseFactorsFunctionPage extends React.Component {
                                 Submit
                             </Button>
                         </form>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

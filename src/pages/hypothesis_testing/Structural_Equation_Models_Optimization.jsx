@@ -1,8 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button, Card, CardContent, Chip,
-    FormControl,
+    Button, Card, CardContent, FormControl,
     FormHelperText,
     Grid, Input, InputLabel, MenuItem, Select, Tab, Tabs,
     TextField,
@@ -14,6 +13,7 @@ import {CSVLink} from "react-csv";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import { Graphviz } from 'graphviz-react';
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -413,12 +413,7 @@ class Structural_Equation_Models_Optimization extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

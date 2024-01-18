@@ -2,7 +2,7 @@ import React from 'react';
 import API from "../../axiosInstance";
 import {
     Button, Divider,
-    Grid, Modal,
+    Grid, IconButton, ImageListItemBar, Modal,
     Typography
 } from "@mui/material";
 import {Box, Stack} from "@mui/system";
@@ -114,7 +114,7 @@ function StarBorderIcon(props) {
 
 StarBorderIcon.propTypes = {};
 
-class MRIViewer extends React.Component {
+class MRIViewerWin extends React.Component {
     constructor(props) {
         super(props);
         // let ip = "https://gui.platform.mes-cobrad.eu/"
@@ -127,8 +127,10 @@ class MRIViewer extends React.Component {
             //Channel Select order modal
             open_modal: false,
             path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
-
+            requested_file_1: this.props.requested_file_1,
+            requested_file_2: this.props.requested_file_2,
         };
+        console.log("here")
 
         //Binding functions of the class
         this.handleProcessOpenMRI = this.handleProcessOpenMRI.bind(this);
@@ -151,7 +153,8 @@ class MRIViewer extends React.Component {
                     params: {
                         workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        file_to_open: "test.nii",
+                        file_to_open: this.state.requested_file_1,
+                        file_to_open_2: this.state.requested_file_2,
                         // input_slices: this.state.selected_slice
                     }
                 }
@@ -306,4 +309,4 @@ class MRIViewer extends React.Component {
     }
 }
 
-export default MRIViewer;
+export default MRIViewerWin;

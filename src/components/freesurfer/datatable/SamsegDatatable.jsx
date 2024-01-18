@@ -1,9 +1,10 @@
 import "./samsegdatatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React from "react";
 import API from "../../../axiosInstance";
 import {textAlign} from "@mui/system";
+import ProceedButton from "../../ui-components/ProceedButton";
 
 
 const userColumns = [
@@ -56,8 +57,9 @@ class SamsegDatatable extends React.Component {
                         pageSize= {9}
                         rowsPerPageOptions={[9]}
                 />
+                <ProceedButton></ProceedButton>
             </div>
-        );
+    );
     };
 }
 

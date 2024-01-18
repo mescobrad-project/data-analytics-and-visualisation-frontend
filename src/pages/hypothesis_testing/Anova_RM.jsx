@@ -11,94 +11,10 @@ import {
     Typography
 } from "@mui/material";
 import qs from "qs";
-import JsonTable from "ts-react-json-table";
-import {CSVLink} from "react-csv";
-import {Box} from "@mui/system";
-import PropTypes from "prop-types";
-import ProceedButton from "../../components/ui-components/ProceedButton";
 import {DataGrid} from "@mui/x-data-grid";
-
-const userColumns = [
-    { field: "Source",
-        headerName: "Names of the factor considered",
-        align: "left",
-        headerAlign: "left",
-        minWidth:100,
-        flex:2,
-        resizable:false,
-        sortable: true},
-    {
-        field: "SS",
-        headerName: "SS",
-        // width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "DF1",
-        headerName: "DF1",
-        // width: '5%',
-        align: "center",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "DF2",
-        headerName: "DF2",
-        // width: '5%',
-        align: "center",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "MS",
-        headerName: "MS",
-        // width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "F",
-        headerName: "F-values",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "p-unc",
-        headerName: "p-unc",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "np2",
-        headerName: "np2",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    },
-    {
-        field: "eps",
-        headerName: "epsilon factor",
-        // width: '10%',
-        align: "right",
-        headerAlign: "center",
-        flex:1,
-        type: "number"
-    }];
+import {Box} from "@mui/system";
+import JsonTable from "ts-react-json-table";
+import PropTypes from "prop-types";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -119,7 +35,6 @@ function TabPanel(props) {
             </div>
     );
 }
-
 TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
@@ -132,49 +47,46 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
-
-class Mixed_Anova extends React.Component {
+class Anova_RM extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             // List of columns in dataset
             column_names: [],
+            user_columns: [],
             file_names:[],
             initialdataset:[],
-            selected_file_name: "",
             test_data: {
                 status:'',
-                Dataframe:[]
+                DataFrame:[]
             },
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_dependent_variable_wf: "",
+            selected_within_variables: "",
+            selected_within_variables_wf: [],
             selected_subject_variable: "",
             selected_subject_variable_wf: "",
-            selected_within_variable: "",
-            selected_within_variable_wf: "",
-            selected_between_factor: "",
-            selected_between_factor_wf: "",
-            selected_correction_factor:'True',
+            selected_correction:"True",
             selected_effsize:"np2",
-            stats_show: false,
+            stats_show:false,
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
-        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+        this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
+        this.handleListDelete = this.handleListDelete.bind(this);
+        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
+        this.returnUserCols = this.returnUserCols.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectSubjectVariableChange = this.handleSelectSubjectVariableChange.bind(this);
         this.handleSelectWithinVariableChange = this.handleSelectWithinVariableChange.bind(this);
-        this.handleSelectBetweenFactorChange = this.handleSelectBetweenFactorChange.bind(this);
-        this.handleSelectCorrectionFactorChange = this.handleSelectCorrectionFactorChange.bind(this);
+        this.handleSelectSubjectChange = this.handleSelectSubjectChange.bind(this);
+        this.handleSelectCorrectionChange = this.handleSelectCorrectionChange.bind(this);
         this.handleSelectEffsizeChange = this.handleSelectEffsizeChange.bind(this);
-        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
-        // // Initialise component
-        // // - values of channels from the backend
         this.handleTabChange = this.handleTabChange.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
         this.fetchFileNames();
     }
 
@@ -230,26 +142,17 @@ class Mixed_Anova extends React.Component {
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
-        if (this.state.selected_dependent_variable===this.state.selected_between_factor)
-        {
-            alert("Variable <" + this.state.selected_dependent_variable +"> can not be selected as " +
-                    "Dependent variable and Between factor. Please change your selection.")
-            return
-        }
-
-        //TODO Check more
         // Send the request
-        API.get("calculate_mixed_anova",
+        API.get("calculate_anova_repeated_measures_pingouin",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        dependent_variable: this.state.selected_dependent_variable_wf,
-                        subject:this.state.selected_subject_variable_wf,
-                        within:this.state.selected_within_variable_wf,
-                        between: this.state.selected_between_factor_wf,
-                        correction:this.state.selected_correction_factor,
+                        dv: this.state.selected_dependent_variable_wf,
+                        subject: this.state.selected_subject_variable_wf,
+                        correction: this.state.selected_correction,
+                        within: this.state.selected_within_variables_wf,
                         effsize: this.state.selected_effsize
                     },
                     paramsSerializer : params => {
@@ -257,18 +160,21 @@ class Mixed_Anova extends React.Component {
                     }
                 }
         ).then(res => {
+            console.log(res)
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
+            this.returnUserCols(res.data);
         });
     }
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
+        // We changed info file uploading process to the DataLake
+        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
         API.put("save_hypothesis_output",
                 {
-                    workflow_id: params.get("workflow_id"),
-                    run_id: params.get("run_id"),
+                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                     step_id: params.get("step_id")
                 }
         ).then(res => {
@@ -285,21 +191,40 @@ class Mixed_Anova extends React.Component {
         this.setState( {selected_dependent_variable: event.target.value})
         this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
-
-    handleSelectSubjectVariableChange(event){
+    handleSelectSubjectChange(event){
         this.setState( {selected_subject_variable: event.target.value})
         this.setState( {selected_subject_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
+    handleSelectCorrectionChange(event){
+        this.setState( {selected_correction: event.target.value})
+    }
+
+    returnUserCols(arr){
+        let local = []
+        arr.Columns.forEach((column, index) => {
+            local.push(
+                    {
+                        field: column.col,
+                        headerName: column.col,
+                        align: "right",
+                        headerAlign: "center",
+                        minWidth: 150,
+                    }
+            );
+        })
+        console.log(local)
+        console.log(this.state.user_columns)
+        this.setState({user_columns: local})
+    }
+
     handleSelectWithinVariableChange(event){
-        this.setState( {selected_within_variable: event.target.value})
-        this.setState( {selected_within_variable_wf: this.state.selected_file_name+"--"+event.target.value})
-    }
-    handleSelectBetweenFactorChange(event){
-        this.setState( {selected_between_factor: event.target.value})
-        this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
-    }
-    handleSelectCorrectionFactorChange(event){
-        this.setState( {selected_correction_factor: event.target.value})
+        this.setState( {selected_within_variables: event.target.value})
+        var newArray = this.state.selected_within_variables_wf.slice();
+        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+        {
+            newArray.push(this.state.selected_file_name+"--"+event.target.value);
+        }
+        this.setState({selected_within_variables_wf:newArray})
     }
     handleSelectEffsizeChange(event){
         this.setState( {selected_effsize: event.target.value})
@@ -307,15 +232,25 @@ class Mixed_Anova extends React.Component {
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-
+    handleListDelete(event) {
+        var newArray = this.state.selected_within_variables_wf.slice();
+        const ind = newArray.indexOf(event.target.id);
+        let newList = newArray.filter((x, index)=>{
+            return index!==ind
+        })
+        this.setState({selected_within_variables_wf:newList})
+    }
+    handleDeleteVariable(event) {
+        this.setState({selected_within_variables_wf:[]})
+    }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_dependent_variable_wf=""
-            this.state.selected_between_factor_wf=""
             this.state.selected_subject_variable_wf=""
-            this.state.selected_within_variable_wf=""
+            this.state.selected_within_variables_wf=""
+            this.handleDeleteVariable()
             this.setState({stats_show: false})
         })
     }
@@ -324,7 +259,7 @@ class Mixed_Anova extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Mixed Anova Parameterisation
+                            Anova Repeated Measures
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -359,64 +294,48 @@ class Mixed_Anova extends React.Component {
                                 <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Subject Variable</InputLabel>
+                                <InputLabel id="within-selector-label">Within Variable(s)</InputLabel>
                                 <Select
-                                        labelId="Subject-selector-label"
-                                        id="Subject-selector"
-                                        value= {this.state.selected_subject_variable}
-                                        label="Subject Variable"
-                                        onChange={this.handleSelectSubjectVariableChange}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Name of column containing the between-subject identifier.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Within Variable</InputLabel>
-                                <Select
-                                        labelId="Within-selector-label"
-                                        id="Within-selector"
-                                        value= {this.state.selected_within_variable}
-                                        label="Within Variable"
+                                        labelId="within-selector-label"
+                                        id="within-selector"
+                                        value= {this.state.selected_within_variables}
+                                        label="Within Variable(s)"
                                         onChange={this.handleSelectWithinVariableChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Name of column containing the within-subject factor (repeated measurements).</FormHelperText>
+                                <FormHelperText>Select within variable(s)</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Between factor</InputLabel>
+                                <InputLabel id="subject-selector-label">Subject</InputLabel>
                                 <Select
-                                        labelId="Between-selector-label"
-                                        id="Between-selector"
-                                        value= {this.state.selected_between_factor}
+                                        labelId="Subject-selector-label"
+                                        id="Subject-selector"
+                                        value= {this.state.selected_subject_variable}
                                         label="Between factor"
-                                        onChange={this.handleSelectBetweenFactorChange}
+                                        onChange={this.handleSelectSubjectChange}
                                 >
                                     {this.state.column_names.map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Name of column containing the between factor.</FormHelperText>
+                                <FormHelperText>Name of column in data with the subject.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="correction-selector-label">Correction</InputLabel>
+                                <InputLabel id="correction-selector-label">correction</InputLabel>
                                 <Select
                                         labelid="correction-selector-label"
                                         id="correction-selector"
-                                        value= {this.state.selected_correction_factor}
+                                        value= {this.state.selected_correction}
                                         label="correction parameter"
-                                        onChange={this.handleSelectCorrectionFactorChange}
+                                        onChange={this.handleSelectCorrectionChange}
                                 >
                                     <MenuItem value={"True"}><em>True</em></MenuItem>
-                                    <MenuItem value={"auto"}><em>auto</em></MenuItem>
+                                    <MenuItem value={"False"}><em>False</em></MenuItem>
                                 </Select>
-                                <FormHelperText>If True, return Greenhouse-Geisser corrected p-value.
-                                    If ‘auto’ (default), compute Mauchly’s test of sphericity to determine whether the p-values needs to be corrected.</FormHelperText>
+                                <FormHelperText>Whether to also return Greenhouse-Geisser corrected p-value. Must be ‘True’ or ‘False’.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="effsize-selector-label">effsize</InputLabel>
@@ -427,18 +346,17 @@ class Mixed_Anova extends React.Component {
                                         label="effsize parameter"
                                         onChange={this.handleSelectEffsizeChange}
                                 >
+                                    <MenuItem value={"ng2"}><em>ng2</em></MenuItem>
                                     <MenuItem value={"np2"}><em>np2</em></MenuItem>
                                     <MenuItem value={"n2"}><em>n2</em></MenuItem>
-                                    <MenuItem value={"ng2"}><em>ng2</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Effect size. Must be one of ‘np2’ (partial eta-squared), ‘n2’ (eta-squared) or ‘ng2’(generalized eta-squared).</FormHelperText>
+                                <FormHelperText>Effect size. Must be ‘ng2’ (generalized eta-squared), or ‘np2’ (partial eta-squared), or ‘n2’ (eta-squared).</FormHelperText>
                             </FormControl>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
                                     disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_between_factor_wf.length < 1 |
-                                            this.state.selected_subject_variable_wf <1 |
-                                            this.state.selected_within_variable_wf }
+                                            this.state.selected_subject_variable_wf.length < 1 |
+                                            this.state.selected_within_variables_wf.length < 1 }
                                     type="submit"
                             >
                                 Submit
@@ -461,42 +379,44 @@ class Mixed_Anova extends React.Component {
                                 {this.state.selected_dependent_variable_wf}
                             </Button>
                         </Grid>
-                        <Grid>
-                            <FormHelperText>Between factor =</FormHelperText>
-                            <Button variant="outlined" size="small"
-                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_between_factor_wf}>
-                                {this.state.selected_between_factor_wf}
+                        <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
+                            <FormHelperText>Selected within variables [click to remove]</FormHelperText>
+                            <div>
+                                <span>
+                                    {this.state.selected_within_variables_wf.map((column) => (
+                                            <Button variant="outlined" size="small"
+                                                    sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    id={column}
+                                                    onClick={this.handleListDelete}>
+                                                {column}
+                                            </Button>
+                                    ))}
+                                </span>
+                            </div>
+                            <Button onClick={this.handleDeleteVariable}>
+                                Clear all
                             </Button>
-                        </Grid>
+                        </FormControl>
                         <Grid>
-                            <FormHelperText>Subject Variable =</FormHelperText>
+                            <FormHelperText>Subject variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
                                     id={this.state.selected_subject_variable_wf}>
-                                { this.state.selected_subject_variable_wf}
-                            </Button>
-                        </Grid>
-                        <Grid>
-                            <FormHelperText>Within Variable =</FormHelperText>
-                            <Button variant="outlined" size="small"
-                                    sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_within_variable_wf}>
-                                {this.state.selected_within_variable_wf}
+                                {this.state.selected_subject_variable_wf}
                             </Button>
                         </Grid>
                     </Grid>
                     <Grid item xs={9}>
-                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                             Result Visualisation
                         </Typography>
-                        <hr className="result"/>
-                        <Box sx={{ width: '100%' }}>
+                        <hr/>
+                        <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
                                     <Tab label="Results" {...a11yProps(1)} />
-                                    <Tab label="Transformed" {...a11yProps(2)} />
+                                    {/*<Tab label="Transformed" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={1}>
@@ -505,33 +425,32 @@ class Mixed_Anova extends React.Component {
                                     {this.state.test_data['status']!=='Success' ? (
                                             <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     ) : (
-                                            <Box sx={{ height: 400, width: '100%' }}>
                                             <div className="datatable">
                                                 {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
-                                                <DataGrid sx={{width:'99%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto' }}
-                                                          zeroMinWidth
-                                                          rowHeight={40}
-                                                          className="datagrid"
-                                                          rows= {this.state.test_data.Dataframe}
-                                                          columns= {userColumns}
-                                                          pageSize= {15}
-                                                          rowsPerPageOptions={[15]}
-                                                />
-                                            </div>
-                                            </Box>
-
+                                                    <DataGrid sx={{width:'90%', height:'700px', display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}
+                                                              size="large"
+                                                              rowHeight={40}
+                                                              className="datagrid"
+                                                              rows= {this.state.test_data.DataFrame}
+                                                              columns={this.state.user_columns}
+                                                              pageSize= {15}
+                                                              rowsPerPageOptions={[15]}
+                                                    />
+                                                </div>
                                     )}
                                 </Grid>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={0}>
-                                <JsonTable className="jsonResultsTable"
-                                           rows = {this.state.initialdataset}/>
+                                <Box>
+                                    <JsonTable className="jsonResultsTable"
+                                               rows = {this.state.initialdataset}/>
+                                </Box>
                             </TabPanel>
-                        </Box>
+                        </Grid>
                     </Grid>
                 </Grid>
         )
     }
 }
 
-export default Mixed_Anova;
+export default Anova_RM;
