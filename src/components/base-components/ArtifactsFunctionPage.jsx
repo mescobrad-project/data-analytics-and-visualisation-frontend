@@ -55,7 +55,7 @@ class ArtifactsFunctionPage extends React.Component {
             selected_components_type: "",
             selected_components: "",
             selected_repair_method: "",
-            path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
+            path : ip + "?username=user&password=password&hostname=Desktop Auto-Resolution",
         };
 
         //Binding functions of the class
