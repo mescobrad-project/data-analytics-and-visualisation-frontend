@@ -122,7 +122,9 @@ import BackAveragePage from "./BackAveragePage";
 import General_Stats_Min from "../../pages/hypothesis_testing/General_Stats_Min"
 import General_Stats_Max from "../../pages/hypothesis_testing/General_Stats_Max"
 import ActigraphyMasking from "./ActigraphyMasking";
-import ActigraphyAnalysis from "./ActigraphyAnalysis";
+import ActigraphyFunctionalLinearModelling from "./ActigraphyFunctionalLinearModelling";
+import ActigraphySingularSpectrumAnalysis from "./ActigraphySingularSpectrumAnalysis";
+import ActigraphyDetrendedFluctuationAnalysis from "./ActigraphyDetrendedFluctuationAnalysis";
 import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
 import Actigraphy_Metrics from "./Actigraphy_Metrics";
 import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
@@ -241,7 +243,9 @@ const App = () => {
                         <Route exact path="/actigraphy_test" element={(<LayoutMain><test/></LayoutMain>)}/>
                         <Route exact path="/actigraphy_page" element={(<LayoutMain><ActigraphyFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/actigraphy_masking" element={(<LayoutMain><ActigraphyMasking/></LayoutMain>)}/>
-                        <Route exact path="/actigraphy_analysis" element={(<LayoutMain><ActigraphyAnalysis/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_functional_linear_modelling" element={(<LayoutMain><ActigraphyFunctionalLinearModelling/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_singular_spectrum_analysis" element={(<LayoutMain><ActigraphySingularSpectrumAnalysis/></LayoutMain>)}/>
+                        <Route exact path="/actigraphy_detrended_fluctuation_analysis" element={(<LayoutMain><ActigraphyDetrendedFluctuationAnalysis/></LayoutMain>)}/>
                         <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
                         <Route exact path="/predictions" element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                         <Route exact path="/artifacts" element={(<LayoutMain><ArtifactsFunctionPage/></LayoutMain>)}/>
