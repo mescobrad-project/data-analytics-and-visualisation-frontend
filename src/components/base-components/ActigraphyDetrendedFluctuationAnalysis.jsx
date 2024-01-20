@@ -239,6 +239,8 @@ class ActigraphyDetrendedFluctuationAnalysis extends React.Component {
         super(props);
         this.state = {
             tabvalue: 0,
+            selected_file_name: "",
+            file_names: [],
             results_show: false,
             start_date: "None",
             end_date: "None",
@@ -264,6 +266,9 @@ class ActigraphyDetrendedFluctuationAnalysis extends React.Component {
         this.handleSelectEndDateChange = this.handleSelectEndDateChange.bind(this);
         this.handleDFA = this.handleDFA.bind(this);
         this.handleSelectDatasetChange = this.handleSelectDatasetChange.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchFileNames();
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
     }
 
     handleSelected = (selected) => {
@@ -275,6 +280,21 @@ class ActigraphyDetrendedFluctuationAnalysis extends React.Component {
         this.setState({dataset: event.target.value})
     }
 
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }
+                }).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+
     async handleDFA() {
         const params = new URLSearchParams(window.location.search);
         API.get("/return_detrended_fluctuation_analysis", {
@@ -282,7 +302,7 @@ class ActigraphyDetrendedFluctuationAnalysis extends React.Component {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
-                dataset: this.state.dataset
+                dataset: this.state.selected_file_name
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_DFA")
@@ -302,6 +322,12 @@ class ActigraphyDetrendedFluctuationAnalysis extends React.Component {
             this.setState({data_dfa_3: json_response_3["data"]})
             this.setState({layout_dfa_3: json_response_3["layout"]})
         });
+    }
+
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            // this.setState({stats_show: false})
+        })
     }
 
     handleSelectStartDateChange(event){
@@ -330,21 +356,19 @@ class ActigraphyDetrendedFluctuationAnalysis extends React.Component {
                     </Typography>
                 </FormControl>
                 <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                    <InputLabel id="dataset-label">Dataset</InputLabel>
+                    <InputLabel id="file-selector-label">File</InputLabel>
                     <Select
-                            labelId="dataset-label"
-                            id="dataset-selector"
-                            value= {this.state.dataset}
-                            label="dataset"
-                            onChange={this.handleSelectDatasetChange}
+                            labelId="file-selector-label"
+                            id="file-selector"
+                            value= {this.state.selected_file_name}
+                            label="File Variable"
+                            onChange={this.handleSelectFileNameChange}
                     >
-                        <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis"}><em>0345-024_18_07_2022_13_00_00_New_Analysis</em></MenuItem>
-                        <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_01"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_01</em></MenuItem>
-                        <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_02"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_02</em></MenuItem>
-                        <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_03"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_03</em></MenuItem>
-                        <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_04"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_04</em></MenuItem>
+                        {this.state.file_names.map((column) => (
+                                <MenuItem value={column}>{column}</MenuItem>
+                        ))}
                     </Select>
-                    <FormHelperText>Select the dataset to visualise the actigraphy data.</FormHelperText>
+                    <FormHelperText>Select dataset.</FormHelperText>
                 </FormControl>
                 <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                     <Typography variant="p" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>

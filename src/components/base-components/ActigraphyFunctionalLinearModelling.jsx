@@ -239,6 +239,8 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
         super(props);
         this.state = {
             tabvalue: 0,
+            selected_file_name: "",
+            file_names: [],
             results_show: false,
             dataset: "None",
             multiple_datasets: [],
@@ -264,12 +266,30 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
         this.handleSelectEndDateChange = this.handleSelectEndDateChange.bind(this);
         this.handleFML = this.handleFML.bind(this);
         this.handleMultiFML = this.handleMultiFML.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchFileNames();
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
     }
 
     handleSelected = (selected) => {
         console.log("Selected points", selected);
         this.setState({x_points:selected.range.x})
     };
+
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }
+                }).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
 
     async handleFML() {
         const params = new URLSearchParams(window.location.search);
@@ -278,7 +298,7 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
-                dataset: this.state.dataset
+                dataset: this.state.selected_file_name
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_FML")
@@ -307,8 +327,14 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
         });
     }
 
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            // this.setState({stats_show: false})
+        })
+    }
+
     handleSelectSingleDatasetChange(event){
-        this.setState({dataset: event.target.value})
+        this.setState({selected_file_name: event.target.value})
     }
 
     handleSelectMultiDatasetsChange(event){
@@ -338,26 +364,24 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
                         </Typography>
                     </FormControl>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                        <InputLabel id="dataset-label">Dataset</InputLabel>
+                        <InputLabel id="file-selector-label">File</InputLabel>
                         <Select
-                                labelId="dataset-label"
-                                id="dataset-selector"
-                                value= {this.state.dataset}
-                                label="dataset"
-                                onChange={this.handleSelectSingleDatasetChange}
+                                labelId="file-selector-label"
+                                id="file-selector"
+                                value= {this.state.selected_file_name}
+                                label="File Variable"
+                                onChange={this.handleSelectFileNameChange}
                         >
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis"}><em>0345-024_18_07_2022_13_00_00_New_Analysis</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_01"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_01</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_02"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_02</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_03"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_03</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_04"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_04</em></MenuItem>
+                            {this.state.file_names.map((column) => (
+                                    <MenuItem value={column}>{column}</MenuItem>
+                            ))}
                         </Select>
-                        <FormHelperText>Select the dataset to visualise the actigraphy data.</FormHelperText>
+                        <FormHelperText>Select dataset.</FormHelperText>
                     </FormControl>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                         {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}
                         <List style={{fontSize:'13px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                            Dataset selected: {this.state.dataset}
+                            Dataset selected: {this.state.selected_file_name}
                         </List>
                     </FormControl>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
@@ -379,22 +403,19 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
                         </Typography>
                     </FormControl>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                        <InputLabel id="multi-dataset-label">Datasets</InputLabel>
+                        <InputLabel id="file-selector-label">File</InputLabel>
                         <Select
-                                multiple
-                                labelId="multi-dataset-label"
-                                id="multi-dataset-selector"
-                                value= {this.state.multiple_datasets}
-                                label="multi-dataset"
-                                onChange={this.handleSelectMultiDatasetsChange}
+                                labelId="file-selector-label"
+                                id="file-selector"
+                                value= {this.state.selected_file_name}
+                                label="File Variable"
+                                onChange={this.handleSelectFileNameChange}
                         >
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis"}><em>0345-024_18_07_2022_13_00_00_New_Analysis</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_01"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_01</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_02"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_02</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_03"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_03</em></MenuItem>
-                            <MenuItem value={"0345-024_18_07_2022_13_00_00_New_Analysis_example_04"}><em>0345-024_18_07_2022_13_00_00_New_Analysis_example_04</em></MenuItem>
+                            {this.state.file_names.map((column) => (
+                                    <MenuItem value={column}>{column}</MenuItem>
+                            ))}
                         </Select>
-                        <FormHelperText>Select the dataset to visualise the actigraphy data.</FormHelperText>
+                        <FormHelperText>Select dataset.</FormHelperText>
                     </FormControl>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                         {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}

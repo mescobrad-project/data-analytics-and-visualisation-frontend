@@ -28,7 +28,9 @@ import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
+import ProceedButton from "../ui-components/ProceedButton";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
+// import ProceedButton from "../ui-components/ProceedButton";
 const params = new URLSearchParams(window.location.search);
 const slowave_table_1_columns = [
     {
@@ -241,6 +243,9 @@ class ActigraphyFunctionPage extends React.Component {
         super(props);
         this.state = {
             tabvalue: 0,
+            selected_file_name: "",
+            file_names: [],
+            dates: [],
             results_show: false,
             start_date: "None",
             end_date: "None",
@@ -370,6 +375,9 @@ class ActigraphyFunctionPage extends React.Component {
         this.handleMaskPeriodStartDateChange = this.handleMaskPeriodStartDateChange.bind(this);
         this.handleMaskPeriodEndDateChange = this.handleMaskPeriodEndDateChange.bind(this);
         this.handleAddMaskPeriod = this.handleAddMaskPeriod.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchFileNames();
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
     }
 
     handleSelected = (selected) => {
@@ -377,6 +385,36 @@ class ActigraphyFunctionPage extends React.Component {
         this.setState({x_points:selected.range.x})
     };
     data_daily = [];
+
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }
+                }).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+
+    async fetchDates(url, config) {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_dates",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        dataset:this.state.selected_file_name
+                    }}).then(res => {
+            this.setState({dates: res.data.dates})
+        });
+    }
 
     async handleSubmit() {
         const params = new URLSearchParams(window.location.search);
@@ -409,6 +447,7 @@ class ActigraphyFunctionPage extends React.Component {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
+                dataset: this.state.selected_file_name,
                 start_date: this.state.start_date,
                 end_date: this.state.end_date
             }
@@ -472,6 +511,7 @@ class ActigraphyFunctionPage extends React.Component {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
+                dataset: this.state.selected_file_name,
                 activity_status: this.state.activity_status,
                 start_date: this.state.x_points[0],
                 end_date: this.state.x_points[1]
@@ -510,7 +550,8 @@ class ActigraphyFunctionPage extends React.Component {
             params: {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
-                step_id: params.get("step_id")
+                step_id: params.get("step_id"),
+                dataset: this.state.selected_file_name
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_INITIAL_DATASET")
@@ -528,7 +569,8 @@ class ActigraphyFunctionPage extends React.Component {
             params: {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
-                step_id: params.get("step_id")
+                step_id: params.get("step_id"),
+                dataset: this.state.selected_file_name
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_FINAL_DATASET")
@@ -613,6 +655,7 @@ class ActigraphyFunctionPage extends React.Component {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
+                dataset: this.state.selected_file_name,
                 algorithm: this.state.algorithm,
                 start_date: this.state.start_date,
                 end_date: this.state.end_date
@@ -665,6 +708,14 @@ class ActigraphyFunctionPage extends React.Component {
         });
     }
 
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchDates()
+            this.handleSubmitInitialDataset()
+            // this.setState({stats_show: false})
+        })
+    }
+
     handleSelectAssessmentChange(event){
         this.setState({algorithm: event.target.value})
     }
@@ -704,13 +755,21 @@ class ActigraphyFunctionPage extends React.Component {
                 <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                     Data Preview
                 </Typography>
-                <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        0345-024_18_07_2022_13_00_00_New_Analysis.csv
-                    </Typography>
+                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                    <InputLabel id="file-selector-label">File</InputLabel>
+                    <Select
+                            labelId="file-selector-label"
+                            id="file-selector"
+                            value= {this.state.selected_file_name}
+                            label="File Variable"
+                            onChange={this.handleSelectFileNameChange}
+                    >
+                        {this.state.file_names.map((column) => (
+                                <MenuItem value={column}>{column}</MenuItem>
+                        ))}
+                    </Select>
+                    <FormHelperText>Select dataset.</FormHelperText>
+                </FormControl>
                 <hr/>
                 <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                     <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>
@@ -722,8 +781,7 @@ class ActigraphyFunctionPage extends React.Component {
                     </List>
                 </FormControl>
                 <hr/>
-                <hr/>
-                <form onSubmit={(event) => {event.preventDefault();this.handleSubmit_daily();this.handleSubmitInitialDataset();this.handleSubmitVisualisationResults();}}>
+                <form onSubmit={(event) => {event.preventDefault();this.handleSubmit_daily();this.handleSubmitVisualisationResults();}}>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                         <InputLabel id="startdate-label">Start Date</InputLabel>
                         <Select
@@ -733,13 +791,11 @@ class ActigraphyFunctionPage extends React.Component {
                                 label="startdate"
                                 onChange={this.handleSelectStartDateChange}
                         >
-                            <MenuItem value={"2022/07/18 12:00:00"}><em>2022-07-18 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/19 12:00:00"}><em>2022-07-19 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/21 12:00:00"}><em>2022-07-21 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/22 12:00:00"}><em>2022-07-22 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/23 12:00:00"}><em>2022-07-23 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/24 12:00:00"}><em>2022-07-24 12:00:00</em></MenuItem>
+                            {this.state.dates.map((column) => (
+                                    <MenuItem value={column}>
+                                        {column}
+                                    </MenuItem>
+                            ))}
                         </Select>
                         <FormHelperText>Select the dates to visualise the actigraphy data.</FormHelperText>
                     </FormControl>
@@ -752,13 +808,11 @@ class ActigraphyFunctionPage extends React.Component {
                                 label="enddate"
                                 onChange={this.handleSelectEndDateChange}
                         >
-                            <MenuItem value={"2022/07/18 12:00:00"}><em>2022-07-18 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/19 12:00:00"}><em>2022-07-19 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/20 12:00:00"}><em>2022-07-20 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/21 12:00:00"}><em>2022-07-21 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/22 12:00:00"}><em>2022-07-22 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/23 12:00:00"}><em>2022-07-23 12:00:00</em></MenuItem>
-                            <MenuItem value={"2022/07/24 12:00:00"}><em>2022-07-24 12:00:00</em></MenuItem>
+                            {this.state.dates.map((column) => (
+                                    <MenuItem value={column}>
+                                        {column}
+                                    </MenuItem>
+                            ))}
                         </Select>
                         <FormHelperText>Select the dates to visualise the actigraphy data.</FormHelperText>
                     </FormControl>
@@ -778,16 +832,17 @@ class ActigraphyFunctionPage extends React.Component {
                         </Select>
                         <FormHelperText>Select the assessment algorithm to run on the dataset.</FormHelperText>
                     </FormControl>
-                    <Button variant="contained" color="primary" type="submit">
-                        Submit
-                    </Button>
-                    <hr/>
+                    <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'21%'}} size={"small"} >
+                        <ProceedButton></ProceedButton>
+                    </FormControl>
                 </form>
-                {/*<Button variant="contained" color="primary" type="button" size="large"*/}
-                {/*        onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"])}*/}
-                {/*>*/}
-                {/*    Show results*/}
-                {/*</Button>*/}
+
+
             </Grid>
                 <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

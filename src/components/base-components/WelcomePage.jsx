@@ -500,7 +500,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"], [])}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_page", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
                         >
                             Actigraphy Assessment Page
                         </Button>
@@ -516,7 +516,7 @@ function WelcomePage() {
                                 // variant="outlined"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_masking", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_masking", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
                         >
                             Actigraphy Masking
                         </Button>
@@ -524,15 +524,15 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_functional_linear_modelling", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_functional_linear_modelling", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
                         >
                             Actigraphy Functional Linear Modelling
                        </Button>
                         <Button
-                                variant="contained"
+                                // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_singular_spectrum_analysis", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_singular_spectrum_analysis", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
                         >
                             Actigraphy Singular Spectrum Analysis
                         </Button>
@@ -540,7 +540,7 @@ function WelcomePage() {
                                 variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_detrended_fluctuation_analysis", ["saved"], ["psg1 anonym2.edf"])}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_detrended_fluctuation_analysis", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
                         >
                             Actigraphy Detrended Fluctuation Analysis
                         </Button>
