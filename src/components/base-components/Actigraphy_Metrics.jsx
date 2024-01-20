@@ -14,7 +14,7 @@ import {DataGrid, GridValueFormatterParams} from "@mui/x-data-grid";
 import json from "qs";
 import Paper from "@mui/material/Paper";
 import JsonTable from "ts-react-json-table";
-
+import ProceedButton from "../ui-components/ProceedButton";
 class Actigraphy_Metrics extends React.Component {
     constructor(props) {
         super(props);
@@ -245,12 +245,7 @@ class Actigraphy_Metrics extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

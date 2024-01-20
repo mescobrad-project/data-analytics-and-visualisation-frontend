@@ -7,9 +7,6 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
     Select, TextField, Typography
 } from "@mui/material";
@@ -28,6 +25,12 @@ import ProceedButton from "../ui-components/ProceedButton";
 class PredictionsFunctionPage extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of channels sent by the backend
             channels: [],
@@ -55,7 +58,9 @@ class PredictionsFunctionPage extends React.Component {
             selected_part_channel: "F8-AV",
 
             //Info from selector
-            file_used: null
+            file_used: null,
+            plot_path: ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") ,
         };
 
         //Binding functions of the class
@@ -495,9 +500,8 @@ class PredictionsFunctionPage extends React.Component {
                         </Typography>
                         <hr/>
                         <Typography variant="h6" sx={{ flexGrow: 1, display: (this.state.welch_chart_show ? 'block' : 'none')  }} noWrap>
-                            Welch Results
+                            Predictions Results
                         </Typography>
-
                         {/*<div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}><PointChartCustom chart_id="predictions_chart_id" chart_data={ this.state.predictions_chart_data}/>*/}
                         {/*    {this.state.data_2}</div>*/}
                         {/*<div style={{ display: (this.state.select_signal_chart_show ? 'block' : 'none') }}><ChannelSignalSpindleSlowwaveChartCustom chart_id="singal_chart_id" chart_data={ this.state.signal_chart_data}/></div>*/}
@@ -507,6 +511,23 @@ class PredictionsFunctionPage extends React.Component {
                         <hr style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}/>
                         <div style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }} dangerouslySetInnerHTML={{__html: this.state.table_3}} />
                         <hr style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}/>
+                        <Typography variant="h5" sx={{flexGrow: 2, textAlign: "center", display: (this.state.predictions_chart_show ? 'block' : 'none')}} noWrap>
+                            Combined Graph
+                        </Typography>
+                        <img  style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}
+                              src={this.state.plot_path + " /output/prediction_plot.png"+"?random=" + new Date().getTime()}
+                              srcSet={this.state.plot_path + " /output/prediction_plot.png"+"?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                              loading="lazy"
+                        />
+                        <br/>
+                        <Typography variant="h5" sx={{flexGrow: 2, textAlign: "center", display: (this.state.predictions_chart_show ? 'block' : 'none')}} noWrap>
+                            Prediction Only Graph
+                        </Typography>
+                        <img  style={{ display: (this.state.predictions_chart_show ? 'block' : 'none') }}
+                              src={this.state.plot_path + " /output/prediction_only_plot.png"+"?random=" + new Date().getTime()}
+                              srcSet={this.state.plot_path + " /output/prediction_only_plot.png"+"?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                              loading="lazy"
+                        />
                     </Grid>
                 </Grid>
         )

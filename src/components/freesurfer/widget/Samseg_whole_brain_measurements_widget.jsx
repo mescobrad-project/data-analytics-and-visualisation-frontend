@@ -3,6 +3,7 @@ import NumberFormat from 'react-number-format';
 import API from "../../../axiosInstance";
 import "./samseg_whole_brain_measurements_widget.scss"
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
+import ProceedButton from "../../ui-components/ProceedButton";
 
 class Samseg_whole_brain_measurements_widget extends React.Component {
     requested_file;

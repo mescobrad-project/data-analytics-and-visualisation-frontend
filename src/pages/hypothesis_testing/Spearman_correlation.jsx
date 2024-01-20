@@ -15,6 +15,7 @@ import qs from "qs";
 import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 const userColumns = [
     { field: "Cor",
@@ -327,12 +328,7 @@ class Spearman_correlation extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

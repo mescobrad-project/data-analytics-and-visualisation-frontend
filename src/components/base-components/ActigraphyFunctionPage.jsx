@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 // import Plot from 'react-plotly.js';
 // import actigraph1 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/1actigraphy_visualisation.png";
 // import actigraph2 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/2actigraphy_visualisation.png";
@@ -7,21 +7,18 @@ import React, { useState, useEffect } from "react";
 //import "./styles.css";
 import Plot from "react-plotly.js";
 import API from "../../axiosInstance";
-import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 // import InnerHTML from 'dangerously-set-html-content'
 
 // import PropTypes from 'prop-types';
 import {
-    Button, Divider,
-    FormControl,
+    Button, FormControl,
     FormHelperText,
     Grid,
     InputLabel,
     List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, Tab, Tabs, TextField, Typography
+    Select, Tab, Tabs, Typography
 } from "@mui/material";
 import JsonTable from "ts-react-json-table";
 import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
@@ -841,8 +838,12 @@ class ActigraphyFunctionPage extends React.Component {
                         <ProceedButton></ProceedButton>
                     </FormControl>
                 </form>
-
-
+                <ProceedButton></ProceedButton>
+                {/*<Button variant="contained" color="primary" type="button" size="large"*/}
+                {/*        onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"])}*/}
+                {/*>*/}
+                {/*    Show results*/}
+                {/*</Button>*/}
             </Grid>
                 <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
