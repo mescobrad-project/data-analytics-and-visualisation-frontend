@@ -21,11 +21,12 @@ import {
 } from "@mui/material";
 import JsonTable from "ts-react-json-table";
 import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
-import {LoadingButton} from "@mui/lab";
+import {DatePicker, DateTimePicker, LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import ProceedButton from "../ui-components/ProceedButton";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
+// import DatePicker from 'react-date-picker';
 const params = new URLSearchParams(window.location.search);
 const slowave_table_1_columns = [
     {
@@ -238,12 +239,16 @@ class ActigraphyMasking extends React.Component {
         super(props);
         this.state = {
             tabvalue: 0,
+            selected_file_name: "",
+            file_names: [],
             results_show: false,
             inactivity_masking_period_hour: "0",
             inactivity_masking_period_minutes: "00",
             selected: "None",
             mask_period_start: "",
             mask_period_end: "",
+            datepicker_start: "",
+            datepicker_end: "",
             x_points: [],
             x2: "",
             data_inactivity_mask: [],
@@ -264,12 +269,30 @@ class ActigraphyMasking extends React.Component {
         this.handleMaskPeriodStartDateChange = this.handleMaskPeriodStartDateChange.bind(this);
         this.handleMaskPeriodEndDateChange = this.handleMaskPeriodEndDateChange.bind(this);
         this.handleAddMaskPeriod = this.handleAddMaskPeriod.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchFileNames();
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
     }
 
     handleSelected = (selected) => {
         console.log("Selected points", selected);
         this.setState({x_points:selected.range.x})
     };
+
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }
+                }).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
 
     async handleInactivityMask() {
         const params = new URLSearchParams(window.location.search);
@@ -279,7 +302,8 @@ class ActigraphyMasking extends React.Component {
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 inactivity_masking_period_hour: this.state.inactivity_masking_period_hour,
-                inactivity_masking_period_minutes: this.state.inactivity_masking_period_minutes
+                inactivity_masking_period_minutes: this.state.inactivity_masking_period_minutes,
+                dataset: this.state.selected_file_name
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_INACTIVE_MASK")
@@ -298,7 +322,8 @@ class ActigraphyMasking extends React.Component {
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 mask_period_start: this.state.mask_period_start,
-                mask_period_end: this.state.mask_period_end
+                mask_period_end: this.state.mask_period_end,
+                dataset: this.state.selected_file_name
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_ADD_MASK_PERIOD")
@@ -307,6 +332,12 @@ class ActigraphyMasking extends React.Component {
             this.setState({data_add_mask_period: json_response["data"]})
             this.setState({layout_add_mask_period: json_response["layout"]})
         });
+    }
+
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            // this.setState({stats_show: false})
+        })
     }
 
     handleSelectInactivityMaskingPeriodHour(event){
@@ -325,6 +356,14 @@ class ActigraphyMasking extends React.Component {
         this.setState({mask_period_end: event.target.value})
     }
 
+    handleSelectDatePickerStartChange(event){
+        this.setState({datepicker_start: event.target.value})
+    }
+
+    handleSelectDatePickerEndChange(event){
+        this.setState({datepicker_end: event.target.value})
+    }
+
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
@@ -341,12 +380,21 @@ class ActigraphyMasking extends React.Component {
                     Data Preview
                 </Typography>
                 <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        0345-024_18_07_2022_13_00_00_New_Analysis.csv
-                    </Typography>
+                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                    <InputLabel id="file-selector-label">File</InputLabel>
+                    <Select
+                            labelId="file-selector-label"
+                            id="file-selector"
+                            value= {this.state.selected_file_name}
+                            label="File Variable"
+                            onChange={this.handleSelectFileNameChange}
+                    >
+                        {this.state.file_names.map((column) => (
+                                <MenuItem value={column}>{column}</MenuItem>
+                        ))}
+                    </Select>
+                    <FormHelperText>Select dataset.</FormHelperText>
+                </FormControl>
                 <hr/>
                 <ProceedButton></ProceedButton>
             </Grid>
@@ -430,13 +478,27 @@ class ActigraphyMasking extends React.Component {
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <FormHelperText>Select the start and end time to visualize and apply the masking period to the dataset.</FormHelperText>
                             </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <FormHelperText>The start and end times should be in the following format: 2022-07-19 09:30:00.</FormHelperText>
+                            </FormControl>
                             <hr/>
                             <label>
                                 Start time:
                                 <input type="text" value={this.state.mask_period_start} onChange={this.handleMaskPeriodStartDateChange} />
+                                {/*<DatePicker*/}
+                                {/*        selected={this.state.datepicker_start}*/}
+                                {/*        value={this.state.datepicker_start}*/}
+                                {/*        onChange={this.handleSelectDatePickerStartChange}*/}
+                                {/*        // timeInputLabel="Time:"*/}
+                                {/*        // dateFormat="MM/dd/yyyy h:mm aa"*/}
+                                {/*        // showTimeInput*/}
+                                {/*/>*/}
                             </label>
-                            <FormControl sx={{m: 1, width:'2%'}} size={"small"}>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <DateTimePicker label="Basic date time picker" />*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'2%'}} size={"small"}>*/}
+                            {/*</FormControl>*/}
                             <label>
                                 End time:
                                 <input type="text" value={this.state.mask_period_end} onChange={this.handleMaskPeriodEndDateChange} />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 // import Plot from 'react-plotly.js';
 // import actigraph1 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/1actigraphy_visualisation.png";
 // import actigraph2 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/2actigraphy_visualisation.png";
@@ -7,23 +7,27 @@ import React from "react";
 //import "./styles.css";
 import Plot from "react-plotly.js";
 import API from "../../axiosInstance";
-import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 // import InnerHTML from 'dangerously-set-html-content'
 
 // import PropTypes from 'prop-types';
 import {
-    Button, FormControl,
+    Button, Divider,
+    FormControl,
     FormHelperText,
     Grid,
+    InputLabel,
     List,
-    Tab, Tabs, Typography
+    ListItem,
+    ListItemText,
+    MenuItem,
+    Select, Tab, Tabs, TextField, Typography
 } from "@mui/material";
 import JsonTable from "ts-react-json-table";
 import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
-import ProceedButton from "../ui-components/ProceedButton";
 //import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 const params = new URLSearchParams(window.location.search);
 const slowave_table_1_columns = [
@@ -229,35 +233,25 @@ TabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-class ActigraphyAnalysis extends React.Component {
+class ActigraphyFunctionalLinearModelling extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             tabvalue: 0,
+            selected_file_name: "",
+            file_names: [],
             results_show: false,
-            start_date: "None",
+            dataset: "None",
+            multiple_datasets: [],
             end_date: "None",
             selected: "None",
 
             data_fml: [],
             layout_fml: [],
 
-            data_dfa_1: [],
-            layout_dfa_1: [],
-            data_dfa_2: [],
-            layout_dfa_2: [],
-            data_dfa_3: [],
-            layout_dfa_3: [],
-
-            data_ssa_1: [],
-            layout_ssa_1: [],
-            data_ssa_2: [],
-            layout_ssa_2: [],
-            data_ssa_3: [],
-            layout_ssa_3: [],
-            data_ssa_4: [],
-            layout_ssa_4: [],
+            data_multi_fml: [],
+            layout_multi_fml: [],
 
             configObj: {
                 displayModeBar: true,
@@ -267,11 +261,14 @@ class ActigraphyAnalysis extends React.Component {
         //Binding functions of the class
         this.handleSelected = this.handleSelected.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
-        this.handleSelectStartDateChange = this.handleSelectStartDateChange.bind(this);
+        this.handleSelectSingleDatasetChange = this.handleSelectSingleDatasetChange.bind(this);
+        this.handleSelectMultiDatasetsChange = this.handleSelectMultiDatasetsChange.bind(this);
         this.handleSelectEndDateChange = this.handleSelectEndDateChange.bind(this);
         this.handleFML = this.handleFML.bind(this);
-        this.handleDFA = this.handleDFA.bind(this);
-        this.handleSSA = this.handleSSA.bind(this);
+        this.handleMultiFML = this.handleMultiFML.bind(this);
+        this.fetchFileNames = this.fetchFileNames.bind(this);
+        this.fetchFileNames();
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
     }
 
     handleSelected = (selected) => {
@@ -279,13 +276,29 @@ class ActigraphyAnalysis extends React.Component {
         this.setState({x_points:selected.range.x})
     };
 
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }
+                }).then(res => {
+            this.setState({file_names: res.data.files})
+        });
+    }
+
     async handleFML() {
         const params = new URLSearchParams(window.location.search);
         API.get("/return_functional_linear_modelling", {
             params: {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
-                step_id: params.get("step_id")
+                step_id: params.get("step_id"),
+                dataset: this.state.selected_file_name
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_FML")
@@ -296,69 +309,36 @@ class ActigraphyAnalysis extends React.Component {
         });
     }
 
-    async handleDFA() {
+    async handleMultiFML() {
         const params = new URLSearchParams(window.location.search);
-        API.get("/return_detrended_fluctuation_analysis", {
+        API.get("/return_multi_functional_linear_modelling", {
             params: {
                 workflow_id: params.get("workflow_id"),
                 run_id: params.get("run_id"),
-                step_id: params.get("step_id")
+                step_id: params.get("step_id"),
+                multiple_datasets: this.state.multiple_datasets
             }
         }).then(res => {
-            console.log("ACTIGRAPHIES_DFA")
-
-            console.log(res.data.dfa_figure_1)
-            let json_response_1 = JSON.parse(res.data.dfa_figure_1)
-            this.setState({data_dfa_1: json_response_1["data"]})
-            this.setState({layout_dfa_1: json_response_1["layout"]})
-
-            console.log(res.data.dfa_figure_2)
-            let json_response_2 = JSON.parse(res.data.dfa_figure_2)
-            this.setState({data_dfa_2: json_response_2["data"]})
-            this.setState({layout_dfa_2: json_response_2["layout"]})
-
-            console.log(res.data.dfa_figure_3)
-            let json_response_3 = JSON.parse(res.data.dfa_figure_3)
-            this.setState({data_dfa_3: json_response_3["data"]})
-            this.setState({layout_dfa_3: json_response_3["layout"]})
+            console.log("ACTIGRAPHIES_MULTI_FML")
+            console.log(res.data.multi_flm_figure)
+            let json_response = JSON.parse(res.data.multi_flm_figure)
+            this.setState({data_multi_fml: json_response["data"]})
+            this.setState({layout_multi_fml: json_response["layout"]})
         });
     }
 
-    async handleSSA() {
-        const params = new URLSearchParams(window.location.search);
-        API.get("/return_singular_spectrum_analysis", {
-            params: {
-                workflow_id: params.get("workflow_id"),
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id")
-            }
-        }).then(res => {
-            console.log("ACTIGRAPHIES_DFA")
-
-            console.log(res.data.ssa_figure_1)
-            let json_response_1 = JSON.parse(res.data.ssa_figure_1)
-            this.setState({data_ssa_1: json_response_1["data"]})
-            this.setState({layout_ssa_1: json_response_1["layout"]})
-
-            console.log(res.data.ssa_figure_2)
-            let json_response_2 = JSON.parse(res.data.ssa_figure_2)
-            this.setState({data_ssa_2: json_response_2["data"]})
-            this.setState({layout_ssa_2: json_response_2["layout"]})
-
-            console.log(res.data.ssa_figure_3)
-            let json_response_3 = JSON.parse(res.data.ssa_figure_3)
-            this.setState({data_ssa_3: json_response_3["data"]})
-            this.setState({layout_ssa_3: json_response_3["layout"]})
-
-            console.log(res.data.ssa_figure_4)
-            let json_response_4 = JSON.parse(res.data.ssa_figure_4)
-            this.setState({data_ssa_4: json_response_4["data"]})
-            this.setState({layout_ssa_4: json_response_4["layout"]})
-        });
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file_name: event.target.value}, ()=>{
+            // this.setState({stats_show: false})
+        })
     }
 
-    handleSelectStartDateChange(event){
-        this.setState({start_date: event.target.value})
+    handleSelectSingleDatasetChange(event){
+        this.setState({selected_file_name: event.target.value})
+    }
+
+    handleSelectMultiDatasetsChange(event){
+        this.setState({multiple_datasets: event.target.value})
     }
 
     handleSelectEndDateChange(event){
@@ -374,35 +354,87 @@ class ActigraphyAnalysis extends React.Component {
         <Grid container direction="row">
             <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                 <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                    Actigraphies Parameterisation
+                    Actigraphy Analysis Parameterisation
                 </Typography>
                 <hr/>
-                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                    Data Preview
-                </Typography>
-                <hr/>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        File Name:
-                    </Typography>
-                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        0345-024_18_07_2022_13_00_00_New_Analysis.csv
-                    </Typography>
-                <hr/>
-                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                    <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>
-                    <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                        Dates: {this.state.start_date} - {this.state.end_date}
-                    </List>
-                </FormControl>
-                <hr/>
-                <hr/>
-                <form onSubmit={(event) => {event.preventDefault();this.handleFML();this.handleDFA();this.handleSSA();}}>
-                    <Button variant="contained" color="primary" type="submit">
-                        Submit
-                    </Button>
+                <form onSubmit={(event) => {event.preventDefault();this.handleFML();}}>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                            FML on a single dataset
+                        </Typography>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                        <InputLabel id="file-selector-label">File</InputLabel>
+                        <Select
+                                labelId="file-selector-label"
+                                id="file-selector"
+                                value= {this.state.selected_file_name}
+                                label="File Variable"
+                                onChange={this.handleSelectFileNameChange}
+                        >
+                            {this.state.file_names.map((column) => (
+                                    <MenuItem value={column}>{column}</MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText>Select dataset.</FormHelperText>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                        {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}
+                        <List style={{fontSize:'13px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                            Dataset selected: {this.state.selected_file_name}
+                        </List>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                        <Typography variant="p" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
+                            Click here if you want to run FML on a single dataset.
+                        </Typography>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </FormControl>
                     <hr/>
                 </form>
-                <ProceedButton></ProceedButton>
+                <form onSubmit={(event) => {event.preventDefault();this.handleMultiFML();}}>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                            FML on multiple datasets
+                        </Typography>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                        <InputLabel id="file-selector-label">File</InputLabel>
+                        <Select
+                                labelId="file-selector-label"
+                                id="file-selector"
+                                value= {this.state.selected_file_name}
+                                label="File Variable"
+                                onChange={this.handleSelectFileNameChange}
+                        >
+                            {this.state.file_names.map((column) => (
+                                    <MenuItem value={column}>{column}</MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText>Select dataset.</FormHelperText>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                        {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}
+                        <List style={{fontSize:'13px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                            Dataset selected: {this.state.multiple_datasets}
+                        </List>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                        <Typography variant="p" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
+                            Click here if you want to run FML on multiple datasets.
+                        </Typography>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </FormControl>
+                    <hr/>
+                </form>
             </Grid>
                 <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
                     <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -412,9 +444,8 @@ class ActigraphyAnalysis extends React.Component {
                     <Box sx={{ width: '100%' }}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <Tabs scrollable={true} value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                <Tab label="Functional Linear Modelling" {...a11yProps(0)} />
-                                <Tab label="Singular Spectrum Analysis" {...a11yProps(1)} />
-                                <Tab label="Detrended Fluctuation Analysis" {...a11yProps(2)} />
+                                <Tab label="Single Functional Linear Modelling" {...a11yProps(0)} />
+                                <Tab label="Multi Functional Linear Modelling" {...a11yProps(1)} />
                             </Tabs>
                         </Box>
 
@@ -422,26 +453,8 @@ class ActigraphyAnalysis extends React.Component {
                     <TabPanel value={this.state.tabvalue} index={0}>
                         <Plot layout={this.state.layout_fml} data={this.state.data_fml} config={this.state.configObj} onSelected={this.handleSelected}/>
                     </TabPanel>
-
                     <TabPanel value={this.state.tabvalue} index={1}>
-                        <Plot layout={this.state.layout_ssa_1} data={this.state.data_ssa_1} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_ssa_2} data={this.state.data_ssa_2} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_ssa_3} data={this.state.data_ssa_3} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_ssa_4} data={this.state.data_ssa_4} config={this.state.configObj} onSelected={this.handleSelected}/>
-                    </TabPanel>
-
-                    <TabPanel value={this.state.tabvalue} index={2}>
-                        <Plot layout={this.state.layout_dfa_1} data={this.state.data_dfa_1} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_dfa_2} data={this.state.data_dfa_2} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_dfa_3} data={this.state.data_dfa_3} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        {/*<Grid container direction="row">*/}
-                        {/*    <Grid item xs={12} sx={{ borderRight: "1px solid grey"}}>*/}
-                        {/*        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
-                        {/*            Activity & Assessment*/}
-                        {/*        </Typography>*/}
-                        {/*        <Plot layout={this.state.layout_day_1} data={this.state.data_day_1} config={this.state.configObj} onSelected={this.handleSelected}/>*/}
-                        {/*    </Grid>*/}
-                        {/*</Grid>*/}
+                        <Plot layout={this.state.layout_multi_fml} data={this.state.data_multi_fml} config={this.state.configObj} onSelected={this.handleSelected}/>
                     </TabPanel>
                 </Grid>
         </Grid>
@@ -449,4 +462,4 @@ class ActigraphyAnalysis extends React.Component {
     }
 }
 
-export default ActigraphyAnalysis;
+export default ActigraphyFunctionalLinearModelling;
