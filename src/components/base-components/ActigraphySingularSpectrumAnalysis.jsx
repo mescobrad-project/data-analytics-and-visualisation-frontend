@@ -14,8 +14,8 @@ import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import {
     Button, FormControl,
     FormHelperText,
-    Grid,
-    List,
+    Grid, InputLabel,
+    List, MenuItem, Select,
     Tab, Tabs, Typography
 } from "@mui/material";
 import JsonTable from "ts-react-json-table";
