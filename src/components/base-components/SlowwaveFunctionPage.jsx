@@ -493,7 +493,7 @@ TabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-class SlowwaveSpindleFunctionPage extends React.Component {
+class SlowwaveFunctionPage extends React.Component {
     constructor(props) {
         super(props);
         const params = new URLSearchParams(window.location.search);
@@ -612,7 +612,6 @@ class SlowwaveSpindleFunctionPage extends React.Component {
         this.handleChangeSlowwaveIncludeLow = this.handleChangeSlowwaveIncludeLow.bind(this);
         this.handleChangeSlowwaveIncludeHigh = this.handleChangeSlowwaveIncludeHigh.bind(this);
         this.handleChangeSlowwaveOutliers = this.handleChangeSlowwaveOutliers.bind(this);
-        this.handleSelectFrequencyHypnoChange = this.handleSelectFrequencyHypnoChange.bind(this);
         this.handleChangeSlowwaveCoupling = this.handleChangeSlowwaveCoupling.bind(this);
         this.handleChangePacWindow = this.handleChangePacWindow.bind(this);
         this.handleChangePacStep = this.handleChangePacStep.bind(this);
@@ -629,7 +628,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
 
-        await this.fetchSpindles();
+        // await this.fetchSpindles();
         await this.fetchSlowwave();
         await this.fetchPAC();
         await this.fetchPACExtra();
@@ -862,9 +861,6 @@ class SlowwaveSpindleFunctionPage extends React.Component {
     handleChangeExtraPacWindow(event) {
         this.setState({extra_pac_window: event.target.value})
     }
-    handleSelectFrequencyHypnoChange(event) {
-        this.setState({general_sampling_freuency_hypno: event.target.value})
-    }
 
     handleChangeExtraPacStep(event) {
         this.setState({extra_pac_step: event.target.value})
@@ -892,7 +888,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Slowwave/Spindle Parameterisation
+                            Slowwave Parameterisation
                         </Typography>
                         <Divider sx={{bgcolor: "black"}}/>
 
@@ -944,111 +940,111 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                         value= {this.state.general_sampling_freuency_hypno}
                                         label="Sampling Frequency of Hypnogram"
                                         size={"small"}
-                                        onChange={this.handleSelectFrequencyHypnoChange}
+                                        onChange={this.handleSelectNlagsChange}
                                 />
                                 <FormHelperText>Current Sampling Frequency of Hypnogram</FormHelperText>
                             </FormControl>
                             <Divider/>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Spindles Parameterisation
-                            </Typography>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="spindle-min-distance"
-                                        value= {this.state.spindle_min_distance}
-                                        label="Spindle Min Distance"
-                                        size={"small"}
-                                        onChange={this.handleChangeSpindleMinDistance}
-                                />
-                                <FormHelperText>Spindle Min Distance</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*    Spindles Parameterisation*/}
+                            {/*</Typography>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="spindle-min-distance"*/}
+                            {/*            value= {this.state.spindle_min_distance}*/}
+                            {/*            label="Spindle Min Distance"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSpindleMinDistance}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Spindle Min Distance</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="spindle-freq-sp-low"
-                                        value= {this.state.spindle_freq_sp_low}
-                                        label="Spindle freq sp Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSpindleFreqSpLow}
-                                />
-                                <FormHelperText>Spindle Freq sp Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="spindle-freq-sp-high"
-                                        value= {this.state.spindle_freq_sp_high}
-                                        label="Spindle freq sp High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSpindleFreqSpHigh}
-                                />
-                                <FormHelperText>Spindle Freq sp High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="spindle-freq-sp-low"*/}
+                            {/*            value= {this.state.spindle_freq_sp_low}*/}
+                            {/*            label="Spindle freq sp Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSpindleFreqSpLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Spindle Freq sp Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="spindle-freq-sp-high"*/}
+                            {/*            value= {this.state.spindle_freq_sp_high}*/}
+                            {/*            label="Spindle freq sp High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSpindleFreqSpHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Spindle Freq sp High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="spindle-freq-broad-low"
-                                        value= {this.state.spindle_freq_broad_low}
-                                        label="Spindle freq broad Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSpindleFreqBroadLow}
-                                />
-                                <FormHelperText>Spindle Freq broad Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="spindle-freq-broad-high"
-                                        value= {this.state.spindle_freq_broad_high}
-                                        label="Spindle freq broad High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSpindleFreqBroadHigh}
-                                />
-                                <FormHelperText>Spindle Freq broad High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="spindle-freq-broad-low"*/}
+                            {/*            value= {this.state.spindle_freq_broad_low}*/}
+                            {/*            label="Spindle freq broad Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSpindleFreqBroadLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Spindle Freq broad Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="spindle-freq-broad-high"*/}
+                            {/*            value= {this.state.spindle_freq_broad_high}*/}
+                            {/*            label="Spindle freq broad High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSpindleFreqBroadHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Spindle Freq broad High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="spindle-include-low"
-                                        value= {this.state.spindle_include_low}
-                                        label="Spindle Include Low"
-                                        size={"small"}
-                                        onChange={this.handleChangeSpindleIncludeLow}
-                                />
-                                <FormHelperText>Spindle Freq broad Low</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'45%'}} size={"small"}>
-                                <TextField
-                                        id="spindle-include-high"
-                                        value= {this.state.spindle_include_high}
-                                        label="Spindle Include High"
-                                        size={"small"}
-                                        onChange={this.handleChangeSpindleIncludeHigh}
-                                />
-                                <FormHelperText>Spindle Include High</FormHelperText>
-                            </FormControl>
-                            <Divider sx={{opacity: 0.4}}/>
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="spindle-include-low"*/}
+                            {/*            value= {this.state.spindle_include_low}*/}
+                            {/*            label="Spindle Include Low"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSpindleIncludeLow}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Spindle Freq broad Low</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'45%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            id="spindle-include-high"*/}
+                            {/*            value= {this.state.spindle_include_high}*/}
+                            {/*            label="Spindle Include High"*/}
+                            {/*            size={"small"}*/}
+                            {/*            onChange={this.handleChangeSpindleIncludeHigh}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Spindle Include High</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider sx={{opacity: 0.4}}/>*/}
 
-                            <FormControl sx={{m: 1, width: '90%'}} size={"small"}>
-                                <InputLabel id="spindle-outliers-selector-label">Spindle Outliers</InputLabel>
-                                <Select
-                                        labelId="spindle-outliers-selector-label"
-                                        id="spindle-outliers-selector"
-                                        value={this.state.spindle_outliers}
-                                        label="Spindle outliers"
-                                        onChange={this.handleChangeSpindleOutliers}
-                                >
-                                    <MenuItem value="false">
-                                        <em>False</em>
-                                    </MenuItem>
-                                    <MenuItem value="true">
-                                        <em>True</em>
-                                    </MenuItem>
-                                </Select>
-                                <FormHelperText>Spindle Outliers </FormHelperText>
-                            </FormControl>
-                            <Divider/>
+                            {/*<FormControl sx={{m: 1, width: '90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="spindle-outliers-selector-label">Spindle Outliers</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="spindle-outliers-selector-label"*/}
+                            {/*            id="spindle-outliers-selector"*/}
+                            {/*            value={this.state.spindle_outliers}*/}
+                            {/*            label="Spindle outliers"*/}
+                            {/*            onChange={this.handleChangeSpindleOutliers}*/}
+                            {/*    >*/}
+                            {/*        <MenuItem value="false">*/}
+                            {/*            <em>False</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*        <MenuItem value="true">*/}
+                            {/*            <em>True</em>*/}
+                            {/*        </MenuItem>*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Spindle Outliers </FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<Divider/>*/}
 
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 Slowwaves Parameterisation
@@ -1329,7 +1325,7 @@ class SlowwaveSpindleFunctionPage extends React.Component {
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
                                     <Tab label="Slowwaves Results" {...a11yProps(1)} />
-                                    <Tab label="Spindles results" {...a11yProps(2)} />
+                                    {/*<Tab label="Spindles results" {...a11yProps(2)} />*/}
                                     <Tab label="PAC results" {...a11yProps(3)} />
                                     <Tab label="Extra PAC results" {...a11yProps(4)} />
                                     <Tab label="All Results" {...a11yProps(5)} />
@@ -1407,53 +1403,36 @@ class SlowwaveSpindleFunctionPage extends React.Component {
 
                             <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
                         </TabPanel>
-                        <TabPanel value={this.state.tabvalue} index={2}>
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                Spindles Results
-                            </Typography>
-                            <Grid item xs={6}
-                                  style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>
-                                {/*<img*/}
-                                {/*        src={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format`}*/}
-                                {/*        srcSet={`http://localhost:8000/static/spindles.png?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}*/}
-                                {/*        // alt={item.title}*/}
-                                {/*        loading="lazy"*/}
-                                {/*/>*/}
-                                <img src={this.state.spindle_plot_path + "?random=" + new Date().getTime()}
-                                     srcSet={this.state.spindle_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
-                                     loading="lazy"
-                                />
-                                {/*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*/}
-                                {/*           style={{zoom: '50%'}}/>*/}
-                                <hr className="result"/>
-                            </Grid>
-                            <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
-                            <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}
-                                      zeroMinWidth
-                                      rowHeight={40}
-                                      className="datagrid"
-                                      rows= {this.state.result_spindles_dataframe_1_table}
-                                      columns= {spindle_table_1_columns}
-                                      pageSize= {10}
-                                      rowsPerPageOptions={[10]}
-                                      components={{
-                                          Toolbar: CustomToolbar,
-                                      }}
-                            />
-                            <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>
-                            {/*<DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
-                            {/*          zeroMinWidth*/}
-                            {/*          rowHeight={40}*/}
-                            {/*          className="datagrid"*/}
-                            {/*          rows= {this.state.result_spindles_dataframe_2_table}*/}
-                            {/*          columns= {spindle_table_2_columns}*/}
-                            {/*          pageSize= {10}*/}
-                            {/*          rowsPerPageOptions={[10]}*/}
-                            {/*          components={{*/}
-                            {/*              Toolbar: CustomToolbar,*/}
-                            {/*          }}*/}
-                            {/*/>*/}
-                        </TabPanel>
+                        {/*<TabPanel value={this.state.tabvalue} index={2}>*/}
+                        {/*    <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                        {/*        Spindles Results*/}
+                        {/*    </Typography>*/}
+                        {/*    <Grid item xs={6}*/}
+                        {/*          style={{display: (this.state.results_show ? 'block' : 'none'), padding: '20px'}}>*/}
+
+                        {/*        <img src={this.state.spindle_plot_path + "?random=" + new Date().getTime()}*/}
+                        {/*             srcSet={this.state.spindle_plot_path + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}*/}
+                        {/*             loading="lazy"*/}
+                        {/*        />*/}
+                        {/*        /!*<InnerHTML html={this.state.result_spectogram["figure"]["figure"]}*!/*/}
+                        {/*        /!*           style={{zoom: '50%'}}/>*!/*/}
+                        {/*        <hr className="result"/>*/}
+                        {/*    </Grid>*/}
+                        {/*    <hr className="result" style={{display: (this.state.results_show ? 'block' : 'none')}}/>*/}
+                        {/*    <DataGrid sx={{width:'90%', height:'500px', display: 'flex', marginLeft: 'auto', marginRight: 'auto', fontSize:'11px'}}*/}
+                        {/*              zeroMinWidth*/}
+                        {/*              rowHeight={40}*/}
+                        {/*              className="datagrid"*/}
+                        {/*              rows= {this.state.result_spindles_dataframe_1_table}*/}
+                        {/*              columns= {spindle_table_1_columns}*/}
+                        {/*              pageSize= {10}*/}
+                        {/*              rowsPerPageOptions={[10]}*/}
+                        {/*              components={{*/}
+                        {/*                  Toolbar: CustomToolbar,*/}
+                        {/*              }}*/}
+                        {/*    />*/}
+
+                        {/*</TabPanel>*/}
                         <TabPanel value={this.state.tabvalue} index={3}>
                             <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                 PAC Values Results
@@ -1515,4 +1494,4 @@ class SlowwaveSpindleFunctionPage extends React.Component {
     }
 }
 
-export default SlowwaveSpindleFunctionPage;
+export default SlowwaveFunctionPage;

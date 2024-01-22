@@ -67,12 +67,13 @@ class LogisticRegressionPinguinFunctionPage extends React.Component {
             test_data: {
                 Dataframe:""
             },
+            output_return_data: [],
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_alpha: "0.05",
             selected_independent_variables: [],
             binary_columns: [],
-
+            initialdataset:[],
 
             coefficients: "",
             intercept: "",
