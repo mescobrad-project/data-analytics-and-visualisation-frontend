@@ -61,6 +61,7 @@ class ValuesImputation extends React.Component {
                 newdataFrame:''
             },
             //Values selected currently on the form
+            newdataset:'',
             selected_columns: [],
             selected_variables: [],
             selected_file_name: "",
@@ -152,8 +153,11 @@ class ValuesImputation extends React.Component {
                 }
         ).then(res => {
             this.setState({newdataset: JSON.parse(res.data.newdataFrame)})
+            this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
+            console.log(JSON.parse(res.data.newdataFrame))
+            console.log(res.data.status)
         });
     }
 
@@ -315,12 +319,15 @@ class ValuesImputation extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={1}>
-                                {this.state.test_data['status']!=='Success' ? (
-                                        <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
-                                ) : (
-                                        <JsonTable className="jsonResultsTable"
-                                           rows = {this.state.newdataset}/>
-                                )}
+                                <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
+                                    {this.state.test_data['status']!=='Success' ? (
+                                            <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                    ) : (
+                                            <Grid>
+                                            <JsonTable className="jsonResultsTable"
+                                                       rows = {this.state.newdataset}/></Grid>
+                                    )}
+                                </Grid>
                             </TabPanel>
                         </Grid>
                     </Grid>
