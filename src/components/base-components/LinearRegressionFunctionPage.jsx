@@ -251,8 +251,6 @@ class LinearRegressionFunctionPage extends React.Component {
                 this.setState({LinearRegression_show: true})
             }
             this.setState({tabvalue:1})
-
-
         });
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
         //     method: "GET",
@@ -594,7 +592,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                 <JsonTable className="jsonResultsTable"
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={1}>
+                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
                                     <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
                                         <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
@@ -787,14 +785,8 @@ class LinearRegressionFunctionPage extends React.Component {
                                         <hr/>
                                     </div>
                                 </div>
-                                <div style={{display: (this.state.status !== 'Success' ? 'block': 'none')}}>
-                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                        <Table>
-                                            <TableRow>
-                                                <TableCell>{this.state.status}</TableCell>
-                                            </TableRow>
-                                        </Table>
-                                    </TableContainer>
+                                <div style={{display: (this.state.status === 'Success' ? 'none': 'block')}}>
+                                    <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'5px'}}>Status :  { this.state.status}</Typography>
                                 </div>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>

@@ -111,6 +111,10 @@ class FreesurferReconFunctionPage extends React.Component {
 
             selected_input_file_name:"",
             selected_input_flair_file_name:"",
+            selected_lession: false,
+            selected_lession_mask_pattern_file:"0",
+            selected_lession_mask_pattern_flair:"0",
+            selected_threshold:"0.3",
 
             //Function to show/hide
             show_neurodesk: true,
@@ -159,6 +163,10 @@ class FreesurferReconFunctionPage extends React.Component {
         this.handleCoregProceed = this.handleCoregProceed.bind(this);
         this.handleSelectInputFileNameChange = this.handleSelectInputFileNameChange.bind(this);
         this.handleSelectInputFlairFileNameChange = this.handleSelectInputFlairFileNameChange.bind(this);
+        this.handleSelectLessionChange = this.handleSelectLessionChange.bind(this);
+        this.handleSelectLessionMaskPatternFileChange = this.handleSelectLessionMaskPatternFileChange.bind(this);
+        this.handleSelectLessionMaskPatternFlairChange = this.handleSelectLessionMaskPatternFlairChange.bind(this);
+        this.handleSelectThreshold = this.handleSelectThreshold.bind(this);
         this.fetchFileNames();
         // Initialise component
         // - values of channels from the backend
@@ -283,7 +291,7 @@ class FreesurferReconFunctionPage extends React.Component {
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         ref_file_name: this.state.selected_ref_file_name,
-                        flair_file_name: this.state.selected_flair_file_name
+                        flair_file_name: this.state.selected_flair_file_name,
                     }
                 }).then(res => {
             const result = res.data;
@@ -356,6 +364,11 @@ class FreesurferReconFunctionPage extends React.Component {
                         step_id: params.get("step_id"),
                         input_file_name: this.state.selected_input_file_name,
                         input_flair_file_name: this.state.selected_input_flair_file_name,
+                        lession: this.state.selected_lession,
+                        lession_mask_pattern_file: this.state.selected_lession_mask_pattern_file,
+                        lession_mask_pattern_flair: this.state.selected_lession_mask_pattern_flair,
+                        threshold: this.state.selected_threshold
+
                     }
                 }).then(res => {
             const result = res.data;
@@ -512,6 +525,22 @@ class FreesurferReconFunctionPage extends React.Component {
 
     handleSelectInputFlairFileNameChange(event){
         this.setState( {selected_input_flair_file_name: event.target.value})
+    }
+
+    handleSelectLessionChange(event){
+        this.setState( {selected_lession: event.target.value})
+    }
+
+    handleSelectLessionMaskPatternFileChange(event){
+        this.setState( {selected_lession_mask_pattern_file: event.target.value})
+    }
+
+    handleSelectLessionMaskPatternFlairChange(event){
+        this.setState( {selected_lession_mask_pattern_flair: event.target.value})
+    }
+
+    handleSelectThreshold(event){
+        this.setState( {selected_threshold: event.target.value})
     }
 
     async redirectToPage(function_name, bucket, file) {
@@ -814,7 +843,10 @@ class FreesurferReconFunctionPage extends React.Component {
                         <Grid container direction="row">
                             <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                                 <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                                    Sequence Adaptive Multimodal SEGmentation (SAMSEG)
+                                    SAMSEG
+                                </Typography>
+                                <Typography variant="subtitle1" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                    Sequence Adaptive Multimodal SEGmentation
                                 </Typography>
                                 <hr/>
                                 <form onSubmit={this.startSamseg}>
@@ -848,6 +880,61 @@ class FreesurferReconFunctionPage extends React.Component {
                                         </Select>
                                         <FormHelperText>Select input flair File name.</FormHelperText>
                                     </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="lession-selector-label">Segment white matter lessions</InputLabel>
+                                        <Select
+                                                labelId="lession-selector-label"
+                                                id="lession-selector"
+                                                value= {this.state.selected_lession}
+                                                label="Segment white matter lessions"
+                                                onChange={this.handleSelectLessionChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>If True, segment white matter lessions</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="lession_mask_pattern_file-selector-label">Lession mask pattern for input file</InputLabel>
+                                        <Select
+                                                labelId="lession_mask_pattern_file-selector-label"
+                                                id="lession_mask_pattern_file-selector"
+                                                value= {this.state.selected_lession_mask_pattern_file}
+                                                label="Lession mask pattern for input file"
+                                                onChange={this.handleSelectLessionMaskPatternFileChange}
+                                        >
+                                            <MenuItem value={"-1"}><em>-1</em></MenuItem>
+                                            <MenuItem value={"0"}><em>0</em></MenuItem>
+                                            <MenuItem value={"1"}><em>1</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Lession mask pattern for input file. -1 or 1 indicates the voxels should be darker or brighter than cortical gray matter, respectively. 0 means that no intensity constraint is applied to input file</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="lession_mask_pattern_flair-selector-label">Lession mask pattern for input flair</InputLabel>
+                                        <Select
+                                                labelId="lession_mask_pattern_flair-selector-label"
+                                                id="lession_mask_pattern_flair-selector"
+                                                value= {this.state.selected_lession_mask_pattern_flair}
+                                                label="Lession mask pattern for input flair"
+                                                onChange={this.handleSelectLessionMaskPatternFlairChange}
+                                        >
+                                            <MenuItem value={"-1"}><em>-1</em></MenuItem>
+                                            <MenuItem value={"0"}><em>0</em></MenuItem>
+                                            <MenuItem value={"1"}><em>1</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Lession mask pattern for input flair. -1 or 1 indicates the voxels should be darker or brighter than cortical gray matter, respectively. 0 means that no intensity constraint is applied to input flair</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <TextField
+                                                labelId="threshold-label"
+                                                id="threshold-selector"
+                                                value= {this.state.selected_threshold}
+                                                label="threshold"
+                                                onChange={this.handleSelectThreshold}
+                                        />
+                                        <FormHelperText>Threshold applied to the probability of a voxel being lesion. Default is 0.3, tweaking this value (between 0.0 and 1.0) changes the balance between false positive (low threshold value) and false negative (high threshold value) lesion detections.</FormHelperText>
+                                    </FormControl>
+
                                     <Button variant="contained" color="primary" type="submit" disabled={this.state.samseg_started}>
                                         Start Samseg
                                     </Button>
