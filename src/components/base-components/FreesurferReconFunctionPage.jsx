@@ -76,6 +76,7 @@ class FreesurferReconFunctionPage extends React.Component {
             // Running status
             recon_started: false,
             samseg_started: false,
+            synthseg_started:false,
 
             coreg_started: false,
             vol2vol_started: false,
@@ -86,10 +87,12 @@ class FreesurferReconFunctionPage extends React.Component {
             // Logs status
             recon_finished: false,
             samseg_finished: false,
+            synthseg_finished: false,
             recon_log_text: "",
             samseg_log_text: "",
             vol2vol_log_text: "",
             coreg_log_text: "",
+            synthseg_log_text: "",
 
             //Values selected currently on the form
             selected_test_name: "runId",
@@ -108,7 +111,14 @@ class FreesurferReconFunctionPage extends React.Component {
             selected_ref_file_name:"",
             selected_target_file_name:"",
             selected_flair_file_name:"",
-
+            selected_synthseg_input_file_name:"",
+            selected_parc:false,
+            selected_robust:false,
+            selected_fast:false,
+            selected_vol_save:false,
+            selected_qc_save:false,
+            selected_post_save:false,
+            selected_resample_save:false,
             selected_input_file_name:"",
             selected_input_flair_file_name:"",
             selected_lession: false,
@@ -167,6 +177,17 @@ class FreesurferReconFunctionPage extends React.Component {
         this.handleSelectLessionMaskPatternFileChange = this.handleSelectLessionMaskPatternFileChange.bind(this);
         this.handleSelectLessionMaskPatternFlairChange = this.handleSelectLessionMaskPatternFlairChange.bind(this);
         this.handleSelectThreshold = this.handleSelectThreshold.bind(this);
+        this.startSynthSeg = this.startSynthSeg.bind(this);
+        this.handleSelectSynthsegInputFileNameChange = this.handleSelectSynthsegInputFileNameChange.bind(this);
+        this.handleParcChange = this.handleParcChange.bind(this);
+        this.handleRobustChange = this.handleRobustChange.bind(this);
+        this.handleFastChange = this.handleFastChange.bind(this);
+        this.handleVolPathChange = this.handleVolPathChange.bind(this);
+        this.handleQCPathChange = this.handleQCPathChange.bind(this);
+        this.handlePostPathChange = this.handlePostPathChange.bind(this);
+        this.handleRessamplePathChange = this.handleRessamplePathChange.bind(this);
+        this.fetchSynthSegLog = this.fetchSynthSegLog.bind(this);
+
         this.fetchFileNames();
         // Initialise component
         // - values of channels from the backend
@@ -384,6 +405,39 @@ class FreesurferReconFunctionPage extends React.Component {
         });
     }
 
+    async startSynthSeg(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        //TODO Add the parameters here
+        API.get("/free_surfer/synthseg",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        input_file_name:this.state.selected_synthseg_input_file_name,
+                        parc:this.state.selected_parc,
+                        robust:this.state.selected_robust,
+                        fast:this.state.selected_fast,
+                        vol_path:this.state.selected_vol_save,
+                        qc_path:this.state.selected_qc_save,
+                        post_path:this.state.selected_post_save,
+                        resample_path:this.state.selected_resample_save,
+                    }
+                }).then(res => {
+            const result = res.data;
+            if (result === "Success")
+            {
+                this.setState({synthseg_started: true})
+                console.log(" SynthSeg Success")
+            }
+            else
+            {
+                console.log(" SynthSeg Failed")
+            }
+        });
+    }
+
     async fetchReconLog(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
@@ -436,6 +490,35 @@ class FreesurferReconFunctionPage extends React.Component {
             {
                 this.setState({samseg_finished: false})
                 this.setState({samseg_log_text: "Function has not finished yet please press the \" Check Progress \" " +
+                            "button to check its progress again after a while"})
+            }
+        });
+    }
+
+
+    async fetchSynthSegLog(event) {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("/free_surfer/log/synthseg",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                    }
+                }).then(res => {
+            const result = res.data;
+            if (result === true)
+            {
+                this.setState({synthseg_finished: true})
+                this.setState({synthseg_log_text: "Function has finished press the \" Process \" button to" +
+                            " proceed to check the results"})
+            }
+            else
+            {
+                this.setState({synthseg_finished: false})
+                this.setState({synthseg_log_text: "Function has not finished yet please press the \" Check Progress \" " +
                             "button to check its progress again after a while"})
             }
         });
@@ -519,6 +602,10 @@ class FreesurferReconFunctionPage extends React.Component {
         this.setState( {selected_input_file_name: event.target.value})
     }
 
+    handleSelectSynthsegInputFileNameChange(event){
+        this.setState( {selected_synthseg_input_file_name: event.target.value})
+    }
+
     handleSelectInputFileNameChange(event){
         this.setState( {selected_input_file_name: event.target.value})
     }
@@ -542,6 +629,35 @@ class FreesurferReconFunctionPage extends React.Component {
     handleSelectThreshold(event){
         this.setState( {selected_threshold: event.target.value})
     }
+
+    handleParcChange(event){
+        this.setState( {selected_parc: event.target.value})
+    }
+
+    handleRobustChange(event){
+        this.setState( {selected_robust: event.target.value})
+    }
+
+    handleFastChange(event){
+        this.setState( {selected_fast: event.target.value})
+    }
+
+    handleVolPathChange(event){
+        this.setState( {selected_vol_save: event.target.value})
+    }
+
+    handleQCPathChange(event){
+        this.setState( {selected_qc_save: event.target.value})
+    }
+
+    handlePostPathChange(event){
+        this.setState( {selected_post_save: event.target.value})
+    }
+
+    handleRessamplePathChange(event){
+        this.setState( {selected_resample_save: event.target.value})
+    }
+
 
     async redirectToPage(function_name, bucket, file) {
         // Send the request
@@ -656,6 +772,7 @@ class FreesurferReconFunctionPage extends React.Component {
                             <Tab label="Recon-All" {...a11yProps(0)} />
                             <Tab label="Co-Registration" {...a11yProps(1)} />
                             <Tab label="SAMSEG" {...a11yProps(2)} />
+                            <Tab label="SynthSeg" {...a11yProps(3)} />
                         </Tabs>
                     </Box>
                     <TabPanel value={this.state.tabvalue} index={0}>
@@ -970,6 +1087,169 @@ class FreesurferReconFunctionPage extends React.Component {
                                 <Button  variant="contained" color="primary"
                                          onClick={this.redirectToPage.bind(this, "samseg_results", [], [])}
                                          disabled={ (this.state.samseg_finished ? false : "disabled")  }
+                                         sx={{margin: "8px"}}>
+                                    Check out Results
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </TabPanel>
+                    <TabPanel value={this.state.tabvalue} index={3}>
+                        <Grid container direction="row">
+                            <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
+                                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                    SynthSeg
+                                </Typography>
+                                <hr/>
+                                <form onSubmit={this.startSynthSeg}>
+                                    <FormControl sx={{m: 1, width:'90%'}} size="small">
+                                        <InputLabel id="input_file_name-selector-label">File</InputLabel>
+                                        <Select
+                                                labelId="input_file_name-selector-label"
+                                                id="input_file_name-selector"
+                                                value={this.state.selected_synthseg_input_file_name}
+                                                label="Input File name"
+                                                onChange={this.handleSelectSynthsegInputFileNameChange}
+                                        >
+                                            {this.state.file_names.map((fileName) => (
+                                                    <MenuItem value={fileName}>{fileName}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>Select Input File name.</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size="small">
+                                        <InputLabel id="parc-selector-label">Parcelation</InputLabel>
+                                        <Select
+                                                labelId="parc-selector-label"
+                                                id="parc-selector"
+                                                value={this.state.selected_parc}
+                                                label="Parcelation"
+                                                onChange={this.handleParcChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Whether to perform cortical parcellation alongside whole-brain segmentation.</FormHelperText>
+                                    </FormControl>
+
+                                    <FormControl sx={{m: 1, width:'90%'}} size="small">
+                                        <InputLabel id="robust-selector-label">Robust</InputLabel>
+                                        <Select
+                                                labelId="robust-selector-label"
+                                                id="robust-selector"
+                                                value={this.state.selected_robust}
+                                                label="Robust"
+                                                onChange={this.handleRobustChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Whether to use the variant for increased robustness in clinical data with large space gaps, may slow down processing.</FormHelperText>
+                                    </FormControl>
+
+                                    <FormControl sx={{m: 1, width:'90%'}} size="small">
+                                        <InputLabel id="fast-selector-label">Fast</InputLabel>
+                                        <Select
+                                                labelId="fast-selector-label"
+                                                id="fast-selector"
+                                                value={this.state.selected_fast}
+                                                label="Fast"
+                                                onChange={this.handleFastChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Speeds up prediction by disabling some postprocesses. Not applicable if Robust is True.</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="vol-save">Save volume</InputLabel>
+                                        <Select
+                                                labelId="vol-save"
+                                                id="vol-save"
+                                                value={this.state.selected_vol_save}
+                                                label="Save volume"
+                                                onChange={this.handleVolPathChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Whether to save segmented regions' volumes. Matches input type for single or multiple subjects.</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                        <InputLabel id="qc-save">Save Qc Scores</InputLabel>
+                                        <Select
+                                                labelId="qc-save"
+                                                id="qc-save"
+                                                value={this.state.selected_qc_save}
+                                                label="Save Qc Scores"
+                                                onChange={this.handleQCPathChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Whether to save QC scores, following the same formatting as Save Volume.</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size="small">
+                                        <InputLabel id="post-save">Save 3D posterior probabilities</InputLabel>
+                                        <Select
+                                                labelId="post-save"
+                                                id="post-save"
+                                                value={this.state.selected_post_save}
+                                                label="Save 3D posterior probabilities"
+                                                onChange={this.handlePostPathChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Whether to save output 3D posterior probabilities, matching the input type</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{m: 1, width:'90%'}} size="small">
+                                        <InputLabel id="resample-save">Save resampled images</InputLabel>
+                                        <Select
+                                                labelId="resample-save"
+                                                id="resample-save"
+                                                value={this.state.selected_resample_save}
+                                                label="Save resampled images"
+                                                onChange={this.handleRessamplePathChange}
+                                        >
+                                            <MenuItem value={"true"}><em>True</em></MenuItem>
+                                            <MenuItem value={"false"}><em>False</em></MenuItem>
+                                        </Select>
+                                        <FormHelperText>Whether to save the resampled images. Applies to returning segmentations at 1mm resolution.</FormHelperText>
+                                    </FormControl>
+                                    <Button variant="contained" color="primary" type="submit" disabled={this.state.synthseg_started}>
+                                        Start SynthSeg
+                                    </Button>
+                                    <Divider/>
+                                </form>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    SynthSeg Output Status
+                                </Typography>
+                                <Divider/>
+                                <form onSubmit={this.fetchSynthSegLog}>
+                                    <Button variant="contained" color="primary" type="submit" sx={{margin: "8px"}}>
+                                        Check progress
+                                    </Button>
+                                </form>
+                                <br/>
+                                <TextareaAutosize
+                                        id = "synthseg-status-text"
+                                        aria-label="Status Log"
+                                        placeholder="Status Log of SynthSeg function"
+                                        value={this.state.synthseg_log_text}
+                                        style={{
+                                            width: "90%",
+                                            backgroundColor: "black",
+                                            color: "white",
+                                            padding: "10px",
+                                            margin: "8px"
+                                        }}
+                                />
+                                {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
+                                <Button  variant="contained" color="primary"
+                                         onClick={this.redirectToPage.bind(this, "synthseg_results", [], [])}
+                                         disabled={ (this.state.synthseg_finished ? false : "disabled")  }
                                          sx={{margin: "8px"}}>
                                     Check out Results
                                 </Button>
