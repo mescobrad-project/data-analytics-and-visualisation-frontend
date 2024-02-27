@@ -110,18 +110,18 @@ class FreesurferReconFunctionPage extends React.Component {
 
             selected_ref_file_name:"",
             selected_target_file_name:"",
-            selected_flair_file_name:"",
+            selected_flair_file_name:"None",
             selected_synthseg_input_file_name:"",
-            selected_parc:false,
-            selected_robust:false,
-            selected_fast:false,
-            selected_vol_save:false,
-            selected_qc_save:false,
-            selected_post_save:false,
-            selected_resample_save:false,
-            selected_input_file_name:"",
+            selected_parc:"false",
+            selected_robust:"false",
+            selected_fast:"false",
+            selected_vol_save:"false",
+            selected_qc_save:"false",
+            selected_post_save:"false",
+            selected_resample_save:"false",
+            selected_input_file_name:"None",
             selected_input_flair_file_name:"",
-            selected_lession: false,
+            selected_lession: "false",
             selected_lession_mask_pattern_file:"0",
             selected_lession_mask_pattern_flair:"0",
             selected_threshold:"0.3",
@@ -606,10 +606,6 @@ class FreesurferReconFunctionPage extends React.Component {
         this.setState( {selected_synthseg_input_file_name: event.target.value})
     }
 
-    handleSelectInputFileNameChange(event){
-        this.setState( {selected_input_file_name: event.target.value})
-    }
-
     handleSelectInputFlairFileNameChange(event){
         this.setState( {selected_input_flair_file_name: event.target.value})
     }
@@ -991,6 +987,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                                 label="input_flair File name"
                                                 onChange={this.handleSelectInputFlairFileNameChange}
                                         >
+                                            <MenuItem value={"None"}><em>None</em></MenuItem>
                                             {this.state.file_names.map((column) => (
                                                     <MenuItem value={column}>{column}</MenuItem>
                                             ))}
@@ -1011,47 +1008,52 @@ class FreesurferReconFunctionPage extends React.Component {
                                         </Select>
                                         <FormHelperText>If True, segment white matter lessions</FormHelperText>
                                     </FormControl>
-                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                        <InputLabel id="lession_mask_pattern_file-selector-label">Lession mask pattern for input file</InputLabel>
-                                        <Select
-                                                labelId="lession_mask_pattern_file-selector-label"
-                                                id="lession_mask_pattern_file-selector"
-                                                value= {this.state.selected_lession_mask_pattern_file}
-                                                label="Lession mask pattern for input file"
-                                                onChange={this.handleSelectLessionMaskPatternFileChange}
-                                        >
-                                            <MenuItem value={"-1"}><em>-1</em></MenuItem>
-                                            <MenuItem value={"0"}><em>0</em></MenuItem>
-                                            <MenuItem value={"1"}><em>1</em></MenuItem>
-                                        </Select>
-                                        <FormHelperText>Lession mask pattern for input file. -1 or 1 indicates the voxels should be darker or brighter than cortical gray matter, respectively. 0 means that no intensity constraint is applied to input file</FormHelperText>
-                                    </FormControl>
-                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                        <InputLabel id="lession_mask_pattern_flair-selector-label">Lession mask pattern for input flair</InputLabel>
-                                        <Select
-                                                labelId="lession_mask_pattern_flair-selector-label"
-                                                id="lession_mask_pattern_flair-selector"
-                                                value= {this.state.selected_lession_mask_pattern_flair}
-                                                label="Lession mask pattern for input flair"
-                                                onChange={this.handleSelectLessionMaskPatternFlairChange}
-                                        >
-                                            <MenuItem value={"-1"}><em>-1</em></MenuItem>
-                                            <MenuItem value={"0"}><em>0</em></MenuItem>
-                                            <MenuItem value={"1"}><em>1</em></MenuItem>
-                                        </Select>
-                                        <FormHelperText>Lession mask pattern for input flair. -1 or 1 indicates the voxels should be darker or brighter than cortical gray matter, respectively. 0 means that no intensity constraint is applied to input flair</FormHelperText>
-                                    </FormControl>
-                                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                        <TextField
-                                                labelId="threshold-label"
-                                                id="threshold-selector"
-                                                value= {this.state.selected_threshold}
-                                                label="threshold"
-                                                onChange={this.handleSelectThreshold}
-                                        />
-                                        <FormHelperText>Threshold applied to the probability of a voxel being lesion. Default is 0.3, tweaking this value (between 0.0 and 1.0) changes the balance between false positive (low threshold value) and false negative (high threshold value) lesion detections.</FormHelperText>
-                                    </FormControl>
-
+                                    <div style={{display: (this.state.selected_lession === "true" ? 'block' : 'none')}}>
+                                        <div style={{display: (this.state.selected_input_file_name === "None" ? 'none' : 'block')}}>
+                                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                                <InputLabel id="lession_mask_pattern_file-selector-label">Lession mask pattern for input file</InputLabel>
+                                                <Select
+                                                        labelId="lession_mask_pattern_file-selector-label"
+                                                        id="lession_mask_pattern_file-selector"
+                                                        value= {this.state.selected_lession_mask_pattern_file}
+                                                        label="Lession mask pattern for input file"
+                                                        onChange={this.handleSelectLessionMaskPatternFileChange}
+                                                >
+                                                    <MenuItem value={"-1"}><em>-1</em></MenuItem>
+                                                    <MenuItem value={"0"}><em>0</em></MenuItem>
+                                                    <MenuItem value={"1"}><em>1</em></MenuItem>
+                                                </Select>
+                                                <FormHelperText>Lession mask pattern for input file. -1 or 1 indicates the voxels should be darker or brighter than cortical gray matter, respectively. 0 means that no intensity constraint is applied to input file</FormHelperText>
+                                            </FormControl>
+                                        </div>
+                                        <div style={{display: (this.state.selected_input_flair_file_name === "None" ? 'none' : 'block')}}>
+                                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                                <InputLabel id="lession_mask_pattern_flair-selector-label">Lession mask pattern for input flair</InputLabel>
+                                                <Select
+                                                        labelId="lession_mask_pattern_flair-selector-label"
+                                                        id="lession_mask_pattern_flair-selector"
+                                                        value= {this.state.selected_lession_mask_pattern_flair}
+                                                        label="Lession mask pattern for input flair"
+                                                        onChange={this.handleSelectLessionMaskPatternFlairChange}
+                                                >
+                                                    <MenuItem value={"-1"}><em>-1</em></MenuItem>
+                                                    <MenuItem value={"0"}><em>0</em></MenuItem>
+                                                    <MenuItem value={"1"}><em>1</em></MenuItem>
+                                                </Select>
+                                                <FormHelperText>Lession mask pattern for input flair. -1 or 1 indicates the voxels should be darker or brighter than cortical gray matter, respectively. 0 means that no intensity constraint is applied to input flair</FormHelperText>
+                                            </FormControl>
+                                        </div>
+                                        <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                            <TextField
+                                                    labelId="threshold-label"
+                                                    id="threshold-selector"
+                                                    value= {this.state.selected_threshold}
+                                                    label="threshold"
+                                                    onChange={this.handleSelectThreshold}
+                                            />
+                                            <FormHelperText>Threshold applied to the probability of a voxel being lesion. Default is 0.3, tweaking this value (between 0.0 and 1.0) changes the balance between false positive (low threshold value) and false negative (high threshold value) lesion detections.</FormHelperText>
+                                        </FormControl>
+                                    </div>
                                     <Button variant="contained" color="primary" type="submit" disabled={this.state.samseg_started}>
                                         Start Samseg
                                     </Button>
