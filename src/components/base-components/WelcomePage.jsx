@@ -367,7 +367,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 8, "group_sleep_analysis",
+                                onClick={redirectToPage.bind(this,5, 3, 8, "group_sleep_analysis",
                                         ["saved",
                                     "saved",
                                     "saved",
@@ -424,7 +424,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 8, "eeg_hypno_upsampling",
+                                onClick={redirectToPage.bind(this,2, 2, 8, "eeg_hypno_upsampling",
                                         ["saved",
                                             "saved",
                                             "saved",
@@ -481,7 +481,7 @@ function WelcomePage() {
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
                                 // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,1, 1, 14, "eeg_hypno_upsampling",
+                                onClick={redirectToPage.bind(this,2, 3, 14, "eeg_hypno_upsampling",
                                         ["saved", "saved"], ["uu_sleep/Subject A_Sessio01.csv" , "uu_sleep/Subject A_Sessio01.fif"], [])}
                         >
                             EEG Upsampling - Single

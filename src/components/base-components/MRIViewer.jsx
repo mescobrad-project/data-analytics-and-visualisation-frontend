@@ -126,7 +126,7 @@ class MRIViewer extends React.Component {
         this.state = {
             //Channel Select order modal
             open_modal: false,
-            path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
+            path : ip + "?username=user&password=password&hostname=Desktop Auto-Resolution",
 
         };
 
