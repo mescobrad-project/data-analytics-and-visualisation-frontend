@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import Plot from 'react-plotly.js';
-// import actigraph1 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/1actigraphy_visualisation.png";
-// import actigraph2 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/2actigraphy_visualisation.png";
-// import actigraph3 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/3actigraphy_visualisation.png";
-// import act from "C:/neurodesktop-storage/runtime_config/workflow_1/run_1/step_1/output/actigraphy_visualisation.png"
-//import "./styles.css";
 import Plot from "react-plotly.js";
 import API from "../../axiosInstance";
 import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
-// import InnerHTML from 'dangerously-set-html-content'
-
-// import PropTypes from 'prop-types';
 import {
     Button, Divider,
     FormControl,
@@ -28,147 +19,9 @@ import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {DatePicker, DateTimePicker, LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
-//import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
-// import DatePicker from 'react-date-picker';
+import ReactLoading from "react-loading";
+import LoadingWidget from "../ui-components/LoadingWidget";
 const params = new URLSearchParams(window.location.search);
-const slowave_table_1_columns = [
-    {
-        field: "Start",
-        headerName: "Start",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "NegPeak",
-        headerName: "NegPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "MidCrossing",
-        headerName: "MidCrossing",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PosPeak",
-        headerName: "PosPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "End",
-        headerName: "End",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Duration",
-        headerName: "Duration",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ValNegPeak",
-        headerName: "ValNegPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ValPosPeak",
-        headerName: "ValPosPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PTP",
-        headerName: "PTP",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Slope",
-        headerName: "Slope",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Frequency",
-        headerName: "Frequency",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "SigmaPeak",
-        headerName: "SigmaPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PhaseAtSigmaPeak",
-        headerName: "PhaseAtSigmaPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ndPAC",
-        headerName: "ndPAC",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Stage",
-        headerName: "Stage",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Channel",
-        headerName: "Channel",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "IdxChannel",
-        headerName: "IdxChannel",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-]
 
 function CustomToolbar() {
     return (
@@ -235,12 +88,11 @@ TabPanel.propTypes = {
 };
 
 class ActigraphyMasking extends React.Component {
-
-
-
     constructor(props) {
         super(props);
         this.state = {
+            first_tab_done: true,
+            second_tab_done: true,
             tabvalue: 0,
             selected_file_name: "",
             file_names: [],
@@ -314,6 +166,7 @@ class ActigraphyMasking extends React.Component {
             let json_response = JSON.parse(res.data.visualisation_inactivity_mask)
             this.setState({data_inactivity_mask: json_response["data"]})
             this.setState({layout_inactivity_mask: json_response["layout"]})
+            this.setState({first_tab_done: true})
         });
     }
 
@@ -334,6 +187,7 @@ class ActigraphyMasking extends React.Component {
             let json_response = JSON.parse(res.data.visualisation_add_mask_period)
             this.setState({data_add_mask_period: json_response["data"]})
             this.setState({layout_add_mask_period: json_response["layout"]})
+            this.setState({second_tab_done: true})
         });
     }
 
@@ -467,12 +321,18 @@ class ActigraphyMasking extends React.Component {
                                     <MenuItem value={"55"}><em>55</em></MenuItem>
                                 </Select>
                             </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button variant="contained" color="primary" type="submit" onClick={() => {
+                                this.setState({first_tab_done: false});
+                            }}>
                                 Submit
                             </Button>
                             <hr/>
                         </form>
-                        <Plot layout={this.state.layout_inactivity_mask} data={this.state.data_inactivity_mask} config={this.state.configObj} onSelected={this.handleSelected}/>
+                        {!this.state.first_tab_done ? (
+                                <LoadingWidget/>
+                        ) : (
+                                <Plot layout={this.state.layout_inactivity_mask} data={this.state.data_inactivity_mask} config={this.state.configObj} onSelected={this.handleSelected}/>
+                        )}
                     </TabPanel>
 
                     <TabPanel value={this.state.tabvalue} index={1}>
@@ -507,12 +367,18 @@ class ActigraphyMasking extends React.Component {
                             </label>
                             <FormControl sx={{m: 1, width:'2%'}} size={"small"}>
                             </FormControl>
-                            <Button variant="contained" color="primary" type="submit">
+                            <Button variant="contained" color="primary" type="submit" onClick={() => {
+                                this.setState({second_tab_done: false});
+                            }}>
                                 Submit
                             </Button>
                             <hr/>
                         </form>
-                        <Plot layout={this.state.layout_add_mask_period} data={this.state.data_add_mask_period} config={this.state.configObj} onSelected={this.handleSelected}/>
+                        {!this.state.second_tab_done ? (
+                                <LoadingWidget/>
+                        ) : (
+                                <Plot layout={this.state.layout_add_mask_period} data={this.state.data_add_mask_period} config={this.state.configObj} onSelected={this.handleSelected}/>
+                        )}
                     </TabPanel>
 
                 </Grid>

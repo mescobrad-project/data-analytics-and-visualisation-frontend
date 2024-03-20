@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import Plot from 'react-plotly.js';
-// import actigraph1 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/1actigraphy_visualisation.png";
-// import actigraph2 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/2actigraphy_visualisation.png";
-// import actigraph3 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/3actigraphy_visualisation.png";
-// import act from "C:/neurodesktop-storage/runtime_config/workflow_1/run_1/step_1/output/actigraphy_visualisation.png"
-//import "./styles.css";
 import Plot from "react-plotly.js";
 import API from "../../axiosInstance";
 import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
-// import InnerHTML from 'dangerously-set-html-content'
-
-// import PropTypes from 'prop-types';
 import {
     Button, Divider,
     FormControl,
@@ -28,146 +19,9 @@ import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
-//import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
+import ReactLoading from "react-loading";
+import LoadingWidget from "../ui-components/LoadingWidget";
 const params = new URLSearchParams(window.location.search);
-const slowave_table_1_columns = [
-    {
-        field: "Start",
-        headerName: "Start",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "NegPeak",
-        headerName: "NegPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "MidCrossing",
-        headerName: "MidCrossing",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PosPeak",
-        headerName: "PosPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "End",
-        headerName: "End",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Duration",
-        headerName: "Duration",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ValNegPeak",
-        headerName: "ValNegPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ValPosPeak",
-        headerName: "ValPosPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PTP",
-        headerName: "PTP",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Slope",
-        headerName: "Slope",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Frequency",
-        headerName: "Frequency",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "SigmaPeak",
-        headerName: "SigmaPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PhaseAtSigmaPeak",
-        headerName: "PhaseAtSigmaPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ndPAC",
-        headerName: "ndPAC",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Stage",
-        headerName: "Stage",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Channel",
-        headerName: "Channel",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "IdxChannel",
-        headerName: "IdxChannel",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-]
 
 function CustomToolbar() {
     return (
@@ -238,6 +92,7 @@ class ActigraphySingularSpectrumAnalysis extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            done: true,
             tabvalue: 0,
             selected_file_name: "",
             file_names: [],
@@ -338,6 +193,7 @@ class ActigraphySingularSpectrumAnalysis extends React.Component {
             let json_response_4 = JSON.parse(res.data.ssa_figure_4)
             this.setState({data_ssa_4: json_response_4["data"]})
             this.setState({layout_ssa_4: json_response_4["layout"]})
+            this.setState({done: true})
         });
     }
 
@@ -394,35 +250,41 @@ class ActigraphySingularSpectrumAnalysis extends React.Component {
                 </FormControl>
                 <form onSubmit={(event) => {event.preventDefault();this.handleSSA();}}>
                     <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
-                        <Button variant="contained" color="primary" type="submit">
+                        <Button variant="contained" color="primary" type="submit" onClick={() => {
+                            this.setState({done: false});
+                        }}>
                             Submit
                         </Button>
                     </FormControl>
                     <hr/>
                 </form>
             </Grid>
-                <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Actigraphy Analysis Results
-                    </Typography>
-                    <hr/>
-                    <Box sx={{ width: '100%' }}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <Tabs scrollable={true} value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                <Tab label="Singular Spectrum Analysis" {...a11yProps(1)} />
-                            </Tabs>
+            {!this.state.done ? (
+                    <LoadingWidget/>
+            ) : (
+                    <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                            Actigraphy Analysis Results
+                        </Typography>
+                        <hr/>
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs scrollable={true} value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                    <Tab label="Singular Spectrum Analysis" {...a11yProps(1)} />
+                                </Tabs>
+                            </Box>
+
                         </Box>
 
-                    </Box>
+                        <TabPanel value={this.state.tabvalue} index={0}>
+                            <Plot layout={this.state.layout_ssa_1} data={this.state.data_ssa_1} config={this.state.configObj} onSelected={this.handleSelected}/>
+                            <Plot layout={this.state.layout_ssa_2} data={this.state.data_ssa_2} config={this.state.configObj} onSelected={this.handleSelected}/>
+                            <Plot layout={this.state.layout_ssa_3} data={this.state.data_ssa_3} config={this.state.configObj} onSelected={this.handleSelected}/>
+                            <Plot layout={this.state.layout_ssa_4} data={this.state.data_ssa_4} config={this.state.configObj} onSelected={this.handleSelected}/>
+                        </TabPanel>
 
-                    <TabPanel value={this.state.tabvalue} index={0}>
-                        <Plot layout={this.state.layout_ssa_1} data={this.state.data_ssa_1} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_ssa_2} data={this.state.data_ssa_2} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_ssa_3} data={this.state.data_ssa_3} config={this.state.configObj} onSelected={this.handleSelected}/>
-                        <Plot layout={this.state.layout_ssa_4} data={this.state.data_ssa_4} config={this.state.configObj} onSelected={this.handleSelected}/>
-                    </TabPanel>
-
-                </Grid>
+                    </Grid>
+            )}
         </Grid>
         );
     }
