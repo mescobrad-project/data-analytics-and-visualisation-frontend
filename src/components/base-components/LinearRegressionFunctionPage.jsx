@@ -8,12 +8,9 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, TextareaAutosize, TextField, Typography,
-    Table, TableHead, TableRow, TableBody, TableCell, TableContainer, Paper, Tabs, Tab
+    Select, Typography,
+    Table, TableRow, TableCell, TableContainer, Paper, Tabs, Tab
 } from "@mui/material";
 
 // Amcharts
@@ -26,8 +23,9 @@ import qs from "qs";
 import ChannelSignalSpindleSlowwaveChartCustom from "../ui-components/ChannelSignalSpindleSlowwaveChartCustom";
 import ScatterPlot from "../ui-components/ScatterPlot";
 import {DataGrid} from "@mui/x-data-grid";
-import {Box, display} from "@mui/system";
+import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
+import ProceedButton from "../ui-components/ProceedButton";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -253,8 +251,6 @@ class LinearRegressionFunctionPage extends React.Component {
                 this.setState({LinearRegression_show: true})
             }
             this.setState({tabvalue:1})
-
-
         });
         // const response = await fetch("http://localhost:8000/test/return_autocorrelation", {
         //     method: "GET",
@@ -568,6 +564,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                     Submit
                                 </Button>
                             </form>
+                            <ProceedButton></ProceedButton>
                             <div style={{ display: (this.state.linear_regression_step2_show ? 'block' : 'none') }}>
                                 <ScatterPlot chart_id="scatter_chart_id"  chart_data={this.state.scatter_chart_data}/>
                             </div>
@@ -595,7 +592,7 @@ class LinearRegressionFunctionPage extends React.Component {
                                 <JsonTable className="jsonResultsTable"
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={1}>
+                             <TabPanel value={this.state.tabvalue} index={1}>
                                 <div style={{display: (this.state.status === 'Success' ? 'block': 'none')}}>
                                     <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}}>
                                         <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
@@ -788,14 +785,8 @@ class LinearRegressionFunctionPage extends React.Component {
                                         <hr/>
                                     </div>
                                 </div>
-                                <div style={{display: (this.state.status !== 'Success' ? 'block': 'none')}}>
-                                    <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'80%'}}>
-                                        <Table>
-                                            <TableRow>
-                                                <TableCell>{this.state.status}</TableCell>
-                                            </TableRow>
-                                        </Table>
-                                    </TableContainer>
+                                <div style={{display: (this.state.status === 'Success' ? 'none': 'block')}}>
+                                    <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'5px'}}>Status :  { this.state.status}</Typography>
                                 </div>
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>

@@ -6,11 +6,7 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem, Modal,
-    Select, Tab, Tabs,
+    MenuItem, Select, Tab, Tabs,
     Typography
 } from "@mui/material";
 import qs from "qs";
@@ -19,6 +15,7 @@ import {CSVLink} from "react-csv";
 import {Box} from "@mui/system";
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -174,7 +171,15 @@ class General_Stats_Min extends React.Component {
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        window.location.replace("/")
+        API.get("/task/complete", {
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+            }
+
+    }).then(res => {
+            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+        });
     }
 
     /**
@@ -253,12 +258,7 @@ class General_Stats_Min extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

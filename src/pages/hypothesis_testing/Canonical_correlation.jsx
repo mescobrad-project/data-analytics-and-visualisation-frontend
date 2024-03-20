@@ -19,6 +19,7 @@ import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import { CSVLink } from "react-csv"
 import qs from "qs";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -94,7 +95,7 @@ class Canonical_correlation extends React.Component {
             stats_show: false,
             svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XYcorr.svg',
-            svg2_path : ip + 'runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg2_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_comp_corr.svg',
             svg3_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XY_c_corr.svg',
@@ -211,7 +212,15 @@ class Canonical_correlation extends React.Component {
             this.setState({output_return_data: res.data})
         });
         console.log(this.state.output_return_data);
-        window.location.replace("/")
+        API.get("/task/complete", {
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+            }
+
+    }).then(res => {
+            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+        });
     }
     /**
      * Update state when selection changes in the form
@@ -344,12 +353,7 @@ class Canonical_correlation extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

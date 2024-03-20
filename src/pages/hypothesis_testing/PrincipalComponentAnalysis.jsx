@@ -7,9 +7,6 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
     Select, Tab,
     Table,
@@ -19,7 +16,6 @@ import {
     TableHead,
     TableRow,
     Tabs,
-    TextareaAutosize,
     TextField,
     Typography
 } from "@mui/material";
@@ -30,6 +26,7 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import Plot from "react-plotly.js";
 import {CSVLink} from "react-csv";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -275,7 +272,15 @@ class PrincipalComponentAnalysis extends React.Component {
             this.setState({output_return_data: res.data})
         });
         console.log(this.state.output_return_data);
-        window.location.replace("/")
+        API.get("/task/complete", {
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+            }
+
+    }).then(res => {
+            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+        });
     }
     render() {
         return (
@@ -364,12 +369,13 @@ class PrincipalComponentAnalysis extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}>
-                                Proceed
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}>*/}
+                        {/*        Proceed*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
+                        <ProceedButton disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -516,22 +522,22 @@ class PrincipalComponentAnalysis extends React.Component {
                                                         <JsonTable className="jsonResultsTable"
                                                                    rows = {this.state.Explained_variance}/>
                                                     </CardContent>
-                                                    <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
-                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
-                                                            <Typography variant="h5" component="div">
-                                                                Percentage of variance explained by each of the selected components. </Typography>
-                                                            <JsonTable className="jsonResultsTable"
-                                                                       rows = {this.state.Explained_variance_ratio}/>
-                                                        </CardContent>
-                                                    </Card>
-                                                    <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
-                                                        <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
-                                                            <Typography variant="h5" component="div">
-                                                                Percentage of variance explained by each of the selected components. </Typography>
-                                                            <JsonTable className="jsonResultsTable"
-                                                                       rows = {this.state.Singular_values}/>
-                                                        </CardContent>
-                                                    </Card>
+                                                </Card>
+                                                <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
+                                                    <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                        <Typography variant="h5" component="div">
+                                                            Percentage of variance explained by each of the selected components. </Typography>
+                                                        <JsonTable className="jsonResultsTable"
+                                                                   rows = {this.state.Explained_variance_ratio}/>
+                                                    </CardContent>
+                                                </Card>
+                                                <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
+                                                    <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
+                                                        <Typography variant="h5" component="div">
+                                                            Percentage of variance explained by each of the selected components. </Typography>
+                                                        <JsonTable className="jsonResultsTable"
+                                                                   rows = {this.state.Singular_values}/>
+                                                    </CardContent>
                                                 </Card>
                                             </div>
                                             <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>

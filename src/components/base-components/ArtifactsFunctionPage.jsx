@@ -3,25 +3,15 @@ import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import {
     AppBar,
-    Button, Checkbox, Chip, Divider,
-    FormControl, FormControlLabel, FormGroup,
-    FormHelperText,
+    Button, Checkbox, Divider,
+    FormControl, FormHelperText,
     Grid,
     InputLabel,
-    Link,
     List,
     ListItem, ListItemIcon,
     ListItemText,
-    MenuItem, Modal,
-    Paper,
+    MenuItem, Paper,
     Select,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextareaAutosize,
     TextField,
     Toolbar,
     Typography
@@ -65,7 +55,7 @@ class ArtifactsFunctionPage extends React.Component {
             selected_components_type: "",
             selected_components: "",
             selected_repair_method: "",
-            path : ip + "#/?username=user&password=password&hostname=Desktop Auto-Resolution",
+            path : ip + "?username=user&password=password&hostname=Desktop Auto-Resolution",
         };
 
         //Binding functions of the class

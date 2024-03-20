@@ -6,11 +6,7 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem, Modal,
-    Select, Tab, Tabs, TextField,
+    MenuItem, Select, Tab, Tabs, TextField,
     Typography
 } from "@mui/material";
 import qs from "qs";
@@ -19,6 +15,7 @@ import {CSVLink} from "react-csv";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import General_Stats_Cov from "./General_Stats_Cov";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -180,7 +177,15 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        window.location.replace("/")
+        API.get("/task/complete", {
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+            }
+
+    }).then(res => {
+            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+        });
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
@@ -233,7 +238,7 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            SEM Parameterisation
+                            EFA Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -313,7 +318,7 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                                         labelId="selected_levels-selector-label"
                                         id="selected_levels-selector"
                                         value={this.state.selected_levels}
-                                        label="p-value cutoff"
+                                        label="selected levels"
                                         onChange={this.handleSelectLevelsChange}
                                 />
                                 <FormHelperText>The number of levels. Higher values allow for a more hierarchical model.</FormHelperText>
@@ -355,6 +360,7 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                                 Clear all
                             </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}}>

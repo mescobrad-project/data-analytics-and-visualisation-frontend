@@ -6,17 +6,14 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
-    List,
-    ListItem,
-    ListItemText,
     MenuItem,
-    Select, Tab, Tabs, TextField,
-    Typography
+    Select, Tab, Tabs, Typography
 } from "@mui/material";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
 import qs from "qs";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -175,7 +172,15 @@ class Mann_Whitney extends React.Component {
         ).then(res => {
             this.setState({output_return_data: res.data})
         });
-        window.location.replace("/")
+        API.get("/task/complete", {
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+            }
+
+    }).then(res => {
+            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+        });
     }
 
     /**
@@ -315,12 +320,7 @@ class Mann_Whitney extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>

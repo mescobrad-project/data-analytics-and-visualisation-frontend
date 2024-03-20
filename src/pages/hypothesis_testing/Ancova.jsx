@@ -15,6 +15,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 const userColumns = [
     { field: "Source",
@@ -248,7 +249,15 @@ class Ancova extends React.Component {
             this.setState({output_return_data: res.data})
         });
         console.log(this.state.output_return_data);
-        window.location.replace("/")
+        API.get("/task/complete", {
+            params: {
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+            }
+
+    }).then(res => {
+            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+        });
     }
 
     /**
@@ -391,12 +400,7 @@ class Ancova extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
