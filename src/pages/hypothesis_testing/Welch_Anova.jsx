@@ -15,6 +15,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 const userColumns = [
     { field: "Source",
@@ -106,6 +107,7 @@ class Welch_Ancova extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
+            column_names_for_checkbox: [],
             file_names:[],
             initialdataset:[],
             test_data: {
@@ -147,6 +149,16 @@ class Welch_Ancova extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
+
+            let temp_array_columns = []
+            for ( let it =0 ; it < res.data.columns.length; it++){
+                let temp_object = {}
+                temp_object["id"] = it
+                temp_object["label"] = res.data.columns[it]
+                temp_object["value"] = res.data.columns[it]
+                temp_array_columns.push(temp_object)
+            }
+            this.setState({column_names_for_checkbox:temp_array_columns})
         });
     }
     async fetchFileNames() {
@@ -319,6 +331,8 @@ class Welch_Ancova extends React.Component {
                         </form>
                         <br/>
                         <br/>
+                        <SelectorWithCheckBoxes
+                                data = {this.state.column_names}/>
                         <hr/>
                         <Grid>
                             <FormHelperText>Dependent variable =</FormHelperText>
