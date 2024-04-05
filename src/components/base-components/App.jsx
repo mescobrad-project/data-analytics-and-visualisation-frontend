@@ -1,5 +1,6 @@
 import '../../style-sheets/App.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import { ReactKeycloakProvider } from "@react-keycloak/web";
 
 // Import all layouts
 import LayoutMain from "../../layout/LayoutMain";
@@ -141,6 +142,7 @@ import ValuesImputation from "../../pages/hypothesis_testing/ValuesImputation";
 import EEGHypnoUpsampling from "./EEGHypnoUpsampling";
 import SlowwaveFunctionPage from "./SlowwaveFunctionPage";
 import SpindleFunctionPage from "./SpindleFunctionPage";
+import keycloak from "../../Keycloak";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -175,6 +177,7 @@ const App = () => {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 {/*<BrowserRouter basename={"/analytics"}>*/}
+                <ReactKeycloakProvider authClient={keycloak}>
                 <BrowserRouter>
                     <Routes>
                         <Route exact path="/" element={(<LayoutMain><WelcomePage/></LayoutMain>)}/>
@@ -318,6 +321,7 @@ const App = () => {
                         <Route exact path="/ValuesImputation" element={(<LayoutMain><ValuesImputation/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
+            </ReactKeycloakProvider>
             </ThemeProvider>
         </StyledEngineProvider>
     );
