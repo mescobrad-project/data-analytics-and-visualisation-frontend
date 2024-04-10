@@ -1,74 +1,52 @@
-import React from 'react'
-import {Checkbox, FormControl, ListItemIcon, ListItemText, MenuItem, Select} from '@mui/material'
-import PropTypes from "prop-types";
+import React, {useState} from 'react'
+import {Checkbox, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select} from '@mui/material'
 
-class SelectorWithCheckBoxes extends React.Component {
-    static propTypes = {
-        handleChannelChange: PropTypes.func
-    }
-    constructor(props) {
-        super(props);
-        console.log(props)
-        this.state = {
-            options:"",
-            selectedValues:"",
-            isAllSelected:false
-        };
-        this.setState({options:props})
-        console.log(this.state.options)
-        this.handleValue=this.handleValue.bind(this)
-        // const [selectValue, setSelectValue] = useState([]);
-        this.setState({ isAllSelected : this.state.options.length > 0 && this.state.selectedValues.length === this.state.options.length})
-    }
-    handleValue(e) {
-        const value = e.target.value
-        if (value.includes('all')) {
-            this.setState({selectedValues:this.state.selectedValues.length === this.state.options.length ? [] : this.state.options})
+const SelectorWithCheckBoxes = (props) =>{
+   const options = props.data.length > 0 ? props.data : []
+    const [selected, setSelected] = useState([]);
+    const isAllSelected =
+        options.length > 0 && selected.length === options.length
+
+    const handleChange = (event) => {
+        const value = event.target.value
+        if (value[value.length - 1]==='all') {
+            setSelected(selected.length === options.length ? [] : options)
             return;
         }
-        this.setState({selectedValues:value})
-    }
-        // useEffect(() => {
-        //     if (Array.isArray(selectLabel) && selectLabel.length > 0) {
-        //         document.querySelector('#multi-select').innerHTML = selectLabel.join(", ")
-        //     } else if (!Array.isArray(selectLabel)) {
-        //         document.querySelector('#multi-select').innerHTML = selectLabel
-        //     } else {
-        //         document.querySelector('#multi-select').innerHTML = "";
-        //     }
-        // }, [selectLabel])
-    render() {
-        return (
-                <div>
-                    <FormControl sx={{width: '100%'}}>
-                        <Select value={this.state.selectedValues} multiple id='multi-select'
-                                className='dropdown'
-                                onChange={this.handleValue}
-                                renderValue={(selected) => {
-                                    selected.join(' ')
-                                }}>
-                            <MenuItem value='all'>
+        setSelected(value)
+    };
+    return (
+            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                <InputLabel id="mutiple-select-label">Multiple Select</InputLabel>
+                <Select value={selected}
+                        multiple
+                        labelId='multi-select'
+                        className='dropdown'
+                        onChange={handleChange}
+                        renderValue={(selected) =>
+                            selected.join(", ")
+                        }>
+                    <MenuItem value='all'>
+                        <ListItemIcon>
+                            <Checkbox checked={isAllSelected}></Checkbox>
+                        </ListItemIcon>
+                        <ListItemText primary="Select All"/>
+                    </MenuItem>
+                    {options.map((option) => (
+                            <MenuItem key={option} value={option}>
                                 <ListItemIcon>
-                                    <Checkbox checked={this.state.isAllSelected}></Checkbox>
+                                    <Checkbox
+                                            name='select-checkbox'
+                                            checked={selected.indexOf(option)>-1}></Checkbox>
                                 </ListItemIcon>
-                                <ListItemText primary="Select All"/>
-                            </MenuItem>
-                            {this.state.options.map((options) => (
-                                    <MenuItem key={{}}>
-                                        <ListItemIcon>
-                                            <Checkbox
-                                                    name='select-checkbox'
-                                                    checked={this.state.selectedValues.includes(options)}></Checkbox>
-                                        </ListItemIcon>
-                                        <ListItemText primary={options}>
+                                <ListItemText primary={option}>
 
-                                        </ListItemText>
-                                    </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </div>
+                                </ListItemText>
+                            </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
         )
     }
-}
+
 export default SelectorWithCheckBoxes;

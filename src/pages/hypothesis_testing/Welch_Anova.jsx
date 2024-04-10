@@ -115,12 +115,15 @@ class Welch_Ancova extends React.Component {
                 DataFrame:[]
             },
             //Values selected currently on the form
+            selected_file_name: "",
             selected_dependent_variable: "",
-            selected_dependent_variable_wf: "",
+            // selected_dependent_variable_wf: "",
             selected_between_factor: "",
-            selected_between_factor_wf: "",
+            // selected_between_factor_wf: "",
             stats_show:false,
+            tabvalue:0
         };
+
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
@@ -149,18 +152,10 @@ class Welch_Ancova extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
-
-            let temp_array_columns = []
-            for ( let it =0 ; it < res.data.columns.length; it++){
-                let temp_object = {}
-                temp_object["id"] = it
-                temp_object["label"] = res.data.columns[it]
-                temp_object["value"] = res.data.columns[it]
-                temp_array_columns.push(temp_object)
-            }
-            this.setState({column_names_for_checkbox:temp_array_columns})
-        });
+            this.setState({column_names_for_checkbox: res.data.columns})
+                    });
     }
+
     async fetchFileNames() {
         const params = new URLSearchParams(window.location.search);
 
@@ -182,7 +177,7 @@ class Welch_Ancova extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                        file_name: this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
             this.setState({tabvalue:0})
@@ -206,8 +201,9 @@ class Welch_Ancova extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        dv: this.state.selected_dependent_variable_wf,
-                        between: this.state.selected_between_factor_wf,
+                        dv: this.state.selected_dependent_variable,
+                        file: this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
+                        between: this.state.selected_between_factor,
                     },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
@@ -241,11 +237,11 @@ class Welch_Ancova extends React.Component {
      */
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
-        this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
     handleSelectBetweenFactorChange(event){
         this.setState( {selected_between_factor: event.target.value})
-        this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
@@ -255,10 +251,9 @@ class Welch_Ancova extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_dependent_variable_wf=""
-            this.state.selected_between_factor_wf=""
-            this.setState({stats_show: false})
-        })
+            // this.state.selected_dependent_variable_wf=""
+            // this.state.selected_between_factor_wf=""
+            this.state.stats_show= false})
     }
     render() {
         return (
@@ -278,8 +273,8 @@ class Welch_Ancova extends React.Component {
                                         label="File Variable"
                                         onChange={this.handleSelectFileNameChange}
                                 >
-                                    {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                    {this.state.file_names.map((column, item) => (
+                                            <MenuItem key={item} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
@@ -293,8 +288,8 @@ class Welch_Ancova extends React.Component {
                                         label="Dependent Variable"
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                    {this.state.column_names.map((column,item) => (
+                                            <MenuItem key= {item} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
@@ -308,16 +303,19 @@ class Welch_Ancova extends React.Component {
                                         label="Between factor"
                                         onChange={this.handleSelectBetweenFactorChange}
                                 >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                    {this.state.column_names.map((column, item) => (
+                                            <MenuItem key= {item} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Name of column in data with the between factor.</FormHelperText>
                             </FormControl>
+                            <SelectorWithCheckBoxes
+                                    data={this.state.column_names}
+                            />
+
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_between_factor_wf.length < 1 }
+                                    disabled={this.state.selected_dependent_variable.length===0 || this.state.selected_between_factor.length===0 }
                                     type="submit"
                             >
                                 Submit
@@ -331,23 +329,21 @@ class Welch_Ancova extends React.Component {
                         </form>
                         <br/>
                         <br/>
-                        <SelectorWithCheckBoxes
-                                data = {this.state.column_names}/>
                         <hr/>
                         <Grid>
                             <FormHelperText>Dependent variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_dependent_variable_wf}>
-                                {this.state.selected_dependent_variable_wf}
+                                    id={this.state.selected_dependent_variable}>
+                                {this.state.selected_dependent_variable}
                             </Button>
                         </Grid>
                         <Grid>
                             <FormHelperText>Between factor =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_between_factor_wf}>
-                                {this.state.selected_between_factor_wf}
+                                    id={this.state.selected_between_factor}>
+                                {this.state.selected_between_factor}
                             </Button>
                         </Grid>
                     </Grid>
@@ -368,7 +364,8 @@ class Welch_Ancova extends React.Component {
                                 <Grid sx={{ flexGrow: 1, textAlign: "center"}}
                                       style={{display: (this.state.stats_show ? 'block' : 'none')}}>
                                     {this.state.test_data['status']!=='Success' ? (
-                                            <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                            <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                Status :  { this.state.test_data['status']}</Typography>
                                     ) : (
                                             <div className="datatable">
                                                 {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
