@@ -408,7 +408,6 @@ class FreesurferReconFunctionPage extends React.Component {
     async startSynthSeg(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
-        //TODO Add the parameters here
         API.get("/free_surfer/synthseg",
                 {
                     params: {
@@ -419,10 +418,10 @@ class FreesurferReconFunctionPage extends React.Component {
                         parc:this.state.selected_parc,
                         robust:this.state.selected_robust,
                         fast:this.state.selected_fast,
-                        vol_path:this.state.selected_vol_save,
-                        qc_path:this.state.selected_qc_save,
-                        post_path:this.state.selected_post_save,
-                        resample_path:this.state.selected_resample_save,
+                        vol_save:this.state.selected_vol_save,
+                        qc_save:this.state.selected_qc_save,
+                        post_save:this.state.selected_post_save,
+                        resample_save:this.state.selected_resample_save,
                     }
                 }).then(res => {
             const result = res.data;
@@ -506,6 +505,7 @@ class FreesurferReconFunctionPage extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
+                        output_file: "converted_nii_".concat(this.state.selected_synthseg_input_file_name),
                     }
                 }).then(res => {
             const result = res.data;
@@ -809,7 +809,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                         margin: "8px"
                                     }}
                             />
-
+                            <ProceedButton></ProceedButton>
                             {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                             <Button  variant="contained" color="primary"
                                      onClick={this.redirectToPage.bind(this,"recon_all_results", [], [])}
@@ -940,6 +940,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                     </Button>
                                 </form>
                                 {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
+                                <ProceedButton></ProceedButton>
                                 <Button  variant="contained" color="primary"
                                          onClick={this.handleCoregProceed}
                                          disabled={ (this.state.vol2vol_finished ? false : "disabled")  }
@@ -1085,7 +1086,8 @@ class FreesurferReconFunctionPage extends React.Component {
                                             margin: "8px"
                                         }}
                                 />
-                                {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
+                                <ProceedButton></ProceedButton>
+                                 //TODO Button Should redirect to specific page denoted by workflowid, stepid, runid
                                 <Button  variant="contained" color="primary"
                                          onClick={this.redirectToPage.bind(this, "samseg_results", [], [])}
                                          disabled={ (this.state.samseg_finished ? false : "disabled")  }
@@ -1248,7 +1250,8 @@ class FreesurferReconFunctionPage extends React.Component {
                                             margin: "8px"
                                         }}
                                 />
-                                {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
+                                <ProceedButton></ProceedButton>
+                                 //TODO Button Should redirect to specific page denoted by workflowid, stepid, runid
                                 <Button  variant="contained" color="primary"
                                          onClick={this.redirectToPage.bind(this, "synthseg_results", [], [])}
                                          disabled={ (this.state.synthseg_finished ? false : "disabled")  }
