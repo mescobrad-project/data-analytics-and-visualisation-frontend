@@ -142,7 +142,8 @@ import ValuesImputation from "../../pages/hypothesis_testing/ValuesImputation";
 import EEGHypnoUpsampling from "./EEGHypnoUpsampling";
 import SlowwaveFunctionPage from "./SlowwaveFunctionPage";
 import SpindleFunctionPage from "./SpindleFunctionPage";
-import keycloak from "../../Keycloak";
+// import keycloak from "../../Keycloak";
+import keycloakConfig from "../../Keycloak";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -177,7 +178,6 @@ const App = () => {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 {/*<BrowserRouter basename={"/analytics"}>*/}
-                <ReactKeycloakProvider authClient={keycloak}>
                 <BrowserRouter>
                     <Routes>
                         <Route exact path="/" element={(<LayoutMain><WelcomePage/></LayoutMain>)}/>
@@ -321,7 +321,6 @@ const App = () => {
                         <Route exact path="/ValuesImputation" element={(<LayoutMain><ValuesImputation/></LayoutMain>)}/>
                     </Routes>
                 </BrowserRouter>
-            </ReactKeycloakProvider>
             </ThemeProvider>
         </StyledEngineProvider>
     );

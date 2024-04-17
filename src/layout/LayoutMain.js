@@ -3,15 +3,18 @@ import {Grid} from '@mui/material'
 import AppBarCustom from "../components/ui-components/AppBarCustom";
 import Keycloak from "keycloak-js";
 import "../components/css/loading.css"
-import { useKeycloak } from "@react-keycloak/web";
+import {ReactKeycloakProvider, useKeycloak} from "@react-keycloak/web";
+import keycloakConfig from "../Keycloak";
 
 
 // import { useKeycloak } from "@react-keycloak/web";
 
-const LayoutMain = ({ children }) => {
-    const { keycloak, initialized } = useKeycloak();
-
+const LayoutMainInner = ({children}) => {
+    const {keycloak, initialized} = useKeycloak();
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
     const isLoggedIn = keycloak.authenticated;
+
+    keycloak.init({ onLoad: 'login-required' }).then(() => console.log("INITIALISED"))
 
     useEffect(() => {
         // keycloak.login()
@@ -19,33 +22,62 @@ const LayoutMain = ({ children }) => {
         console.log(isLoggedIn)
         console.log("keycloak")
         console.log(keycloak)
-    })
-    return keycloak.authenticated ? <Grid container spacing={0} direction= "column">
-        <Grid item xs={12}>
-            <AppBarCustom/>
-        </Grid>
-        <Grid item container spacing={0} direction="row">
-            {/*<Grid item xs={1}>*/}
-            {/*</Grid>*/}
-            <Grid item xs={12} >
-                    {children}
-            </Grid>
-            {/*<Grid item xs={1}>*/}
-            {/*</Grid>*/}
-        </Grid>
-    </Grid>
-            :
-            <button
-                    type="button"
-                    className="text-blue-800"
-                    onClick={() => keycloak.login()}
-            >
-                Login
-            </button>;
+        // keycloak.login()
+    }, [isLoggedIn, keycloak]);
+
+    if (!keycloak.authenticated) {
+        return (
+                <Grid container spacing={0} direction="column">
+                    <Grid item xs={12}>
+                        <AppBarCustom/>
+                    </Grid>
+                    <Grid item container spacing={0} direction="row">
+                        {/*<Grid item xs={1}>*/}
+                        {/*</Grid>*/}
+                        <Grid item xs={12}>
+                            {children}
+                        </Grid>
+                        {/*<Grid item xs={1}>*/}
+                        {/*</Grid>*/}
+                    </Grid>
+                </Grid>
+        )
+    } else {
+        return (
+                <Grid item container spacing={0} direction="row">
+                    <button
+                            type="button"
+                            className="text-blue-800"
+                            onClick={() => keycloak.login()}
+                    >
+                        Login
+                    </button>
+                    <button
+                            type="button"
+                            className="text-blue-800"
+                            onClick={() => {
+                                console.log(keycloak)
+                            }}
+                    >
+                        Check
+                    </button>
+                </Grid>
+        )
+    }
 };
 
-export default LayoutMain;
 
+// export default LayoutMain;
+
+const LayoutMain = ({children}) => {
+    return (
+            <ReactKeycloakProvider authClient={keycloakConfig}>
+            <LayoutMainInner></LayoutMainInner>
+            </ReactKeycloakProvider>
+    )
+}
+
+export default LayoutMain;
 
 // const LayoutMain = ({children}) => {
 //     // const [keycloak, setKeycloak] = useState(null);
