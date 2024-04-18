@@ -5,6 +5,9 @@ const keycloakConfig = new Keycloak({
     realm: "mescobrad",
     // clientId: "home-app",
     clientId: "data-analytics",
+    // initOptions: {
+    //     onLoad: 'login-required' // This sets the login-required parameter
+    // }
 });
 
 export default keycloakConfig;
