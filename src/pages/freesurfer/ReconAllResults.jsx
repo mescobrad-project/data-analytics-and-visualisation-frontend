@@ -86,6 +86,7 @@ class ReconAllResults extends React.Component {
         });
     }
 
+    // TODO CHANGE THIS TO NEW FUNCTION function_save_data
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
