@@ -12,6 +12,7 @@ import {
     MenuItem, Paper,
     Select, Tab, Table, TableCell, TableContainer, TableRow, Tabs, TextareaAutosize, TextField, Toolbar, Typography
 } from "@mui/material";
+import '../css/recon_all.css';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem'
 
@@ -884,6 +885,14 @@ class FreesurferReconFunctionPage extends React.Component {
                                         </Button>
                                     </FormControl>
                                 </form>
+                                <div className="button-container">
+                                        <Button  variant="contained" color="primary"
+                                                 onClick={this.handleCoregProceed}
+                                                 disabled={ (this.state.vol2vol_finished ? false : "disabled")}>
+                                            Check out Results
+                                        </Button>
+                                        <ProceedButton></ProceedButton>
+                                </div>
                             </Grid>
                             <Grid item xs={8}>
                                 <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -940,13 +949,6 @@ class FreesurferReconFunctionPage extends React.Component {
                                     </Button>
                                 </form>
                                 {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
-                                <ProceedButton></ProceedButton>
-                                <Button  variant="contained" color="primary"
-                                         onClick={this.handleCoregProceed}
-                                         disabled={ (this.state.vol2vol_finished ? false : "disabled")  }
-                                         sx={{margin: "8px"}}>
-                                    Check out Results
-                                </Button>
                                 {this.state.coreg_results && (
                                 <MRIViewerWin requested_file_1={this.state.selected_ref_file_name} requested_file_2={"flair_reg_".concat(this.state.selected_ref_file_name)}/>
                                         )}
@@ -1055,9 +1057,26 @@ class FreesurferReconFunctionPage extends React.Component {
                                             <FormHelperText>Threshold applied to the probability of a voxel being lesion. Default is 0.3, tweaking this value (between 0.0 and 1.0) changes the balance between false positive (low threshold value) and false negative (high threshold value) lesion detections.</FormHelperText>
                                         </FormControl>
                                     </div>
-                                    <Button variant="contained" color="primary" type="submit" disabled={this.state.samseg_started}>
-                                        Start Samseg
-                                    </Button>
+                                    <div className="button-container">
+                                            <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    type="submit"
+                                                    disabled={this.state.samseg_started}
+                                                    style={{ width: '100%' }}
+                                            >
+                                                Start Samseg
+                                            </Button>
+                                            <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={this.redirectToPage.bind(this, "samseg_results", [], [])}
+                                                    disabled={this.state.samseg_finished ? false : true}
+                                            >
+                                                Check Results
+                                            </Button>
+                                            <ProceedButton></ProceedButton>
+                                    </div>
                                     <Divider/>
                                 </form>
                             </Grid>
@@ -1071,7 +1090,6 @@ class FreesurferReconFunctionPage extends React.Component {
                                         Check progress
                                     </Button>
                                 </form>
-
                                 <br/>
                                 <TextareaAutosize
                                         id = "recon-status-text"
@@ -1086,14 +1104,6 @@ class FreesurferReconFunctionPage extends React.Component {
                                             margin: "8px"
                                         }}
                                 />
-                                <ProceedButton></ProceedButton>
-                                 //TODO Button Should redirect to specific page denoted by workflowid, stepid, runid
-                                <Button  variant="contained" color="primary"
-                                         onClick={this.redirectToPage.bind(this, "samseg_results", [], [])}
-                                         disabled={ (this.state.samseg_finished ? false : "disabled")  }
-                                         sx={{margin: "8px"}}>
-                                    Check out Results
-                                </Button>
                             </Grid>
                         </Grid>
                     </TabPanel>
@@ -1220,11 +1230,20 @@ class FreesurferReconFunctionPage extends React.Component {
                                         </Select>
                                         <FormHelperText>Whether to save the resampled images. Applies to returning segmentations at 1mm resolution.</FormHelperText>
                                     </FormControl>
-                                    <Button variant="contained" color="primary" type="submit" disabled={this.state.synthseg_started}>
-                                        Start SynthSeg
-                                    </Button>
                                     <Divider/>
+                                    <Button variant="contained" color="primary" type="submit" disabled={this.state.synthseg_started} sx={{margin: "8px", width: "90%"}}>
+                                    Start SynthSeg
+                                    </Button>
                                 </form>
+                                <div className="button-container">
+                                    {/*TODO Button Should redirect to specific page denoted by workflowid, stepid, runid*/}
+                                    <Button  variant="contained" color="primary"
+                                         onClick={this.redirectToPage.bind(this, "synthseg_results", [], [])}
+                                         disabled={ (this.state.synthseg_finished ? false : "disabled")  }>
+                                        Check out Results
+                                    </Button>
+                                    <ProceedButton></ProceedButton>
+                                </div>
                             </Grid>
                             <Grid item xs={8}>
                                 <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
@@ -1250,14 +1269,6 @@ class FreesurferReconFunctionPage extends React.Component {
                                             margin: "8px"
                                         }}
                                 />
-                                <ProceedButton></ProceedButton>
-                                 //TODO Button Should redirect to specific page denoted by workflowid, stepid, runid
-                                <Button  variant="contained" color="primary"
-                                         onClick={this.redirectToPage.bind(this, "synthseg_results", [], [])}
-                                         disabled={ (this.state.synthseg_finished ? false : "disabled")  }
-                                         sx={{margin: "8px"}}>
-                                    Check out Results
-                                </Button>
                             </Grid>
                         </Grid>
                     </TabPanel>
