@@ -85,7 +85,7 @@ class ProceedButton extends React.Component {
 
     render() {
         return (
-            <Button onClick={this.handleProceed} sx={{float: "right", marginRight: "2px"}} variant="contained"
+            <Button onClick={this.handleProceed} sx={{float: "right", marginRight: "5px"}} variant="contained"
                     color="primary" type="submit"
                 // disabled={!this.props.resultsExist}
             >
