@@ -13,6 +13,7 @@
     "@mui/material": "^5.10.10",
     "@mui/system": "^5.6.2",
     "@mui/x-data-grid": "^5.14.0",
+    "@react-keycloak/web": "^3.4.0",
     "@types/react-plotly.js": "^2.6.0",
     "axios": "^0.26.1",
     "cra-template": "1.1.3",
