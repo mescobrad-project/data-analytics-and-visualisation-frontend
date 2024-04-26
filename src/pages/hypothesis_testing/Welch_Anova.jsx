@@ -15,7 +15,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
-import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
+
 
 const userColumns = [
     { field: "Source",
@@ -189,6 +189,11 @@ class Welch_Ancova extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
+        if (window.confirm("By proceeding you will complete the analysis and navigate back to the Workflow Manager.\n Do you wish to proceed?")===false)
+        {
+            // event.preventDefault();
+            return
+        }
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
@@ -309,10 +314,6 @@ class Welch_Ancova extends React.Component {
                                 </Select>
                                 <FormHelperText>Name of column in data with the between factor.</FormHelperText>
                             </FormControl>
-                            <SelectorWithCheckBoxes
-                                    data={this.state.column_names}
-                            />
-
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
                                     disabled={this.state.selected_dependent_variable.length===0 || this.state.selected_between_factor.length===0 }

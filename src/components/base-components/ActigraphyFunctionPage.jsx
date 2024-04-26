@@ -838,6 +838,7 @@ class ActigraphyFunctionPage extends React.Component {
                         <ProceedButton></ProceedButton>
                     </FormControl>
                 </form>
+
                 <ProceedButton></ProceedButton>
                 {/*<Button variant="contained" color="primary" type="button" size="large"*/}
                 {/*        onClick={redirectToPage.bind(this,1, 1, 6, "actigraphy_page", ["saved"], ["psg1 anonym2.edf"])}*/}

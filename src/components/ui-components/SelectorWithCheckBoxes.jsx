@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import {Checkbox, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select} from '@mui/material'
 
-const SelectorWithCheckBoxes = (props) =>{
-   const options = props.data.length > 0 ? props.data : []
+const SelectorWithCheckBoxes = ({data, onChildClick}) =>{
+    const options = data.length > 0 ? data : []
     const [selected, setSelected] = useState([]);
     const isAllSelected =
         options.length > 0 && selected.length === options.length
@@ -11,15 +11,18 @@ const SelectorWithCheckBoxes = (props) =>{
         const value = event.target.value
         if (value[value.length - 1]==='all') {
             setSelected(selected.length === options.length ? [] : options)
+            onChildClick(selected.length === options.length ? [] : options)
             return;
         }
         setSelected(value)
+        onChildClick(value)
     };
     return (
             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                 <InputLabel id="mutiple-select-label">Multiple Select</InputLabel>
                 <Select value={selected}
                         multiple
+                        label="Select Variable"
                         labelId='multi-select'
                         className='dropdown'
                         onChange={handleChange}
