@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import React from "react";
+// import React from "react";
 // import Plot from 'react-plotly.js';
 // import actigraph1 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/1actigraphy_visualisation.png";
 // import actigraph2 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/2actigraphy_visualisation.png";
@@ -9,7 +9,7 @@ import React from "react";
 import Plot from "react-plotly.js";
 import API from "../../axiosInstance";
 import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
-import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
+// import {GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 // import InnerHTML from 'dangerously-set-html-content'
 
 // import PropTypes from 'prop-types';
@@ -147,6 +147,10 @@ class ActigraphyFunctionPage extends React.Component {
                 height: 600,
             }],
             data_plot_kripke: [],
+            data_stages_plot_daily: [],
+            layout_stages_plot_daily: [],
+            data_final_stages_plot_daily: [],
+            layout_final_stages_plot_daily: [],
             data_plot_daily: [],
             layout_daily: [],
             final_data_plot_daily: [],
@@ -191,7 +195,9 @@ class ActigraphyFunctionPage extends React.Component {
         this.handleSubmitInitialDataset = this.handleSubmitInitialDataset.bind(this);
         this.handleSubmitFinalDataset = this.handleSubmitFinalDataset.bind(this);
         this.handleSubmitVisualisationResults = this.handleSubmitVisualisationResults.bind(this);
+        this.handleSubmitStagesVisualisationResults = this.handleSubmitStagesVisualisationResults.bind(this);
         this.handleSubmitFinalVisualisationResults = this.handleSubmitFinalVisualisationResults.bind(this);
+        this.handleSubmitFinalStagesVisualisationResults = this.handleSubmitFinalStagesVisualisationResults.bind(this);
         this.handleMaskPeriodStartDateChange = this.handleMaskPeriodStartDateChange.bind(this);
         this.handleMaskPeriodEndDateChange = this.handleMaskPeriodEndDateChange.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
@@ -257,6 +263,29 @@ class ActigraphyFunctionPage extends React.Component {
         });
     }
 
+    async handleSubmitStagesVisualisationResults() {
+        const params = new URLSearchParams(window.location.search);
+        this.setState({results_show: true})
+        API.get("/return_daily_activity_status_stages", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                dataset: this.state.selected_file_name,
+                start_date: this.state.start_date,
+                end_date: this.state.end_date
+            }
+        }).then(res => {
+            console.log("StagesVisualisationResults")
+            console.log(res.data.stages_visualisation_figure)
+            let json_response = JSON.parse(res.data.stages_visualisation_figure)
+            this.setState({data_stages_plot_daily: json_response["data"]})
+            this.setState({layout_stages_plot_daily: json_response["layout"]})
+            this.setState({tabvalue:1})
+            this.setState({second_tab_done:true})
+        });
+    }
+
     async handleSubmitFinalVisualisationResults() {
         const params = new URLSearchParams(window.location.search);
         this.setState({results_show: true})
@@ -275,6 +304,28 @@ class ActigraphyFunctionPage extends React.Component {
             this.setState({final_data_plot_daily: json_response["data"]})
             this.setState({final_layout_daily: json_response["layout"]})
             this.setState({fifth_tab_done:true})
+        });
+    }
+
+    async handleSubmitFinalStagesVisualisationResults() {
+        const params = new URLSearchParams(window.location.search);
+        this.setState({results_show: true})
+        API.get("/return_final_daily_activity_status_stages", {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                start_date: this.state.start_date,
+                end_date: this.state.end_date
+            }
+        }).then(res => {
+            console.log("StagesVisualisationResults")
+            console.log(res.data.final_stages_visualisation_figure)
+            let json_response = JSON.parse(res.data.final_stages_visualisation_figure)
+            this.setState({data_final_stages_plot_daily: json_response["data"]})
+            this.setState({layout_final_stages_plot_daily: json_response["layout"]})
+            // this.setState({tabvalue:1})
+            this.setState({second_tab_done:true})
         });
     }
 
@@ -519,7 +570,7 @@ class ActigraphyFunctionPage extends React.Component {
                     </List>
                 </FormControl>
                 <hr/>
-                <form onSubmit={(event) => {event.preventDefault();this.handleSubmit_daily();this.handleSubmitVisualisationResults();}}>
+                <form onSubmit={(event) => {event.preventDefault();this.handleSubmit_daily();this.handleSubmitVisualisationResults();this.handleSubmitStagesVisualisationResults();}}>
                     <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                         <InputLabel id="startdate-label">Start Date</InputLabel>
                         <Select
@@ -621,7 +672,21 @@ class ActigraphyFunctionPage extends React.Component {
                         {!this.state.second_tab_done ? (
                                 <LoadingWidget/>
                         ) : (
-                            <Plot layout={this.state.layout_daily} data={this.state.data_plot_daily} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                <Grid container direction="row">
+                                    <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
+                                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                            Activity visualisation
+                                        </Typography>
+                                        <Plot layout={this.state.layout_daily} data={this.state.data_plot_daily} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                    </Grid>
+
+                                    <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
+                                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                            Sleep stages visualisation
+                                        </Typography>
+                                        <Plot layout={this.state.layout_stages_plot_daily} data={this.state.data_stages_plot_daily} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                    </Grid>
+                                </Grid>
                         )}
                     </TabPanel>
 
@@ -642,7 +707,7 @@ class ActigraphyFunctionPage extends React.Component {
                                     </Grid>
                                     <Grid item xs={5} sx={{ borderRight: "1px solid grey"}}>
                                         {/*<Plot layout={this.state.layout_day_1} data={this.state.data_day_1} config={this.state.configObj} onSelected={this.handleSelected}/>*/}
-                                        <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();}}>
+                                        <form onSubmit={(event) => {event.preventDefault(); this.handleSubmitActivityStatus();this.handleSubmitFinalDataset();this.handleSubmitFinalVisualisationResults();this.handleSubmitFinalVisualisationResults();this.handleSubmitFinalStagesVisualisationResults();}}>
                                             <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                                                 <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Points</span></FormHelperText>
                                                 <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -693,7 +758,20 @@ class ActigraphyFunctionPage extends React.Component {
                         {!this.state.fifth_tab_done ? (
                                 <LoadingWidget/>
                         ) : (
-                                <Plot layout={this.state.final_layout_daily} data={this.state.final_data_plot_daily} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                <Grid container direction="row">
+                                    <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
+                                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                            Final visualisation
+                                        </Typography>
+                                        <Plot layout={this.state.final_layout_daily} data={this.state.final_data_plot_daily} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                    </Grid>
+                                    <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
+                                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                            Sleep stages visualisation
+                                        </Typography>
+                                        <Plot layout={this.state.layout_final_stages_plot_daily} data={this.state.data_final_stages_plot_daily} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                    </Grid>
+                                </Grid>
                         )}
                     </TabPanel>
                 </Grid>
