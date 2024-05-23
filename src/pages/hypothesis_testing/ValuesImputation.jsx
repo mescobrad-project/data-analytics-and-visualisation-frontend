@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 import qs from "qs";
 import JsonTable from "ts-react-json-table";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import {CSVLink} from "react-csv";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -324,6 +325,8 @@ class ValuesImputation extends React.Component {
                                             <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     ) : (
                                             <Grid>
+                                                <CSVLink data={this.state.newdataset}
+                                                         filename={"Imputation.csv"}>Download</CSVLink>
                                             <JsonTable className="jsonResultsTable"
                                                        rows = {this.state.newdataset}/></Grid>
                                     )}

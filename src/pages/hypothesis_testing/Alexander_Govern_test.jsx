@@ -63,7 +63,8 @@ class Alexander_Govern_test extends React.Component {
             selected_file_name: "",
             selected_nan_policy:"omit",
             selected_statistical_test:"Alexander Govern test",
-            stats_show:false
+            stats_show:false,
+            tabvalue:1
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
