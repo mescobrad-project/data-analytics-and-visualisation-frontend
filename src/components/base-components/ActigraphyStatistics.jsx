@@ -327,11 +327,13 @@ class ActigraphyStatistics extends React.Component {
                     </TabPanel>
 
                    <TabPanel value={this.state.tabvalue} index={1}>
-                       <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                           Sleep statistics transition matrix
-                       </Typography>
-                       <Grid container direction="row">
+
+                       <Grid container direction="col">
+
                            <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
+                               <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                   Sleep statistics transition matrix
+                               </Typography>
                            {!this.state.done ? (
                                    <LoadingWidget/>
                            ) : (
@@ -342,14 +344,12 @@ class ActigraphyStatistics extends React.Component {
                                    />
                            )}
                            </Grid>
-                       </Grid>
-                       <Grid container direction="row">
                            <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
                                {/*<Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
                                {/*    The calculated duration of records*/}
                                {/*</Typography>*/}
                                {/*{"Duration: " + this.state.duration}*/}
-                               <Grid container direction="col">
+                               <Grid container direction="col" justifyContent={"center"} alignItems={"center"}>
                                    <Grid item xs={6} sx={{ borderRight: "1px solid grey"}}>
                                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
                                            The count transition matrix
@@ -374,6 +374,9 @@ class ActigraphyStatistics extends React.Component {
                                    </Grid>
                                </Grid>
                            </Grid>
+                       </Grid>
+                       <Grid container direction="row">
+
                        </Grid>
 
                    </TabPanel>
