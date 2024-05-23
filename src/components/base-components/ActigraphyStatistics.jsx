@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Plot from "react-plotly.js";
 import API from "../../axiosInstance";
+import ProceedButton from "../ui-components/ProceedButton";
 import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
 import {
     Button, Divider,
@@ -253,6 +254,9 @@ class ActigraphyStatistics extends React.Component {
                         }}>
                             Submit
                         </Button>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'21%'}} size={"small"} >
+                        <ProceedButton outputType={"actigraphy_stats"}></ProceedButton>
                     </FormControl>
                     <hr/>
                 </form>
