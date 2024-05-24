@@ -238,7 +238,7 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            SEM Parameterisation
+                            EFA Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -318,7 +318,7 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                                         labelId="selected_levels-selector-label"
                                         id="selected_levels-selector"
                                         value={this.state.selected_levels}
-                                        label="p-value cutoff"
+                                        label="selected levels"
                                         onChange={this.handleSelectLevelsChange}
                                 />
                                 <FormHelperText>The number of levels. Higher values allow for a more hierarchical model.</FormHelperText>

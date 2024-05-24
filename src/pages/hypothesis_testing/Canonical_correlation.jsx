@@ -95,7 +95,7 @@ class Canonical_correlation extends React.Component {
             stats_show: false,
             svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XYcorr.svg',
-            svg2_path : ip + 'runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            svg2_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_comp_corr.svg',
             svg3_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XY_c_corr.svg',

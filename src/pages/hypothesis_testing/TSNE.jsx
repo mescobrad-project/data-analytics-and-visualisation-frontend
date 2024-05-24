@@ -7,6 +7,9 @@ import {
     FormHelperText,
     Grid,
     InputLabel,
+    List,
+    ListItem,
+    ListItemText,
     MenuItem,
     Select, Tab,
     Table,
@@ -16,6 +19,7 @@ import {
     TableHead,
     TableRow,
     Tabs,
+    TextareaAutosize,
     TextField,
     Typography
 } from "@mui/material";
@@ -26,7 +30,6 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import Plot from "react-plotly.js";
 import {CSVLink} from "react-csv";
-import ProceedButton from "../../components/ui-components/ProceedButton";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -60,7 +63,7 @@ function a11yProps(index) {
     };
 }
 
-class PrincipalComponentAnalysis extends React.Component {
+class TSNE extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
@@ -73,43 +76,39 @@ class PrincipalComponentAnalysis extends React.Component {
             // List of columns sent by the backend
             column_names: [],
             file_names:[],
-            Principal_axes:'',
-            Explained_variance:'',
-            Explained_variance_ratio:'',
-            Singular_values:'',
-            PrincipalComponents_Df:'',
             //Values selected currently on the form
             selected_column: "",
             selected_file_name: "",
             selected_categorical_column:'',
             selected_n_components_1: 2,
-            selected_svd_solver: 'auto',
+            selected_n_iter:1000,
+            selected_perplexity:50,
+            selected_early_exaggeration:12,
+            selected_init:'pca',
+            selected_method:'barnes_hut',
             selected_categorical_variable: '',
             selected_independent_variables: '',
             selected_independent_variables_wf: [],
             test_data:{
-                columns:[],
-                n_features_:"",
-                n_features_in_:"",
-                n_samples_:"",
-                random_state:"",
-                iterated_power:"",
-                mean_:[],
-                explained_variance_:[],
-                noise_variance_:"",
-                pve: [],
-                singular_values: [],
-                principal_axes: []
+                transformed:"",
+                embeddings_vector:"",
+                Kullback_Leibler:""
             },
+            Transformed_cols:"",
+            Embeddings_vector:"",
             // Hide/show results
-            PCA_show : false,
+            TSNE_show : false,
             svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/PCA.svg',
         };
 
         //Binding functions of the class
         this.handleSelectNComponents1Change = this.handleSelectNComponents1Change.bind(this);
-        this.handleSelectSVDChange = this.handleSelectSVDChange.bind(this);
+        this.handleSelectN_iterChange = this.handleSelectN_iterChange.bind(this);
+        this.handleSelectPerplexityChange = this.handleSelectPerplexityChange.bind(this);
+        this.handleSelectEarly_exaggerationChange = this.handleSelectEarly_exaggerationChange.bind(this);
+        this.handleSelectInitChange = this.handleSelectInitChange.bind(this);
+        this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.handleSelectCategoricalColumnChange = this.handleSelectCategoricalColumnChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -140,15 +139,19 @@ class PrincipalComponentAnalysis extends React.Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        this.setState({PCA_show: false})
+        this.setState({TSNE_show: false})
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("principal_component_analysis", {
+        API.get("tsne", {
                     params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                         n_components_1: this.state.selected_n_components_1,
-                        svd_solver: this.state.selected_svd_solver,
+                        n_iter: this.state.selected_n_iter,
+                        perplexity:this.state.selected_perplexity,
+                        early_exaggeration:this.state.selected_early_exaggeration,
+                        init:this.state.selected_init,
+                        method:this.state.selected_method,
                         categorical_variable:this.state.selected_categorical_variable,
                         independent_variables: this.state.selected_independent_variables_wf},
                 paramsSerializer : params => {
@@ -156,14 +159,10 @@ class PrincipalComponentAnalysis extends React.Component {
                 }
         }).then(res => {
             this.setState({test_data: res.data})
-            this.setState({Principal_axes: JSON.parse(res.data.principal_axes)})
-            this.setState({Explained_variance: JSON.parse(res.data.explained_variance_)})
-            this.setState({Explained_variance_ratio: JSON.parse(res.data.pve)})
-            this.setState({Singular_values: JSON.parse(res.data.singular_values)})
-            this.setState({PrincipalComponents_Df: JSON.parse(res.data.principalComponents_Df)})
-            this.setState({PCA_show: true})
+            this.setState({Transformed_cols: JSON.parse(res.data.transformed)})
+            this.setState({Embeddings_vector: JSON.parse(res.data.embeddings_vector)})
+            this.setState({TSNE_show: true})
             this.setState({tabvalue:1})
-
         });
     }
 
@@ -210,16 +209,33 @@ class PrincipalComponentAnalysis extends React.Component {
         });
     }
     resetResultArea(){
-        this.setState({PCA_show: false})
+        this.setState({TSNE_show: false})
     }
     handleSelectNComponents1Change(event){
         this.setState( {selected_n_components_1: event.target.value})
         this.resetResultArea()
     }
-    handleSelectSVDChange(event){
-        this.setState( {selected_svd_solver: event.target.value})
+    handleSelectN_iterChange(event){
+        this.setState( {selected_n_iter: event.target.value})
         this.resetResultArea()
     }
+    handleSelectPerplexityChange(event){
+        this.setState( {selected_perplexity: event.target.value})
+        this.resetResultArea()
+    }
+    handleSelectEarly_exaggerationChange(event){
+        this.setState( {selected_early_exaggeration: event.target.value})
+        this.resetResultArea()
+    }
+    handleSelectInitChange(event){
+        this.setState( {selected_init: event.target.value})
+        this.resetResultArea()
+    }
+    handleSelectMethodChange(event){
+        this.setState( {selected_method: event.target.value})
+        this.resetResultArea()
+    }
+
     handleSelectIndependentVariableChange(event){
         this.setState( {selected_independent_variables: event.target.value})
         var newArray = this.state.selected_independent_variables_wf.slice();
@@ -272,22 +288,14 @@ class PrincipalComponentAnalysis extends React.Component {
             this.setState({output_return_data: res.data})
         });
         console.log(this.state.output_return_data);
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-
-    }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
+        window.location.replace("/")
     }
     render() {
         return (
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Principal component analysis Parameterisation
+                            TSNE analysis Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -333,19 +341,68 @@ class PrincipalComponentAnalysis extends React.Component {
                                 <FormHelperText>Selection must be an integer</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="svd_solver-label">svd solver</InputLabel>
-                                <Select
-                                        labelId="svd_solver-label"
-                                        id="svd_solver-selector"
-                                        value= {this.state.selected_svd_solver}
+                                <TextField
+                                        labelId="n_iter-label"
+                                        id="n_iter-selector"
+                                        value= {this.state.selected_n_iter}
                                         label="SVD solver"
-                                        onChange={this.handleSelectSVDChange}
+                                        onChange={this.handleSelectN_iterChange}
+                                        type="number"
+                                >
+                                </TextField>
+                                <FormHelperText>Maximum number of iterations for the optimization.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        labelId="perplexity-label"
+                                        id="perplexity-selector"
+                                        value= {this.state.selected_perplexity}
+                                        label="Perplexity"
+                                        onChange={this.handleSelectPerplexityChange}
+                                        type="number"
+                                />
+                                <FormHelperText>The perplexity is related to the number of nearest neighbors that is used in other manifold learning algorithms. </FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        labelId="early_exaggeration-label"
+                                        id="early_exaggeration-selector"
+                                        value= {this.state.selected_early_exaggeration}
+                                        label="Early exaggeration"
+                                        onChange={this.handleSelectEarly_exaggerationChange}
+                                        type="number"
+                                />
+                                <FormHelperText>Controls how tight natural clusters in the original space are in the embedded space and how much space will be between them.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="init-label">Init</InputLabel>
+                                <Select
+                                        labelId="init-label"
+                                        id="init-selector"
+                                        value= {this.state.selected_init}
+                                        label="Init"
+                                        onChange={this.handleSelectInitChange}
                                         // type="number"
                                 >
-                                    <MenuItem value={"auto"}><em>auto</em></MenuItem>
-                                    <MenuItem value={"full"}><em>full</em></MenuItem>
+                                    <MenuItem value={"random"}><em>random</em></MenuItem>
+                                    <MenuItem value={"pca"}><em>pca</em></MenuItem>
                                 </Select>
-                                <FormHelperText>The solver is selected by a default policy based on X.shape and n_components</FormHelperText>
+                                <FormHelperText>The gradient calculation algorithm uses 'Barnes-Hut' approximation running in O(NlogN) time, or 'exact' running in O(N^2) time.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="method-label">Method</InputLabel>
+                                <Select
+                                        labelId="method-label"
+                                        id="method-selector"
+                                        value= {this.state.selected_method}
+                                        label="SVD solver"
+                                        onChange={this.handleSelectMethodChange}
+                                        // type="number"
+                                >
+                                    <MenuItem value={"barnes_hut"}><em>barnes_hut</em></MenuItem>
+                                    <MenuItem value={"exact"}><em>exact</em></MenuItem>
+                                </Select>
+                                <FormHelperText>The gradient calculation algorithm uses 'Barnes-Hut' approximation running in O(NlogN) time, or 'exact' running in O(N^2) time.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="column-selector-label">Columns</InputLabel>
@@ -369,13 +426,12 @@ class PrincipalComponentAnalysis extends React.Component {
                                 Submit
                             </Button>
                         </form>
-                        {/*<form onSubmit={this.handleProceed}>*/}
-                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
-                        {/*            disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}>*/}
-                        {/*        Proceed*/}
-                        {/*    </Button>*/}
-                        {/*</form>*/}
-                        <ProceedButton disabled={!this.state.PCA_show || !(this.state.test_data.status==='Success')}></ProceedButton>
+                        <form onSubmit={this.handleProceed}>
+                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
+                                    disabled={!this.state.TSNE_show || !(this.state.test_data.status==='Success')}>
+                                Proceed
+                            </Button>
+                        </form>
                         <br/>
                         <br/>
                         <hr/>
@@ -400,7 +456,7 @@ class PrincipalComponentAnalysis extends React.Component {
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Principal component analysis Result
+                            TSNE analysis Result
                         </Typography>
                         <hr class="result"/>
                         <Grid sx={{ width: '100%' }}>
@@ -417,131 +473,25 @@ class PrincipalComponentAnalysis extends React.Component {
                                 ) : (
                                     <Grid container direction="row">
                                         <Grid sx={{ flexGrow: 1}} >
-                                            <div style={{ display: (this.state.PCA_show ? 'block' : 'none') }}>
-                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}}>
-                                                    <Table sx={{textAlign:"right"}}>
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <TableCell className="tableHeadCell" sx={{width:'60%'}}></TableCell>
-                                                                <TableCell className="tableHeadCell" sx={{width:'40%'}}>test_statistic</TableCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                            <TableRow>
-                                                                <TableCell className="tableCell">{'Number of features in the training data.'}</TableCell>
-                                                                <TableCell className="tableCell">{this.state.test_data.n_features_}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell className="tableCell">{'Number of features seen during fit.'}</TableCell>
-                                                                <TableCell className="tableCell">{this.state.test_data.n_features_in_}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell className="tableCell">{'Number of samples in the training data.'}</TableCell>
-                                                                <TableCell className="tableCell">{this.state.test_data.n_samples_}</TableCell>
-                                                            </TableRow>
-                                                            {/*<TableRow>*/}
-                                                            {/*    <TableCell className="tableCell">{'Used when the ‘arpack’ or ‘randomized’ solvers are used.'}</TableCell>*/}
-                                                            {/*    <TableCell className="tableCell">{this.state.test_data.random_state}</TableCell>*/}
-                                                            {/*</TableRow>*/}
-                                                            <TableRow>
-                                                                <TableCell className="tableCell">{'Number of iterations for the power method.'}</TableCell>
-                                                                <TableCell className="tableCell">{this.state.test_data.iterated_power}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell className="tableCell">{'The estimated noise covariance following the Probabilistic PCA model from Tipping and Bishop 1999.'}</TableCell>
-                                                                <TableCell className="tableCell">{Number.parseFloat(this.state.test_data.noise_variance_).toFixed(6)}</TableCell>
-                                                            </TableRow>
-                                                            {/*{this.state.test_data.explained_variance_.map((item)=> {*/}
-                                                            {/*    return (*/}
-                                                            {/*            <TableRow>*/}
-                                                            {/*                <TableCell className="tableCell">{'The amount of variance explained by each of the selected components. The variance estimation uses n_samples - 1 degrees of freedom.'}</TableCell>*/}
-                                                            {/*                <TableCell className="tableCell">{Number.parseFloat(item).toFixed(6)}</TableCell>*/}
-                                                            {/*            </TableRow>);*/}
-                                                            {/*})}*/}
-                                                            {/*{this.state.test_data.pve.map((item)=> {*/}
-                                                            {/*    return (*/}
-                                                            {/*            <TableRow>*/}
-                                                            {/*                <TableCell className="tableCell">{'Percentage of variance explained by each of the selected components.'}</TableCell>*/}
-                                                            {/*                <TableCell className="tableCell">{Number.parseFloat(item).toFixed(6)}</TableCell>*/}
-                                                            {/*            </TableRow>);*/}
-                                                            {/*})}*/}
-                                                            {/*{this.state.test_data.singular_values.map((item)=> {*/}
-                                                            {/*    return (*/}
-                                                            {/*            <TableRow>*/}
-                                                            {/*                <TableCell className="tableCell">{'The singular values corresponding to each of the selected components.'}</TableCell>*/}
-                                                            {/*                <TableCell className="tableCell">{Number.parseFloat(item).toFixed(6)}</TableCell>*/}
-                                                            {/*            </TableRow>);*/}
-                                                            {/*})}*/}
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
-                                                <TableContainer component={Paper} className="ExtremeValues" sx={{width:'90%'}}>
-                                                    <Table>
-                                                        <TableHead>
-                                                            <TableRow sx={{alignContent:"right"}}>
-                                                                <TableCell className="tableHeadCell" sx={{width:'30%'}}></TableCell>
-                                                            {
-                                                            this.state.test_data.columns.map((item)=>{
-                                                                return (
-                                                                            <TableCell className="tableHeadCell">{item}</TableCell>
-                                                                        )})}
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                            <TableRow>
-                                                                <TableCell className="tableCell">{'Mean'}</TableCell>
-                                                                {this.state.test_data.mean_.map((item)=> {
-                                                                    return (
-                                                                            <TableCell className="tableCell">{Number.parseFloat(item).toFixed(6)}</TableCell>
-                                                                    );
-                                                                })}
-                                                            </TableRow>
-                                                            {/*<TableRow>*/}
-                                                            {/*    <TableCell className="tableCell">{'Principal axes in feature space, representing the directions of maximum variance in the data.'}</TableCell>*/}
-                                                            {/*    {this.state.test_data.principal_axes.map((item)=> {*/}
-                                                            {/*        return (*/}
-                                                            {/*                <TableCell className="tableCell">{Number.parseFloat(item).toFixed(6)}</TableCell>*/}
-                                                            {/*        );*/}
-                                                            {/*    })}*/}
-                                                            {/*</TableRow>*/}
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
-                                                <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
+                                            <div style={{ display: (this.state.TSNE_show ? 'block' : 'none') }}>
+                                                <Card style={{ display: (this.state.TSNE_show ? 'block' : 'none'), padding:'5px' }}>
                                                     <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
                                                         <Typography variant="h5" component="div">
-                                                            Principal axes in feature space, representing the directions of maximum variance in the data. </Typography>
-                                                        <JsonTable className="jsonResultsTable"
-                                                                   rows = {this.state.Principal_axes}/>
+                                                            Kullback-Leibler divergence after optimization. </Typography>
+                                                        {Number.parseFloat(this.state.test_data.Kullback_Leibler).toFixed(6)}
                                                     </CardContent>
                                                 </Card>
-                                                <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
+                                                <Card style={{ display: (this.state.TSNE_show ? 'block' : 'none'), padding:'5px' }}>
                                                     <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
                                                         <Typography variant="h5" component="div">
-                                                            The amount of variance explained by each of the selected components. </Typography>
+                                                            Embeddings_vector. </Typography>
                                                         <JsonTable className="jsonResultsTable"
-                                                                   rows = {this.state.Explained_variance}/>
-                                                    </CardContent>
-                                                </Card>
-                                                <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
-                                                    <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
-                                                        <Typography variant="h5" component="div">
-                                                            Percentage of variance explained by each of the selected components. </Typography>
-                                                        <JsonTable className="jsonResultsTable"
-                                                                   rows = {this.state.Explained_variance_ratio}/>
-                                                    </CardContent>
-                                                </Card>
-                                                <Card style={{ display: (this.state.PCA_show ? 'block' : 'none'), padding:'5px' }}>
-                                                    <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
-                                                        <Typography variant="h5" component="div">
-                                                            Percentage of variance explained by each of the selected components. </Typography>
-                                                        <JsonTable className="jsonResultsTable"
-                                                                   rows = {this.state.Singular_values}/>
+                                                                   rows = {this.state.Embeddings_vector}/>
                                                     </CardContent>
                                                 </Card>
                                             </div>
                                             <Grid item xs={12} style={{ display: 'inline-block', padding:'20px'}}>
-                                                <Card style={{ display: (this.state.PCA_show ? 'block' : 'none') }}>
+                                                <Card style={{ display: (this.state.TSNE_show ? 'block' : 'none') }}>
                                                     <CardContent sx={{m: 1, width:'100%', alignContent:'center'}}>
                                                         <Typography variant="h5" component="div">
                                                             Components. </Typography>
@@ -567,10 +517,10 @@ class PrincipalComponentAnalysis extends React.Component {
                             </TabPanel>
                             <TabPanel value={this.state.tabvalue} index={2}>
                                 <Box>
-                                    <CSVLink data={this.state.PrincipalComponents_Df}
-                                             filename="PCA_components.csv">Download</CSVLink>
+                                    <CSVLink data={this.state.Transformed_cols}
+                                             filename="TSNE.csv">Download</CSVLink>
                                     <JsonTable className="jsonResultsTable"
-                                               rows = {this.state.PrincipalComponents_Df}/>
+                                               rows = {this.state.Transformed_cols}/>
                                 </Box>
                             </TabPanel>
                         </Grid>
@@ -580,4 +530,4 @@ class PrincipalComponentAnalysis extends React.Component {
     }
 }
 
-export default PrincipalComponentAnalysis;
+export default TSNE;

@@ -687,6 +687,26 @@ function WelcomePage() {
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                             >
+                                <Typography>Data</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails orientation="vertical">
+                            <Button
+                                    variant="contained"
+                                    size="medium"
+                                    endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                    fullWidth
+                                    onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "valuesimputation", ["demo","demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset.csv", "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/test_dataset_01.csv"], [])}
+                            >
+                                Missing values Imputation
+                            </Button>
+                            </AccordionDetails>
+                        </Accordion>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                            >
                                 <Typography>General Statistics</Typography>
                             </AccordionSummary>
                             <AccordionDetails orientation="vertical">
@@ -1607,6 +1627,15 @@ function WelcomePage() {
                         >
                             Principal Component Analysis
                         </Button>
+                        <Button
+                                size="medium"
+                                variant="contained"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "tsne",["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv"], [])}
+                        >
+                            t-distributed Stochastic Neighbor Embedding
+                        </Button>
+
                         {/*<Button*/}
                         {/*        variant="contained"*/}
                         {/*        size="medium"*/}
