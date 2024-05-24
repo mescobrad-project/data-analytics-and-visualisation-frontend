@@ -40,6 +40,7 @@
     "sass": "^1.54.1",
     "sass-loader": "^13.0.2",
     "ts-react-json-table": "^0.1.2",
+    "universal-cookie": "^7.1.4",
     "webpack": "^5.74.0"
   },
   "scripts": {

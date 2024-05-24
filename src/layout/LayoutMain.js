@@ -5,6 +5,7 @@ import Keycloak from "keycloak-js";
 import "../components/css/loading.css"
 import * as httpClient from "browserslist";
 import API from "../axiosInstance";
+import Cookies from 'universal-cookie';
 
 const LayoutMain = ({children}) => {
     const [keycloak, setKeycloak] = useState(null);
@@ -29,7 +30,13 @@ const LayoutMain = ({children}) => {
 
             let bodyToSend = {"token" : keycloak.token }
             API.post("/save/token", bodyToSend).then(res => {
-                console.log("Success")
+
+                console.log("Success,cookie is set")
+                // console.log(keycloak)
+                // const cookies = new Cookies();
+                // cookies.set('my_token', keycloak.token, {path:'/'});
+                // console.log(cookies.get('my_token'));
+
             });
 
             console.log(keycloak)
