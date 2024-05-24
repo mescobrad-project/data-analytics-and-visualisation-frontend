@@ -1,5 +1,14 @@
 import React, {useState} from 'react'
-import {Checkbox, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select} from '@mui/material'
+import {
+    Checkbox,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    ListItemIcon,
+    ListItemText,
+    MenuItem,
+    Select
+} from '@mui/material'
 
 const SelectorWithCheckBoxes = ({data, onChildClick}) =>{
     const options = data.length > 0 ? data : []
@@ -19,7 +28,7 @@ const SelectorWithCheckBoxes = ({data, onChildClick}) =>{
     };
     return (
             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                <InputLabel id="mutiple-select-label">Multiple Select</InputLabel>
+                <InputLabel id="mutiple-select-label">Select Variables</InputLabel>
                 <Select value={selected}
                         multiple
                         label="Select Variable"
@@ -48,6 +57,7 @@ const SelectorWithCheckBoxes = ({data, onChildClick}) =>{
                             </MenuItem>
                     ))}
                 </Select>
+                <FormHelperText>Select Variables</FormHelperText>
             </FormControl>
         )
     }

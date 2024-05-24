@@ -151,6 +151,7 @@ import SpindleFunctionPage from "./SpindleFunctionPage";
 import keycloakConfig from "./Keycloak";
 import Keycloak from "keycloak-js";
 import * as httpClient from "browserslist";
+import LinearRegressionModelCreation from "../../pages/AI/LinearRegressionModelCreation";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -451,6 +452,8 @@ const App = () => {
                                        element={(<LayoutMain><PoissonRegressionFunctionPage/></LayoutMain>)}/>
                                 <Route exact path="/ValuesImputation"
                                        element={(<LayoutMain><ValuesImputation/></LayoutMain>)}/>
+                                <Route exact path="/LinearRegressionModelCreation"
+                                       element={(<LayoutMain><LinearRegressionModelCreation/></LayoutMain>)}/>
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>

@@ -70,7 +70,6 @@ class General_Stats_Cov extends React.Component {
             //Values selected currently on the form
             selected_variables: [],
             selected_file_name: "",
-            selected_variable_name: "",
             selected_ddof: 0,
             Results:[],
             stats_show: false,
@@ -86,7 +85,7 @@ class General_Stats_Cov extends React.Component {
         this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         this.handleSelectDdofChange = this.handleSelectDdofChange.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
 // // Initialise component
         // // - values of channels from the backend
@@ -210,23 +209,15 @@ class General_Stats_Cov extends React.Component {
             this.state.FrenderChild+=1
         })
     }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
-    }
+    // handleDeleteVariable(event) {
+    //     this.setState({selected_variables:[]})
+    // }
     handleSelectDdofChange(event){
         this.setState( {selected_ddof: event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    // handleListDelete(event) {
-    //     var newArray = this.state.selected_variables.slice();
-    //     const ind = newArray.indexOf(event.target.id);
-    //     let newList = newArray.filter((x, index)=>{
-    //         return index!==ind
-    //     })
-    //     this.setState({selected_variables:newList})
-    // }
 
     render() {
         return (
@@ -252,30 +243,13 @@ class General_Stats_Cov extends React.Component {
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
-                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
-                            {/*    <InputLabel id="column-selector-label">Select Variable</InputLabel>*/}
-                            {/*    <Select*/}
-                            {/*            labelId="column-selector-label"*/}
-                            {/*            id="column-selector"*/}
-                            {/*            value= {this.state.selected_variables}*/}
-                            {/*            label="Select Variable"*/}
-                            {/*            onChange={this.handleSelectVariableNameChange}*/}
-                            {/*    >*/}
-                            {/*        {this.state.column_names.map((column) => (*/}
-                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
-                            {/*        ))}*/}
-                            {/*    </Select>*/}
-                            {/*    <FormHelperText>Select variable in the selected dataset.</FormHelperText>*/}
-                            {/*</FormControl>*/}
                             <SelectorWithCheckBoxes
                                     key={this.state.FrenderChild}
                                     data={this.state.column_names}
                                     // rerender={this.state.rerender_child}
                                     onChildClick={this.handleChildSelectVariableNameChange}
                             />
-                            {console.log(this.state.selected_variables)}
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                {/*<InputLabel id="ddof-selector-label">alpha</InputLabel>*/}
                                 <TextField
                                         labelid="ddof-selector-label"
                                         id="ddof-selector"
@@ -299,15 +273,14 @@ class General_Stats_Cov extends React.Component {
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected variables</FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
-                                                    // onClick={this.handleListDelete}
-                                                    >
+                                            >
                                                 {column}
                                             </Button>
                                     ))}
