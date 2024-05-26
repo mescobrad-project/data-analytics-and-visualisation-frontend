@@ -456,7 +456,7 @@ class SleepStatisticsFunctionPage extends React.Component {
                             {/*    Debug*/}
                             {/*</Button>*/}
                         </form>
-                        <ProceedButton></ProceedButton>
+                        {/*<ProceedButton></ProceedButton>*/}
 
                     </Grid>
 

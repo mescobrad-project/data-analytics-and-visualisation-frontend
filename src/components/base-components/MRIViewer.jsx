@@ -179,22 +179,22 @@ class MRIViewer extends React.Component {
                     <Grid container direction="row">
                         <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
                             <Grid container direction="column">
-                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File preview
-                            </Typography>
-                            <Divider sx={{bgcolor: "black"}}/>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File Name:
-                            </Typography>
-                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                test.nii
-                            </Typography>
-                            <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                File Type:
-                            </Typography>
-                            <Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                                NIfTI
-                            </Typography>
+                            {/*<Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*    File preview*/}
+                            {/*</Typography>*/}
+                            {/*<Divider sx={{bgcolor: "black"}}/>*/}
+                            {/*<Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*    File Name:*/}
+                            {/*</Typography>*/}
+                            {/*<Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*    test.nii*/}
+                            {/*</Typography>*/}
+                            {/*<Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*    File Type:*/}
+                            {/*</Typography>*/}
+                            {/*<Typography variant="p" sx={{flexGrow: 1, textAlign: "center"}} noWrap>*/}
+                            {/*    NIfTI*/}
+                            {/*</Typography>*/}
                             <Divider sx={{bgcolor: "black"}}/>
 
                             <Button onClick={this.handleProcessOpenMRI} variant="contained" color="secondary"
