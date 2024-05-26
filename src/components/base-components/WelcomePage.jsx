@@ -542,83 +542,6 @@ function WelcomePage() {
                         {/*        Power Spectral Density - Periodogram>*/}
                         {/*    </ListItemButton>*/}
                         {/*</Link>*/}
-
-
-                        <Button
-                                // variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"], [])}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                        >
-                            Actigraphy Viewer
-                        </Button>
-                        <Divider/>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"], [])}
-                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                        >
-                            Actigraphy General Viewer
-                        </Button>
-                        <Button
-                                // variant="outlined"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_page", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
-                        >
-                            Actigraphy Assessment Page
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_cosinor", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
-                        >
-                            Actigraphy Cosinor
-                        </Button>
-                        <Button
-                                // variant="outlined"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_masking", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
-                        >
-                            Actigraphy Masking
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_functional_linear_modelling", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
-                        >
-                            Actigraphy Functional Linear Modelling
-                       </Button>
-                        <Button
-                                // variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_singular_spectrum_analysis", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
-                        >
-                            Actigraphy Singular Spectrum Analysis
-                        </Button>
-                        <Button
-                                variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_detrended_fluctuation_analysis", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
-                        >
-                            Actigraphy Detrended Fluctuation Analysis
-                        </Button>
-                        <Button
-                                // variant="contained"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_metrics", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
-                        >
-                            Actigraphy Metrics
-                        </Button>
                     </ButtonGroup>
                     <ButtonGroup
                             orientation="vertical"
@@ -1645,6 +1568,128 @@ function WelcomePage() {
                         {/*    Slow Waves / Spindles*/}
                         {/*</Button>*/}
                     </ButtonGroup>
+                    <ButtonGroup
+                            orientation="vertical"
+                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                    >
+                        <h2 sx= {{color: "grey"}}>
+                            Actigraphy
+                        </h2>
+                        <Button
+                                // variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer", ["saved"], ["psg1 anonym2.edf"], [])}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                        >
+                            Actigraphy Viewer
+                        </Button>
+                        <Divider/>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 1, "actigraphy_viewer_general", ["saved"], ["psg1 anonym2.edf"], [])}
+                                sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                        >
+                            Actigraphy General Viewer
+                        </Button>
+                        <Button
+                                // variant="outlined"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_page", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
+                        >
+                            Actigraphy Assessment Page
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_cosinor", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
+                        >
+                            Actigraphy Cosinor
+                        </Button>
+                        <Button
+                                // variant="outlined"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_masking", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy Masking
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_functional_linear_modelling", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
+                        >
+                            Actigraphy Functional Linear Modelling
+                        </Button>
+                        <Button
+                                // variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_singular_spectrum_analysis", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy Singular Spectrum Analysis
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_detrended_fluctuation_analysis", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy Detrended Fluctuation Analysis
+                        </Button>
+                        <Button
+                                // variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "actigraphy_metrics", ["demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/0345-024_18_07_2022_13_00_00_New_Analysis.csv"], [])}
+                        >
+                            Actigraphy Metrics
+                        </Button>
+                        {/*<Button*/}
+                        {/*        // variant="outlined"*/}
+                        {/*        size="medium"*/}
+                        {/*        endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}*/}
+                        {/*        sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}*/}
+                        {/*        onClick={redirectToPage.bind(this,1,1, 3, "dashboard", ["saved"], ["demo_sample_questionnaire.csv"], [])}*/}
+                        {/*>*/}
+                        {/*    Dashboard*/}
+                        {/*</Button>*/}
+                    </ButtonGroup>
+                    <ButtonGroup
+                            orientation="vertical"
+                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                    >
+                        <h2 sx= {{color: "grey"}}>
+                            AI
+                        </h2>
+                        <Button
+                                // variant="outlined"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linearregressionmodelcreation", ["demo","demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv", "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/test_dataset_01.csv"], [])}
+                        >
+                            Linear Regression Model Creation
+                        </Button>
+                        <Button
+                                // variant="outlined"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
+                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
+                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linearregressionmodelload", ["demo","demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv", "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/test_dataset_01.csv"], [])}
+                        >
+                            Linear Regression Load Model
+                        </Button>
+                    </ButtonGroup>
                     {/*<ButtonGroup*/}
                     {/*        orientation="vertical"*/}
                     {/*        sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}*/}
@@ -1718,34 +1763,7 @@ function WelcomePage() {
                     {/*        Dashboard*/}
                     {/*    </Button>*/}
                     {/*</ButtonGroup>*/}
-                    <ButtonGroup
-                            orientation="vertical"
-                            sx={{width: '25%', bgcolor: 'background.paper', padding:'5px'}}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                    >
-                        <h2 sx= {{color: "grey"}}>
-                            AI
-                        </h2>
-                        <Button
-                                // variant="outlined"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linearregressionmodelcreation", ["demo","demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv", "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/test_dataset_01.csv"], [])}
-                        >
-                            Linear Regression Model Creation
-                        </Button>
-                        <Button
-                                // variant="outlined"
-                                size="medium"
-                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%", borderLeft : "1px solid black", position: "absolute"}} />}
-                                // sx = {{display: dashboardMode === "dev" ? "block" : "none", backgroundColor: dashboardMode === "dev" ? "red" : "default"}}
-                                onClick={redirectToPage.bind(this,"3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "3fa85f64-5717-4562-b3fc-2c963f66afa6", "linearregressionmodelload", ["demo","demo"], ["expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/mescobrad_dataset_1.csv", "expertsystem/workflow/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/3fa85f64-5717-4562-b3fc-2c963f66afa6/test_dataset_01.csv"], [])}
-                        >
-                            Linear Regression Load Model
-                        </Button>
-                    </ButtonGroup>
+
                     {/*<List*/}
                     {/*        sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}*/}
                     {/*        component="nav"*/}
