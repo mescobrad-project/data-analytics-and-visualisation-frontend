@@ -426,13 +426,13 @@ class LinearRegressionModelCreation extends React.Component {
                                      <Grid item xs={6} >
                                          <img src={this.state.svg1_path + "?random=" + new Date().getTime()}
                                               loading="lazy"
-                                              style={{zoom:'90%'}}
+                                              style={{zoom:'80%'}}
                                          />
                                      </Grid>
                                      <Grid item xs={6} >
                                          <img src={this.state.svg5_path + "?random=" + new Date().getTime()}
                                               loading="lazy"
-                                              style={{zoom:'90%'}}
+                                              style={{zoom:'80%'}}
                                          />
                                      </Grid>
                                  </Grid>
@@ -440,13 +440,13 @@ class LinearRegressionModelCreation extends React.Component {
                                      <Grid item xs={6} >
                                          <img src={this.state.svg2_path + "?random=" + new Date().getTime()}
                                               loading="lazy"
-                                              style={{zoom:'90%'}}
+                                              style={{zoom:'80%'}}
                                          />
                                      </Grid>
                                      <Grid item xs={6} >
                                          <img src={this.state.svg3_path + "?random=" + new Date().getTime()}
                                               loading="lazy"
-                                              style={{zoom:'90%'}}
+                                              style={{zoom:'80%'}}
                                          />
                                      </Grid>
                                  </Grid>
