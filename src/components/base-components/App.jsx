@@ -157,6 +157,10 @@ import LogisticRegressionModelCreation from "../../pages/AI/LogisticRegressionMo
 import LogisticRegressionModelLoad from "../../pages/AI/LogisticRegressionModelLoad";
 import SVCModelCreation from "../../pages/AI/SVCModelCreation";
 import SVCModelLoad from "../../pages/AI/SVCModelLoad";
+import XGBoostModelLoad from "../../pages/AI/XGBoostModelLoad";
+import XGBoostModelCreation from "../../pages/AI/XGBoostModelCreation";
+import AutoencoderModelCreation from "../../pages/AI/AutoencoderModelCreation";
+import AutoencoderModelLoad from "../../pages/AI/AutoencoderModelLoad";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -469,6 +473,14 @@ const App = () => {
                                        element={(<LayoutMain><LogisticRegressionModelLoad/></LayoutMain>)}/>
                                 <Route exact path="/SVCModelLoad"
                                        element={(<LayoutMain><SVCModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/XGBoostModelCreation"
+                                       element={(<LayoutMain><XGBoostModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/XGBoostModelLoad"
+                                       element={(<LayoutMain><XGBoostModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/AutoencoderModelCreation"
+                                       element={(<LayoutMain><AutoencoderModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/AutoencoderModelLoad"
+                                       element={(<LayoutMain><AutoencoderModelLoad/></LayoutMain>)}/>
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>
