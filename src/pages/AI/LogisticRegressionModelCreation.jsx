@@ -53,7 +53,7 @@ function a11yProps(index) {
 }
 
 
-class LinearRegressionModelCreation extends React.Component {
+class LogisticRegressionModelCreation extends React.Component {
     constructor(props){
         super(props);
         const params = new URLSearchParams(window.location.search);
@@ -86,7 +86,7 @@ class LinearRegressionModelCreation extends React.Component {
             selected_shuffle:false,
             selected_file_name: "",
             FrenderChild:0,
-            model_name:'LR-'+crypto.randomUUID(),
+            model_name:'Logistic-'+crypto.randomUUID(),
             svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/shap_summary_lr.svg',
             svg2_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
@@ -126,7 +126,7 @@ class LinearRegressionModelCreation extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("linear_reg_create_model", {
+        API.get("logistic_reg_create_model", {
             params: {
                 workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
@@ -249,7 +249,7 @@ class LinearRegressionModelCreation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Linear Regression Parameterisation
+                            Logistic Regression Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -461,4 +461,4 @@ class LinearRegressionModelCreation extends React.Component {
     }
 }
 
-export default LinearRegressionModelCreation;
+export default LogisticRegressionModelCreation;

@@ -153,6 +153,10 @@ import Keycloak from "keycloak-js";
 import * as httpClient from "browserslist";
 import LinearRegressionModelCreation from "../../pages/AI/LinearRegressionModelCreation";
 import LinearRegressionModelLoad from "../../pages/AI/LinearRegressionModelLoad";
+import LogisticRegressionModelCreation from "../../pages/AI/LogisticRegressionModelCreation";
+import LogisticRegressionModelLoad from "../../pages/AI/LogisticRegressionModelLoad";
+import SVCModelCreation from "../../pages/AI/SVCModelCreation";
+import SVCModelLoad from "../../pages/AI/SVCModelLoad";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -455,8 +459,16 @@ const App = () => {
                                        element={(<LayoutMain><ValuesImputation/></LayoutMain>)}/>
                                 <Route exact path="/LinearRegressionModelCreation"
                                        element={(<LayoutMain><LinearRegressionModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/LogisticRegressionModelCreation"
+                                       element={(<LayoutMain><LogisticRegressionModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/SVCModelCreation"
+                                       element={(<LayoutMain><SVCModelCreation/></LayoutMain>)}/>
                                 <Route exact path="/LinearRegressionModelLoad"
                                        element={(<LayoutMain><LinearRegressionModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/LogisticRegressionModelLoad"
+                                       element={(<LayoutMain><LogisticRegressionModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/SVCModelLoad"
+                                       element={(<LayoutMain><SVCModelLoad/></LayoutMain>)}/>
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>
