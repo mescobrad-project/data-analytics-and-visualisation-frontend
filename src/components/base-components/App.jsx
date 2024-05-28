@@ -151,6 +151,16 @@ import SpindleFunctionPage from "./SpindleFunctionPage";
 import keycloakConfig from "./Keycloak";
 import Keycloak from "keycloak-js";
 import * as httpClient from "browserslist";
+import LinearRegressionModelCreation from "../../pages/AI/LinearRegressionModelCreation";
+import LinearRegressionModelLoad from "../../pages/AI/LinearRegressionModelLoad";
+import LogisticRegressionModelCreation from "../../pages/AI/LogisticRegressionModelCreation";
+import LogisticRegressionModelLoad from "../../pages/AI/LogisticRegressionModelLoad";
+import SVCModelCreation from "../../pages/AI/SVCModelCreation";
+import SVCModelLoad from "../../pages/AI/SVCModelLoad";
+import XGBoostModelLoad from "../../pages/AI/XGBoostModelLoad";
+import XGBoostModelCreation from "../../pages/AI/XGBoostModelCreation";
+import AutoencoderModelCreation from "../../pages/AI/AutoencoderModelCreation";
+import AutoencoderModelLoad from "../../pages/AI/AutoencoderModelLoad";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -451,6 +461,26 @@ const App = () => {
                                        element={(<LayoutMain><PoissonRegressionFunctionPage/></LayoutMain>)}/>
                                 <Route exact path="/ValuesImputation"
                                        element={(<LayoutMain><ValuesImputation/></LayoutMain>)}/>
+                                <Route exact path="/LinearRegressionModelCreation"
+                                       element={(<LayoutMain><LinearRegressionModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/LogisticRegressionModelCreation"
+                                       element={(<LayoutMain><LogisticRegressionModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/SVCModelCreation"
+                                       element={(<LayoutMain><SVCModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/LinearRegressionModelLoad"
+                                       element={(<LayoutMain><LinearRegressionModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/LogisticRegressionModelLoad"
+                                       element={(<LayoutMain><LogisticRegressionModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/SVCModelLoad"
+                                       element={(<LayoutMain><SVCModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/XGBoostModelCreation"
+                                       element={(<LayoutMain><XGBoostModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/XGBoostModelLoad"
+                                       element={(<LayoutMain><XGBoostModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/AutoencoderModelCreation"
+                                       element={(<LayoutMain><AutoencoderModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/AutoencoderModelLoad"
+                                       element={(<LayoutMain><AutoencoderModelLoad/></LayoutMain>)}/>
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>
