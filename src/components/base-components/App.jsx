@@ -56,6 +56,7 @@ import SpindleDetection from "./SpindleDetection";
 import SlowWaves from "./SlowWaves";
 import ActrigraphyViewer from "./ActrigraphyViewer";
 import ActigraphyFunctionPage from "./ActigraphyFunctionPage";
+import ActigraphyStatistics from "./ActigraphyStatistics";
 import Level from "./Level";
 import ActrigraphyGeneralViewer from "./ActrigraphyGeneralViewer";
 import ArtifactsFunctionPage from "./ArtifactsFunctionPage";
@@ -131,6 +132,9 @@ import ActigraphyMasking from "./ActigraphyMasking";
 import ActigraphyFunctionalLinearModelling from "./ActigraphyFunctionalLinearModelling";
 import ActigraphySingularSpectrumAnalysis from "./ActigraphySingularSpectrumAnalysis";
 import ActigraphyDetrendedFluctuationAnalysis from "./ActigraphyDetrendedFluctuationAnalysis";
+import ActigraphyEDFViewer from "./ActigraphyEDFViewer";
+// import ActigraphyStatistics from "./ActigraphyStatistics";
+import ActigraphySummary from "./ActigraphySummary";
 import Actigraphy_Cosinor from "./Actigraphy_Cosinor";
 import Actigraphy_Metrics from "./Actigraphy_Metrics";
 import ChooseFactorsFunctionPage from "./ChooseFactorsFunctionPage";
@@ -240,7 +244,6 @@ const App = () => {
                                 <Route exact path="/mri" element={(<LayoutMain><MRIViewer/></LayoutMain>)}/>
                                 <Route exact path="/eeg/pre"
                                        element={(<LayoutMain><EEGAnalysisFunctionPage/></LayoutMain>)}/>
-
                                 {/*<Route exact path="/spindles" element={(<LayoutMain><SpindleDetection/></LayoutMain>)}/>*/}
                                 {/*<Route exact path="/slowwaves" element={(<LayoutMain><SlowWaves/></LayoutMain>)}/>*/}
                                 {/*<Route exact path="/auto_correlation" element={(<LayoutMain> <LayoutSimpleFunctions mainContent={<AutoCorrelationFunctionPage/>}></LayoutSimpleFunctions></LayoutMain>)}/>*/}
@@ -323,23 +326,17 @@ const App = () => {
                                 {/*<Route exact path="/group_sleep_analysis_sensitivity_add_subject_add_channels_final" element={(<LayoutMain><ManualSleepStagePage/></LayoutMain>)}/>*/}
                                 {/*TODO LEVEL*/}
                                 <Route exact path="/level" element={(<LayoutMain><Level/></LayoutMain>)}/>
-                                <Route exact path="/actigraphy"
-                                       element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
-                                <Route exact path="/actigraphy_test" element={(<LayoutMain>
-                                    <test/>
-                                </LayoutMain>)}/>
-                                <Route exact path="/actigraphy_page"
-                                       element={(<LayoutMain><ActigraphyFunctionPage/></LayoutMain>)}/>
-                                <Route exact path="/actigraphy_masking"
-                                       element={(<LayoutMain><ActigraphyMasking/></LayoutMain>)}/>
-                                <Route exact path="/actigraphy_functional_linear_modelling"
-                                       element={(<LayoutMain><ActigraphyFunctionalLinearModelling/></LayoutMain>)}/>
-                                <Route exact path="/actigraphy_singular_spectrum_analysis"
-                                       element={(<LayoutMain><ActigraphySingularSpectrumAnalysis/></LayoutMain>)}/>
-                                <Route exact path="/actigraphy_detrended_fluctuation_analysis"
-                                       element={(<LayoutMain><ActigraphyDetrendedFluctuationAnalysis/></LayoutMain>)}/>
-                                <Route exact path="/actigraphy/general"
-                                       element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy" element={(<LayoutMain><ActrigraphyViewer/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_test" element={(<LayoutMain><test/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_page" element={(<LayoutMain><ActigraphyFunctionPage/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_masking" element={(<LayoutMain><ActigraphyMasking/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_functional_linear_modelling" element={(<LayoutMain><ActigraphyFunctionalLinearModelling/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_singular_spectrum_analysis" element={(<LayoutMain><ActigraphySingularSpectrumAnalysis/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_detrended_fluctuation_analysis" element={(<LayoutMain><ActigraphyDetrendedFluctuationAnalysis/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_edf_viewer" element={(<LayoutMain><ActigraphyEDFViewer/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_statistics" element={(<LayoutMain><ActigraphyStatistics/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy_summary_table" element={(<LayoutMain><ActigraphySummary/></LayoutMain>)}/>
+                                <Route exact path="/actigraphy/general" element={(<LayoutMain><ActrigraphyGeneralViewer/></LayoutMain>)}/>
                                 <Route exact path="/predictions"
                                        element={(<LayoutMain><PredictionsFunctionPage/></LayoutMain>)}/>
                                 <Route exact path="/artifacts"
