@@ -1645,6 +1645,30 @@ function WelcomePage() {
                             Actigraphy Detrended Fluctuation Analysis
                         </Button>
                         <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_edf_viewer", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy EDF Viewer
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_statistics", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy Statistics
+                        </Button>
+                        <Button
+                                variant="contained"
+                                size="medium"
+                                endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}
+                                onClick={redirectToPage.bind(this,1, 1, 15, "actigraphy_summary_table", ["saved"], ["0345-024_18_07_2022_13_00_00_New_Analysis.csv"])}
+                        >
+                            Actigraphy Summaries
+                        </Button>
+                        <Button
                                 // variant="contained"
                                 size="medium"
                                 endIcon={<NavigateNextIcon sx={{right: "0%", top: "20%",borderLeft : "1px solid black", position: "absolute"}} />}

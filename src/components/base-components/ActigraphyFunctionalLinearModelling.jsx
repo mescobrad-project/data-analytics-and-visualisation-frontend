@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import Plot from 'react-plotly.js';
-// import actigraph1 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/1actigraphy_visualisation.png";
-// import actigraph2 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/2actigraphy_visualisation.png";
-// import actigraph3 from "C:/Users/George Ladikos/WebstormProjects/data-analytics-and-visualisation-frontend2/src/3actigraphy_visualisation.png";
-// import act from "C:/neurodesktop-storage/runtime_config/workflow_1/run_1/step_1/output/actigraphy_visualisation.png"
-//import "./styles.css";
 import Plot from "react-plotly.js";
 import API from "../../axiosInstance";
 import {DataGrid, GridCell, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-grid";
-// import InnerHTML from 'dangerously-set-html-content'
-
-// import PropTypes from 'prop-types';
 import {
     Button, Divider,
     FormControl,
@@ -28,146 +19,12 @@ import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
 import {LoadingButton} from "@mui/lab";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
-//import ActigraphyDatatable from "../freesurfer/datatable/ActrigraphyDatatable";
+import ReactLoading from "react-loading";
+import Samseg_Whole_Brain_Measurements_Widget from "../freesurfer/widget/Samseg_whole_brain_measurements_widget";
+import ReconallVolumeDatatable from "../freesurfer/datatable/ReconallVolumeDatatable";
+import Aseg from "../freesurfer/datatable/Aseg";
+import LoadingWidget from "../ui-components/LoadingWidget";
 const params = new URLSearchParams(window.location.search);
-const slowave_table_1_columns = [
-    {
-        field: "Start",
-        headerName: "Start",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "NegPeak",
-        headerName: "NegPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "MidCrossing",
-        headerName: "MidCrossing",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PosPeak",
-        headerName: "PosPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "End",
-        headerName: "End",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Duration",
-        headerName: "Duration",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ValNegPeak",
-        headerName: "ValNegPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ValPosPeak",
-        headerName: "ValPosPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PTP",
-        headerName: "PTP",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Slope",
-        headerName: "Slope",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Frequency",
-        headerName: "Frequency",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "SigmaPeak",
-        headerName: "SigmaPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "PhaseAtSigmaPeak",
-        headerName: "PhaseAtSigmaPeak",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "ndPAC",
-        headerName: "ndPAC",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Stage",
-        headerName: "Stage",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "Channel",
-        headerName: "Channel",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-    {
-        field: "IdxChannel",
-        headerName: "IdxChannel",
-        width: '10%',
-        align: "center",
-        headerAlign: "center",
-        flex:1
-    },
-]
 
 function CustomToolbar() {
     return (
@@ -238,6 +95,7 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            done: true,
             tabvalue: 0,
             selected_file_name: "",
             file_names: [],
@@ -306,6 +164,7 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
             let json_response = JSON.parse(res.data.flm_figure)
             this.setState({data_fml: json_response["data"]})
             this.setState({layout_fml: json_response["layout"]})
+            this.setState({done: true})
         });
     }
 
@@ -351,113 +210,124 @@ class ActigraphyFunctionalLinearModelling extends React.Component {
 
     render() {
         return (
-        <Grid container direction="row">
-            <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
-                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                    Actigraphy Analysis Parameterisation
-                </Typography>
-                <hr/>
-                <form onSubmit={(event) => {event.preventDefault();this.handleFML();}}>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            FML on a single dataset
-                        </Typography>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                        <InputLabel id="file-selector-label">File</InputLabel>
-                        <Select
-                                labelId="file-selector-label"
-                                id="file-selector"
-                                value= {this.state.selected_file_name}
-                                label="File Variable"
-                                onChange={this.handleSelectFileNameChange}
-                        >
-                            {this.state.file_names.map((column) => (
-                                    <MenuItem value={column}>{column}</MenuItem>
-                            ))}
-                        </Select>
-                        <FormHelperText>Select dataset.</FormHelperText>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                        {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}
-                        <List style={{fontSize:'13px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                            Dataset selected: {this.state.selected_file_name}
-                        </List>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                        <Typography variant="p" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
-                            Click here if you want to run FML on a single dataset.
-                        </Typography>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
-                        <Button variant="contained" color="primary" type="submit">
-                            Submit
-                        </Button>
-                    </FormControl>
-                    <hr/>
-                </form>
-                <form onSubmit={(event) => {event.preventDefault();this.handleMultiFML();}}>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                        <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            FML on multiple datasets
-                        </Typography>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                        <InputLabel id="file-selector-label">File</InputLabel>
-                        <Select
-                                labelId="file-selector-label"
-                                id="file-selector"
-                                value= {this.state.selected_file_name}
-                                label="File Variable"
-                                onChange={this.handleSelectFileNameChange}
-                        >
-                            {this.state.file_names.map((column) => (
-                                    <MenuItem value={column}>{column}</MenuItem>
-                            ))}
-                        </Select>
-                        <FormHelperText>Select dataset.</FormHelperText>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                        {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}
-                        <List style={{fontSize:'13px', backgroundColor:"powderblue", borderRadius:'10%'}}>
-                            Dataset selected: {this.state.multiple_datasets}
-                        </List>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
-                        <Typography variant="p" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
-                            Click here if you want to run FML on multiple datasets.
-                        </Typography>
-                    </FormControl>
-                    <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
-                        <Button variant="contained" color="primary" type="submit">
-                            Submit
-                        </Button>
-                    </FormControl>
-                    <hr/>
-                </form>
-            </Grid>
-                <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
-                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                        Actigraphy Analysis Results
-                    </Typography>
-                    <hr/>
-                    <Box sx={{ width: '100%' }}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <Tabs scrollable={true} value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                <Tab label="Single Functional Linear Modelling" {...a11yProps(0)} />
-                                <Tab label="Multi Functional Linear Modelling" {...a11yProps(1)} />
-                            </Tabs>
-                        </Box>
+                <>
+                                    <Grid container direction="row">
+                                        <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
+                                            <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                                Actigraphy Analysis Parameterisation
+                                            </Typography>
+                                            <hr/>
+                                            <form onSubmit={(event) => {event.preventDefault();this.handleFML();}}>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                                        FML on a single dataset
+                                                    </Typography>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                                    <InputLabel id="file-selector-label">File</InputLabel>
+                                                    <Select
+                                                            labelId="file-selector-label"
+                                                            id="file-selector"
+                                                            value= {this.state.selected_file_name}
+                                                            label="File Variable"
+                                                            onChange={this.handleSelectFileNameChange}
+                                                    >
+                                                        {this.state.file_names.map((column) => (
+                                                                <MenuItem value={column}>{column}</MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                    <FormHelperText>Select dataset.</FormHelperText>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                                                    {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}
+                                                    <List style={{fontSize:'13px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                                                        Dataset selected: {this.state.selected_file_name}
+                                                    </List>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                                                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
+                                                        Click here if you want to run FML on a single dataset.
+                                                    </Typography>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
 
-                    </Box>
-                    <TabPanel value={this.state.tabvalue} index={0}>
-                        <Plot layout={this.state.layout_fml} data={this.state.data_fml} config={this.state.configObj} onSelected={this.handleSelected}/>
-                    </TabPanel>
-                    <TabPanel value={this.state.tabvalue} index={1}>
-                        <Plot layout={this.state.layout_multi_fml} data={this.state.data_multi_fml} config={this.state.configObj} onSelected={this.handleSelected}/>
-                    </TabPanel>
-                </Grid>
-        </Grid>
+                                                       <Button variant="contained" color="primary" type="submit" onClick={() => {
+                                                           this.setState({done: false});
+                                                       }}>
+                                                                Submit
+                                                            </Button>
+
+
+                                                </FormControl>
+                                                <hr/>
+                                            </form>
+                                            <form onSubmit={(event) => {event.preventDefault();this.handleMultiFML();}}>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                                        FML on multiple datasets
+                                                    </Typography>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                                    <InputLabel id="file-selector-label">File</InputLabel>
+                                                    <Select
+                                                            labelId="file-selector-label"
+                                                            id="file-selector"
+                                                            value= {this.state.selected_file_name}
+                                                            label="File Variable"
+                                                            onChange={this.handleSelectFileNameChange}
+                                                    >
+                                                        {this.state.file_names.map((column) => (
+                                                                <MenuItem value={column}>{column}</MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                    <FormHelperText>Select dataset.</FormHelperText>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                                                    {/*<FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>*/}
+                                                    <List style={{fontSize:'13px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                                                        Dataset selected: {this.state.multiple_datasets}
+                                                    </List>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                                                    <Typography variant="p" sx={{ flexGrow: 1, textAlign: "left" }} noWrap>
+                                                        Click here if you want to run FML on multiple datasets.
+                                                    </Typography>
+                                                </FormControl>
+                                                <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
+                                                    <Button variant="contained" color="primary" type="submit">
+                                                        Submit
+                                                    </Button>
+                                                </FormControl>
+                                                <hr/>
+                                            </form>
+                                        </Grid>
+                                        {!this.state.done ? (
+                                                <LoadingWidget/>
+                                        ) : (   <Grid item xs={9} sx={{ borderRight: "1px solid grey"}}>
+                                                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                                                        Actigraphy Analysis Results
+                                                    </Typography>
+                                                    <hr/>
+                                                    <Box sx={{ width: '100%' }}>
+                                                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                                            <Tabs scrollable={true} value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
+                                                                <Tab label="Single Functional Linear Modelling" {...a11yProps(0)} />
+                                                                <Tab label="Multi Functional Linear Modelling" {...a11yProps(1)} />
+                                                            </Tabs>
+                                                        </Box>
+
+                                                    </Box>
+                                                    <TabPanel value={this.state.tabvalue} index={0}>
+                                                        <Plot layout={this.state.layout_fml} data={this.state.data_fml} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                                    </TabPanel>
+                                                    <TabPanel value={this.state.tabvalue} index={1}>
+                                                        <Plot layout={this.state.layout_multi_fml} data={this.state.data_multi_fml} config={this.state.configObj} onSelected={this.handleSelected}/>
+                                                    </TabPanel>
+                                                </Grid>
+                                        )}
+
+                                    </Grid>
+                </>
         );
     }
 }
