@@ -16,6 +16,7 @@ import {Box} from "@mui/system";
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from "prop-types";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -52,32 +53,40 @@ function a11yProps(index) {
 class General_Stats_Cov extends React.Component {
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of columns in dataset
             column_names: [],
             file_names:[],
+            FrenderChild:0,
             test_data: {
                 Dataframe:""
             },
             //Values selected currently on the form
             selected_variables: [],
             selected_file_name: "",
-            selected_variable_name: "",
             selected_ddof: 0,
             Results:[],
             stats_show: false,
+            tabvalue:0,
+            svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/Cov.svg',
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         this.handleSelectDdofChange = this.handleSelectDdofChange.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
 // // Initialise component
         // // - values of channels from the backend
         // this.fetchColumnNames();
@@ -127,7 +136,7 @@ class General_Stats_Cov extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
-            this.setState({tabvalue:1})
+            this.setState({tabvalue:0})
         });
     }
 
@@ -146,6 +155,7 @@ class General_Stats_Cov extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
+                        file: this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
                         ddof: this.state.selected_ddof,
                         independent_variables: this.state.selected_variables,
                     },
@@ -157,7 +167,7 @@ class General_Stats_Cov extends React.Component {
             this.setState({test_data: res.data})
             this.setState({Results:JSON.parse(res.data.Dataframe)});
             this.setState({stats_show: true})
-            this.setState({tabvalue:0})
+            this.setState({tabvalue:1})
         });
     }
 
@@ -188,38 +198,25 @@ class General_Stats_Cov extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectVariableNameChange(event){
-        this.setState( {selected_variable_name: event.target.value})
-        var newArray = this.state.selected_variables.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_variables:newArray})
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_variables:checkedValues})
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_variables=[]
+            this.state.FrenderChild+=1
         })
     }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
-    }
+    // handleDeleteVariable(event) {
+    //     this.setState({selected_variables:[]})
+    // }
     handleSelectDdofChange(event){
         this.setState( {selected_ddof: event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
-    }
-    handleListDelete(event) {
-        var newArray = this.state.selected_variables.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_variables:newList})
     }
 
     render() {
@@ -246,23 +243,13 @@ class General_Stats_Cov extends React.Component {
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    // rerender={this.state.rerender_child}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Select Variable</InputLabel>
-                                <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_variable_name}
-                                        label="Select Variable"
-                                        onChange={this.handleSelectVariableNameChange}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select variable in the selected dataset.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                {/*<InputLabel id="ddof-selector-label">alpha</InputLabel>*/}
                                 <TextField
                                         labelid="ddof-selector-label"
                                         id="ddof-selector"
@@ -279,29 +266,31 @@ class General_Stats_Cov extends React.Component {
                                     type="submit">
                                 Submit
                             </Button>
+
                         </form>
                         <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected variables</FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                            >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
+                            {/*<Button onClick={this.handleDeleteVariable}>*/}
+                            {/*     Clear all*/}
+                            {/*</Button>*/}
                         </FormControl>
+
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
@@ -311,25 +300,31 @@ class General_Stats_Cov extends React.Component {
                         <Grid sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
-                                    <Tab label="Results" {...a11yProps(0)} />
-                                    <Tab label="Initial Dataset" {...a11yProps(1)} />
+                                    <Tab label="Initial Dataset" {...a11yProps(0)} />
+                                    <Tab label="Results" {...a11yProps(1)} />
                                     {/*<Tab label="Transformed" {...a11yProps(2)} />*/}
                                 </Tabs>
                             </Box>
-                            <TabPanel value={this.state.tabvalue} index={0}>
+                            <TabPanel value={this.state.tabvalue} index={1}>
                                 <Grid style={{display: (this.state.stats_show ? 'block' : 'none')}}>
                                     <Grid>
-                                        {/*<Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >*/}
-                                        {/*    Compute the min values of the selected variables. </Typography>*/}
-                                        <div style={{textAlign:"center"}}>
+                                        <div style={{alignSelf:'center'}}>
+                                            <img src={this.state.svg1_path + "?random=" + new Date().getTime()}
+                                                 loading="lazy"
+                                                 style={{zoom:'90%'}}
+                                            />
+                                        </div>
+                                    </Grid>
+                                    <Grid>
+                                        <div >
                                             <CSVLink data={this.state.Results}
-                                                     filename={"Results.csv"}>Download</CSVLink>
+                                                     filename={"Results.csv"}>Download table (.csv)</CSVLink>
                                             <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
                                         </div>
                                     </Grid>
                                 </Grid>
                             </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={1}>
+                            <TabPanel value={this.state.tabvalue} index={0}>
                                 <Box>
                                         <JsonTable className="jsonResultsTable"
                                                    rows = {this.state.initialdataset}/>

@@ -22,12 +22,16 @@ class ProceedButton extends React.Component {
 
     async handleProceed() {
         const params = new URLSearchParams(window.location.search);
-
+        let function_type_to_send = null
+        if (this.props.outputType !== ""){
+            function_type_to_send = this.props.outputType
+        }
         API.post("/function/save_data/", null,{
                 params: {
                     workflow_id: params.get("workflow_id"),
                     run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
+                    step_id: params.get("step_id"),
+                    function_type: function_type_to_send
                 }
             }
         ).then(res => {
@@ -85,7 +89,7 @@ class ProceedButton extends React.Component {
 
     render() {
         return (
-            <Button onClick={this.handleProceed} sx={{float: "right", marginRight: "2px"}} variant="contained"
+            <Button onClick={this.handleProceed} sx={{float: "right", marginRight: "5px"}} variant="contained"
                     color="primary" type="submit"
                 // disabled={!this.props.resultsExist}
             >
