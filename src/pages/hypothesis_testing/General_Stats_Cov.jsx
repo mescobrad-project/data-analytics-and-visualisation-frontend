@@ -68,6 +68,7 @@ class General_Stats_Cov extends React.Component {
                 Dataframe:""
             },
             //Values selected currently on the form
+            selected_columns: [],
             selected_variables: [],
             selected_file_name: "",
             selected_ddof: 0,
@@ -82,6 +83,7 @@ class General_Stats_Cov extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleProceed = this.handleProceed.bind(this);
         this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         this.handleSelectDdofChange = this.handleSelectDdofChange.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
