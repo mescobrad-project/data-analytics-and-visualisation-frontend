@@ -41,6 +41,7 @@ class ProceedButton extends React.Component {
             if (res.status === 200) {
                 API.get("/task/complete", {
                     params: {
+                        workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                     }
