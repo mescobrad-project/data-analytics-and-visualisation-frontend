@@ -5,7 +5,6 @@ import Keycloak from "keycloak-js";
 import "../components/css/loading.css"
 import * as httpClient from "browserslist";
 import API from "../axiosInstance";
-import Cookies from 'universal-cookie';
 
 const LayoutMain = ({children}) => {
     const [keycloak, setKeycloak] = useState(null);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { CircularProgress } from "@mui/material";
 import API from "../../axiosInstance";
 import PropTypes from 'prop-types';
 import MRIViewerWin from './MRIViewerWin';
@@ -127,6 +128,11 @@ class FreesurferReconFunctionPage extends React.Component {
             selected_lession_mask_pattern_flair:"0",
             selected_threshold:"0.3",
 
+            loading: false,
+            current_execution: "",
+            processCompleted: false,
+
+
             //Function to show/hide
             show_neurodesk: true,
 
@@ -171,6 +177,7 @@ class FreesurferReconFunctionPage extends React.Component {
         this.handleSelectRefFileNameChange = this.handleSelectRefFileNameChange.bind(this);
         this.fetchCoregLog = this.fetchCoregLog.bind(this);
         this.fetchVol2volLog = this.fetchVol2volLog.bind(this);
+        this.upload_to_trino = this.upload_to_trino.bind(this);
         this.handleCoregProceed = this.handleCoregProceed.bind(this);
         this.handleSelectInputFileNameChange = this.handleSelectInputFileNameChange.bind(this);
         this.handleSelectInputFlairFileNameChange = this.handleSelectInputFlairFileNameChange.bind(this);
@@ -188,7 +195,9 @@ class FreesurferReconFunctionPage extends React.Component {
         this.handlePostPathChange = this.handlePostPathChange.bind(this);
         this.handleRessamplePathChange = this.handleRessamplePathChange.bind(this);
         this.fetchSynthSegLog = this.fetchSynthSegLog.bind(this);
-
+        this.handleProceedCalls = this.handleProceedCalls.bind(this);
+        this.callSamesegTrino = this.callSamesegTrino.bind(this);
+        this.callReconallTrino = this.callReconallTrino.bind(this);
         this.fetchFileNames();
         // Initialise component
         // - values of channels from the backend
@@ -581,6 +590,122 @@ class FreesurferReconFunctionPage extends React.Component {
         });
     }
 
+    async upload_to_trino(event) {
+        event.preventDefault();
+        // Send the request
+        const params = new URLSearchParams(window.location.search);
+        API.put("samseg_stats_to_trino/", {
+            workflow_id: params.get("workflow_id"),
+            run_id: params.get("run_id"),
+            step_id: params.get("step_id"),
+            samseg_source_file: "source_file",
+            workspace_id: "123123",
+        })
+    };
+
+    async callSamesegTrino() {
+        const params = new URLSearchParams(window.location.search);
+        this.setState({ loading: true, current_execution: "Uploading Samseg data to trino" });
+            API.put("/samseg_stats_to_trino", {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                samseg_source_file: "testtest", //from folder name
+                workspace_id: "123123" // from workflow manager
+            })
+    }
+
+    async callReconallTrino() {
+        const params = new URLSearchParams(window.location.search);
+        this.setState({ current_execution: "Uploading Reconall data to trino" });
+
+        try {
+            API.put("/reconall_stats_to_trino", {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                reconall_source_file: "testtest", //from folder name
+                workspace_id: "123123", // from workflow manager
+                folder_name: "ucl_test", // always ucl_test?
+            })
+        }
+        catch (error) {;
+        }
+    }
+
+    async handleProceedCalls(event) {
+        event.preventDefault();
+        // this.setState({ loading: true, current_execution: "Uploading samseg stats to trino" });
+        // await this.upload_to_trino();
+
+        const params = new URLSearchParams(window.location.search);
+        let function_type_to_send = "mri"
+        this.setState({ loading: true, current_execution: "Uploading Samseg data to trino" });
+        API.put("/samseg_stats_to_trino", {
+            workflow_id: params.get("workflow_id"),
+            run_id: params.get("run_id"),
+            step_id: params.get("step_id"),
+            samseg_source_file: "testtest", //from folder name
+            workspace_id: "123123" // from workflow manager
+        }).then(res => {
+            this.setState({ current_execution: "Uploading Reconall data to trino" });
+             API.put("/reconall_stats_to_trino", {
+                    workflow_id: params.get("workflow_id"),
+                    run_id: params.get("run_id"),
+                    step_id: params.get("step_id"),
+                    reconall_source_file: "testtest", //from folder name
+                    workspace_id: "123123", // from workflow manager
+                    folder_name: "ucl_test", // always ucl_test?
+                }).then(res => {
+                this.setState({ current_execution: "Uploading all mri data produced to the datalake" });
+                API.post("/function/save_data/", null,{
+                            params: {
+                                workflow_id: params.get("workflow_id"),
+                                run_id: params.get("run_id"),
+                                step_id: params.get("step_id"),
+                                function_type: function_type_to_send
+                            }
+                        }
+                ).then(res => {
+                    // this.setState({output_return_data: res.data})
+                    // If the data was saved to the datalake, then complete the task and redirect
+                    // Otherwise, alert the user that there was an error
+                    if (res.status === 200) {
+                        this.setState({ current_execution: "", loading: false, processCompleted: true});
+                        API.get("/task/complete", {
+                            params: {
+                                run_id: params.get("run_id"),
+                                step_id: params.get("step_id"),
+                            }
+                        }).then(res => {
+                            if(res.status === 200){
+                                // If succesfull follow up in the next step page in the workflow manager
+                                console.log("Task completed succesfully")
+                                window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+                            }else{
+                                // If there is an error completing the task iin the datalake we are probably
+                                // in a test case, so redirect to the home page
+                                console.log("Error completing task, please try again 1")
+                                window.location.replace("/")
+                            }
+                            console.log(res)
+                            // this.setState({channels: res.data.channels})
+                            // this.props.handleChannelChange(res.data.channels)
+                        }).catch(function (error) {
+                            if(error.status === 500) {
+                                console.log("Error completing task, please try again 2")
+                                window.location.replace("/")
+                            }
+
+                        });
+                    } else {
+                        console.log("Error saving data to datalake, please try again")
+                    }
+                });
+            })
+        })
+    }
+
     handleSelectRefFileNameChange(event){
         this.setState( {selected_ref_file_name: event.target.value})
     }
@@ -770,6 +895,7 @@ class FreesurferReconFunctionPage extends React.Component {
                             <Tab label="Co-Registration" {...a11yProps(1)} />
                             <Tab label="SAMSEG" {...a11yProps(2)} />
                             <Tab label="SynthSeg" {...a11yProps(3)} />
+                            <Tab label="Proceed" {...a11yProps(4)} />
                         </Tabs>
                     </Box>
                     <TabPanel value={this.state.tabvalue} index={0}>
@@ -1075,6 +1201,13 @@ class FreesurferReconFunctionPage extends React.Component {
                                             >
                                                 Check Results
                                             </Button>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={this.upload_to_trino}
+                                        >
+                                            Upload to trino
+                                            </Button>
                                             <ProceedButton></ProceedButton>
                                     </div>
                                     <Divider/>
@@ -1271,6 +1404,46 @@ class FreesurferReconFunctionPage extends React.Component {
                                 />
                             </Grid>
                         </Grid>
+                    </TabPanel>
+                    <TabPanel value={this.state.tabvalue} index={4}>
+                        <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                            Proceed
+                        </Typography>
+                        <Divider />
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', minHeight: '200px' }}>
+                            {this.state.loading ? (
+                                    <>
+                                        <CircularProgress size={100} />
+                                        <Typography variant="body1" sx={{ flexGrow: 1, textAlign: "center", marginTop: "16px" }} noWrap>
+                                            {this.state.current_execution ? `${this.state.current_execution}` : ""}
+                                        </Typography>
+                                    </>
+                            ) : this.state.processCompleted ? (
+                                    <Typography variant="body1" sx={{ flexGrow: 1, textAlign: "center", marginTop: "16px" }} noWrap>
+                                        Redirecting to workflow manager...
+                                    </Typography>
+                            ) : (
+                                    <Typography variant="body1" sx={{ flexGrow: 1, textAlign: "center", marginTop: "16px" }} noWrap>
+                                        Press the Proceed button to upload all your executed data.
+                                    </Typography>
+                            )}
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+                            <Button variant="contained" color="primary" onClick={this.handleProceedCalls} sx={{ margin: "8px", padding: "12px 24px", fontSize: '16px' }}>
+                                PROCEED
+                            </Button>
+                        </Box>
+                        {/*<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>*/}
+                        {/*    <Typography variant="body1" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                        {/*        API1 Status: {this.state.api1_status}*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="body1" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                        {/*        API2 Status: {this.state.api2_status}*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography variant="body1" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>*/}
+                        {/*        API3 Status: {this.state.api3_status}*/}
+                        {/*    </Typography>*/}
+                        {/*</Box>*/}
                     </TabPanel>
                 </Box>
         // <Grid container direction="column">
