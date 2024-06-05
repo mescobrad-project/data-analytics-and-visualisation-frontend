@@ -58,6 +58,7 @@ async function redirectToPage(workflow_id, run_id, step_id, function_name, bucke
                 run_id: run_id,
                 step_id: step_id,
                 function: function_name,
+                token: "",
                 metadata: {
                     // [["saved"] , "demo_sample_questionnaire.csv"],
                     "files": files_to_send
