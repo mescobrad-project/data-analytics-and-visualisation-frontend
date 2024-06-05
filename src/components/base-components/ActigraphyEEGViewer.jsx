@@ -1,7 +1,7 @@
 import React from 'react';
 import API from "../../axiosInstance";
 import {
-    Button, Divider, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Typography
+    Button, Divider, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Modal, Select, Typography
 } from "@mui/material";
 import {Box, Stack} from "@mui/system";
 import ImageListItem from "@mui/material/ImageListItem";
@@ -113,11 +113,13 @@ function StarBorderIcon(props) {
 
 StarBorderIcon.propTypes = {};
 
-class EEGViewer extends React.Component {
+class ActigraphyEEGViewer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             //Channel Select order modal
+            file_names:[],
+            selected_file_name: "",
             open_modal: false,
             saved_montages: [],
             selected_file: "",
@@ -126,14 +128,18 @@ class EEGViewer extends React.Component {
         };
 
         //Binding functions of the class
+        this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleProcessOpenEEG = this.handleProcessOpenEEG.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
         this.fetchMontages = this.fetchMontages.bind(this);
         this.handleSelectMontage = this.handleSelectMontage.bind(this);
+        this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
+
 
         // Initialise component
         // this.handleProcessOpenEEG();
+        this.fetchFileNames();
         this.fetchMontages()
     }
 
@@ -148,12 +154,27 @@ class EEGViewer extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        selected_montage: this.state.selected_montage
+                        selected_montage: this.state.selected_montage,
+                        selected_file: this.state.selected_file
                     }
                 }
         ).then(res => {
         });
 
+    }
+
+    async fetchFileNames() {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_all_files",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id")
+                    }}).then(res => {
+            this.setState({file_names: res.data.files})
+        });
     }
 
     async fetchMontages() {
@@ -174,12 +195,40 @@ class EEGViewer extends React.Component {
         this.setState({selected_montage: event.target.value})
     }
 
+    handleSelectFileNameChange(event){
+        this.setState( {selected_file: event.target.value}, ()=>{
+            // this.setState({stats_show: false})
+        })
+    }
+
     render() {
         return (
                 <Grid container direction="column">
                     <Grid container direction="row">
                         <Grid item xs={2} sx={{borderRight: "1px solid grey"}}>
                             <Grid container direction="column">
+                                <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
+                                    Select EDF file to proceed
+                                </Typography>
+                                <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                    <InputLabel id="file-selector-label">File</InputLabel>
+                                    <Select
+                                            labelId="file-selector-label"
+                                            id="file-selector"
+                                            value= {this.state.selected_file}
+                                            label="File Variable"
+                                            onChange={this.handleSelectFileNameChange}
+                                    >
+                                        {this.state.file_names.map((column) => (
+                                                <MenuItem value={column}>{column}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    <FormHelperText>Select dataset.</FormHelperText>
+                                </FormControl>
+                                <Button onClick={this.handleProcessOpenEEG} variant="contained" color="secondary"
+                                        sx={{margin: "8px", float: "right"}}>
+                                    Load EDF file
+                                </Button>
                                 <Typography variant="h6" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
                                     Load File with Montage
                                 </Typography>
@@ -329,4 +378,4 @@ class EEGViewer extends React.Component {
     }
 }
 
-export default EEGViewer;
+export default ActigraphyEEGViewer;
