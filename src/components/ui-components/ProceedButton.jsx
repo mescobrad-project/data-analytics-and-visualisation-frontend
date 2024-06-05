@@ -41,6 +41,7 @@ class ProceedButton extends React.Component {
             if (res.status === 200) {
                 API.get("/task/complete", {
                     params: {
+                        workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
                     }
@@ -49,12 +50,13 @@ class ProceedButton extends React.Component {
                     if(res.status === 200){
                         // If succesfull follow up in the next step page in the workflow manager
                         console.log("Task completed succesfully")
-                        window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+                        // window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+                        window.close()
                     }else{
                         // If there is an error completing the task iin the datalake we are probably
                         // in a test case, so redirect to the home page
-                        console.log("Error completing task, please try again 1")
-                        window.location.replace("/")
+                        console.log("Error completing task, please try again")
+                        // window.location.replace("/")
                     }
                     console.log(res)
                     // this.setState({channels: res.data.channels})

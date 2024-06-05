@@ -5,7 +5,7 @@ import Keycloak from "keycloak-js";
 import "../components/css/loading.css"
 import * as httpClient from "browserslist";
 import API from "../axiosInstance";
-import Cookies from 'universal-cookie';
+// import Cookies from 'universal-cookie';
 
 const LayoutMain = ({children}) => {
     const [keycloak, setKeycloak] = useState(null);
@@ -18,9 +18,11 @@ const LayoutMain = ({children}) => {
         const keycloak = new Keycloak({
             "realm": "mescobrad",
             "url": "https://idm.digital-enabler.eng.it/auth/",
-            "clientId": "data-analytics"
+            "clientId": "data-analytics",
+            // "clientSecret" : "36V5m563FNSTKn5nuDBALZcA35xupub3"
         })
         keycloak.init({onLoad: 'login-required', checkLoginIframe: false}).then(authenticated => {
+            console.log("AUthenticated")
             setAuthenticated(authenticated)
             setKeycloak(keycloak)
             // this.setState(({keycloak: keycloak, authenticated: authenticated}))
