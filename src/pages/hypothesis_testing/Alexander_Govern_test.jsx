@@ -193,7 +193,7 @@ class Alexander_Govern_test extends React.Component {
     //     }
     //     this.setState({selected_variables:newArray})
     // }
-        handleChildSelectVariableNameChange(checkedValues){
+    handleChildSelectVariableNameChange(checkedValues){
         this.setState({selected_variables:checkedValues})
     }
     handleSelectNanPolicyChange(event){
@@ -295,9 +295,6 @@ class Alexander_Govern_test extends React.Component {
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>
