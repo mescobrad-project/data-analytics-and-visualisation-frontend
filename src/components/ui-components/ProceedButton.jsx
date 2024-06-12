@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Button} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import API from "../../axiosInstance";
 
 class ProceedButton extends React.Component {
@@ -15,11 +15,26 @@ class ProceedButton extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            selected_reply:false,
+            open_dialog:false
+        };
         this.handleProceed = this.handleProceed.bind(this);
+        this.handleDialogClose = this.handleDialogClose.bind(this);
+        this.handleDialogOpen = this.handleDialogOpen.bind(this);
     }
-
-
+    handleDialogClose (event, reply_value) {
+        this.setState({open_dialog:false})
+        this.setState({selected_reply:reply_value});
+        if (reply_value===false){
+            return
+        } else{
+            this.handleProceed()
+        }
+    };
+    handleDialogOpen(event) {
+        this.setState({open_dialog:true})
+    };
     async handleProceed() {
         const params = new URLSearchParams(window.location.search);
         let function_type_to_send = null
@@ -89,12 +104,37 @@ class ProceedButton extends React.Component {
 
     render() {
         return (
-            <Button onClick={this.handleProceed} sx={{float: "right", marginRight: "5px"}} variant="contained"
-                    color="primary" type="submit"
-                // disabled={!this.props.resultsExist}
-            >
-                Proceed >
-            </Button>
+                <React.Fragment>
+                    <Button onClick={this.handleDialogOpen} sx={{float: "right", marginRight: "5px"}} variant="contained"
+                            color="secondary"
+                            type="submit"
+                        // disabled={!this.props.resultsExist}
+                    >
+                        Send results to Wf>
+                    </Button>
+                    <Dialog
+                            open={this.state.open_dialog}
+                            onClose={this.handleDialogClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">
+                            {"Proceed back to the Workflow Manager?"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                By proceeding you will close the current page and redirect back to the Workflow Manager.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+
+                            <Button onClick={(e) => {this.handleDialogClose(e, false)}}>Disagree</Button>
+                            <Button onClick={(e) => {this.handleDialogClose(e, true)}} autoFocus>
+                                Agree
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </React.Fragment>
         )
     }
 }
