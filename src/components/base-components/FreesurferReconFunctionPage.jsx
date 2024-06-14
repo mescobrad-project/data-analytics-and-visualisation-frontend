@@ -149,10 +149,14 @@ class FreesurferReconFunctionPage extends React.Component {
             selected_threshold: "0.3",
 
             foldersExist: {
-                samseg_results_folder: false,
-                ucl_test: false,
-                coreg_results_folder: false,
-                synthseg_results_folder: false
+                samseg_results_folder_exists : false,
+                reconall_results_folder_exists: false,
+                coreg_results_folder_exists: false,
+                synthseg_results_folder_exists: false,
+                samseg_results_folder: "none",
+                reconall_results_folder: "none",
+                coreg_results_folder: "none",
+                synthseg_results_folder: "none"
             },
 
             loading: false,
@@ -205,7 +209,7 @@ class FreesurferReconFunctionPage extends React.Component {
         this.handleSelectRefFileNameChange = this.handleSelectRefFileNameChange.bind(this);
         this.fetchCoregLog = this.fetchCoregLog.bind(this);
         this.fetchVol2volLog = this.fetchVol2volLog.bind(this);
-        this.upload_to_trino = this.upload_to_trino.bind(this);
+        // this.upload_to_trino = this.upload_to_trino.bind(this);
         this.handleCoregProceed = this.handleCoregProceed.bind(this);
         this.handleSelectInputFileNameChange = this.handleSelectInputFileNameChange.bind(this);
         this.handleSelectInputFlairFileNameChange = this.handleSelectInputFlairFileNameChange.bind(this);
@@ -326,7 +330,7 @@ class FreesurferReconFunctionPage extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        file_name: "recon_results"
+                        file_name: "ucl_test"
                     }
                 }).then(res => {
             const result = res.data;
@@ -422,8 +426,12 @@ class FreesurferReconFunctionPage extends React.Component {
         console.log(folderStatuses)
         this.setState({
             foldersExist: {
+                samseg_results_folder_exists : folderStatuses.data.samseg_results_folder_exists,
+                reconall_results_folder_exists: folderStatuses.data.reconall_results_folder_exists,
+                coreg_results_folder_exists: folderStatuses.data.coreg_results_folder_exists,
+                synthseg_results_folder_exists: folderStatuses.data.synthseg_results_folder_exists,
                 samseg_results_folder: folderStatuses.data.samseg_results_folder,
-                ucl_test: folderStatuses.data.ucl_test,
+                reconall_results_folder: folderStatuses.data.reconall_results_folder,
                 coreg_results_folder: folderStatuses.data.coreg_results_folder,
                 synthseg_results_folder: folderStatuses.data.synthseg_results_folder
             }
@@ -632,18 +640,18 @@ class FreesurferReconFunctionPage extends React.Component {
         });
     }
 
-    async upload_to_trino(event) {
-        event.preventDefault();
-        // Send the request
-        const params = new URLSearchParams(window.location.search);
-        API.put("csv_stats_to_trino_", {
-            workflow_id: params.get("workflow_id"),
-            run_id: params.get("run_id"),
-            step_id: params.get("step_id"),
-            source_file: "source_file",
-            workspace_id: "123123",
-        })
-    };
+    // async upload_to_trino(event) {
+    //     event.preventDefault();
+    //     // Send the request
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.put("csv_stats_to_trino_", {
+    //         workflow_id: params.get("workflow_id"),
+    //         run_id: params.get("run_id"),
+    //         step_id: params.get("step_id"),
+    //         source_file: "source_file",
+    //         workspace_id: "123123",
+    //     })
+    // };
 
     async callSamesegTrino() {
         const params = new URLSearchParams(window.location.search);
@@ -677,103 +685,74 @@ class FreesurferReconFunctionPage extends React.Component {
 
     async handleProceedCalls(event) {
         event.preventDefault();
-        // this.setState({ loading: true, current_execution: "Uploading samseg stats to trino" });
-        // await this.upload_to_trino();
-
         const params = new URLSearchParams(window.location.search);
-        let function_type_to_send = "mri"
-        this.setState({loading: true, current_execution: "Uploading Samseg data to trino..."});
-        API.put("/samseg_stats_to_trino", {
-            workflow_id: params.get("workflow_id"),
-            run_id: params.get("run_id"),
-            step_id: params.get("step_id"),
-            samseg_source_file: "testtest", //from folder name
-            workspace_id: "123123" // from workflow manager
-        }).then(res => {
+        const workflow_id = params.get("workflow_id");
+        const run_id = params.get("run_id");
+        const step_id = params.get("step_id");
+        const workspace_id = "123123"; // from workflow manager
+        const function_type_to_send = "mri";
+
+        try {
+            this.setState({ loading: true, current_execution: "Uploading Samseg data to trino..." });
+
+            let res = await API.put("/samseg_stats_to_trino", {
+                workflow_id,
+                run_id,
+                step_id,
+                samseg_source_folder: this.state.foldersExist.samseg_results_folder,
+                workspace_id
+            });
+
+            if (res.status !== 200) throw new Error("Error in uploading samseg data to trino");
+
+            this.setState({ current_execution: "Uploading Reconall data to trino. This might take a while..." });
+
+            res = await API.put("/reconall_stats_to_trino", {
+                workflow_id,
+                run_id,
+                step_id,
+                reconall_source_folder: this.state.foldersExist.reconall_results_folder,
+                workspace_id
+            });
+
+            if (res.status !== 200) throw new Error("Error in uploading reconall data to trino");
+
+            this.setState({ current_execution: "Uploading all available mri data to the datalake..." });
+
+            res = await API.post("/function/save_data/", null, {
+                params: {
+                    workflow_id,
+                    run_id,
+                    step_id,
+                    function_type: function_type_to_send
+                }
+            });
+
+            if (res.status !== 200) throw new Error("Error in uploading produced mri data to datalake");
+
+            res = await API.get("/task/complete", {
+                params: {
+                    workflow_id,
+                    run_id,
+                    step_id
+                }
+            });
+
             if (res.status === 200) {
-                this.setState({current_execution: "Uploading Reconall data to trino. This might take a while..."});
-                API.put("/reconall_stats_to_trino", {
-                    workflow_id: params.get("workflow_id"),
-                    run_id: params.get("run_id"),
-                    step_id: params.get("step_id"),
-                    reconall_source_file: "testtest", //from folder name
-                    workspace_id: "123123", // from workflow manager
-                    folder_name: "ucl_test", // always ucl_test?
-                }).then(res => {
-                    if (res.status === 200) {
-                        this.setState({current_execution: "Uploading all available mri data to the datalake..."});
-                        API.post("/function/save_data/", null, {
-                                    params: {
-                                        workflow_id: params.get("workflow_id"),
-                                        run_id: params.get("run_id"),
-                                        step_id: params.get("step_id"),
-                                        function_type: function_type_to_send
-                                    }
-                                }
-                        ).then(res => {
-                            // this.setState({output_return_data: res.data})
-                            // If the data was saved to the datalake, then complete the task and redirect
-                            // Otherwise, alert the user that there was an error
-                            if (res.status === 200) {
-                                API.get("/task/complete", {
-                                    params: {
-                                        workflow_id: params.get("workflow_id"),
-                                        run_id: params.get("run_id"),
-                                        step_id: params.get("step_id"),
-                                    }
-                                }).then(res => {
-                                    if (res.status === 200) {
-                                        // If succesfull follow up in the next step page in the workflow manager
-                                        console.log("Task completed succesfully")
-                                        this.setState({current_execution: "", loading: false, processCompleted: true});
-                                        window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-                                    } else {
-                                        // If there is an error completing the task iin the datalake we are probably
-                                        // in a test case, so redirect to the home page
-                                        console.log("Error in completing task, please try again 1.")
-                                        this.setState({
-                                            current_execution: "Error in completing task, please try again.",
-                                            loading: false
-                                        });
-                                        window.location.replace("/")
-                                    }
-                                    console.log(res)
-                                    // this.setState({channels: res.data.channels})
-                                    // this.props.handleChannelChange(res.data.channels)
-                                }).catch(function (error) {
-                                    if (error.status === 500) {
-                                        console.log("Error in completing task, please try again 2.")
-                                        this.setState({
-                                            current_execution: "Error in completing task, please try again.",
-                                            loading: false
-                                        });
-                                        window.location.replace("/")
-                                    }
-                                });
-                            } else {
-                                console.log("Error in uploading produced mri data to datalake. Please check the produced data and try again.")
-                                this.setState({
-                                    current_execution: "Error in uploading produced mri data to datalake. Please check the produced data and try again.",
-                                    loading: false
-                                });
-                            }
-                        })
-                    } else {
-                        console.log("Error in uploading reconall data to trino. Please check the produced data and try again.")
-                        this.setState({
-                            current_execution: "Error in uploading reconall data to trino. Please check the produced data and try again.",
-                            loading: false
-                        });
-                    }
-                })
+                console.log("Task completed successfully");
+                this.setState({ current_execution: "", loading: false, processCompleted: true });
+                window.location.replace(`https://es.platform.mes-cobrad.eu/workflow/${workflow_id}/run/${run_id}`);
             } else {
-                console.log("Error in uploading samseg data to trino. Please check the produced data and try again")
-                this.setState({
-                    current_execution: "Error in uploading samseg data to trino. Please check the produced data and try again.",
-                    loading: false
-                });
+                throw new Error("Error in completing task");
             }
-        })
+
+        } catch (error) {
+            console.log(error.message);
+            this.setState({
+                current_execution: error.message,
+                loading: false
+            });
+        }
     }
 
     handleSelectRefFileNameChange(event) {
@@ -1007,7 +986,6 @@ class FreesurferReconFunctionPage extends React.Component {
                                         margin: "8px"
                                     }}
                             />
-                            <ProceedButton></ProceedButton>
                             {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                             <Button variant="contained" color="primary"
                                     onClick={this.redirectToPage.bind(this, "recon_all_results", [], [])}
@@ -1090,7 +1068,6 @@ class FreesurferReconFunctionPage extends React.Component {
                                             disabled={(this.state.vol2vol_finished ? false : "disabled")}>
                                         Check out Results
                                     </Button>
-                                    <ProceedButton></ProceedButton>
                                 </div>
                             </Grid>
                             <Grid item xs={8}>
@@ -1288,14 +1265,13 @@ class FreesurferReconFunctionPage extends React.Component {
                                         >
                                             Check Results
                                         </Button>
-                                        <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={this.upload_to_trino}
-                                        >
-                                            Upload to trino
-                                        </Button>
-                                        <ProceedButton></ProceedButton>
+                                        {/*<Button*/}
+                                        {/*        variant="contained"*/}
+                                        {/*        color="primary"*/}
+                                        {/*        onClick={this.upload_to_trino}*/}
+                                        {/*>*/}
+                                        {/*    Upload to trino*/}
+                                        {/*</Button>*/}
                                     </div>
                                     <Divider/>
                                 </form>
@@ -1470,7 +1446,6 @@ class FreesurferReconFunctionPage extends React.Component {
                                             disabled={(this.state.synthseg_finished ? false : "disabled")}>
                                         Check out Results
                                     </Button>
-                                    <ProceedButton></ProceedButton>
                                 </div>
                             </Grid>
                             <Grid item xs={8}>
@@ -1516,16 +1491,38 @@ class FreesurferReconFunctionPage extends React.Component {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {Object.keys(this.state.foldersExist).map((folder) => (
-                                                    <TableRow key={folder}>
-                                                        <TableCell>{folder}</TableCell>
-                                                        <TableCell>
-                                                            {this.state.foldersExist[folder] ?
+                                            <TableRow key={"samseg results folder" + (this.state.foldersExist.samseg_results_folder !== "none" ? " (" + this.state.foldersExist.samseg_results_folder + ")" : "")}>
+                                                <TableCell>{"samseg results folder" + (this.state.foldersExist.samseg_results_folder !== "none" ? " (" + this.state.foldersExist.samseg_results_folder + ")" : "")}</TableCell>
+                                                <TableCell>
+                                                            {this.state.foldersExist.samseg_results_folder_exists ?
                                                                     <CheckIcon color="success"/> :
                                                                     <CloseIcon color="error"/>}
-                                                        </TableCell>
-                                                    </TableRow>
-                                            ))}
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow key={"reconall results folder" + (this.state.foldersExist.reconall_results_folder !== "none" ? " (" + this.state.foldersExist.reconall_results_folder + ")" : "")}>
+                                                <TableCell>{"reconall results folder" + (this.state.foldersExist.reconall_results_folder !== "none" ? " (" + this.state.foldersExist.reconall_results_folder + ")" : "")}</TableCell>
+                                                <TableCell>
+                                                    {this.state.foldersExist.reconall_results_folder_exists ?
+                                                            <CheckIcon color="success"/> :
+                                                            <CloseIcon color="error"/>}
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow key={"coreg results folder" + (this.state.foldersExist.coreg_results_folder !== "none" ? " (" + this.state.foldersExist.coreg_results_folder + ")" : "")}>
+                                                <TableCell>{"coreg results folder" + (this.state.foldersExist.coreg_results_folder !== "none" ? " (" + this.state.foldersExist.coreg_results_folder + ")" : "")}</TableCell>
+                                                <TableCell>
+                                                    {this.state.foldersExist.coreg_results_folder_exists ?
+                                                            <CheckIcon color="success"/> :
+                                                            <CloseIcon color="error"/>}
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow key={"synthseg results folder" + (this.state.foldersExist.synthseg_results_folder !== "none" ? " (" + this.state.foldersExist.synthseg_results_folder + ")" : "")}>
+                                                <TableCell>{"synthseg results folder" + (this.state.foldersExist.synthseg_results_folder !== "none" ? " (" + this.state.foldersExist.synthseg_results_folder + ")" : "")}</TableCell>
+                                                <TableCell>
+                                                    {this.state.foldersExist.synthseg_results_folder_exists ?
+                                                            <CheckIcon color="success"/> :
+                                                            <CloseIcon color="error"/>}
+                                                </TableCell>
+                                            </TableRow>
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
@@ -1561,8 +1558,9 @@ class FreesurferReconFunctionPage extends React.Component {
                                             <Typography variant="body1"
                                                         sx={{flexGrow: 1, textAlign: "center", marginTop: "16px"}}
                                                         noWrap>
-                                                Press the Proceed button to upload all your executed data. The available
-                                                data can be seen in the 'Folders to be uploaded' table
+                                                {this.state.current_execution ? `${this.state.current_execution}` :
+                                                        "Press the Proceed button to upload all your executed data. The available\n" +
+                                                        "data can be seen in the 'Folders to be uploaded' table"}
                                             </Typography>
                                     )}
                                 </Box>
