@@ -165,6 +165,9 @@ import XGBoostModelLoad from "../../pages/AI/XGBoostModelLoad";
 import XGBoostModelCreation from "../../pages/AI/XGBoostModelCreation";
 import AutoencoderModelCreation from "../../pages/AI/AutoencoderModelCreation";
 import AutoencoderModelLoad from "../../pages/AI/AutoencoderModelLoad";
+import MRIModelTraining from "../../pages/AI/MRIModelTraining";
+import MRIModelBatchInference from "../../pages/AI/MRIModelBatchInference";
+import MRIInferenceAndExplainability from "../../pages/AI/MRIInferenceAndExplanability";
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -478,6 +481,12 @@ const App = () => {
                                        element={(<LayoutMain><AutoencoderModelCreation/></LayoutMain>)}/>
                                 <Route exact path="/AutoencoderModelLoad"
                                        element={(<LayoutMain><AutoencoderModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/MRIModelTraining"
+                                       element={(<LayoutMain><MRIModelTraining/></LayoutMain>)}/>
+                                <Route exact path="/MRIModelBatchInference"
+                                       element={(<LayoutMain><MRIModelBatchInference/></LayoutMain>)}/>
+                                <Route exact path="/MRIInferenceAndExplainability"
+                                       element={(<LayoutMain><MRIInferenceAndExplainability/></LayoutMain>)}/>
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>
