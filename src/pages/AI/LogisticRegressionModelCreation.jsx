@@ -19,6 +19,7 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import ProceedButton from "../../components/ui-components/ProceedButton";
 import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
+import LoadingWidget from "../../components/ui-components/LoadingWidget";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -65,18 +66,17 @@ class LogisticRegressionModelCreation extends React.Component {
         this.state = {
             // List of columns sent by the backend
             column_names: [],
+            binary_columns: [],
             file_names:[],
             test_data: {
-                mse: "",
-                r2_score: "",
-                Loss:'',
                 coeff_determination:'',
+                decision_function:'',
                 intercept:'',
-                mae:'',
-                rmse:'',
+                classification_report:'',
                 slope:''
             },
             dfslope:'',
+            Classif_rprt:'',
             //Values selected currently on the form
             selected_dependent_variable: "",
             selected_independent_variables: [],
@@ -84,25 +84,29 @@ class LogisticRegressionModelCreation extends React.Component {
             selected_test_size:'0.01',
             selected_random_state:'10',
             selected_shuffle:false,
+            analysisrunning:false,
             selected_file_name: "",
             FrenderChild:0,
+            tabvalue:0,
+            LogisticRegression_show:false,
             model_name:'Logistic-'+crypto.randomUUID(),
             svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_summary_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/summary_lg.svg',
             svg2_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_waterfall_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/beeswarm_lg.svg',
             svg3_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_heatmap_lr.svg',
-            // svg4_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-            //         + '/step_' + params.get("step_id") + '/output/shap_bar_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/shap_waterfall_lg.svg',
+            svg4_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/shap_heatmap_lg.svg',
             svg5_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_violin_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/shap_violin_lg.svg',
             // model_name:'LR - '+ Date().toLocaleString("en-GB")
         };
 
         //Binding functions of the class
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
@@ -113,7 +117,7 @@ class LogisticRegressionModelCreation extends React.Component {
         this.handleTabChange = this.handleTabChange.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.fetchFileNames();
     }
     /**
@@ -122,7 +126,8 @@ class LogisticRegressionModelCreation extends React.Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        this.setState({LinearRegression_show: false})
+        this.setState({LogisticRegression_show: false})
+        this.setState({analysisrunning: true})
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
@@ -142,9 +147,13 @@ class LogisticRegressionModelCreation extends React.Component {
             }
         }).then(res => {
             this.setState({test_data: res.data})
-            this.setState({LinearRegression_show: true})
+            this.setState({LogisticRegression_show: true})
             this.setState({dfslope:JSON.parse(res.data.slope)});
+            this.setState({Classif_rprt:JSON.parse(res.data.classification_report)});
+            this.setState({Decision_Function:JSON.parse(res.data.decision_function)});
             this.setState({tabvalue:1})
+            console.log(res.data.classification_report)
+            this.setState({analysisrunning:false})
         });
     }
     /**
@@ -162,6 +171,17 @@ class LogisticRegressionModelCreation extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
+        });
+    }
+    async fetchBinaryColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_binary_columns",
+                {params: {
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({binary_columns: res.data.columns})
         });
     }
     async fetchFileNames() {
@@ -192,26 +212,6 @@ class LogisticRegressionModelCreation extends React.Component {
         });
     }
 
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-        }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
-    }
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
     }
@@ -227,10 +227,12 @@ class LogisticRegressionModelCreation extends React.Component {
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
+            this.fetchBinaryColumnNames()
             this.fetchDatasetContent()
             this.setState({selected_independent_variables: []})
             this.setState({selected_dependent_variable: ""})
-            this.state.LinearRegression_show=false
+            this.state.LogisticRegression_show=false
+            this.state.analysisrunning=false
             this.state.FrenderChild+=1
         })
     }
@@ -263,7 +265,7 @@ class LogisticRegressionModelCreation extends React.Component {
                                         onChange={this.handleSelectFileNameChange}
                                 >
                                     {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
@@ -278,8 +280,8 @@ class LogisticRegressionModelCreation extends React.Component {
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
 
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>
+                                    {this.state.binary_columns.map((column) => (
+                                            <MenuItem key={column} value={column}>
                                                 {column}
                                             </MenuItem>
                                     ))}
@@ -340,24 +342,19 @@ class LogisticRegressionModelCreation extends React.Component {
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
-                                Submit
-                            </Button>
-                        </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.LinearRegression_show}>
-                                Proceed >
+                                Run Analysis
                             </Button>
                         </form>
                             <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                                <FormHelperText>Selected independent variables</FormHelperText>
+                                <FormHelperText>Selected variables</FormHelperText>
                                 <div>
                                 <span>
                                     {this.state.selected_independent_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
@@ -365,11 +362,15 @@ class LogisticRegressionModelCreation extends React.Component {
                                 </div>
                             </FormControl>
                         <br/>
+                        {this.state.analysisrunning ? (
+                                        <LoadingWidget/>
+                        ) : (<span></span>)}
                         <br/>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Linear Regression Results
+                            Logistic Regression Results
                         </Typography>
                         <hr className="result"/>
                         <Box sx={{ width: '100%' }}>
@@ -377,7 +378,7 @@ class LogisticRegressionModelCreation extends React.Component {
                                 <Tabs value={this.state.tabvalue} onChange={this.handleTabChange} aria-label="basic tabs example">
                                     <Tab label="Initial Dataset" {...a11yProps(0)} />
                                     <Tab label="Results" {...a11yProps(1)} />
-                                    <Tab label="New Dataset" {...a11yProps(2)} />
+                                    <Tab label="Decision function" {...a11yProps(2)} />
                                 </Tabs>
                             </Box>
                             <TabPanel value={this.state.tabvalue} index={0}>
@@ -385,75 +386,104 @@ class LogisticRegressionModelCreation extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                              <TabPanel value={this.state.tabvalue} index={1}>
-                                 <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}>
-                                     <Table>
-                                         <TableHead>
-                                             <TableRow>
-                                                 <TableCell className="tableHeadCell">Mean Squared Error (MSE)</TableCell>
-                                                 <TableCell className="tableHeadCell">R-squared (R²)</TableCell>
-                                                 <TableCell className="tableHeadCell">Test Loss</TableCell>
-                                                 <TableCell className="tableHeadCell">Coefficient of Determination</TableCell>
-                                                 <TableCell className="tableHeadCell">Intercept</TableCell>
-                                                 <TableCell className="tableHeadCell">Mean Absolute Error (MAE)</TableCell>
-                                                 <TableCell className="tableHeadCell">Root Mean Squared Error (RMSE)</TableCell>
-                                             </TableRow>
-                                         </TableHead>
-                                         <TableBody>
-                                             <TableRow>
-                                                 <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.mse).toExponential(9)}</TableCell>
-                                                 <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.r2_score).toExponential(9)}</TableCell>
-                                                 <TableCell className="tableCell" >{Number.parseFloat(this.state.test_data.Loss).toExponential(9)}</TableCell>
-                                                 <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.coeff_determination).toExponential(9)}</TableCell>
-                                                 <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.intercept).toExponential(9)}</TableCell>
-                                                 <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.mae).toExponential(9)}</TableCell>
-                                                 <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.rmse).toExponential(9)}</TableCell>
-                                             </TableRow>
-                                         </TableBody>
-                                     </Table>
-                                 </TableContainer>
-                                <br/>
-                                 <Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}
-                                      mb={2}
-                                      display="flex"
-                                      flexDirection="column"
-                                      marginLeft='auto'
-                                      marginRight= 'auto'
-                                      padding='5px'>
-                                     <Typography variant="h6" component="div">Estimated coefficients for the linear regression problem.</Typography>
-                                     <JsonTable className="jsonResultsTable"
-                                                 rows = {this.state.dfslope}/></Box>
-                                 <Grid container padding='5px'>
-                                     <Grid item xs={6} >
-                                         <img src={this.state.svg1_path + "?random=" + new Date().getTime()}
-                                              loading="lazy"
-                                              style={{zoom:'80%'}}
-                                         />
-                                     </Grid>
-                                     <Grid item xs={6} >
-                                         <img src={this.state.svg5_path + "?random=" + new Date().getTime()}
-                                              loading="lazy"
-                                              style={{zoom:'80%'}}
-                                         />
-                                     </Grid>
-                                 </Grid>
-                                 <Grid container>
-                                     <Grid item xs={6} >
-                                         <img src={this.state.svg2_path + "?random=" + new Date().getTime()}
-                                              loading="lazy"
-                                              style={{zoom:'80%'}}
-                                         />
-                                     </Grid>
-                                     <Grid item xs={6} >
-                                         <img src={this.state.svg3_path + "?random=" + new Date().getTime()}
-                                              loading="lazy"
-                                              style={{zoom:'80%'}}
-                                         />
-                                     </Grid>
-                                 </Grid>
-                            </TabPanel>
-                            {/*<TabPanel value={this.state.tabvalue} index={2}>*/}
-                            {/*    <div style={{display: (this.state.LinearRegression_show ? 'block' : 'none')}} dangerouslySetInnerHTML={{__html: this.state.influence_points}} />*/}
-                            {/*</TabPanel>*/}
+                                 <Grid style={{display: (this.state.LogisticRegression_show ? 'block' : 'none')}}>
+                                     {this.state.test_data['status']!=='Success' ? (
+                                             <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                     ) : (
+                                             <Grid>
+                                                 <TableContainer component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}>
+                                                     <Table>
+                                                         <TableHead>
+                                                             <TableRow>
+                                                                 <TableCell className="tableHeadCell">Coefficient of Determination</TableCell>
+                                                                 <TableCell className="tableHeadCell">Intercept</TableCell>
+                                                             </TableRow>
+                                                         </TableHead>
+                                                         <TableBody>
+                                                             <TableRow>
+                                                                 <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.coeff_determination).toExponential(9)}</TableCell>
+                                                                 <TableCell className="tableCell" >{ Number.parseFloat(this.state.test_data.intercept).toExponential(9)}</TableCell>
+                                                             </TableRow>
+                                                         </TableBody>
+                                                     </Table>
+                                                </TableContainer>
+                                                 <br/>
+                                                 <Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}
+                                                      mb={2}
+                                                      display="flex"
+                                                      flexDirection="column"
+                                                      marginLeft='auto'
+                                                      marginRight= 'auto'
+                                                      padding='5px'>
+                                                     <Typography variant="h6" component="div">Estimated coefficients for the logistic regression problem.</Typography>
+                                                     <JsonTable className="jsonResultsTable"
+                                                                 rows = {this.state.dfslope}/></Box>
+                                                 <Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}
+                                                      mb={2}
+                                                      display="flex"
+                                                      flexDirection="column"
+                                                      marginLeft='auto'
+                                                      marginRight= 'auto'
+                                                      padding='5px'>
+                                                     <Typography variant="h6" component="div">Classification Report.</Typography>
+                                                     {/*{this.state.test_data.classification_report}*/}
+                                                     <div><JsonTable className="jsonResultsTable"
+                                                                rows = {this.state.Classif_rprt}/>
+                                                     </div>
+                                                 </Box>
+                                                 {/*<Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}*/}
+                                                 {/*     mb={2}*/}
+                                                 {/*     display="flex"*/}
+                                                 {/*     flexDirection="column"*/}
+                                                 {/*     marginLeft='auto'*/}
+                                                 {/*     marginRight= 'auto'*/}
+                                                 {/*     padding='5px'>*/}
+                                                 {/*    <Typography variant="h6" component="div">Classification Report.</Typography>*/}
+                                                 {/*    /!*{this.state.test_data.classification_report}*!/*/}
+                                                 {/*    <div><JsonTable className="jsonResultsTable"*/}
+                                                 {/*                    rows = {this.state.Decision_Function}/>*/}
+                                                 {/*    </div>*/}
+                                                 {/*</Box>*/}
+                                                     {/*<div >*/}
+                                                     {/*    {this.state.Classif_rprt.split('\n').map((item) =>*/}
+                                                     {/*            <div>*/}
+                                                     {/*                <strong style={{fontSize:'16px'}}>{item}</strong>*/}
+                                                     {/*                <TableRow>*/}
+                                                     {/*                    { item.substring(item.indexOf(' ')+1).split(' ').map((subitem)=>*/}
+                                                     {/*                            <TableCell style={{fontSize:'16px'}}>{subitem}</TableCell>)}*/}
+                                                     {/*                </TableRow>*/}
+                                                     {/*            </div>)}*/}
+                                                     {/*</div>*/}
+                                                 {/*</Box>*/}
+                                                 <Grid container padding='5px'>
+                                                     <Grid item xs={6} >
+                                                         <img src={this.state.svg5_path + "?random=" + new Date().getTime()}
+                                                              loading="lazy"
+                                                              style={{zoom:'80%'}}
+                                                         />
+                                                     </Grid>
+                                                     <Grid item xs={6} >
+                                                         <img src={this.state.svg4_path + "?random=" + new Date().getTime()}
+                                                              loading="lazy"
+                                                              style={{zoom:'80%'}}
+                                                         />
+                                                     </Grid>
+                                                 </Grid>
+                                                 <Grid item xs={12} >
+                                                     <img src={this.state.svg3_path + "?random=" + new Date().getTime()}
+                                                          loading="lazy"
+                                                          style={{zoom:'80%'}}
+                                                     />
+                                                 </Grid>
+                                             </Grid>
+                                         )}
+                                            </Grid>
+                                     </TabPanel>
+                                    <TabPanel value={this.state.tabvalue} index={2}>
+                                        <JsonTable className="jsonResultsTable"
+                                                        rows = {this.state.Decision_Function}/>
+                                    </TabPanel>
+
                         </Box>
                     </Grid>
                 </Grid>

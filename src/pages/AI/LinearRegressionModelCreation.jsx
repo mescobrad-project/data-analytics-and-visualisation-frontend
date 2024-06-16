@@ -113,7 +113,7 @@ class LinearRegressionModelCreation extends React.Component {
         this.handleTabChange = this.handleTabChange.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.fetchFileNames();
     }
     /**
@@ -192,26 +192,26 @@ class LinearRegressionModelCreation extends React.Component {
         });
     }
 
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-        }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
-    }
+    // async handleProceed(event) {
+    //     event.preventDefault();
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.put("save_hypothesis_output",
+    //             {
+    //                 workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+    //                 step_id: params.get("step_id")
+    //             }
+    //     ).then(res => {
+    //         this.setState({output_return_data: res.data})
+    //     });
+    //     API.get("/task/complete", {
+    //         params: {
+    //             run_id: params.get("run_id"),
+    //             step_id: params.get("step_id"),
+    //         }
+    //     }).then(res => {
+    //         window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+    //     });
+    // }
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
     }
@@ -340,15 +340,15 @@ class LinearRegressionModelCreation extends React.Component {
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.LinearRegression_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.LinearRegression_show}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                             <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                                 <FormHelperText>Selected independent variables</FormHelperText>
                                 <div>
@@ -357,13 +357,14 @@ class LinearRegressionModelCreation extends React.Component {
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                                 </div>
                             </FormControl>
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                     </Grid>

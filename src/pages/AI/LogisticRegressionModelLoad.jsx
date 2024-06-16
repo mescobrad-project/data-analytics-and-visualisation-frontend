@@ -19,6 +19,7 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import ProceedButton from "../../components/ui-components/ProceedButton";
 import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
+import LoadingWidget from "../../components/ui-components/LoadingWidget";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -80,6 +81,8 @@ class LogisticRegressionModelLoad extends React.Component {
             //Values selected currently on the form
             selected_file_name: "",
             selected_model_name: "",
+            analysisrunning:false,
+            LogisticRegression_show:false,
             model_name:'LR-0250254',
             tabvalue:0,
         };
@@ -91,7 +94,7 @@ class LogisticRegressionModelLoad extends React.Component {
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.handleSelectModelNameChange = this.handleSelectModelNameChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.fetchFileNames();
     }
     /**
@@ -100,9 +103,9 @@ class LogisticRegressionModelLoad extends React.Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        this.setState({LinearRegression_show: false})
+        this.setState({LogisticRegression_show: false})
         const params = new URLSearchParams(window.location.search);
-
+        this.setState({analysisrunning: true})
         // Send the request
         API.get("logistic_reg_load_model", {
             params: {
@@ -115,13 +118,14 @@ class LogisticRegressionModelLoad extends React.Component {
             }
         }).then(res => {
             this.setState({test_data: res.data})
-            this.setState({LinearRegression_show: true})
+            this.setState({LogisticRegression_show: true})
             this.setState({New_dataset:JSON.parse(res.data.result_dataset)});
             this.setState({Coeff_determination:JSON.parse(res.data.coeff_determination)});
             this.setState({Test_params:res.data.independent_params});
             this.setState({Test_dependent:res.data.dependent_param});
             // this.setState({Test_params:JSON.parse(res.data.params)});
             this.setState({tabvalue:1})
+            this.setState({analysisrunning:false})
         });
     }
     /**
@@ -156,26 +160,26 @@ class LogisticRegressionModelLoad extends React.Component {
         });
     }
 
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-        }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
-    }
+    // async handleProceed(event) {
+    //     event.preventDefault();
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.put("save_hypothesis_output",
+    //             {
+    //                 workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+    //                 step_id: params.get("step_id")
+    //             }
+    //     ).then(res => {
+    //         this.setState({output_return_data: res.data})
+    //     });
+    //     API.get("/task/complete", {
+    //         params: {
+    //             run_id: params.get("run_id"),
+    //             step_id: params.get("step_id"),
+    //         }
+    //     }).then(res => {
+    //         window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+    //     });
+    // }
 
     handleSelectModelNameChange(event){
         this.setState( {selected_model_name: event.target.value})
@@ -184,6 +188,8 @@ class LogisticRegressionModelLoad extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchDatasetContent()
             this.state.LinearRegression_show=false
+            this.state.analysisrunning=false
+
         })
     }
     handleTabChange(event, newvalue){
@@ -223,7 +229,7 @@ class LogisticRegressionModelLoad extends React.Component {
                                         label="Model"
                                         onChange={this.handleSelectModelNameChange}
                                 >
-                                    {this.state.file_names.filter(file => file.endsWith('.sav')).map((column) => (
+                                    {this.state.file_names.filter(file => file.endsWith('.sav') || file.endsWith('.pkl')).map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
@@ -233,15 +239,19 @@ class LogisticRegressionModelLoad extends React.Component {
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_file_name && !this.state.selected_model_name}>
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.LinearRegression_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {this.state.analysisrunning ? (
+                                <LoadingWidget/>
+                        ) : (<span></span>)}
+                        <ProceedButton></ProceedButton>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.LinearRegression_show}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -261,28 +271,33 @@ class LogisticRegressionModelLoad extends React.Component {
                                            rows = {this.state.initialdataset}/>
                             </TabPanel>
                              <TabPanel value={this.state.tabvalue} index={1}>
-                                                                 <br/>
-                                 <Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}
-                                      mb={2}
-                                      display="flex"
-                                      flexDirection="column"
-                                      marginLeft='auto'
-                                      marginRight= 'auto'
-                                      padding='5px'>
-                                     <Typography variant="h5" component="div">Dependent variable</Typography>
-                                     {this.state.Test_dependent}<br/>
-                                     <Typography variant="h5" component="div">Intercept</Typography>
-                                     {this.state.test_data.intercept}<br/>
-                                     <Typography variant="h5" component="div">Estimated coefficients for the linear regression problem.</Typography>
-                                     <JsonTable className="jsonResultsTable"
-                                                rows = {this.state.Coeff_determination}/>
-                                     {/*<Typography variant="h5" component="div">Independent variables</Typography>*/}
-                                     {/*{this.state.Test_params.map((value, index)=>*/}
-                                     {/*        <p>{value}</p>)}*/}
-                                 </Box>
-                            </TabPanel>
-                            <TabPanel value={this.state.tabvalue} index={2}>
-                                <Box>
+                                 <Grid style={{display: (this.state.LogisticRegression_show ? 'block' : 'none')}}>
+                                     {this.state.test_data['status']!=='Success' ? (
+                                             <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                     ) : (
+                                         <Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}
+                                              mb={2}
+                                              display="flex"
+                                              flexDirection="column"
+                                              marginLeft='auto'
+                                              marginRight= 'auto'
+                                              padding='5px'>
+                                             <Typography variant="h5" component="div">Dependent variable</Typography>
+                                             {this.state.Test_dependent}<br/>
+                                             <Typography variant="h5" component="div">Intercept</Typography>
+                                             {this.state.test_data.intercept}<br/>
+                                             <Typography variant="h5" component="div">Estimated coefficients for the logistic regression problem.</Typography>
+                                             <JsonTable className="jsonResultsTable"
+                                                        rows = {this.state.Coeff_determination}/>
+                                             {/*<Typography variant="h5" component="div">Independent variables</Typography>*/}
+                                             {/*{this.state.Test_params.map((value, index)=>*/}
+                                             {/*        <p>{value}</p>)}*/}
+                                         </Box>
+                                             )}
+                                 </Grid>
+                                </TabPanel>
+                                <TabPanel value={this.state.tabvalue} index={2}>
+                                    <Box>
                                     <JsonTable className="jsonResultsTable"
                                                rows = {this.state.New_dataset}/>
                                 </Box>
