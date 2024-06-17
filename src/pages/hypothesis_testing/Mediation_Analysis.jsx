@@ -19,6 +19,7 @@ import PropTypes from "prop-types";
 import { CSVLink, CSVDownload } from "react-csv"
 import qs from "qs";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -68,32 +69,36 @@ class Mediation_Analysis extends React.Component {
             initialdataset:[],
             Results:"",
             // Results2:"",
-            selected_dependent_variable: "",
-            selected_dependent_variable_wf: "",
-            selected_exposure_variable: "",
-            selected_exposure_variable_wf: "",
-            selected_mediator_variable: "",
-            selected_mediator_variable_wf: [],
+            selected_dependent_variable: '',
+            // selected_dependent_variable_wf: "",
+            selected_exposure_variable: '',
+            // selected_exposure_variable_wf: "",
+            selected_mediator_variable: [],
+            // selected_mediator_variable_wf: [],
             selected_independent_variables: [],
-            selected_independent_variables_wf: [],
+            // selected_independent_variables_wf: [],
+            tabvalue:0,
             stats_show: false,
         };
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectExposureVariableChange = this.handleSelectExposureVariableChange.bind(this);
-        this.handleSelectMediatorVariableChange = this.handleSelectMediatorVariableChange.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        // this.handleSelectMediatorVariableChange = this.handleSelectMediatorVariableChange.bind(this);
+        // this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
-        this.handleListMediatorDelete = this.handleListMediatorDelete.bind(this);
-        this.handleDeleteMediatorVariable = this.handleDeleteMediatorVariable.bind(this);
+        // this.handleListDelete = this.handleListDelete.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        // this.handleListMediatorDelete = this.handleListMediatorDelete.bind(this);
+        // this.handleDeleteMediatorVariable = this.handleDeleteMediatorVariable.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
+        this.handleChildSelectMediatorVariableNameChange = this.handleChildSelectMediatorVariableNameChange.bind(this);
+        this.handleChildSelectIndependentVariableNameChange = this.handleChildSelectIndependentVariableNameChange.bind(this);
+
         this.fetchFileNames();
     }
 
@@ -147,10 +152,11 @@ class Mediation_Analysis extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        dependent_1: this.state.selected_dependent_variable_wf,
-                        exposure: this.state.selected_exposure_variable_wf,
-                        mediator: this.state.selected_mediator_variable_wf,
-                        independent: this.state.selected_independent_variables_wf.length >0 ? this.state.selected_independent_variables_wf : null
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
+                        dependent: this.state.selected_dependent_variable,
+                        exposure: this.state.selected_exposure_variable,
+                        mediator: this.state.selected_mediator_variable,
+                        independent: this.state.selected_independent_variables.length >0 ? this.state.selected_independent_variables : null
                 },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
@@ -190,65 +196,71 @@ class Mediation_Analysis extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
-        var newArray = this.state.selected_independent_variables_wf.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_independent_variables_wf:newArray})
+    // handleSelectIndependentVariableChange(event){
+    //     this.setState( {selected_independent_variables: event.target.value})
+    //     var newArray = this.state.selected_independent_variables_wf.slice();
+    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+    //     {
+    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
+    //     }
+    //     this.setState({selected_independent_variables_wf:newArray})
+    // }
+    handleChildSelectIndependentVariableNameChange(checkedValues){
+        this.setState({selected_independent_variables:checkedValues})
     }
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
-        this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+ event.target.value})
+        // this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+ event.target.value})
     }
     handleSelectExposureVariableChange(event){
         this.setState( {selected_exposure_variable: event.target.value})
-        this.setState( {selected_exposure_variable_wf: this.state.selected_file_name+"--"+  event.target.value})
+        // this.setState( {selected_exposure_variable_wf: this.state.selected_file_name+"--"+  event.target.value})
     }
-    handleSelectMediatorVariableChange(event){
-        this.setState( {selected_mediator_variable: event.target.value})
-        var newArray = this.state.selected_mediator_variable_wf.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_mediator_variable_wf:newArray})
+    // handleSelectMediatorVariableChange(event){
+    //     this.setState( {selected_mediator_variable: event.target.value})
+    //     var newArray = this.state.selected_mediator_variable_wf.slice();
+    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+    //     {
+    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
+    //     }
+    //     this.setState({selected_mediator_variable_wf:newArray})
+    // }
+    handleChildSelectMediatorVariableNameChange(checkedValues){
+        this.setState({selected_mediator_variable:checkedValues})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    handleListDelete(event) {
-        var newArray = this.state.selected_independent_variables_wf.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_independent_variables_wf:newList})
-    }
-    handleDeleteVariable(event) {
-        this.setState({selected_independent_variables_wf:[]})
-    }
-    handleListMediatorDelete(event) {
-        var newArray = this.state.selected_mediator_variable_wf.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_mediator_variable_wf:newList})
-    }
-    handleDeleteMediatorVariable(event) {
-        this.setState({selected_mediator_variable_wf:[]})
-    }
+    // handleListDelete(event) {
+    //     var newArray = this.state.selected_independent_variables_wf.slice();
+    //     const ind = newArray.indexOf(event.target.id);
+    //     let newList = newArray.filter((x, index)=>{
+    //         return index!==ind
+    //     })
+    //     this.setState({selected_independent_variables_wf:newList})
+    // }
+    // handleDeleteVariable(event) {
+    //     this.setState({selected_independent_variables_wf:[]})
+    // }
+    // handleListMediatorDelete(event) {
+    //     var newArray = this.state.selected_mediator_variable_wf.slice();
+    //     const ind = newArray.indexOf(event.target.id);
+    //     let newList = newArray.filter((x, index)=>{
+    //         return index!==ind
+    //     })
+    //     this.setState({selected_mediator_variable_wf:newList})
+    // }
+    // handleDeleteMediatorVariable(event) {
+    //     this.setState({selected_mediator_variable_wf:[]})
+    // }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_dependent_variable_wf = ""
-            this.handleDeleteMediatorVariable()
-            this.state.selected_exposure_variable_wf = ""
-            this.handleDeleteVariable()
+            this.state.selected_dependent_variable = ''
+            this.state.selected_mediator_variable = []
+            this.state.selected_exposure_variable = ''
+            this.state.selected_independent_variables=[]
             this.setState({stats_show: false})
         })
     }
@@ -271,7 +283,7 @@ class Mediation_Analysis extends React.Component {
                                         onChange={this.handleSelectFileNameChange}
                                 >
                                     {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
@@ -286,7 +298,7 @@ class Mediation_Analysis extends React.Component {
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
                                     {this.state.columns.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select outcome variable</FormHelperText>
@@ -301,46 +313,58 @@ class Mediation_Analysis extends React.Component {
                                         onChange={this.handleSelectExposureVariableChange}
                                 >
                                     {this.state.columns.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select predictor variable</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="mediator-selector-label">Mediator variable(s)</InputLabel>
-                                <Select
-                                        labelId="mediator-selector-label"
-                                        id="mediator-selector"
-                                        value= {this.state.selected_mediator_variable}
-                                        label="mediator"
-                                        onChange={this.handleSelectMediatorVariableChange}
-                                >
-                                    {this.state.columns.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select mediator variable(s).</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Covariate variables</InputLabel>
-                                <Select
-                                        labelId="Covariate-selector-label"
-                                        id="Covariate-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        label="Covariate"
-                                        onChange={this.handleSelectIndependentVariableChange}
-                                >
-                                    {this.state.columns.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select Covariate variables</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="mediator-selector-label">Mediator variable(s)</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="mediator-selector-label"*/}
+                            {/*            id="mediator-selector"*/}
+                            {/*            value= {this.state.selected_mediator_variable}*/}
+                            {/*            label="mediator"*/}
+                            {/*            onChange={this.handleSelectMediatorVariableChange}*/}
+                            {/*    >*/}
+                            {/*        {this.state.columns.map((column) => (*/}
+                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select mediator variable(s).</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            <h4>Mediator variable(s)</h4>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.columns}
+                                    onChildClick={this.handleChildSelectMediatorVariableNameChange}
+                            />
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="column-selector-label">Covariate variables</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="Covariate-selector-label"*/}
+                            {/*            id="Covariate-selector"*/}
+                            {/*            value= {this.state.selected_independent_variables}*/}
+                            {/*            label="Covariate"*/}
+                            {/*            onChange={this.handleSelectIndependentVariableChange}*/}
+                            {/*    >*/}
+                            {/*        {this.state.columns.map((column) => (*/}
+                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select Covariate variables</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            <h4>Covariate variables</h4>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.columns}
+                                    onChildClick={this.handleChildSelectIndependentVariableNameChange}
+                            />
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_mediator_variable_wf.length < 1 |
-                                            this.state.selected_exposure_variable_wf.length<1}
+                                    disabled={this.state.selected_dependent_variable.length < 1 |
+                                            this.state.selected_mediator_variable.length < 1 |
+                                            this.state.selected_exposure_variable.length<1}
                                     type="submit"
                             >
                                 Submit
@@ -354,53 +378,49 @@ class Mediation_Analysis extends React.Component {
                             <FormHelperText>Outcome variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_dependent_variable_wf}>
-                                {this.state.selected_dependent_variable_wf}
+                                    id={this.state.selected_dependent_variable}>
+                                {this.state.selected_dependent_variable}
                             </Button>
                         </Grid>
                         <Grid>
                             <FormHelperText>Predictor variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_exposure_variable_wf}>
-                                {this.state.selected_exposure_variable_wf}
+                                    id={this.state.selected_exposure_variable}>
+                                {this.state.selected_exposure_variable}
                             </Button>
                         </Grid>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected Mediator variables [click to remove]</FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_mediator_variable_wf.map((column) => (
+                                    {this.state.selected_mediator_variable.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
-                                                    onClick={this.handleListMediatorDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteMediatorVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected Independent variables [click to remove]</FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_independent_variables_wf.map((column) => (
+                                    {this.state.selected_independent_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>
