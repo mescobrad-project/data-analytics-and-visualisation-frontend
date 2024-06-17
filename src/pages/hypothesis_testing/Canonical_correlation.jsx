@@ -88,6 +88,8 @@ class Canonical_correlation extends React.Component {
             Coeffic_df:"",
             X_c_df:"",
             Y_c_df:"",
+            FrenderChild:0,
+            FrenderChild2:0,
             selected_n_components: 2,
             selected_independent_variables_1: [],
             // selected_independent_variables_1_wf: [],
@@ -290,6 +292,8 @@ class Canonical_correlation extends React.Component {
             this.fetchDatasetContent()
             this.state.selected_independent_variables_1=[]
             this.state.selected_independent_variables_2=[]
+            this.state.FrenderChild+=1
+            this.state.FrenderChild2+=1
             this.setState({stats_show: false})
         })
     }
@@ -332,7 +336,7 @@ class Canonical_correlation extends React.Component {
                             {/*    </Select>*/}
                             {/*    <FormHelperText>Select variables for correlation test</FormHelperText>*/}
                             {/*</FormControl>*/}
-                            <h4>Training vectors</h4>
+                            <Typography>Training vectors</Typography>
                             <SelectorWithCheckBoxes
                                     key={this.state.FrenderChild}
                                     data={this.state.column_names}
@@ -353,9 +357,9 @@ class Canonical_correlation extends React.Component {
                             {/*    </Select>*/}
                             {/*    <FormHelperText>Select variables for correlation test</FormHelperText>*/}
                             {/*</FormControl>*/}
-                            <h4>Target vectors</h4>
+                            <Typography>Target vectors</Typography>
                             <SelectorWithCheckBoxes
-                                    key={this.state.FrenderChild}
+                                    key={this.state.FrenderChild2}
                                     data={this.state.column_names}
                                     onChildClick={this.handleChildSelectVariable2NameChange}
                             />
@@ -375,15 +379,14 @@ class Canonical_correlation extends React.Component {
                                             this.state.selected_independent_variables_2.length<1}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected Training vectors [click to remove]</FormHelperText>
+                            <FormHelperText>Selected Training vectors </FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_independent_variables_1.map((column) => (
@@ -414,6 +417,7 @@ class Canonical_correlation extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>

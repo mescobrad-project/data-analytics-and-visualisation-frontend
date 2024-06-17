@@ -23,7 +23,7 @@ const userColumns = [
         headerName: "Variables", width: '35%',
         align: "left",
         headerAlign: "left",
-        flex:3,
+        flex:1,
         sortable: true},
     {
         field: "n",
@@ -121,6 +121,7 @@ class Skipped_spearman_correlation extends React.Component {
             selected_method: "skipped",
             selected_alternative: "two-sided",
             selected_independent_variables: [],
+            FrenderChild:0,
             selected_variables: [],
             tabvalue:0
         };
@@ -257,6 +258,7 @@ class Skipped_spearman_correlation extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.state.FrenderChild+=1
             this.state.selected_variables=[]
             this.setState({stats_show: false})
         })
@@ -311,10 +313,9 @@ class Skipped_spearman_correlation extends React.Component {
                                     disabled={this.state.selected_variables.length < 2}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -334,6 +335,7 @@ class Skipped_spearman_correlation extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

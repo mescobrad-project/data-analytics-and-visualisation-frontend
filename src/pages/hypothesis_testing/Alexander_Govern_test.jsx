@@ -65,6 +65,7 @@ class Alexander_Govern_test extends React.Component {
             selected_nan_policy:"omit",
             selected_statistical_test:"Alexander Govern test",
             stats_show:false,
+            FrenderChild:0,
             tabvalue:1
         };
         //Binding functions of the class
@@ -206,6 +207,7 @@ class Alexander_Govern_test extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.state.FrenderChild+=1
             this.state.selected_variables=[]
             this.setState({stats_show: false})
         })
@@ -275,10 +277,9 @@ class Alexander_Govern_test extends React.Component {
                                     disabled={this.state.selected_variables.length < 2}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -296,6 +297,7 @@ class Alexander_Govern_test extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -320,8 +322,8 @@ class Alexander_Govern_test extends React.Component {
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     </Grid>
                                     <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toFixed(5)}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toFixed(5)}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toExponential(9)}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toExponential(9)}</Typography>
                                         <JsonTable className="jsonResultsTable"
                                                    rows = {this.state.mean_std}/>
                                     </Grid>

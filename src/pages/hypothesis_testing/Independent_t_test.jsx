@@ -65,6 +65,7 @@ class Independent_t_test extends React.Component {
             selected_alternative: "two-sided",
             selected_nan_policy:"omit",
             selected_statistical_test:"Independent t-test",
+            FrenderChild:0,
             stats_show:false
         };
         //Binding functions of the class
@@ -200,6 +201,7 @@ class Independent_t_test extends React.Component {
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_variables=[]
+            this.state.FrenderChild+=1
             this.setState({stats_show: false})
         })
     }
@@ -268,10 +270,9 @@ class Independent_t_test extends React.Component {
                                     disabled={this.state.selected_variables.length !== 2}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -290,6 +291,7 @@ class Independent_t_test extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -314,8 +316,8 @@ class Independent_t_test extends React.Component {
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     </Grid>
                                     <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toFixed(5)}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toFixed(5)}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toExponential(9)}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toExponential(9)}</Typography>
                                         <JsonTable className="jsonResultsTable"
                                                    rows = {this.state.mean_std}/></Grid>
                                 </Grid>

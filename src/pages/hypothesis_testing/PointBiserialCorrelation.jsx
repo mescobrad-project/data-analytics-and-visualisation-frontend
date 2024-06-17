@@ -274,7 +274,7 @@ class PointBiserialCorrelation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Poitn Biserial Correlation
+                            Point Biserial Correlation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -334,14 +334,13 @@ class PointBiserialCorrelation extends React.Component {
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_variable && !this.state.selected_variable2}>
                                 {/*|| !this.state.selected_method*/}
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <Grid>
-                            Binary variable =
+                            Dichotomous variable =
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
                                     id={this.state.selected_variable}
@@ -358,6 +357,7 @@ class PointBiserialCorrelation extends React.Component {
                                 {this.state.selected_variable2}
                             </Button>
                         </Grid>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

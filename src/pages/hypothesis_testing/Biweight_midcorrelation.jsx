@@ -24,7 +24,7 @@ const userColumns = [
         // width: '15%',
         align: "left",
         headerAlign: "left",
-        flex:2,
+        flex:1,
         sortable: true,
     },
     {
@@ -124,6 +124,7 @@ class Biweight_midcorrelation extends React.Component {
             selected_method: "bicor",
             selected_alternative: "two-sided",
             selected_independent_variables: [],
+            FrenderChild:0,
             selected_variables: []
         };
         //Binding functions of the class
@@ -259,6 +260,7 @@ class Biweight_midcorrelation extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.state.FrenderChild+=1
             this.state.selected_variables=[]
             this.setState({stats_show: false})
         })
@@ -313,15 +315,14 @@ class Biweight_midcorrelation extends React.Component {
                                     disabled={this.state.selected_variables.length < 2}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected variables</FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_variables.map((column) => (
@@ -336,6 +337,7 @@ class Biweight_midcorrelation extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -363,6 +365,7 @@ class Biweight_midcorrelation extends React.Component {
                                                   rows= {this.state.test_data.DataFrame}
                                                   columns= {userColumns}
                                                   pageSize= {9}
+                                                  autosizeOnMount
                                                   rowsPerPageOptions={[9]}
                                                   components={{
                                                       Toolbar: CustomToolbar,

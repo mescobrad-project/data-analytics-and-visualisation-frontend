@@ -69,6 +69,7 @@ class Multiple_comparisons extends React.Component {
             selected_file_name: "",
             selected_alpha: 0.05,
             selected_method: "Bonferroni",
+            FrenderChild:0,
             stats_show:false
         };
         //Binding functions of the class
@@ -217,6 +218,7 @@ class Multiple_comparisons extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.state.FrenderChild+=1
             this.state.selected_variables=[]
             this.setState({stats_show: false})
         })
@@ -289,10 +291,9 @@ class Multiple_comparisons extends React.Component {
                                     disabled={this.state.selected_variables.length !== 1}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -305,13 +306,14 @@ class Multiple_comparisons extends React.Component {
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     key={column}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

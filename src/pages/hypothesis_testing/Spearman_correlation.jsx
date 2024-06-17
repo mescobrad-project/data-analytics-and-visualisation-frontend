@@ -122,6 +122,7 @@ class Spearman_correlation extends React.Component {
             selected_alternative: "two-sided",
             selected_independent_variables: [],
             selected_variables: [],
+            FrenderChild:0,
             tabvalue:0
         };
         //Binding functions of the class
@@ -260,6 +261,7 @@ class Spearman_correlation extends React.Component {
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_variables=[]
+            this.state.FrenderChild+=1
             this.setState({stats_show: false})
         })
     }
@@ -312,10 +314,9 @@ class Spearman_correlation extends React.Component {
                                     disabled={this.state.selected_variables.length < 2}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -335,6 +336,7 @@ class Spearman_correlation extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

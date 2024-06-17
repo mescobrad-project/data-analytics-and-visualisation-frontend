@@ -15,6 +15,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
 
 
 const userColumns = [
@@ -129,7 +130,7 @@ class Welch_Ancova extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
@@ -189,11 +190,11 @@ class Welch_Ancova extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
-        if (window.confirm("By proceeding you will complete the analysis and navigate back to the Workflow Manager.\n Do you wish to proceed?")===false)
-        {
-            // event.preventDefault();
-            return
-        }
+        // if (window.confirm("By proceeding you will complete the analysis and navigate back to the Workflow Manager.\n Do you wish to proceed?")===false)
+        // {
+        //     // event.preventDefault();
+        //     return
+        // }
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
@@ -220,22 +221,22 @@ class Welch_Ancova extends React.Component {
             this.setState({tabvalue:1})
         });
     }
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        // We changed info file uploading process to the DataLake
-        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        console.log(this.state.output_return_data);
-        window.location.replace("/")
-    }
+    // async handleProceed(event) {
+    //     event.preventDefault();
+    //     const params = new URLSearchParams(window.location.search);
+    //     // We changed info file uploading process to the DataLake
+    //     // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
+    //     API.put("save_hypothesis_output",
+    //             {
+    //                 workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+    //                 step_id: params.get("step_id")
+    //             }
+    //     ).then(res => {
+    //         this.setState({output_return_data: res.data})
+    //     });
+    //     console.log(this.state.output_return_data);
+    //     window.location.replace("/")
+    // }
 
     /**
      * Update state when selection changes in the form
@@ -319,15 +320,15 @@ class Welch_Ancova extends React.Component {
                                     disabled={this.state.selected_dependent_variable.length===0 || this.state.selected_between_factor.length===0 }
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                         <br/>
                         <br/>
                         <hr/>
@@ -347,6 +348,7 @@ class Welch_Ancova extends React.Component {
                                 {this.state.selected_between_factor}
                             </Button>
                         </Grid>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -376,6 +378,7 @@ class Welch_Ancova extends React.Component {
                                                               className="datagrid"
                                                               rows= {this.state.test_data.DataFrame}
                                                               columns= {userColumns}
+                                                              autosizeOnMount
                                                               pageSize= {15}
                                                               rowsPerPageOptions={[15]}
                                                     />
