@@ -189,11 +189,11 @@ class Welch_Ancova extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
-        if (window.confirm("By proceeding you will complete the analysis and navigate back to the Workflow Manager.\n Do you wish to proceed?")===false)
-        {
-            // event.preventDefault();
-            return
-        }
+        // if (window.confirm("By proceeding you will complete the analysis and navigate back to the Workflow Manager.\n Do you wish to proceed?")===false)
+        // {
+        //     // event.preventDefault();
+        //     return
+        // }
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
