@@ -23,7 +23,7 @@ const userColumns = [
         headerName: "Variables", width: '35%',
         align: "left",
         headerAlign: "left",
-        flex:3,
+        flex:1,
         sortable: true},
     {
         field: "n",
@@ -129,7 +129,7 @@ class Spearman_correlation extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         // this.handleListDelete = this.handleListDelete.bind(this);
         // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
@@ -219,57 +219,39 @@ class Spearman_correlation extends React.Component {
         });
     }
 
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"),
-                    run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-
-    }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
-    }
+    // async handleProceed(event) {
+    //     event.preventDefault();
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.put("save_hypothesis_output",
+    //             {
+    //                 workflow_id: params.get("workflow_id"),
+    //                 run_id: params.get("run_id"),
+    //                 step_id: params.get("step_id")
+    //             }
+    //     ).then(res => {
+    //         this.setState({output_return_data: res.data})
+    //     });
+    //     API.get("/task/complete", {
+    //         params: {
+    //             run_id: params.get("run_id"),
+    //             step_id: params.get("step_id"),
+    //         }
+    //
+    // }).then(res => {
+    //         window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+    //     });
+    // }
     /**
      * Update state when selection changes in the form
      */
     handleChildSelectVariableNameChange(checkedValues){
         this.setState({selected_variables:checkedValues})
     }
-    // handleSelectIndependentVariableChange(event){
-    //     this.setState( {selected_independent_variables: event.target.value})
-    //     var newArray = this.state.selected_variables.slice();
-    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-    //     {
-    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
-    //     }
-    //     this.setState({selected_variables:newArray})
-    // }
+
     handleSelectAlternativeChange(event){
         this.setState( {selected_alternative: event.target.value})
     }
-    // handleListDelete(event) {
-    //     var newArray = this.state.selected_variables.slice();
-    //     const ind = newArray.indexOf(event.target.id);
-    //     let newList = newArray.filter((x, index)=>{
-    //         return index!==ind
-    //     })
-    //     this.setState({selected_variables:newList})
-    // }
-    // handleDeleteVariable(event) {
-    //     this.setState({selected_variables:[]})
-    // }
+
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
@@ -277,7 +259,6 @@ class Spearman_correlation extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            // this.handleDeleteVariable()
             this.state.selected_variables=[]
             this.setState({stats_show: false})
         })
@@ -382,8 +363,9 @@ class Spearman_correlation extends React.Component {
                                               columns= {userColumns}
                                               pageSize= {9}
                                               rowsPerPageOptions={[9]}
-                                              components={{
-                                                  Toolbar: CustomToolbar,
+                                                  autosizeOnMount
+                                                  components={{
+                                                      Toolbar: CustomToolbar,
                                               }}
                                         />
                                         <hr className="result"/>
