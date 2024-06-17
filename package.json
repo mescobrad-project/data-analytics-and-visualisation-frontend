@@ -68,6 +68,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.22.5",
+    "ajv": "^8.16.0",
     "web-vitals": "^2.1.4"
   }
 }
