@@ -332,13 +332,14 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                                 Submit
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary"
-                                    type="submit"
-                                    disabled={!this.state.stats_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary"*/}
+                        {/*            type="submit"*/}
+                        {/*            disabled={!this.state.stats_show}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
+                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -360,7 +361,6 @@ class Exploratory_Factor_Analysis_extract_latent_structure extends React.Compone
                                 Clear all
                             </Button>
                         </FormControl>
-                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}}>

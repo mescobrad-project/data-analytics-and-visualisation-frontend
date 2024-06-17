@@ -10,7 +10,6 @@ import {
     Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField,
     Typography
 } from "@mui/material";
-import InnerHTML from "dangerously-set-html-content";
 import Paper from "@mui/material/Paper";
 import {Box} from "@mui/system";
 import PropTypes from "prop-types";
@@ -197,6 +196,7 @@ class Transform_data extends React.Component {
                         step_id: params.get("step_id"),
                         column: this.state.selected_variable,
                         name_transform: this.state.selected_method,
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
                         lmbd: to_send_input_lmbda,
                         alpha: to_send_input_alpha}
                 }
@@ -276,7 +276,7 @@ class Transform_data extends React.Component {
     }
     handleSelectColumnChange(event){
         this.setState( {selected_column: event.target.value})
-        this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+        this.setState( {selected_variable: event.target.value})
         this.resetResultArea()
     }
     handleSelectMethodChange(event){

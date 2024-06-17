@@ -165,6 +165,8 @@ import XGBoostModelLoad from "../../pages/AI/XGBoostModelLoad";
 import XGBoostModelCreation from "../../pages/AI/XGBoostModelCreation";
 import AutoencoderModelCreation from "../../pages/AI/AutoencoderModelCreation";
 import AutoencoderModelLoad from "../../pages/AI/AutoencoderModelLoad";
+import DatasetConcat from "../../pages/hypothesis_testing/DatasetConcat";
+
 
 // Theme Colors Declaration
 let firstColor = '#59C7F3'
@@ -478,6 +480,8 @@ const App = () => {
                                        element={(<LayoutMain><AutoencoderModelCreation/></LayoutMain>)}/>
                                 <Route exact path="/AutoencoderModelLoad"
                                        element={(<LayoutMain><AutoencoderModelLoad/></LayoutMain>)}/>
+                                <Route exact path="/DatasetConcat"
+                                       element={(<LayoutMain><DatasetConcat/></LayoutMain>)}/>
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>

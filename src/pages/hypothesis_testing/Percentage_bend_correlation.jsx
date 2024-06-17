@@ -16,6 +16,7 @@ import {DataGrid, GridToolbarContainer, GridToolbarExport} from "@mui/x-data-gri
 import PropTypes from "prop-types";
 import JsonTable from "ts-react-json-table";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 const userColumns = [
     { field: "Cor",
@@ -120,7 +121,8 @@ class Percentage_bend_correlation extends React.Component {
             selected_method: "percbend",
             selected_alternative: "two-sided",
             selected_independent_variables: [],
-            selected_variables: []
+            selected_variables: [],
+            tabvalue:0
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -128,11 +130,12 @@ class Percentage_bend_correlation extends React.Component {
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
+        // this.handleListDelete = this.handleListDelete.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        // this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
         this.handleSelectAlternativeChange = this.handleSelectAlternativeChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         // // Initialise component
@@ -200,7 +203,8 @@ class Percentage_bend_correlation extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        column_2: this.state.selected_variables,
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
+                        columns: this.state.selected_variables,
                         alternative: this.state.selected_alternative,
                         method: this.state.selected_method
                     },
@@ -240,28 +244,11 @@ class Percentage_bend_correlation extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
-        var newArray = this.state.selected_variables.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_variables:newArray})
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_variables:checkedValues})
     }
     handleSelectAlternativeChange(event){
         this.setState( {selected_alternative: event.target.value})
-    }
-    handleListDelete(event) {
-        var newArray = this.state.selected_variables.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_variables:newList})
-    }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
@@ -270,7 +257,7 @@ class Percentage_bend_correlation extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.handleDeleteVariable()
+            this.state.selected_variables=[]
             this.setState({stats_show: false})
         })
     }
@@ -293,26 +280,17 @@ class Percentage_bend_correlation extends React.Component {
                                         onChange={this.handleSelectFileNameChange}
                                 >
                                     {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Variables</InputLabel>
-                                <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select variables for correlation test</FormHelperText>
-                            </FormControl>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    // rerender={this.state.rerender_child}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="alternative-selector-label">Alternative</InputLabel>
                                 <Select
@@ -347,6 +325,7 @@ class Percentage_bend_correlation extends React.Component {
                                     {this.state.selected_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
                                                     onClick={this.handleListDelete}>
                                                 {column}
@@ -354,9 +333,6 @@ class Percentage_bend_correlation extends React.Component {
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>

@@ -190,6 +190,7 @@ class Normality_Tests_And extends React.Component {
                         name_test: this.state.selected_method,
                         alternative: this.state.selected_alternative,
                         nan_policy: this.state.selected_nan_policy,
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
                         axis: this.state.selected_axis}
                 }
         ).then(res => {
@@ -294,7 +295,8 @@ class Normality_Tests_And extends React.Component {
 
     handleSelectColumnChange(event){
         this.setState( {selected_column: event.target.value})
-        this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+        this.setState( {selected_variable: event.target.value})
+        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
         this.resetResultArea()
     }
     handleSelectFileNameChange(event){

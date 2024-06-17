@@ -223,7 +223,7 @@ class LinearRegressionModelLoad extends React.Component {
                                         label="Model"
                                         onChange={this.handleSelectModelNameChange}
                                 >
-                                    {this.state.file_names.filter(file => file.endsWith('.sav')).map((column) => (
+                                    {this.state.file_names.filter(file => file.endsWith('.sav') || file.endsWith('.pkl')).map((column) => (
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
@@ -233,15 +233,16 @@ class LinearRegressionModelLoad extends React.Component {
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_file_name && !this.state.selected_model_name}>
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.LinearRegression_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        <ProceedButton></ProceedButton>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.LinearRegression_show}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

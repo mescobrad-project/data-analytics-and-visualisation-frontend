@@ -196,7 +196,9 @@ class Normality_Tests extends React.Component {
                         column: this.state.selected_variable,
                         name_test: this.state.selected_method,
                         alternative: this.state.selected_alternative,
-                        nan_policy: this.state.selected_nan_policy, axis: this.state.selected_axis}
+                        nan_policy: this.state.selected_nan_policy, axis: this.state.selected_axis,
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }
                 }
         ).then(res => {
             this.setState({test_data: res.data})
@@ -290,8 +292,9 @@ class Normality_Tests extends React.Component {
         this.setState({stats_show: false})
     }
     handleSelectColumnChange(event){
+        this.setState( {selected_variable: event.target.value})
         this.setState( {selected_column: event.target.value})
-        this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
         this.resetResultArea()
     }
     handleSelectAlternativeChange(event){
@@ -325,6 +328,7 @@ class Normality_Tests extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.setState({stats_show: false})
         })
     }
     handleTabChange(event, newvalue){

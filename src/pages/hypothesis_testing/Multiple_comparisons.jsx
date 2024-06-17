@@ -17,6 +17,7 @@ import qs from "qs";
 import JsonTable from "ts-react-json-table";
 import {CSVLink} from "react-csv";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -77,11 +78,12 @@ class Multiple_comparisons extends React.Component {
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        // this.handleListDelete = this.handleListDelete.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectColumnsChange = this.handleSelectColumnsChange.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
+        // this.handleSelectColumnsChange = this.handleSelectColumnsChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
         this.handleSelectAlphaChange = this.handleSelectAlphaChange.bind(this);
         // // Initialise component
@@ -156,6 +158,7 @@ class Multiple_comparisons extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
                         p_value: this.state.selected_variables,
                         method: this.state.selected_method,
                         alpha: this.state.selected_alpha},
@@ -204,25 +207,8 @@ class Multiple_comparisons extends React.Component {
     handleSelectAlphaChange(event){
         this.setState( {selected_alpha: event.target.value})
     }
-    handleSelectColumnsChange(event){
-        this.setState( {selected_columns: event.target.value})
-        var newArray = this.state.selected_variables.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_variables:newArray})
-    }
-    handleListDelete(event) {
-        var newArray = this.state.selected_variables.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_variables:newList})
-    }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_variables:checkedValues})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
@@ -254,26 +240,17 @@ class Multiple_comparisons extends React.Component {
                                         onChange={this.handleSelectFileNameChange}
                                 >
                                     {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Column</InputLabel>
-                                <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_columns}
-                                        label="Column"
-                                        onChange={this.handleSelectColumnsChange}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select Variable</FormHelperText>
-                            </FormControl>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    // rerender={this.state.rerender_child}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="method-selector-label">Method</InputLabel>
                                 <Select
@@ -320,12 +297,13 @@ class Multiple_comparisons extends React.Component {
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected variables</FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
                                                     onClick={this.handleListDelete}>
                                                 {column}
@@ -333,9 +311,6 @@ class Multiple_comparisons extends React.Component {
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>
@@ -363,6 +338,7 @@ class Multiple_comparisons extends React.Component {
                                             <Grid>
                                                 <div style={{textAlign:"center"}}>
                                                     <CSVLink data={this.state.Results}
+                                                             className="datagrid"
                                                              filename={"Results.csv"}>Download</CSVLink>
                                                     <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
                                                 </div>
