@@ -57,7 +57,6 @@ class SamsegDatatable extends React.Component {
                         pageSize= {9}
                         rowsPerPageOptions={[9]}
                 />
-                <ProceedButton></ProceedButton>
             </div>
     );
     };
