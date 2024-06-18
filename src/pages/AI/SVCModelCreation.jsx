@@ -65,6 +65,7 @@ class SVCModelCreation extends React.Component {
         this.state = {
             // List of columns sent by the backend
             column_names: [],
+            binary_columns: [],
             file_names:[],
             test_data: {
                 mse: "",
@@ -85,24 +86,32 @@ class SVCModelCreation extends React.Component {
             selected_random_state:'10',
             selected_shuffle:false,
             selected_file_name: "",
+            selected_regularization:1,
+            selected_kernel:'rbf',
+            selected_probability:false,
+            selected_max_iter:1,
+            selected_shrinking:true,
             FrenderChild:0,
             model_name:'SVC-'+crypto.randomUUID(),
             svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_summary_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/shap_summary_svc.svg',
             svg2_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_waterfall_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/shap_waterfall_svc.svg',
             svg3_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_heatmap_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/shap_heatmap_svc.svg',
             // svg4_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-            //         + '/step_' + params.get("step_id") + '/output/shap_bar_lr.svg',
+            //         + '/step_' + params.get("step_id") + '/output/force_plot_svc.svg',
             svg5_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_violin_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/shap_violin_svc.svg',
+            // svg6_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+            //         + '/step_' + params.get("step_id") + '/output/dependence_plot_svc.svg',
             // model_name:'LR - '+ Date().toLocaleString("en-GB")
         };
 
         //Binding functions of the class
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
+        this.fetchBinaryColumnNames = this.fetchBinaryColumnNames.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
@@ -110,6 +119,11 @@ class SVCModelCreation extends React.Component {
         this.handleSelectTestSizeChange = this.handleSelectTestSizeChange.bind(this);
         this.handleSelectRandomStateChange = this.handleSelectRandomStateChange.bind(this);
         this.handleSelectShuffleChange = this.handleSelectShuffleChange.bind(this);
+        this.handleSelectRegularizationChange = this.handleSelectRegularizationChange.bind(this);
+        this.handleSelectKernelChange = this.handleSelectKernelChange.bind(this);
+        this.handleSelectProbabilityChange = this.handleSelectProbabilityChange.bind(this);
+        this.handleSelectMaxIterChange = this.handleSelectMaxIterChange.bind(this);
+        this.handleSelectShrinkingChange = this.handleSelectShrinkingChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
         this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
@@ -126,7 +140,7 @@ class SVCModelCreation extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         // Send the request
-        API.get("linear_reg_create_model", {
+        API.get("SVC_create_model", {
             params: {
                 workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
@@ -134,6 +148,9 @@ class SVCModelCreation extends React.Component {
                 dependent_variable: this.state.selected_dependent_variable,
                 independent_variables: this.state.selected_independent_variables,
                 test_size: this.state.selected_test_size,
+                regularization:this.state.selected_regularization,
+                kernel:this.state.selected_kernel,
+                probability:this.state.selected_probability,
                 random_state:this.state.selected_random_state,
                 shuffle:this.state.selected_shuffle,
                 model_name:this.state.model_name},
@@ -191,7 +208,17 @@ class SVCModelCreation extends React.Component {
             this.setState({tabvalue:0})
         });
     }
-
+    async fetchBinaryColumnNames(url, config) {
+        const params = new URLSearchParams(window.location.search);
+        API.get("return_binary_columns",
+                {params: {
+                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                    }}).then(res => {
+            this.setState({binary_columns: res.data.columns})
+        });
+    }
     async handleProceed(event) {
         event.preventDefault();
         const params = new URLSearchParams(window.location.search);
@@ -224,9 +251,25 @@ class SVCModelCreation extends React.Component {
     handleSelectRandomStateChange(event){
         this.setState( {selected_random_state: event.target.value})
     }
+    handleSelectRegularizationChange(event){
+        this.setState( {selected_regularization: event.target.value})
+    }
+    handleSelectKernelChange(event){
+        this.setState( {selected_kernel: event.target.value})
+    }
+    handleSelectProbabilityChange(event){
+        this.setState( {selected_probability: event.target.value})
+    }
+    handleSelectMaxIterChange(event){
+        this.setState( {selected_max_iter: event.target.value})
+    }
+    handleSelectShrinkingChange(event){
+        this.setState( {selected_shrinking: event.target.value})
+    }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
+            this.fetchBinaryColumnNames()
             this.fetchDatasetContent()
             this.setState({selected_independent_variables: []})
             this.setState({selected_dependent_variable: ""})
@@ -278,7 +321,7 @@ class SVCModelCreation extends React.Component {
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
 
-                                    {this.state.column_names.map((column) => (
+                                    {this.state.binary_columns.map((column) => (
                                             <MenuItem value={column}>
                                                 {column}
                                             </MenuItem>
@@ -337,18 +380,82 @@ class SVCModelCreation extends React.Component {
                                 </Select>
                                 <FormHelperText>Whether or not to shuffle the data before splitting. . </FormHelperText>
                             </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        type="number"
+                                        labelid="Regularization-selector-label"
+                                        id="Regularization -selector"
+                                        value= {this.state.selected_regularization}
+                                        label="Regularization "
+                                        onChange={this.handleSelectRegularizationChange}
+                                        // InputProps={{ inputProps: { min: 0, max:1, step:0.01 } }}
+                                />
+                                <FormHelperText>The strength of the regularization is inversely proportional to C. Must be strictly positive.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="Kernel-selector-label">Kernel</InputLabel>
+                                <Select
+                                        labelid="Kernel-selector-label"
+                                        id="Kernel-selector"
+                                        value= {this.state.selected_kernel}
+                                        label="Kernel"
+                                        onChange={this.handleSelectKernelChange}
+                                >
+                                    <MenuItem value={"rbf"}><em>rbf</em></MenuItem>
+                                    <MenuItem value={"linear"}><em>linear</em></MenuItem>
+                                    <MenuItem value={"poly"}><em>poly</em></MenuItem>
+                                    <MenuItem value={"sigmoid"}><em>sigmoid</em></MenuItem>
+                                    <MenuItem value={"precomputed"}><em>precomputed</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Specifies the kernel type to be used in the algorithm.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="Probability-selector-label">Probability</InputLabel>
+                                <Select
+                                        labelid="Probability-selector-label"
+                                        id="Probability-selector"
+                                        value= {this.state.selected_probability}
+                                        label="Probability"
+                                        onChange={this.handleSelectProbabilityChange}
+                                >
+                                    <MenuItem value={"true"}><em>True</em></MenuItem>
+                                    <MenuItem value={"false"}><em>False</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Whether to enable probability estimates. </FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="shrinking-selector-label">shrinking</InputLabel>
+                                <Select
+                                        labelid="shrinking-selector-label"
+                                        id="shrinking-selector"
+                                        value= {this.state.selected_shrinking}
+                                        label="shrinking"
+                                        onChange={this.handleSelectShrinkingChange}
+                                >
+                                    <MenuItem value={"true"}><em>True</em></MenuItem>
+                                    <MenuItem value={"false"}><em>False</em></MenuItem>
+                                </Select>
+                                <FormHelperText>Whether to use the shrinking heuristic.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        type="number"
+                                        labelid="max_iter-selector-label"
+                                        id="max_iter-selector"
+                                        value= {this.state.selected_max_iter}
+                                        label="Max_iter "
+                                        onChange={this.handleSelectMaxIterChange}
+                                        // InputProps={{ inputProps: { min: 0, max:1, step:0.01 } }}
+                                />
+                                <FormHelperText>Hard limit on iterations within solver, or -1 for no limit.</FormHelperText>
+                            </FormControl>
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_dependent_variable && !this.state.selected_independent_variables}>
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.LinearRegression_show}>
-                                Proceed >
-                            </Button>
-                        </form>
+
                             <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                                 <FormHelperText>Selected independent variables</FormHelperText>
                                 <div>
@@ -357,7 +464,7 @@ class SVCModelCreation extends React.Component {
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
@@ -366,6 +473,7 @@ class SVCModelCreation extends React.Component {
                             </FormControl>
                         <br/>
                         <br/>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
