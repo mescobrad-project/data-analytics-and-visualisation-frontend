@@ -105,6 +105,7 @@ class FreesurferReconFunctionPage extends React.Component {
             coreg_finished: false,
             vol2vol_finished: false,
             coreg_results: false,
+            synthseg_results: false,
 
             // Logs status
             recon_finished: false,
@@ -211,6 +212,7 @@ class FreesurferReconFunctionPage extends React.Component {
         this.fetchVol2volLog = this.fetchVol2volLog.bind(this);
         // this.upload_to_trino = this.upload_to_trino.bind(this);
         this.handleCoregProceed = this.handleCoregProceed.bind(this);
+        this.handleSynthsegProceed = this.handleSynthsegProceed.bind(this);
         this.handleSelectInputFileNameChange = this.handleSelectInputFileNameChange.bind(this);
         this.handleSelectInputFlairFileNameChange = this.handleSelectInputFlairFileNameChange.bind(this);
         this.handleSelectLessionChange = this.handleSelectLessionChange.bind(this);
@@ -512,8 +514,8 @@ class FreesurferReconFunctionPage extends React.Component {
             if (result === true) {
                 this.setState({recon_finished: true})
                 this.setState({
-                    recon_log_text: "Function has finished please press the \" Process \" button to" +
-                            " proceed after both functions have completed successfully"
+                    recon_log_text: "Function has finished. Please press the \" Checkout Results \" button to" +
+                            " check the stats files of recon-all"
                 })
 
             } else {
@@ -542,7 +544,7 @@ class FreesurferReconFunctionPage extends React.Component {
             if (result === true) {
                 this.setState({samseg_finished: true})
                 this.setState({
-                    samseg_log_text: "Function has finished press the \" Process \" button to" +
+                    samseg_log_text: "Function has finished press the \" Check out results \" button to" +
                             " proceed to check the results"
                 })
             } else {
@@ -573,8 +575,8 @@ class FreesurferReconFunctionPage extends React.Component {
             if (result === true) {
                 this.setState({synthseg_finished: true})
                 this.setState({
-                    synthseg_log_text: "Function has finished press the \" Process \" button to" +
-                            " proceed to check the results"
+                    synthseg_log_text: "Function has finished press the \" Check out results \" button to" +
+                            " check the produced file"
                 })
             } else {
                 this.setState({synthseg_finished: false})
@@ -764,6 +766,11 @@ class FreesurferReconFunctionPage extends React.Component {
         this.setState({coreg_results: true})
     }
 
+    handleSynthsegProceed(event) {
+        console.log(this.state.synthseg_results)
+        this.setState({synthseg_results: true})
+    }
+
     handleSelectTargetFileNameChange(event) {
         this.setState({selected_target_file_name: event.target.value})
     }
@@ -845,6 +852,7 @@ class FreesurferReconFunctionPage extends React.Component {
                     run_id: params.get("run_id"),
                     step_id: params.get("step_id"),
                     function: function_name,
+                    token: "",
                     metadata: {
                         // [["saved"] , "demo_sample_questionnaire.csv"],
                         "files": files_to_send
@@ -1127,7 +1135,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                 {/* #TODO Button Should redirect to specific page denoted by workflowid, stepid, runid */}
                                 {this.state.coreg_results && (
                                         <MRIViewerWin requested_file_1={this.state.selected_ref_file_name}
-                                                      requested_file_2={"flair_reg_".concat(this.state.selected_ref_file_name)}/>
+                                                      requested_file_2={"./output/coregistration_output_" + this.state.selected_flair_file_name + "_" + this.state.selected_ref_file_name + "/flair_reg_" +  this.state.selected_ref_file_name}/>
                                 )}
                             </Grid>
                         </Grid>
@@ -1442,7 +1450,7 @@ class FreesurferReconFunctionPage extends React.Component {
                                 <div className="button-container">
                                     {/*TODO Button Should redirect to specific page denoted by workflowid, stepid, runid*/}
                                     <Button variant="contained" color="primary"
-                                            onClick={this.redirectToPage.bind(this, "synthseg_results", [], [])}
+                                            onClick={this.handleSynthsegProceed}
                                             disabled={(this.state.synthseg_finished ? false : "disabled")}>
                                         Check out Results
                                     </Button>
@@ -1472,6 +1480,9 @@ class FreesurferReconFunctionPage extends React.Component {
                                             margin: "8px"
                                         }}
                                 />
+                                {this.state.synthseg_results && (
+                                        <MRIViewerWin requested_file_1={"./output/synthseg_output_" + this.state.selected_synthseg_input_file_name + "/converted_nii_" + this.state.selected_synthseg_input_file_name}/>
+                                )}
                             </Grid>
                         </Grid>
                     </TabPanel>
