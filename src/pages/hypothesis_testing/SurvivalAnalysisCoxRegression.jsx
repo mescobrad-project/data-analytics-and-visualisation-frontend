@@ -393,7 +393,7 @@ class SurvivalAnalysisCoxRegression extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Linear Mixed Effects Model Parameterisation
+                            Cox Regression
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
