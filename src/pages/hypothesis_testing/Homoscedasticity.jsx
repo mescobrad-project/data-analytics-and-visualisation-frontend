@@ -85,6 +85,7 @@ class Homoscedasticity extends React.Component {
             selected_variables: [],
             center_show:false,
             stats_show:false,
+            FrenderChild:0,
             tabvalue:0
         };
         //Binding functions of the class
@@ -224,6 +225,7 @@ class Homoscedasticity extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.state.FrenderChild+=1
             this.state.selected_variables=[]
             this.setState({stats_show: false})
 
