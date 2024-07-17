@@ -93,7 +93,7 @@ class MRIModelTraining extends React.Component {
             //Values selected currently on the form
 
             model_result_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_summary_lr.svg',
+                    + '/step_' + params.get("step_id") + '/output/train_val_metrics_plot_experiment1.png',
 
             // model_name:'LR - '+ Date().toLocaleString("en-GB")
         };

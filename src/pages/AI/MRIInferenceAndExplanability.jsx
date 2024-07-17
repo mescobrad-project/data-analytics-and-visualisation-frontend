@@ -31,6 +31,7 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import ProceedButton from "../../components/ui-components/ProceedButton";
 import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
+import Carousel from "react-multi-carousel";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -190,46 +191,46 @@ class MRIInferenceAndExplainability extends React.Component {
                             {/*    <FormHelperText>Select dataset.</FormHelperText>*/}
                             {/*</FormControl>*/}
 
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_lr}
-                                        label="model-name"
-                                        onChange={this.handleSelectLrChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_batch_size}
-                                        label="model-name"
-                                        onChange={this.handleSelectBatchSizeChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_iterations}
-                                        label="model-name"
-                                        onChange={this.handleSelectIterationsChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_early_stopping_patience}
-                                        label="model-name"
-                                        onChange={this.handleSelectEarlyStoppingPatienceChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_lr}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectLrChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_batch_size}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectBatchSizeChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_iterations}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectIterationsChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_early_stopping_patience}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectEarlyStoppingPatienceChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
@@ -245,12 +246,73 @@ class MRIInferenceAndExplainability extends React.Component {
                             Model Training Results
                         </Typography>
                         <hr className="result"/>
-                        <div style={{alignSelf: 'center'}}>
-                            <img src={this.state.model_result_path + "?random=" + new Date().getTime()}
-                                 srcSet={this.state.model_result_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
-                                 loading="lazy"
-                                 style={{zoom: '70%'}}
-                            />
+                        <div
+                                style={{
+                                    paddingBottom: '30px',
+                                    position: 'relative'
+                                }}
+                        >
+                            <Carousel
+                                    additionalTransfrom={0}
+                                    arrows
+                                    // autoPlaySpeed={3000}
+                                    centerMode={false}
+                                    className=""
+                                    containerClass="container"
+                                    dotListClass=""
+                                    draggable
+                                    focusOnSelect={false}
+                                    infinite
+                                    itemClass=""
+                                    keyBoardControl
+                                    minimumTouchDrag={80}
+                                    pauseOnHover
+                                    renderArrowsWhenDisabled={false}
+                                    renderButtonGroupOutside={false}
+                                    renderDotsOutside
+                                    responsive={{
+                                        desktop: {
+                                            breakpoint: {
+                                                max: 3000,
+                                                min: 1024
+                                            },
+                                            items: 1
+                                        },
+                                        mobile: {
+                                            breakpoint: {
+                                                max: 464,
+                                                min: 0
+                                            },
+                                            items: 1
+                                        },
+                                        tablet: {
+                                            breakpoint: {
+                                                max: 1024,
+                                                min: 464
+                                            },
+                                            items: 1
+                                        }
+                                    }}
+                                    rewind={false}
+                                    rewindWithAnimation={false}
+                                    rtl={false}
+                                    shouldResetAutoplay
+                                    showDots
+                                    sliderClass=""
+                                    slidesToSlide={1}
+                                    swipeable
+                            >
+                                <img
+                                        src={this.state.model_confusion_path + "?random=" + new Date().getTime()}
+                                        style={{
+                                            display: 'block',
+                                            height: '100%',
+                                            margin: 'auto',
+                                            width: '100%'
+                                        }}
+                                />
+
+                            </Carousel>
                         </div>
                     </Grid>
                 </Grid>

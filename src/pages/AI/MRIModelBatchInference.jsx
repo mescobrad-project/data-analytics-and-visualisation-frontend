@@ -87,8 +87,10 @@ class MRIModelBatchInference extends React.Component {
             selected_early_stopping_patience: 15,
             //Values selected currently on the form
 
-            model_result_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/shap_summary_lr.svg',
+            model_classification_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/classification_report.png',
+            model_confusion_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/confusion_matrix.png',
 
             // model_name:'LR - '+ Date().toLocaleString("en-GB")
         };
@@ -175,7 +177,7 @@ class MRIModelBatchInference extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            MRI Model Training Parameterisation
+                            MRI Model Batch Inference
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -195,46 +197,46 @@ class MRIModelBatchInference extends React.Component {
                             {/*    <FormHelperText>Select dataset.</FormHelperText>*/}
                             {/*</FormControl>*/}
 
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_lr}
-                                        label="model-name"
-                                        onChange={this.handleSelectLrChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_batch_size}
-                                        label="model-name"
-                                        onChange={this.handleSelectBatchSizeChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_iterations}
-                                        label="model-name"
-                                        onChange={this.handleSelectIterationsChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        value= {this.state.selected_early_stopping_patience}
-                                        label="model-name"
-                                        onChange={this.handleSelectEarlyStoppingPatienceChange}
-                                />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_lr}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectLrChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_batch_size}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectBatchSizeChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_iterations}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectIterationsChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <TextField*/}
+                            {/*            labelid="model-name-selector-label"*/}
+                            {/*            id="model-name-selector"*/}
+                            {/*            value= {this.state.selected_early_stopping_patience}*/}
+                            {/*            label="model-name"*/}
+                            {/*            onChange={this.handleSelectEarlyStoppingPatienceChange}*/}
+                            {/*    />*/}
+                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
                                 Submit
@@ -251,12 +253,20 @@ class MRIModelBatchInference extends React.Component {
                         </Typography>
                         <hr className="result"/>
                         <div style={{alignSelf: 'center'}}>
-                            <img src={this.state.model_result_path + "?random=" + new Date().getTime()}
-                                 srcSet={this.state.model_result_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                            <img src={this.state.model_confusion_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.model_confusion_path + "?random=" + new Date().getTime() + '?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
                                  loading="lazy"
                                  style={{zoom: '70%'}}
                             />
                         </div>
+                        <div style={{alignSelf: 'center'}}>
+                            <img src={this.state.model_classification_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.model_classification_path + "?random=" + new Date().getTime() + '?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                 loading="lazy"
+                                 style={{zoom: '70%'}}
+                            />
+                        </div>
+
                     </Grid>
                 </Grid>
         )
