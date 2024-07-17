@@ -330,7 +330,7 @@ class Biweight_midcorrelation extends React.Component {
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     key={column}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
