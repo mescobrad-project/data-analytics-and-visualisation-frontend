@@ -15,6 +15,8 @@ import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
+
 
 const userColumns = [
     { field: "Source",
@@ -106,6 +108,7 @@ class Welch_Ancova extends React.Component {
         this.state = {
             // List of columns in dataset
             column_names: [],
+            column_names_for_checkbox: [],
             file_names:[],
             initialdataset:[],
             test_data: {
@@ -113,18 +116,21 @@ class Welch_Ancova extends React.Component {
                 DataFrame:[]
             },
             //Values selected currently on the form
+            selected_file_name: "",
             selected_dependent_variable: "",
-            selected_dependent_variable_wf: "",
+            // selected_dependent_variable_wf: "",
             selected_between_factor: "",
-            selected_between_factor_wf: "",
+            // selected_between_factor_wf: "",
             stats_show:false,
+            tabvalue:0
         };
+
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
@@ -147,8 +153,10 @@ class Welch_Ancova extends React.Component {
                         file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({column_names: res.data.columns})
-        });
+            this.setState({column_names_for_checkbox: res.data.columns})
+                    });
     }
+
     async fetchFileNames() {
         const params = new URLSearchParams(window.location.search);
 
@@ -170,7 +178,7 @@ class Welch_Ancova extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
+                        file_name: this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null
                     }}).then(res => {
             this.setState({initialdataset: JSON.parse(res.data.dataFrame)})
             this.setState({tabvalue:0})
@@ -182,6 +190,11 @@ class Welch_Ancova extends React.Component {
      */
     async handleSubmit(event) {
         event.preventDefault();
+        // if (window.confirm("By proceeding you will complete the analysis and navigate back to the Workflow Manager.\n Do you wish to proceed?")===false)
+        // {
+        //     // event.preventDefault();
+        //     return
+        // }
         const params = new URLSearchParams(window.location.search);
         this.setState({stats_show: false})
 
@@ -194,8 +207,9 @@ class Welch_Ancova extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        dv: this.state.selected_dependent_variable_wf,
-                        between: this.state.selected_between_factor_wf,
+                        dv: this.state.selected_dependent_variable,
+                        file: this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
+                        between: this.state.selected_between_factor,
                     },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
@@ -207,33 +221,33 @@ class Welch_Ancova extends React.Component {
             this.setState({tabvalue:1})
         });
     }
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        // We changed info file uploading process to the DataLake
-        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        console.log(this.state.output_return_data);
-        window.location.replace("/")
-    }
+    // async handleProceed(event) {
+    //     event.preventDefault();
+    //     const params = new URLSearchParams(window.location.search);
+    //     // We changed info file uploading process to the DataLake
+    //     // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
+    //     API.put("save_hypothesis_output",
+    //             {
+    //                 workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+    //                 step_id: params.get("step_id")
+    //             }
+    //     ).then(res => {
+    //         this.setState({output_return_data: res.data})
+    //     });
+    //     console.log(this.state.output_return_data);
+    //     window.location.replace("/")
+    // }
 
     /**
      * Update state when selection changes in the form
      */
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
-        this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
     handleSelectBetweenFactorChange(event){
         this.setState( {selected_between_factor: event.target.value})
-        this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_between_factor_wf: this.state.selected_file_name+"--"+event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
@@ -243,10 +257,9 @@ class Welch_Ancova extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_dependent_variable_wf=""
-            this.state.selected_between_factor_wf=""
-            this.setState({stats_show: false})
-        })
+            // this.state.selected_dependent_variable_wf=""
+            // this.state.selected_between_factor_wf=""
+            this.state.stats_show= false})
     }
     render() {
         return (
@@ -266,8 +279,8 @@ class Welch_Ancova extends React.Component {
                                         label="File Variable"
                                         onChange={this.handleSelectFileNameChange}
                                 >
-                                    {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                    {this.state.file_names.map((column, item) => (
+                                            <MenuItem key={item} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
@@ -281,8 +294,8 @@ class Welch_Ancova extends React.Component {
                                         label="Dependent Variable"
                                         onChange={this.handleSelectDependentVariableChange}
                                 >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                    {this.state.column_names.map((column,item) => (
+                                            <MenuItem key= {item} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
@@ -296,27 +309,26 @@ class Welch_Ancova extends React.Component {
                                         label="Between factor"
                                         onChange={this.handleSelectBetweenFactorChange}
                                 >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                    {this.state.column_names.map((column, item) => (
+                                            <MenuItem key= {item} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Name of column in data with the between factor.</FormHelperText>
                             </FormControl>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_between_factor_wf.length < 1 }
+                                    disabled={this.state.selected_dependent_variable.length===0 || this.state.selected_between_factor.length===0 }
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                         <br/>
                         <br/>
                         <hr/>
@@ -324,18 +336,19 @@ class Welch_Ancova extends React.Component {
                             <FormHelperText>Dependent variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_dependent_variable_wf}>
-                                {this.state.selected_dependent_variable_wf}
+                                    id={this.state.selected_dependent_variable}>
+                                {this.state.selected_dependent_variable}
                             </Button>
                         </Grid>
                         <Grid>
                             <FormHelperText>Between factor =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_between_factor_wf}>
-                                {this.state.selected_between_factor_wf}
+                                    id={this.state.selected_between_factor}>
+                                {this.state.selected_between_factor}
                             </Button>
                         </Grid>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -354,7 +367,8 @@ class Welch_Ancova extends React.Component {
                                 <Grid sx={{ flexGrow: 1, textAlign: "center"}}
                                       style={{display: (this.state.stats_show ? 'block' : 'none')}}>
                                     {this.state.test_data['status']!=='Success' ? (
-                                            <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
+                                            <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>
+                                                Status :  { this.state.test_data['status']}</Typography>
                                     ) : (
                                             <div className="datatable">
                                                 {/*<p className="result_texts">Pearson’s correlation coefficient :  { this.state.test_data.DataFrame}</p>*/}
@@ -364,6 +378,7 @@ class Welch_Ancova extends React.Component {
                                                               className="datagrid"
                                                               rows= {this.state.test_data.DataFrame}
                                                               columns= {userColumns}
+                                                              autosizeOnMount
                                                               pageSize= {15}
                                                               rowsPerPageOptions={[15]}
                                                     />

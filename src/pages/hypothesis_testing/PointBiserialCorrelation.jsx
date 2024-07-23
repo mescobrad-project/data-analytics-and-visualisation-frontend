@@ -107,10 +107,13 @@ class PointBiserialCorrelation extends React.Component {
             selected_variable2: "",
             selected_file_name: "",
             stats_show: false,
+            tabvalue:0,
             svg_Scatter_Two_Variables : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/Scatter_Two_Variables.svg',
             svg_BoxPlot : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/BoxPlot.svg',
+                    + '/step_' + params.get("step_id") + '/output/BoxPlot_1st.svg',
+            svg_BoxPlot2 : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/BoxPlot_2nd.svg',
             svg_HistogramPlot_GroupA : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/HistogramPlot_GroupA.svg',
             svg_HistogramPlot_GroupB : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
@@ -192,8 +195,9 @@ class PointBiserialCorrelation extends React.Component {
                 {
                     params: {workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        column_1: this.state.selected_variable,
-                        column_2: this.state.selected_variable2,
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
+                        variable_binary: this.state.selected_variable,
+                        variable: this.state.selected_variable2,
                     }
                 }
         ).then(res => {
@@ -244,11 +248,11 @@ class PointBiserialCorrelation extends React.Component {
      */
     handleSelectColumnChange1(event){
         this.setState( {selected_column: event.target.value})
-        this.setState( {selected_variable: this.state.selected_file_name+"--"+event.target.value})
+        this.setState( {selected_variable: event.target.value})
     }
     handleSelectColumnChange2(event){
         this.setState( {selected_column2: event.target.value})
-        this.setState( {selected_variable2: this.state.selected_file_name+"--"+event.target.value})
+        this.setState( {selected_variable2: event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
@@ -260,6 +264,8 @@ class PointBiserialCorrelation extends React.Component {
             this.fetchBinaryColumnNames()
             this.state.selected_variable=""
             this.state.selected_variable2=""
+            this.setState({stats_show: false})
+
         })
     }
 
@@ -268,7 +274,7 @@ class PointBiserialCorrelation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            Select columns
+                            Point Biserial Correlation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -282,13 +288,13 @@ class PointBiserialCorrelation extends React.Component {
                                         onChange={this.handleSelectFileNameChange}
                                 >
                                     {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="column-selector-label">Column 1</InputLabel>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column-selector-label">Dichotomous</InputLabel>
                                 <Select
                                         labelId="column-selector-label"
                                         id="column-selector"
@@ -300,10 +306,10 @@ class PointBiserialCorrelation extends React.Component {
                                             <MenuItem value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
-                                <FormHelperText>Select First column for correlation</FormHelperText>
+                                <FormHelperText>Select Dichotomous for correlation</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, minWidth: 120}}>
-                                <InputLabel id="column2-selector-label">Column 2</InputLabel>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="column2-selector-label">Variable</InputLabel>
                                 <Select
                                         labelId="column2-selector-label"
                                         id="column2-selector"
@@ -328,14 +334,13 @@ class PointBiserialCorrelation extends React.Component {
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit"
                                     disabled={!this.state.selected_variable && !this.state.selected_variable2}>
                                 {/*|| !this.state.selected_method*/}
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <Grid>
-                            Binary variable =
+                            Dichotomous variable =
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
                                     id={this.state.selected_variable}
@@ -352,6 +357,7 @@ class PointBiserialCorrelation extends React.Component {
                                 {this.state.selected_variable2}
                             </Button>
                         </Grid>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -449,6 +455,10 @@ class PointBiserialCorrelation extends React.Component {
                                                     <div style={{display: (this.state.stats_show ? 'block' : 'none')}}>
                                                         <img src={this.state.svg_BoxPlot + "?random=" + new Date().getTime()}
                                                              srcSet={this.state.svg_BoxPlot + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
+                                                             loading="lazy"
+                                                        />
+                                                        <img src={this.state.svg_BoxPlot2 + "?random=" + new Date().getTime()}
+                                                             srcSet={this.state.svg_BoxPlot2 + "?random=" + new Date().getTime() +'?w=164&h=164&fit=crop&auto=format&dpr=2 2x'}
                                                              loading="lazy"
                                                         />
                                                     </div>

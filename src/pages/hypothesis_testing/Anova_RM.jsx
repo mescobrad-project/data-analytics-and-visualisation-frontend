@@ -15,6 +15,8 @@ import {DataGrid} from "@mui/x-data-grid";
 import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
+import ProceedButton from "../../components/ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -62,13 +64,11 @@ class Anova_RM extends React.Component {
             },
             //Values selected currently on the form
             selected_dependent_variable: "",
-            selected_dependent_variable_wf: "",
-            selected_within_variables: "",
-            selected_within_variables_wf: [],
+            selected_within_variables: [],
             selected_subject_variable: "",
-            selected_subject_variable_wf: "",
             selected_correction:"True",
             selected_effsize:"np2",
+            FrenderChild:0,
             stats_show:false,
         };
         //Binding functions of the class
@@ -76,13 +76,11 @@ class Anova_RM extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.returnUserCols = this.returnUserCols.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectDependentVariableChange = this.handleSelectDependentVariableChange.bind(this);
-        this.handleSelectWithinVariableChange = this.handleSelectWithinVariableChange.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         this.handleSelectSubjectChange = this.handleSelectSubjectChange.bind(this);
         this.handleSelectCorrectionChange = this.handleSelectCorrectionChange.bind(this);
         this.handleSelectEffsizeChange = this.handleSelectEffsizeChange.bind(this);
@@ -149,10 +147,11 @@ class Anova_RM extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        dv: this.state.selected_dependent_variable_wf,
-                        subject: this.state.selected_subject_variable_wf,
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
+                        dv: this.state.selected_dependent_variable,
+                        subject: this.state.selected_subject_variable,
                         correction: this.state.selected_correction,
-                        within: this.state.selected_within_variables_wf,
+                        within: this.state.selected_within_variables,
                         effsize: this.state.selected_effsize
                     },
                     paramsSerializer : params => {
@@ -167,33 +166,17 @@ class Anova_RM extends React.Component {
             this.returnUserCols(res.data);
         });
     }
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        // We changed info file uploading process to the DataLake
-        // const file_to_output= window.localStorage.getItem('MY_APP_STATE');
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        console.log(this.state.output_return_data);
-        window.location.replace("/")
-    }
 
     /**
      * Update state when selection changes in the form
      */
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
-        this.setState( {selected_dependent_variable_wf: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_dependent_variable_wf: event.target.value})
     }
     handleSelectSubjectChange(event){
         this.setState( {selected_subject_variable: event.target.value})
-        this.setState( {selected_subject_variable_wf: this.state.selected_file_name+"--"+event.target.value})
+        // this.setState( {selected_subject_variable_wf: event.target.value})
     }
     handleSelectCorrectionChange(event){
         this.setState( {selected_correction: event.target.value})
@@ -216,41 +199,43 @@ class Anova_RM extends React.Component {
         console.log(this.state.user_columns)
         this.setState({user_columns: local})
     }
-
-    handleSelectWithinVariableChange(event){
-        this.setState( {selected_within_variables: event.target.value})
-        var newArray = this.state.selected_within_variables_wf.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_within_variables_wf:newArray})
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_within_variables:checkedValues})
     }
+    // handleSelectWithinVariableChange(event){
+    //     this.setState( {selected_within_variables: event.target.value})
+    //     var newArray = this.state.selected_within_variables_wf.slice();
+    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+    //     {
+    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
+    //     }
+    //     this.setState({selected_within_variables_wf:newArray})
+    // }
     handleSelectEffsizeChange(event){
         this.setState( {selected_effsize: event.target.value})
     }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    handleListDelete(event) {
-        var newArray = this.state.selected_within_variables_wf.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_within_variables_wf:newList})
-    }
-    handleDeleteVariable(event) {
-        this.setState({selected_within_variables_wf:[]})
-    }
+    // handleListDelete(event) {
+    //     var newArray = this.state.selected_within_variables_wf.slice();
+    //     const ind = newArray.indexOf(event.target.id);
+    //     let newList = newArray.filter((x, index)=>{
+    //         return index!==ind
+    //     })
+    //     this.setState({selected_within_variables_wf:newList})
+    // }
+    // handleDeleteVariable(event) {
+    //     this.setState({selected_within_variables_wf:[]})
+    // }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_dependent_variable_wf=""
-            this.state.selected_subject_variable_wf=""
+            this.state.selected_dependent_variable=""
+            this.state.selected_subject_variable=""
             this.state.selected_within_variables_wf=""
-            this.handleDeleteVariable()
+            this.state.FrenderChild+=1
             this.setState({stats_show: false})
         })
     }
@@ -293,21 +278,26 @@ class Anova_RM extends React.Component {
                                 </Select>
                                 <FormHelperText>Name of column in data with the dependent variable.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="within-selector-label">Within Variable(s)</InputLabel>
-                                <Select
-                                        labelId="within-selector-label"
-                                        id="within-selector"
-                                        value= {this.state.selected_within_variables}
-                                        label="Within Variable(s)"
-                                        onChange={this.handleSelectWithinVariableChange}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select within variable(s)</FormHelperText>
-                            </FormControl>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="within-selector-label">Within Variable(s)</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="within-selector-label"*/}
+                            {/*            id="within-selector"*/}
+                            {/*            value= {this.state.selected_within_variables}*/}
+                            {/*            label="Within Variable(s)"*/}
+                            {/*            onChange={this.handleSelectWithinVariableChange}*/}
+                            {/*    >*/}
+                            {/*        {this.state.column_names.map((column) => (*/}
+                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select within variable(s)</FormHelperText>*/}
+                            {/*</FormControl>*/}
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="subject-selector-label">Subject</InputLabel>
                                 <Select
@@ -354,20 +344,20 @@ class Anova_RM extends React.Component {
                             </FormControl>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_dependent_variable_wf.length < 1 |
-                                            this.state.selected_subject_variable_wf.length < 1 |
-                                            this.state.selected_within_variables_wf.length < 1 }
+                                    disabled={this.state.selected_dependent_variable.length < 1 |
+                                            this.state.selected_subject_variable.length < 1 |
+                                            this.state.selected_within_variables.length < 1 }
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <form onSubmit={this.handleProceed}>
-                            <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"
-                                    disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>
-                                Proceed >
-                            </Button>
-                        </form>
+                        {/*<form onSubmit={this.handleProceed}>*/}
+                        {/*    <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit"*/}
+                        {/*            disabled={!this.state.stats_show || !(this.state.test_data.status==='Success')}>*/}
+                        {/*        Proceed >*/}
+                        {/*    </Button>*/}
+                        {/*</form>*/}
                         <br/>
                         <br/>
                         <hr/>
@@ -375,36 +365,34 @@ class Anova_RM extends React.Component {
                             <FormHelperText>Dependent variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_dependent_variable_wf}>
-                                {this.state.selected_dependent_variable_wf}
+                                    id={this.state.selected_dependent_variable}>
+                                {this.state.selected_dependent_variable}
                             </Button>
                         </Grid>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected within variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected within variables </FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_within_variables_wf.map((column) => (
+                                    {this.state.selected_within_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                         <Grid>
                             <FormHelperText>Subject variable =</FormHelperText>
                             <Button variant="outlined" size="small"
                                     sx={{marginRight: "2px", m:0.5}} style={{fontSize:'10px'}}
-                                    id={this.state.selected_subject_variable_wf}>
-                                {this.state.selected_subject_variable_wf}
+                                    id={this.state.selected_subject_variable}>
+                                {this.state.selected_subject_variable}
                             </Button>
                         </Grid>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

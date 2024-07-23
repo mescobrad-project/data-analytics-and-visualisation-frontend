@@ -15,11 +15,13 @@ Nodejs - 16.14.2
 #### Optional but recommended
 ```
 Webstorm IDE
+Docker
 ```
 ### Installing
 
 - Install NodeJS
 - (Optional) Install Webstorm
+- (Optional) Install latest version of docker (current ver.4.26.1)
 - Clone this repository
   - Webstorm IDE 
     ```
@@ -37,31 +39,41 @@ Webstorm IDE
     ```
 
 ### Running 
-```
-npm start
-```
+    - Webstorm IDE
+        ```
+           Edit configuraiton -> main.py
+        ```
+    - CMD
+        ```
+            npm start
+        ```
+    - Docker 
+        ```
+            Follow docker deployement instructions below
+        ```
 
-## Running the tests (WIP)
-```
-npm test
-```
-### Break down into end to end tests (WIP)
-```
-WIP
-```
+### Testing
+ - WIP 
 
-### And coding style tests (WIP)
-```
-WIP
-```
+## Deployment Docker Local
+    - Prerequisites
+        ```
+        Docker
+        ```
+    - Clone latest branch: 'dev'
+    - Start docker of all modules using the docker compose file found in project location 'data-analytics-and-visualisation-frontend/docker/' 
+        ```
+        docker compose up -d --build 
+        ```
+## Deployment Docker Simavi Server
+    - Prerequisites
+        ```
+        Docker
+        ```
+    - Clone latest branch: 'prod_new'
+    - Start docker of all modules using the docker compose file found in project location 'data-analytics-and-visualisation-frontend/docker/
 
-## Deployment (WIP)
-WIP
-```
-npm run build
-```
-
-## Deployment (Kubernetes) WIP
+<!-- ## Deployment (Kubernetes) WIP
     - Prerequisites
         ```
         Kuberenetes : Recommended enable through docker desktop
@@ -86,29 +98,26 @@ npm run build
 
         To see logs, can be done through docker-desktop
         ```
-
+-->
 ## Built With
-WIP 
-
-[//]: # ()
-[//]: # (* [SpringBoot]&#40;http://springboot.io&#41; - The Java framework used)
-
-[//]: # (* [Maven]&#40;https://maven.apache.org/&#41; - Dependency Management)
+[React](https://react.dev/)
 
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](tags). 
+Not currently following any including semver - will try to follow it.
+<!--  We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](tags). --> 
 
 ## Authors
 
-* **George Doukas** - *Role* - [gd180](https://github.com/gd180)
-* **Loukas Ilias** - *Role* - [loukasilias](https://github.com/loukasilias)
-* **Michael Kontoulis** - *Role* - [Mikailo](https://github.com/Mikailo)
-* **Christodoulos Santorinaios** - *Role* - [csantor](https://github.com/csantor)
+* **George Doukas** - *Dev* - [gd180](https://github.com/gd180)
+* **Michael Kontoulis** - *Dev* - [Mikailo](https://github.com/Mikailo)
+* **Loukas Ilias** - *Dev* - [loukasilias](https://github.com/loukasilias)
+* **Theodoros Pountisis** - *Dev* - [Mikailo](https://github.com/theopnt)
+* **George Ladikos** - *Dev* - [Mikailo](https://github.com/georgeladikos)
+* **Christodoulos Santorinaios** - *Former Dev* - [csantor](https://github.com/csantor)
 
 See also the list of [contributors](contributors) who participated in this project.
 

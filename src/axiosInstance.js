@@ -8,4 +8,5 @@ if (process.env.REACT_APP_BASEURL)
 
 export default axios.create({
     baseURL: ip,
+    withCredentials: true
 });

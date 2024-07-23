@@ -42,3 +42,8 @@
     min-width: 440px;
     height: 550px;
 }
+
+body > iframe
+{
+    display: none;
+}

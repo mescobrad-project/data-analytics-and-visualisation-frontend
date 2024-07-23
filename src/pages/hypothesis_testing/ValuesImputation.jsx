@@ -15,6 +15,8 @@ import PropTypes from "prop-types";
 import qs from "qs";
 import JsonTable from "ts-react-json-table";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import {CSVLink} from "react-csv";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -65,8 +67,9 @@ class ValuesImputation extends React.Component {
             selected_columns: [],
             selected_variables: [],
             selected_file_name: "",
-            selected_method:"omit",
-            stats_show:false
+            selected_method:"mean",
+            stats_show:false,
+            tabvalue:0
         };
         //Binding functions of the class
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
@@ -74,11 +77,12 @@ class ValuesImputation extends React.Component {
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        // this.handleListDelete = this.handleListDelete.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectColumnsChange = this.handleSelectColumnsChange.bind(this);
+        // this.handleSelectColumnsChange = this.handleSelectColumnsChange.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         this.handleSelectMethodChange = this.handleSelectMethodChange.bind(this);
 
         // // Initialise component
@@ -118,7 +122,7 @@ class ValuesImputation extends React.Component {
     }
     async fetchDatasetContent() {
         const params = new URLSearchParams(window.location.search);
-        API.get("return_dataset",
+        API.get("return_entire_dataset",
                 {
                     params: {
                         workflow_id: params.get("workflow_id"),
@@ -156,8 +160,8 @@ class ValuesImputation extends React.Component {
             this.setState({test_data: res.data})
             this.setState({stats_show: true})
             this.setState({tabvalue:1})
-            console.log(JSON.parse(res.data.newdataFrame))
-            console.log(res.data.status)
+            // console.log(JSON.parse(res.data.newdataFrame))
+            // console.log(res.data.status)
         });
     }
 
@@ -178,26 +182,29 @@ class ValuesImputation extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectColumnsChange(event){
-        this.setState( {selected_columns: event.target.value})
-        var newArray = this.state.selected_variables.slice();
-        if (newArray.indexOf(event.target.value) === -1)
-        {
-            newArray.push(event.target.value);
-        }
-        this.setState({selected_variables:newArray})
+    // handleSelectColumnsChange(event){
+    //     this.setState( {selected_columns: event.target.value})
+    //     var newArray = this.state.selected_variables.slice();
+    //     if (newArray.indexOf(event.target.value) === -1)
+    //     {
+    //         newArray.push(event.target.value);
+    //     }
+    //     this.setState({selected_variables:newArray})
+    // }
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_variables:checkedValues})
     }
-    handleListDelete(event) {
-        var newArray = this.state.selected_variables.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_variables:newList})
-    }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
-    }
+    // handleListDelete(event) {
+    //     var newArray = this.state.selected_variables.slice();
+    //     const ind = newArray.indexOf(event.target.id);
+    //     let newList = newArray.filter((x, index)=>{
+    //         return index!==ind
+    //     })
+    //     this.setState({selected_variables:newList})
+    // }
+    // handleDeleteVariable(event) {
+    //     this.setState({selected_variables:[]})
+    // }
     handleSelectMethodChange(event){
         this.setState( {selected_method: event.target.value})
     }
@@ -236,21 +243,26 @@ class ValuesImputation extends React.Component {
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Column</InputLabel>
-                                <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_columns}
-                                        label="Column"
-                                        onChange={this.handleSelectColumnsChange}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select Variable</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="column-selector-label">Column</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="column-selector-label"*/}
+                            {/*            id="column-selector"*/}
+                            {/*            value= {this.state.selected_columns}*/}
+                            {/*            label="Column"*/}
+                            {/*            onChange={this.handleSelectColumnsChange}*/}
+                            {/*    >*/}
+                            {/*        {this.state.column_names.map((column) => (*/}
+                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select Variable</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="method-selector-label">Method</InputLabel>
                                 <Select
@@ -275,15 +287,15 @@ class ValuesImputation extends React.Component {
                                     disabled={this.state.selected_variables.length < 1}
                                     type="submit"
                             >
-                                Submit
+                                Run analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
+
                         <br/>
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected variables</FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_variables.map((column) => (
@@ -296,10 +308,8 @@ class ValuesImputation extends React.Component {
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -324,6 +334,8 @@ class ValuesImputation extends React.Component {
                                             <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     ) : (
                                             <Grid>
+                                                {/*<CSVLink data={this.state.newdataset}*/}
+                                                {/*         filename={"Imputation.csv"}>Download</CSVLink>*/}
                                             <JsonTable className="jsonResultsTable"
                                                        rows = {this.state.newdataset}/></Grid>
                                     )}

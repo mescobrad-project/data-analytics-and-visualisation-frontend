@@ -179,22 +179,22 @@ class AutoCorrelationFunctionPage extends React.Component {
             console.log("resultJson")
             console.log(resultJson)
             // Show only relevant visualisations and load their data
-            // Correlation chart always has results so should always be enabled
-            this.setState({correlation_results: resultJson.values_autocorrelation})
-
-            let temp_array_correlation = []
-            for ( let it =0 ; it < resultJson.values_autocorrelation.length; it++){
-                let temp_object = {}
-                temp_object["category"] = it
-                temp_object["yValue"] = resultJson.values_autocorrelation[it]
-                temp_array_correlation.push(temp_object)
-            }
-            // console.log("")
-            // console.log(temp_array)
-
-
-            this.setState({correlation_chart_data: temp_array_correlation})
-            this.setState({correlation_chart_show: true})
+            // // Correlation chart always has results so should always be enabled
+            // this.setState({correlation_results: resultJson.values_autocorrelation})
+            //
+            // let temp_array_correlation = []
+            // for ( let it =0 ; it < resultJson.values_autocorrelation.length; it++){
+            //     let temp_object = {}
+            //     temp_object["category"] = it
+            //     temp_object["yValue"] = resultJson.values_autocorrelation[it]
+            //     temp_array_correlation.push(temp_object)
+            // }
+            // // console.log("")
+            // // console.log(temp_array)
+            //
+            //
+            // this.setState({correlation_chart_data: temp_array_correlation})
+            // this.setState({correlation_chart_show: true})
 
             // Alpha optional charts
             if(flag_alpha){

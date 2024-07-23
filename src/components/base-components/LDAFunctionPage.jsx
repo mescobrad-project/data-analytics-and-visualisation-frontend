@@ -22,6 +22,7 @@ import {Box} from "@mui/system";
 import JsonTable from "ts-react-json-table";
 import Paper from "@mui/material/Paper";
 import ProceedButton from "../ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -61,6 +62,12 @@ class LDAFunctionPage extends React.Component {
 
     constructor(props){
         super(props);
+        const params = new URLSearchParams(window.location.search);
+        let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         this.state = {
             // List of columns sent by the backend
             column_names: [],
@@ -74,14 +81,16 @@ class LDAFunctionPage extends React.Component {
             result_scaling:[],
             //Values selected currently on the form
             selected_dependent_variable: "",
-            selected_variable_wf: "",
             selected_solver: "svd",
             selected_shrinkage_1: "none",
             selected_shrinkage_1_show: false,
             selected_shrinkage_2: 0,
             selected_shrinkage_2_show: false,
+            selected_test_size:'0.01',
+            selected_random_state:'10',
+            selected_n_components:2,
+            selected_shuffle:false,
             selected_independent_variables: [],
-            selected_independent_variables_wf: [],
             test_data:{
                 status:'',
                 result:{
@@ -89,7 +98,10 @@ class LDAFunctionPage extends React.Component {
                     features_columns: '',
                     classes_: [],
                     number_of_classes:'',
-                    number_of_components: '',
+                    number_of_selected_components:'',
+                    max_number_of_components: '',
+                    accuracy: '',
+                    classification_report: '',
                     explained_variance_ratio: '',
                     means_: '',
                     priors_: [],
@@ -102,7 +114,12 @@ class LDAFunctionPage extends React.Component {
             LDA_show : false,
             svd_show : false,
             svdeigen_show : false,
-            tabvalue : 0
+            FrenderChild:0,
+            tabvalue : 0,
+            model_name:'LDA-'+crypto.randomUUID(),
+            svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/LDA.svg',
+
         };
 
         //Binding functions of the class
@@ -110,19 +127,22 @@ class LDAFunctionPage extends React.Component {
         this.handleSelectSolverChange = this.handleSelectSolverChange.bind(this);
         this.handleSelectShrinkage1Change = this.handleSelectShrinkage1Change.bind(this);
         this.handleSelectShrinkage2Change = this.handleSelectShrinkage2Change.bind(this);
-        this.handleSelectIndependentVariableChange = this.handleSelectIndependentVariableChange.bind(this);
+        this.handleSelectComponentsChange = this.handleSelectComponentsChange.bind(this);
+        this.handleSelectModelNameChange = this.handleSelectModelNameChange.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.debug = this.debug.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleSelectTestSizeChange = this.handleSelectTestSizeChange.bind(this);
+        this.handleSelectRandomStateChange = this.handleSelectRandomStateChange.bind(this);
+        this.handleSelectShuffleChange = this.handleSelectShuffleChange.bind(this);
         // Initialise component
         // - values of channels from the backend
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.fetchFileNames();
     }
     debug = () => {
@@ -145,11 +165,17 @@ class LDAFunctionPage extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
-                        dependent_variable: this.state.selected_variable_wf,
+                        file_name:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
+                        dependent_variable: this.state.selected_dependent_variable,
                         solver: this.state.selected_solver,
                         shrinkage_1: this.state.selected_shrinkage_1,
                         shrinkage_2: this.state.selected_shrinkage_2,
-                        independent_variables: this.state.selected_independent_variables_wf},
+                        n_components: this.state.selected_n_components,
+                        test_size: this.state.selected_test_size,
+                        random_state: this.state.selected_random_state,
+                        shuffle: this.state.selected_shuffle,
+                        independent_variables: this.state.selected_independent_variables,
+                        model_name:this.state.model_name},
                 paramsSerializer : params => {
                     return qs.stringify(params, { arrayFormat: "repeat" })
                 }
@@ -157,6 +183,7 @@ class LDAFunctionPage extends React.Component {
             this.setState({test_data: res.data})
             // const resultJson = res.data
             this.setState({result_coefficients: JSON.parse(res.data.result.coefficients)})
+            this.setState({result_class_report: JSON.parse(res.data.result.classification_report)})
             this.setState({result_means: JSON.parse(res.data.result.means_)})
             this.setState({result_priors: JSON.parse(res.data.result.priors_)})
             this.setState({result_xbar: JSON.parse(res.data.result.xbar_)})
@@ -236,7 +263,6 @@ class LDAFunctionPage extends React.Component {
 
     handleSelectDependentVariableChange(event){
         this.setState( {selected_dependent_variable: event.target.value})
-        this.setState( {selected_variable_wf: this.state.selected_file_name+"--"+event.target.value})
     }
     handleSelectSolverChange(event){
         this.setState( {selected_solver: event.target.value})
@@ -270,35 +296,42 @@ class LDAFunctionPage extends React.Component {
     // handleSelectShrinkage3Change(event){
     //     this.setState( {selected_shrinkage_3: event.target.value})
     // }
-    handleSelectIndependentVariableChange(event){
-        this.setState( {selected_independent_variables: event.target.value})
-        var newArray = this.state.selected_independent_variables_wf.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_independent_variables_wf:newArray})}
-
+    // handleSelectIndependentVariableChange(event){
+    //     this.setState( {selected_independent_variables: event.target.value})
+    //     var newArray = this.state.selected_independent_variables_wf.slice();
+    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+    //     {
+    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
+    //     }
+    //     this.setState({selected_independent_variables_wf:newArray})}
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_independent_variables:checkedValues})
+    }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    handleListDelete(event) {
-        var newArray = this.state.selected_independent_variables_wf.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_independent_variables_wf:newList})
+    handleSelectShuffleChange(event){
+        this.setState({selected_shuffle: event.target.value})
     }
-    handleDeleteVariable(event) {
-        this.setState({selected_independent_variables_wf:[]})
+    handleSelectComponentsChange(event){
+        this.setState( {selected_n_components: event.target.value})
+    }
+    handleSelectTestSizeChange(event){
+        this.setState( {selected_test_size: event.target.value})
+    }
+    handleSelectRandomStateChange(event){
+        this.setState( {selected_random_state: event.target.value})
+    }
+    handleSelectModelNameChange(event){
+        this.setState( {model_name: event.target.value})
     }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.state.selected_variable_wf=[]
-            this.state.selected_independent_variables_wf=[]
+            this.state.selected_dependent_variable=[]
+            this.state.selected_independent_variables=[]
+            this.state.FrenderChild+=1
             this.setState({stats_show: false})
         })
     }
@@ -342,6 +375,21 @@ class LDAFunctionPage extends React.Component {
                                     ))}
                                 </Select>
                                 <FormHelperText>Select Dependent Variable</FormHelperText>
+                            </FormControl>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        labelid="model-name-selector-label"
+                                        id="model-name-selector"
+                                        value= {this.state.model_name}
+                                        label="model-name"
+                                        onChange={this.handleSelectModelNameChange}
+                                />
+                                <FormHelperText>This name will be used for storing the model instance.</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="solver-label">Solver</InputLabel>
@@ -389,27 +437,75 @@ class LDAFunctionPage extends React.Component {
                             </FormControl>
                             </div>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Columns</InputLabel>
-                                <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_independent_variables}
-                                        label="Column"
-                                        onChange={this.handleSelectIndependentVariableChange}
-                                >
+                                <TextField
+                                        labelId="components-label"
+                                        id="components-selector"
+                                        value= {this.state.selected_n_components}
+                                        label="No of components"
+                                        onChange={this.handleSelectComponentsChange}
+                                        type="number"
+                                />
+                                <FormHelperText>Selection of components</FormHelperText>
+                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="column-selector-label">Columns</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="column-selector-label"*/}
+                            {/*            id="column-selector"*/}
+                            {/*            value= {this.state.selected_independent_variables}*/}
+                            {/*            label="Column"*/}
+                            {/*            onChange={this.handleSelectIndependentVariableChange}*/}
+                            {/*    >*/}
 
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>
-                                                {column}
-                                            </MenuItem>
-                                    ))}
+                            {/*        {this.state.column_names.map((column) => (*/}
+                            {/*                <MenuItem value={column}>*/}
+                            {/*                    {column}*/}
+                            {/*                </MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select Independent Variables</FormHelperText>*/}
+                            {/*</FormControl>*/}
+
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        type="number"
+                                        labelid="test_size-selector-label"
+                                        id="test_size-selector"
+                                        value= {this.state.selected_test_size}
+                                        label="test size"
+                                        onChange={this.handleSelectTestSizeChange}
+                                        InputProps={{ inputProps: { min: 0, max:1, step:0.01 } }}
+                                />
+                                <FormHelperText>If float, should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the train split.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <TextField
+                                        labelid="random_state-selector-label"
+                                        id="random_state-selector"
+                                        value= {this.state.selected_random_state}
+                                        label="random state"
+                                        onChange={this.handleSelectRandomStateChange}
+                                />
+                                <FormHelperText>Controls the shuffling applied to the data before applying the split.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="shuffle-selector-label">Shuffle</InputLabel>
+                                <Select
+                                        labelid="shuffle-selector-label"
+                                        id="shuffle-selector"
+                                        value= {this.state.selected_shuffle}
+                                        label="shuffle"
+                                        onChange={this.handleSelectShuffleChange}
+                                >
+                                    <MenuItem value={"true"}><em>True</em></MenuItem>
+                                    <MenuItem value={"false"}><em>False</em></MenuItem>
                                 </Select>
-                                <FormHelperText>Select Independent Variables</FormHelperText>
+                                <FormHelperText>Whether or not to shuffle the data before splitting. . </FormHelperText>
                             </FormControl>
                             <hr/>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_independent_variables_wf.length < 1 | this.state.selected_variable_wf.length < 1}
+                                    disabled={this.state.selected_independent_variables.length < 1 | this.state.selected_dependent_variable.length < 1}
                                     type="submit"
                             >
                                 Submit
@@ -421,7 +517,7 @@ class LDAFunctionPage extends React.Component {
                         {/*        Proceed >*/}
                         {/*    </Button>*/}
                         {/*</form>*/}
-                        <ProceedButton disabled={!this.state.LDA_show || !(this.state.test_data.status==='Success')}></ProceedButton>
+                        <ProceedButton disabled={!this.state.LDA_show }></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -429,19 +525,15 @@ class LDAFunctionPage extends React.Component {
                             <FormHelperText>Selected variables [click to remove]</FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_independent_variables_wf.map((column) => (
+                                    {this.state.selected_independent_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
-                                                    id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    id={column}>
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>
@@ -479,17 +571,35 @@ class LDAFunctionPage extends React.Component {
                                                             <TableCell className="tableCell">{'Number of features: '}</TableCell>
                                                             <TableCell className="tableCell">{this.state.test_data.result.number_of_features}</TableCell>
                                                         </TableRow>
+
                                                         <TableRow>
                                                             <TableCell className="tableCell">{'Number of classes:'}</TableCell>
                                                             <TableCell className="tableCell">{this.state.test_data.result.number_of_classes}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
-                                                            <TableCell className="tableCell">{'Number of components.'}</TableCell>
-                                                            <TableCell className="tableCell">{this.state.test_data.result.number_of_components}</TableCell>
+                                                            <TableCell className="tableCell">{'Max number of components (to be selected)'}</TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.result.max_number_of_components}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell"><strong>{'Selected test size'}</strong></TableCell>
+                                                            <TableCell className="tableCell">{Number.parseFloat(this.state.selected_test_size).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2})}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell"><strong>{'Number of selected components: '}</strong></TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.result.number_of_selected_components}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className="tableCell"><strong>{'Accuracy'}</strong></TableCell>
+                                                            <TableCell className="tableCell">{this.state.test_data.result.accuracy}</TableCell>
                                                         </TableRow>
                                                     </TableBody>
                                                 </Table>
                                             </TableContainer>
+                                            <Box>
+                                                <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >Classification Report</Typography>
+                                                <JsonTable className="jsonResultsTable"
+                                                           rows = {this.state.result_class_report}/>
+                                            </Box>
                                             <div style={{display: (this.state.svdeigen_show ? 'block' : 'none')}}>
                                                 <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, padding:'20px'}} >
                                                     Percentage of variance explained by each of the selected components.
@@ -520,6 +630,14 @@ class LDAFunctionPage extends React.Component {
                                             <JsonTable className="jsonResultsTable" rows = {this.state.result_coefficients}/>
                                             {/*<div dangerouslySetInnerHTML={{__html: this.state.test_data.coefficients}} />*/}
                                         </div>
+                                        <Grid container padding='5px'>
+                                            <Grid item xs={6} >
+                                                <img src={this.state.svg1_path + "?random=" + new Date().getTime()}
+                                                     loading="lazy"
+                                                     style={{zoom:'80%'}}
+                                                />
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </TabPanel>

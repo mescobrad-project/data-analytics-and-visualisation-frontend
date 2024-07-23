@@ -16,6 +16,7 @@ import {CSVLink} from "react-csv";
 import JsonTable from "ts-react-json-table";
 import PropTypes from "prop-types";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -65,6 +66,8 @@ class DataTransformationForANOVA extends React.Component {
             selected_variable_name: [],
             selected_variables: [],
             Results:[],
+            FrenderChild:0,
+            tabvalue:0,
             stats_show: false
         };
         //Binding functions of the class
@@ -72,12 +75,13 @@ class DataTransformationForANOVA extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
+        // this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        // this.handleListDelete = this.handleListDelete.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         // // Initialise component
         // // - values of channels from the backend
         this.fetchFileNames();
@@ -142,6 +146,7 @@ class DataTransformationForANOVA extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
                         variables: this.state.selected_variables,
                     },
                     paramsSerializer : params => {
@@ -196,36 +201,42 @@ class DataTransformationForANOVA extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectVariableNameChange(event){
-        this.setState( {selected_variable_name: event.target.value})
-        var newArray = this.state.selected_variables.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_variables:newArray})
+    handleChildSelectVariableNameChange(checkedValues){
+        console.log(checkedValues)
+        this.setState({selected_variables:checkedValues})
     }
+    // handleSelectVariableNameChange(event){
+    //     this.setState( {selected_variable_name: event.target.value})
+    //     var newArray = this.state.selected_variables.slice();
+    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+    //     {
+    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
+    //     }
+    //     this.setState({selected_variables:newArray})
+    // }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.state.FrenderChild+=1
             this.state.selected_variables=[]
+            this.setState({stats_show: false})
         })
     }
-    handleDeleteVariable(event) {
-        this.setState({selected_variables:[]})
-    }
+    // handleDeleteVariable(event) {
+    //     this.setState({selected_variables:[]})
+    // }
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    handleListDelete(event) {
-        var newArray = this.state.selected_variables.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_variables:newList})
-    }
+    // handleListDelete(event) {
+    //     var newArray = this.state.selected_variables.slice();
+    //     const ind = newArray.indexOf(event.target.id);
+    //     let newList = newArray.filter((x, index)=>{
+    //         return index!==ind
+    //     })
+    //     this.setState({selected_variables:newList})
+    // }
 
     render() {
         return (
@@ -246,53 +257,41 @@ class DataTransformationForANOVA extends React.Component {
                                         onChange={this.handleSelectFileNameChange}
                                 >
                                     {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Select Variable</InputLabel>
-                                <Select
-                                        // multiple
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_variable_name}
-                                        label="Select Variable"
-                                        onChange={this.handleSelectVariableNameChange}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select variables</FormHelperText>
-                            </FormControl>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    // rerender={this.state.rerender_child}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected variables</FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_variables.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -322,8 +321,10 @@ class DataTransformationForANOVA extends React.Component {
                                                 <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
                                                     Transformed variables. </Typography>
                                                 <div style={{textAlign:"center"}}>
-                                                    <CSVLink data={this.state.Results}
-                                                             filename={"Results.csv"}>Download</CSVLink>
+                                                    <CSVLink
+                                                            class="DownloadButtonClass"
+                                                            data={this.state.Results}
+                                                             filename={"Results.csv"}>Download (.csv)</CSVLink>
                                                     <JsonTable className="jsonResultsTable" rows = {this.state.Results}/>
                                                 </div>
                                             </Grid>

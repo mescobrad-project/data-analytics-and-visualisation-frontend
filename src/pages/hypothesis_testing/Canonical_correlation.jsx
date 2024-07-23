@@ -20,6 +20,7 @@ import PropTypes from "prop-types";
 import { CSVLink } from "react-csv"
 import qs from "qs";
 import ProceedButton from "../../components/ui-components/ProceedButton";
+import SelectorWithCheckBoxes from "../../components/ui-components/SelectorWithCheckBoxes";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -87,11 +88,13 @@ class Canonical_correlation extends React.Component {
             Coeffic_df:"",
             X_c_df:"",
             Y_c_df:"",
+            FrenderChild:0,
+            FrenderChild2:0,
             selected_n_components: 2,
-            selected_independent_variables_1: '',
-            selected_independent_variables_1_wf: [],
-            selected_independent_variables_2: '',
-            selected_independent_variables_2_wf: [],
+            selected_independent_variables_1: [],
+            // selected_independent_variables_1_wf: [],
+            selected_independent_variables_2: [],
+            // selected_independent_variables_2_wf: [],
             stats_show: false,
             svg1_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
                     + '/step_' + params.get("step_id") + '/output/CCA_XYcorr.svg',
@@ -106,19 +109,22 @@ class Canonical_correlation extends React.Component {
         //Binding functions of the class
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectComponentsChange = this.handleSelectComponentsChange.bind(this);
-        this.handleSelectIndependentVariable1Change = this.handleSelectIndependentVariable1Change.bind(this);
-        this.handleSelectIndependentVariable2Change = this.handleSelectIndependentVariable2Change.bind(this);
+        // this.handleSelectIndependentVariable1Change = this.handleSelectIndependentVariable1Change.bind(this);
+        // this.handleSelectIndependentVariable2Change = this.handleSelectIndependentVariable2Change.bind(this);
         this.fetchColumnNames = this.fetchColumnNames.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
 
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleListDelete2 = this.handleListDelete2.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);this.handleListDelete = this.handleListDelete.bind(this);
-        this.handleDeleteVariable2 = this.handleDeleteVariable2.bind(this);
+        // this.handleListDelete = this.handleListDelete.bind(this);
+        // this.handleListDelete2 = this.handleListDelete2.bind(this);
+        // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);this.handleListDelete = this.handleListDelete.bind(this);
+        // this.handleDeleteVariable2 = this.handleDeleteVariable2.bind(this);
         this.handleProceed = this.handleProceed.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
+        this.handleChildSelectVariable2NameChange = this.handleChildSelectVariable2NameChange.bind(this);
+
         this.fetchFileNames();
     }
 
@@ -175,9 +181,12 @@ class Canonical_correlation extends React.Component {
                         workflow_id: params.get("workflow_id"),
                         run_id: params.get("run_id"),
                         step_id: params.get("step_id"),
+                        file:this.state.selected_file_name.length > 0 ? this.state.selected_file_name : null,
                         n_components: this.state.selected_n_components,
-                        independent_variables_1: this.state.selected_independent_variables_1_wf,
-                        independent_variables_2: this.state.selected_independent_variables_2_wf,
+                        training_vectors: this.state.selected_independent_variables_1,
+                        target_vectors: this.state.selected_independent_variables_2,
+                        // independent_variables_1: this.state.selected_independent_variables_1_wf,
+                        // independent_variables_2: this.state.selected_independent_variables_2_wf,
                 },
                     paramsSerializer : params => {
                         return qs.stringify(params, { arrayFormat: "repeat" })
@@ -225,23 +234,29 @@ class Canonical_correlation extends React.Component {
     /**
      * Update state when selection changes in the form
      */
-    handleSelectIndependentVariable1Change(event){
-        this.setState( {selected_independent_variables_1: event.target.value})
-        var newArray = this.state.selected_independent_variables_1_wf.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_independent_variables_1_wf:newArray})
+    // handleSelectIndependentVariable1Change(event){
+    //     this.setState( {selected_independent_variables_1: event.target.value})
+    //     var newArray = this.state.selected_independent_variables_1_wf.slice();
+    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+    //     {
+    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
+    //     }
+    //     this.setState({selected_independent_variables_1_wf:newArray})
+    // }
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_independent_variables_1:checkedValues})
     }
-    handleSelectIndependentVariable2Change(event){
-        this.setState( {selected_independent_variables_2: event.target.value})
-        var newArray = this.state.selected_independent_variables_2_wf.slice();
-        if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
-        {
-            newArray.push(this.state.selected_file_name+"--"+event.target.value);
-        }
-        this.setState({selected_independent_variables_2_wf:newArray})
+    // handleSelectIndependentVariable2Change(event){
+    //     this.setState( {selected_independent_variables_2: event.target.value})
+    //     var newArray = this.state.selected_independent_variables_2_wf.slice();
+    //     if (newArray.indexOf(this.state.selected_file_name+"--"+event.target.value) === -1)
+    //     {
+    //         newArray.push(this.state.selected_file_name+"--"+event.target.value);
+    //     }
+    //     this.setState({selected_independent_variables_2_wf:newArray})
+    // }
+    handleChildSelectVariable2NameChange(checkedValues){
+        this.setState({selected_independent_variables_2:checkedValues})
     }
     handleSelectComponentsChange(event){
         this.setState( {selected_n_components: event.target.value})
@@ -249,34 +264,36 @@ class Canonical_correlation extends React.Component {
     handleTabChange(event, newvalue){
         this.setState({tabvalue: newvalue})
     }
-    handleListDelete(event) {
-        var newArray = this.state.selected_independent_variables_1_wf.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_independent_variables_1_wf:newList})
-    }
-    handleDeleteVariable(event) {
-        this.setState({selected_independent_variables_1_wf:[]})
-    }
-    handleListDelete2(event) {
-        var newArray = this.state.selected_independent_variables_2_wf.slice();
-        const ind = newArray.indexOf(event.target.id);
-        let newList = newArray.filter((x, index)=>{
-            return index!==ind
-        })
-        this.setState({selected_independent_variables_2_wf:newList})
-    }
-    handleDeleteVariable2(event) {
-        this.setState({selected_independent_variables_2_wf:[]})
-    }
+    // handleListDelete(event) {
+    //     var newArray = this.state.selected_independent_variables_1_wf.slice();
+    //     const ind = newArray.indexOf(event.target.id);
+    //     let newList = newArray.filter((x, index)=>{
+    //         return index!==ind
+    //     })
+    //     this.setState({selected_independent_variables_1_wf:newList})
+    // }
+    // handleDeleteVariable(event) {
+    //     this.setState({selected_independent_variables_1_wf:[]})
+    // }
+    // handleListDelete2(event) {
+    //     var newArray = this.state.selected_independent_variables_2_wf.slice();
+    //     const ind = newArray.indexOf(event.target.id);
+    //     let newList = newArray.filter((x, index)=>{
+    //         return index!==ind
+    //     })
+    //     this.setState({selected_independent_variables_2_wf:newList})
+    // }
+    // handleDeleteVariable2(event) {
+    //     this.setState({selected_independent_variables_2_wf:[]})
+    // }
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
-            this.handleDeleteVariable()
-            this.handleDeleteVariable2()
+            this.state.selected_independent_variables_1=[]
+            this.state.selected_independent_variables_2=[]
+            this.state.FrenderChild+=1
+            this.state.FrenderChild2+=1
             this.setState({stats_show: false})
         })
     }
@@ -285,7 +302,7 @@ class Canonical_correlation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center", minWidth: 120}} noWrap>
-                            Insert Parameters
+                            Canonical Correlation Parameters
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -299,41 +316,53 @@ class Canonical_correlation extends React.Component {
                                         onChange={this.handleSelectFileNameChange}
                                 >
                                     {this.state.file_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
+                                            <MenuItem key={column} value={column}>{column}</MenuItem>
                                     ))}
                                 </Select>
                                 <FormHelperText>Select dataset.</FormHelperText>
                             </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Training vectors</InputLabel>
-                                <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_independent_variables_1}
-                                        label="Column"
-                                        onChange={this.handleSelectIndependentVariable1Change}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select variables for correlation test</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="column-selector-label">Target vectors</InputLabel>
-                                <Select
-                                        labelId="column-selector-label"
-                                        id="column-selector"
-                                        value= {this.state.selected_independent_variables_2}
-                                        label="Column"
-                                        onChange={this.handleSelectIndependentVariable2Change}
-                                >
-                                    {this.state.column_names.map((column) => (
-                                            <MenuItem value={column}>{column}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select variables for correlation test</FormHelperText>
-                            </FormControl>
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="column-selector-label">Training vectors</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="column-selector-label"*/}
+                            {/*            id="column-selector"*/}
+                            {/*            value= {this.state.selected_independent_variables_1}*/}
+                            {/*            label="Column"*/}
+                            {/*            onChange={this.handleSelectIndependentVariable1Change}*/}
+                            {/*    >*/}
+                            {/*        {this.state.column_names.map((column) => (*/}
+                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select variables for correlation test</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            <Typography>Training vectors</Typography>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild}
+                                    data={this.state.column_names}
+                                    onChildClick={this.handleChildSelectVariableNameChange}
+                            />
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="column-selector-label">Target vectors</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="column-selector-label"*/}
+                            {/*            id="column-selector"*/}
+                            {/*            value= {this.state.selected_independent_variables_2}*/}
+                            {/*            label="Column"*/}
+                            {/*            onChange={this.handleSelectIndependentVariable2Change}*/}
+                            {/*    >*/}
+                            {/*        {this.state.column_names.map((column) => (*/}
+                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select variables for correlation test</FormHelperText>*/}
+                            {/*</FormControl>*/}
+                            <Typography>Target vectors</Typography>
+                            <SelectorWithCheckBoxes
+                                    key={this.state.FrenderChild2}
+                                    data={this.state.column_names}
+                                    onChildClick={this.handleChildSelectVariable2NameChange}
+                            />
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelid="components-selector-label"
@@ -346,53 +375,49 @@ class Canonical_correlation extends React.Component {
                             </FormControl>
                             <Button sx={{float: "left", marginRight: "2px"}}
                                     variant="contained" color="primary"
-                                    disabled={this.state.selected_independent_variables_1_wf.length < 1 |
-                                            this.state.selected_independent_variables_2_wf.length<1}
+                                    disabled={this.state.selected_independent_variables_1.length < 1 |
+                                            this.state.selected_independent_variables_2.length<1}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected Training vectors [click to remove]</FormHelperText>
+                            <FormHelperText>Selected Training vectors </FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_independent_variables_1_wf.map((column) => (
+                                    {this.state.selected_independent_variables_1.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
-                                                    onClick={this.handleListDelete}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
                             <FormHelperText>Selected Target vectors [click to remove]</FormHelperText>
                             <div>
                                 <span>
-                                    {this.state.selected_independent_variables_2_wf.map((column) => (
+                                    {this.state.selected_independent_variables_2.map((column) => (
                                             <Button variant="outlined" size="small"
                                                     sx={{m:0.5}} style={{fontSize:'10px'}}
+                                                    key={column}
                                                     id={column}
-                                                    onClick={this.handleListDelete2}>
+                                                    >
                                                 {column}
                                             </Button>
                                     ))}
                                 </span>
                             </div>
-                            <Button onClick={this.handleDeleteVariable}>
-                                Clear all
-                            </Button>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
@@ -433,7 +458,6 @@ class Canonical_correlation extends React.Component {
                                                                 <br/><br/>
                                                             </Typography>
                                                             <img src={this.state.svg4_path + "?random=" + new Date().getTime()}
-                                                                    // srcSet={this.state.svg1_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
                                                                  loading="lazy"
                                                                  style={{zoom:'70%'}}
                                                             />
@@ -441,7 +465,8 @@ class Canonical_correlation extends React.Component {
                                                         <Grid>
                                                             <div style={{textAlign:"center"}}>
                                                                 <CSVLink data={this.state.Coeffic_df}
-                                                                         filename={"Coefficients.csv"}>Download</CSVLink></div>
+                                                                         class="DownloadButtonClass"
+                                                                         filename={"Coefficients.csv"}>Download values </CSVLink></div>
                                                             <JsonTable className="jsonResultsTable" rows = {this.state.Coeffic_df}/>
                                                         </Grid>
                                                     </Grid>
@@ -452,7 +477,6 @@ class Canonical_correlation extends React.Component {
                                                         <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
                                                             Correlations between the pairs of each dimension. </Typography>
                                                         <img src={this.state.svg2_path + "?random=" + new Date().getTime()}
-                                                             // srcSet={this.state.svg2_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
                                                              loading="lazy"
                                                              style={{zoom:'60%'}}
                                                         />
@@ -463,7 +487,8 @@ class Canonical_correlation extends React.Component {
                                                                 X singular vectors of the cross-covariance matrices of each iteration. </Typography>
                                                             <div style={{textAlign:"center"}}>
                                                                 <CSVLink data={this.state.X_weights}
-                                                                         filename="X_weights.csv">Download</CSVLink></div>
+                                                                         class="DownloadButtonClass"
+                                                                         filename="X_weights.csv">Download values </CSVLink></div>
                                                             <JsonTable className="jsonResultsTable" rows = {this.state.X_weights}/>
                                                         </Grid>
                                                         <Grid>
@@ -472,7 +497,8 @@ class Canonical_correlation extends React.Component {
                                                             </Typography>
                                                             <div style={{textAlign:"center"}}>
                                                                 <CSVLink data={this.state.Y_weights}
-                                                                         filename="Y_weights.csv">Download</CSVLink></div>
+                                                                         class="DownloadButtonClass"
+                                                                         filename="Y_weights.csv">Download values </CSVLink></div>
                                                             <JsonTable className="jsonResultsTable" rows = {this.state.Y_weights}/>
                                                         </Grid>
                                                     </Grid>
@@ -481,7 +507,6 @@ class Canonical_correlation extends React.Component {
                                                     <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "center", padding:'20px'}} >
                                                         Scatterplots of two pairs of canonical variates. </Typography>
                                                     <img src={this.state.svg3_path + "?random=" + new Date().getTime()}
-                                                            // srcSet={this.state.svg3_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
                                                          loading="lazy"
                                                          style={{alignSelf: "center"}}
                                                          style={{zoom:'60%'}}
@@ -496,7 +521,8 @@ class Canonical_correlation extends React.Component {
                                                             <br/><br/></Typography>
                                                         <div style={{textAlign:"center"}}>
                                                             <CSVLink data={this.state.X_loadings}
-                                                                     filename={"X_loadings.csv"}>Download</CSVLink></div>
+                                                                     class="DownloadButtonClass"
+                                                                     filename={"X_loadings.csv"}>Download values </CSVLink></div>
                                                         <JsonTable className="jsonResultsTable" rows = {this.state.X_loadings}/>
                                                     </Grid>
                                                     <Grid item xs={3} >
@@ -505,7 +531,8 @@ class Canonical_correlation extends React.Component {
                                                             <br/><br/></Typography>
                                                         <div style={{textAlign:"center"}}>
                                                             <CSVLink data={this.state.Y_loadings}
-                                                                     filename={"Y_loadings.csv"}>Download</CSVLink></div>
+                                                                     class="DownloadButtonClass"
+                                                                     filename={"Y_loadings.csv"}>Download values </CSVLink></div>
                                                         <JsonTable className="jsonResultsTable" rows = {this.state.Y_loadings}/>
                                                     </Grid>
                                                     <Grid item xs={3} >
@@ -513,7 +540,8 @@ class Canonical_correlation extends React.Component {
                                                             The projection matrix used to transform X. </Typography>
                                                         <div style={{textAlign:"center"}}>
                                                             <CSVLink data={this.state.X_rotations}
-                                                                     filename={"X_rotations.csv"}>Download</CSVLink></div>
+                                                                     class="DownloadButtonClass"
+                                                                     filename={"X_rotations.csv"}>Download values </CSVLink></div>
                                                         <JsonTable className="jsonResultsTable" rows = {this.state.X_rotations}/>
                                                     </Grid>
                                                     <Grid item xs={3} >
@@ -521,7 +549,8 @@ class Canonical_correlation extends React.Component {
                                                             The projection matrix used to transform Y. </Typography>
                                                         <div style={{textAlign:"center"}}>
                                                             <CSVLink data={this.state.Y_rotations}
-                                                                     filename={"Y_rotations.csv"}>Download</CSVLink></div>
+                                                                     class="DownloadButtonClass"
+                                                                     filename={"Y_rotations.csv"}>Download values </CSVLink></div>
                                                         <JsonTable className="jsonResultsTable" rows = {this.state.Y_rotations}/>
                                                     </Grid>
                                                 </Grid>
@@ -543,7 +572,8 @@ class Canonical_correlation extends React.Component {
                                                     Transformed X. </Typography>
                                                 <div style={{textAlign:"center"}}>
                                                     <CSVLink data={this.state.X_c_df}
-                                                             filename={"Transformed_X.csv"}>Download</CSVLink></div>
+                                                             class="DownloadButtonClass"
+                                                             filename={"Transformed_X.csv"}>Download values </CSVLink></div>
                                                 <JsonTable className="jsonResultsTable" rows = {this.state.X_c_df}/>
                                             </Grid>
                                             <Grid item xs={6}>
@@ -551,7 +581,8 @@ class Canonical_correlation extends React.Component {
                                                     Transformed Y. </Typography>
                                                 <div style={{textAlign:"center"}}>
                                                     <CSVLink data={this.state.Y_c_df}
-                                                         filename={"Transformed_Y.csv"}>Download</CSVLink></div>
+                                                             class="DownloadButtonClass"
+                                                             filename={"Transformed_Y.csv"}>Download values </CSVLink></div>
                                                 <JsonTable className="jsonResultsTable" rows = {this.state.Y_c_df}/>
                                             </Grid>
                                         </Grid>

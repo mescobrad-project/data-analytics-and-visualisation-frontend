@@ -52,6 +52,25 @@ hr.result{
         border-top: 1px solid black
     }
 }
+.DownloadButtonClass{
+    font-size:20px;
+    width:140px;
+    height:50px;
+    border-width:1px;
+    color:#fff;
+    border-color:#599bb3;
+    border-top-left-radius:8px;
+    border-top-right-radius:8px;
+    border-bottom-left-radius:8px;
+    border-bottom-right-radius:8px;
+    box-shadow: 0px 10px 14px -7px #276873;
+    text-shadow: 0px 1px 0px #3d768a;
+    background:linear-gradient(#599bb3, #408c99);
+}
+
+.DownloadButtonClass:hover {
+    background: linear-gradient(#408c99, #599bb3);
+}
 
 .AccordionDataframe{
     display: flex;
