@@ -97,7 +97,7 @@ class SamsegDatatable extends React.Component {
                                 color="primary"
                                 onClick={this.redirectToPage.bind(this, "free_surfer", [], [])}
                         >
-                            Continue to Proceed and Upload data
+                            Return to upload data
                         </Button>
                     </Box>
                 </Box>
