@@ -92,6 +92,10 @@ class ActigraphyStatistics extends React.Component {
 
     constructor(props) {
         let ip = "http://127.0.0.1:8000/"
+        if (process.env.REACT_APP_BASEURL)
+        {
+            ip = process.env.REACT_APP_BASEURL
+        }
         super(props);
         this.state = {
             done: true,
@@ -99,6 +103,9 @@ class ActigraphyStatistics extends React.Component {
             selected_file_name: "",
             period_freq: "15",
             file_names: [],
+            dates: [],
+            start_time: "None",
+            end_time: "None",
             duration: "None",
             sleep_stats: [],
             count_trans_matrix: [],
@@ -151,6 +158,29 @@ class ActigraphyStatistics extends React.Component {
         });
     }
 
+    async fetchDates(url, config) {
+        const params = new URLSearchParams(window.location.search);
+
+        API.get("return_dates",
+                {
+                    params: {
+                        workflow_id: params.get("workflow_id"),
+                        run_id: params.get("run_id"),
+                        step_id: params.get("step_id"),
+                        dataset:this.state.selected_file_name
+                    }}).then(res => {
+            this.setState({dates: res.data.dates})
+        });
+    }
+
+    handleSelectStartDateChange(event){
+        this.setState({start_time: event.target.value})
+    }
+
+    handleSelectEndDateChange(event){
+        this.setState({end_time: event.target.value})
+    }
+
     async handleActigraphyStatistics() {
         const params = new URLSearchParams(window.location.search);
         API.get("/actigraphy_string_sleep_statistics", {
@@ -159,7 +189,9 @@ class ActigraphyStatistics extends React.Component {
                 run_id: params.get("run_id"),
                 step_id: params.get("step_id"),
                 dataset: this.state.selected_file_name,
-                period: this.state.period_freq
+                period: this.state.period_freq,
+                start_time: this.state.start_time,
+                end_time: this.state.end_time
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_STATS")
@@ -188,16 +220,18 @@ class ActigraphyStatistics extends React.Component {
 
     handleSelectFileNameChange(event){
         this.setState( {selected_file_name: event.target.value}, ()=>{
+            this.fetchDates()
             // this.setState({stats_show: false})
         })
+        this.setState({first_tab_done:false})
     }
 
     handleSelectStartDateChange(event){
-        this.setState({start_date: event.target.value})
+        this.setState({start_time: event.target.value})
     }
 
     handleSelectEndDateChange(event){
-        this.setState({end_date: event.target.value})
+        this.setState({end_time: event.target.value})
     }
 
     handleTabChange(event, newvalue){
@@ -232,6 +266,14 @@ class ActigraphyStatistics extends React.Component {
                     </Select>
                     <FormHelperText>Select dataset.</FormHelperText>
                 </FormControl>
+                <hr/>
+                <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
+                    <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>
+                    <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
+                        Dates: {this.state.start_time} - {this.state.end_time}
+                    </List>
+                </FormControl>
+                <hr/>
                 <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                     <TextField
                             id="period-frequency-hypnogram"
@@ -248,6 +290,40 @@ class ActigraphyStatistics extends React.Component {
                     </Typography>
                 </FormControl>
                 <form onSubmit={(event) => {event.preventDefault();this.handleActigraphyStatistics();}}>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                        <InputLabel id="startdate-label">Start Date</InputLabel>
+                        <Select
+                                labelId="startdate-label"
+                                id="startdate-selector"
+                                value= {this.state.start_time}
+                                label="startdate"
+                                onChange={this.handleSelectStartDateChange}
+                        >
+                            {this.state.dates.map((column) => (
+                                    <MenuItem value={column}>
+                                        {column}
+                                    </MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText>Select the dates to visualise the actigraphy data.</FormHelperText>
+                    </FormControl>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                        <InputLabel id="enddate-label">End Date</InputLabel>
+                        <Select
+                                labelId="enddate-label"
+                                id="enddate-selector"
+                                value= {this.state.end_time}
+                                label="enddate"
+                                onChange={this.handleSelectEndDateChange}
+                        >
+                            {this.state.dates.map((column) => (
+                                    <MenuItem value={column}>
+                                        {column}
+                                    </MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText>Select the dates to visualise the actigraphy data.</FormHelperText>
+                    </FormControl>
                     <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
                         <Button variant="contained" color="primary" type="submit" onClick={() => {
                             this.setState({done: false});
