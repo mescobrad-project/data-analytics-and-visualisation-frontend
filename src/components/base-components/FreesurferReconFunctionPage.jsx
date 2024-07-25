@@ -232,6 +232,8 @@ class FreesurferReconFunctionPage extends React.Component {
         this.handleProceedCalls = this.handleProceedCalls.bind(this);
         this.callSamesegTrino = this.callSamesegTrino.bind(this);
         this.callReconallTrino = this.callReconallTrino.bind(this);
+        this.checkFoldersExistenceStartup = this.checkFoldersExistenceStartup.bind(this);
+        this.checkFoldersExistenceStartup();
         this.fetchFileNames();
         // Initialise component
         // - values of channels from the backend
@@ -306,6 +308,40 @@ class FreesurferReconFunctionPage extends React.Component {
     //     })
     //
     // }
+
+
+    async checkFoldersExistenceStartup() {
+        const params = new URLSearchParams(window.location.search);
+        const folderStatuses = await API.get('/check_mri_folders_existence', {
+            params: {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id")
+            }
+        });
+        console.log(folderStatuses);
+        const foldersExist = {
+            samseg_results_folder_exists: folderStatuses.data.samseg_results_folder_exists,
+            reconall_results_folder_exists: folderStatuses.data.reconall_results_folder_exists,
+            coreg_results_folder_exists: folderStatuses.data.coreg_results_folder_exists,
+            synthseg_results_folder_exists: folderStatuses.data.synthseg_results_folder_exists,
+            samseg_results_folder: folderStatuses.data.samseg_results_folder,
+            reconall_results_folder: folderStatuses.data.reconall_results_folder,
+            coreg_results_folder: folderStatuses.data.coreg_results_folder,
+            synthseg_results_folder: folderStatuses.data.synthseg_results_folder
+        };
+        this.setState({
+            foldersExist: foldersExist
+        });
+
+        if (foldersExist.samseg_results_folder_exists ||
+            foldersExist.reconall_results_folder_exists ||
+            foldersExist.coreg_results_folder_exists ||
+            foldersExist.synthseg_results_folder_exists) {
+            this.setState({ tabvalue: 4 });
+        }
+    }
+
 
     async fetchFileNames() {
         const params = new URLSearchParams(window.location.search);
