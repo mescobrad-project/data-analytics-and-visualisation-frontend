@@ -148,15 +148,21 @@ class MRIViewerWin extends React.Component {
 
         const params = new URLSearchParams(window.location.search);
 
+        const requestParams = {
+            workflow_id: params.get("workflow_id"),
+            run_id: params.get("run_id"),
+            step_id: params.get("step_id"),
+            file_to_open: this.state.requested_file_1,
+        };
+
+        if (this.state.requested_file_2 !== "none") {
+            requestParams.file_to_open_2 = this.state.requested_file_2;
+        }
+
+
         API.get("free_view/simple",
                 {
-                    params: {
-                        workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                        step_id: params.get("step_id"),
-                        file_to_open: this.state.requested_file_1,
-                        file_to_open_2: this.state.requested_file_2,
-                        // input_slices: this.state.selected_slice
-                    }
+                    params: requestParams
                 }
         ).then(res => {
             // const result = res.data;

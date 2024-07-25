@@ -68,6 +68,7 @@ class Anova_RM extends React.Component {
             selected_subject_variable: "",
             selected_correction:"True",
             selected_effsize:"np2",
+            FrenderChild:0,
             stats_show:false,
         };
         //Binding functions of the class
@@ -234,6 +235,7 @@ class Anova_RM extends React.Component {
             this.state.selected_dependent_variable=""
             this.state.selected_subject_variable=""
             this.state.selected_within_variables_wf=""
+            this.state.FrenderChild+=1
             this.setState({stats_show: false})
         })
     }

@@ -69,6 +69,7 @@ class ReconAllResults extends React.Component {
         this.handleTabChange = this.handleTabChange.bind(this);
         this.downloadData = this.downloadData.bind(this);
         this.handleProceed = this.handleProceed.bind(this)
+        this.redirectToPage = this.redirectToPage.bind(this);
         this.downloadData()
     }
 
@@ -98,6 +99,33 @@ class ReconAllResults extends React.Component {
         )
         window.location.replace("/")
     }
+
+    async redirectToPage(function_name, bucket, file) {
+        // Send the request
+        const params = new URLSearchParams(window.location.search);
+        let files_to_send = []
+        for (let it = 0; it < bucket.length; it++) {
+            files_to_send.push([bucket[it], file[it]])
+        }
+        console.log(files_to_send)
+
+        API.put("function/navigation/",
+            {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                function: function_name,
+                token: "",
+                metadata: {
+                    // [["saved"] , "demo_sample_questionnaire.csv"],
+                    "files": files_to_send
+                },
+            }
+        ).then(res => {
+            window.location.assign(res.data.url)
+        });
+    }
+
 
     render() {
         return (
@@ -131,40 +159,40 @@ class ReconAllResults extends React.Component {
                                                       aria-label="basic tabs example"
                                                       variant="scrollable"
                                                       scrollButtons="auto">
-                                                    <Tab label="Images" {...a11yProps(0)} />
-                                                    <Tab label="aseg.stats" {...a11yProps(1)} />
-                                                    <Tab label="brainvol.stats" {...a11yProps(2)} />
-                                                    <Tab label="*h.aparc.a2009s.stats" {...a11yProps(3)} />
-                                                    <Tab label="*h.aparc.DKTatlas.stats" {...a11yProps(4)} />
-                                                    <Tab label="*h.aparc.pial.stats" {...a11yProps(5)} />
-                                                    <Tab label="*h.aparc.stats" {...a11yProps(6)} />
-                                                    <Tab label="*h.BA_exvivo.stats" {...a11yProps(7)} />
-                                                    <Tab label="*h.BA_exvivo.thresh.stats" {...a11yProps(8)} />
-                                                    <Tab label="*h.w-g.pct.stats" {...a11yProps(9)} />
-                                                    <Tab label="wmparc.stats" {...a11yProps(10)} />
+                                                    {/*<Tab label="Images" {...a11yProps(0)} />*/}
+                                                    <Tab label="aseg.stats" {...a11yProps(0)} />
+                                                    <Tab label="brainvol.stats" {...a11yProps(1)} />
+                                                    <Tab label="*h.aparc.a2009s.stats" {...a11yProps(2)} />
+                                                    <Tab label="*h.aparc.DKTatlas.stats" {...a11yProps(3)} />
+                                                    <Tab label="*h.aparc.pial.stats" {...a11yProps(4)} />
+                                                    <Tab label="*h.aparc.stats" {...a11yProps(5)} />
+                                                    <Tab label="*h.BA_exvivo.stats" {...a11yProps(6)} />
+                                                    <Tab label="*h.BA_exvivo.thresh.stats" {...a11yProps(7)} />
+                                                    <Tab label="*h.w-g.pct.stats" {...a11yProps(8)} />
+                                                    <Tab label="wmparc.stats" {...a11yProps(9)} />
 
 
                                                 </Tabs>
                                             </Box>
 
                                         </Box>
+                                        {/*<TabPanel value={this.state.tabvalue} index={0}>*/}
+                                        {/*    <h3>Images - Cortical Measurements</h3>*/}
+                                        {/*    <div className="reconallContainer">*/}
+                                        {/*        <div className="images">*/}
+                                        {/*            /!*TODO: Retrieve images from the correct folder*!/*/}
+                                        {/*            {images.map(image => (*/}
+                                        {/*                    <img className="image" src={image}/>*/}
+                                        {/*            ))}*/}
+                                        {/*        </div>*/}
+                                        {/*    </div>*/}
+                                        {/*    <form onSubmit={this.handleProceed}>*/}
+                                        {/*        <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">*/}
+                                        {/*            Proceed >*/}
+                                        {/*        </Button>*/}
+                                        {/*    </form>*/}
+                                        {/*</TabPanel>*/}
                                         <TabPanel value={this.state.tabvalue} index={0}>
-                                            <h3>Images - Cortical Measurements</h3>
-                                            <div className="reconallContainer">
-                                                <div className="images">
-                                                    {/*TODO: Retrieve images from the correct folder*/}
-                                                    {images.map(image => (
-                                                            <img className="image" src={image}/>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <form onSubmit={this.handleProceed}>
-                                                <Button sx={{float: "right", marginRight: "2px"}} variant="contained" color="primary" type="submit">
-                                                    Proceed >
-                                                </Button>
-                                            </form>
-                                        </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={1}>
                                             <div className="reconallContainer">
                                                 <h3>Segmentation Statistics </h3>
                                                 <div className="widgets">
@@ -180,9 +208,18 @@ class ReconAllResults extends React.Component {
                                                 <div className="Aseg">
                                                     <Aseg/>
                                                 </div>
+                                                <Box sx={{borderTop: 1, borderColor: 'divider'}}>
+                                                    <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={this.redirectToPage.bind(this, "free_surfer", [], [])}
+                                                    >
+                                                        Return to upload data
+                                                    </Button>
+                                                </Box>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={2}>
+                                        <TabPanel value={this.state.tabvalue} index={1}>
                                             <div className="reconallContainer">
                                                 <h3>Brain Volume Statistics</h3>
                                                 <div className="widgets">
@@ -190,7 +227,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={3}>
+                                        <TabPanel value={this.state.tabvalue} index={2}>
                                             <div className="reconallContainer">
                                                 <h3>Cortical Parcellation Stats</h3>
                                                 <div className="widgets">
@@ -205,7 +242,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={4}>
+                                        <TabPanel value={this.state.tabvalue} index={3}>
                                             <div className="reconallContainer">
                                                 <h3>Cortical Parcellation Stats</h3>
                                                 <div className="widgets">
@@ -220,7 +257,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={5}>
+                                        <TabPanel value={this.state.tabvalue} index={4}>
                                             <div className="reconallContainer">
                                                 <h3>Cortical Parcellation Stats</h3>
                                                 <div className="widgets">
@@ -235,7 +272,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={6}>
+                                        <TabPanel value={this.state.tabvalue} index={5}>
                                             <div className="reconallContainer">
                                                 <h3>Cortical Parcellation Stats</h3>
                                                 <div className="widgets">
@@ -250,7 +287,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={7}>
+                                        <TabPanel value={this.state.tabvalue} index={6}>
                                             <div className="reconallContainer">
                                                 <h3>Cortical Parcellation Stats</h3>
                                                 <div className="widgets">
@@ -265,7 +302,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={8}>
+                                        <TabPanel value={this.state.tabvalue} index={7}>
                                             <div className="reconallContainer">
                                                 <h3>Cortical Parcellation Stats</h3>
                                                 <div className="widgets">
@@ -280,7 +317,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={9}>
+                                        <TabPanel value={this.state.tabvalue} index={8}>
                                             <div className="reconallContainer">
                                                 <h3>Structural Measurements</h3>
                                                 <div className="list">
@@ -290,7 +327,7 @@ class ReconAllResults extends React.Component {
                                                 </div>
                                             </div>
                                         </TabPanel>
-                                        <TabPanel value={this.state.tabvalue} index={10}>
+                                        <TabPanel value={this.state.tabvalue} index={9}>
                                             <div className="reconallContainer">
                                                 <h3>Segmentation Statistics</h3>
                                                 <div className="widgets">

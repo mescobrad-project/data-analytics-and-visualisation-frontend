@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import API from "../../axiosInstance";
-
+// Check
 class ProceedButton extends React.Component {
     static defaultProps = {
         outputType: "",

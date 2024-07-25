@@ -66,6 +66,7 @@ class DataTransformationForANOVA extends React.Component {
             selected_variable_name: [],
             selected_variables: [],
             Results:[],
+            FrenderChild:0,
             tabvalue:0,
             stats_show: false
         };
@@ -74,7 +75,7 @@ class DataTransformationForANOVA extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         // this.handleSelectVariableNameChange = this.handleSelectVariableNameChange.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
@@ -217,6 +218,7 @@ class DataTransformationForANOVA extends React.Component {
         this.setState( {selected_file_name: event.target.value}, ()=>{
             this.fetchColumnNames()
             this.fetchDatasetContent()
+            this.state.FrenderChild+=1
             this.state.selected_variables=[]
             this.setState({stats_show: false})
         })
@@ -267,10 +269,9 @@ class DataTransformationForANOVA extends React.Component {
                                     onChildClick={this.handleChildSelectVariableNameChange}
                             />
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -290,6 +291,7 @@ class DataTransformationForANOVA extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>

@@ -240,7 +240,7 @@ class SurvivalAnalysisKaplanMeier extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={3} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center", minWidth: 120}} noWrap>
-                            Insert Parameters
+                            Kaplan - Meier Parameters
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>

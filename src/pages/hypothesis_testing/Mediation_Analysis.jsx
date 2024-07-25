@@ -77,6 +77,8 @@ class Mediation_Analysis extends React.Component {
             // selected_mediator_variable_wf: [],
             selected_independent_variables: [],
             // selected_independent_variables_wf: [],
+            FrenderChild:0,
+            FrenderChild2:0,
             tabvalue:0,
             stats_show: false,
         };
@@ -95,7 +97,7 @@ class Mediation_Analysis extends React.Component {
         // this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         // this.handleListMediatorDelete = this.handleListMediatorDelete.bind(this);
         // this.handleDeleteMediatorVariable = this.handleDeleteMediatorVariable.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.handleChildSelectMediatorVariableNameChange = this.handleChildSelectMediatorVariableNameChange.bind(this);
         this.handleChildSelectIndependentVariableNameChange = this.handleChildSelectIndependentVariableNameChange.bind(this);
 
@@ -171,28 +173,28 @@ class Mediation_Analysis extends React.Component {
         });
     }
 
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        console.log(this.state.output_return_data);
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-
-    }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
-    }
+    // async handleProceed(event) {
+    //     event.preventDefault();
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.put("save_hypothesis_output",
+    //             {
+    //                 workflow_id: params.get("workflow_id"), run_id: params.get("run_id"),
+    //                 step_id: params.get("step_id")
+    //             }
+    //     ).then(res => {
+    //         this.setState({output_return_data: res.data})
+    //     });
+    //     console.log(this.state.output_return_data);
+    //     API.get("/task/complete", {
+    //         params: {
+    //             run_id: params.get("run_id"),
+    //             step_id: params.get("step_id"),
+    //         }
+    //
+    // }).then(res => {
+    //         window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+    //     });
+    // }
     /**
      * Update state when selection changes in the form
      */
@@ -261,6 +263,8 @@ class Mediation_Analysis extends React.Component {
             this.state.selected_mediator_variable = []
             this.state.selected_exposure_variable = ''
             this.state.selected_independent_variables=[]
+            this.state.FrenderChild+=1
+            this.state.FrenderChild2+=1
             this.setState({stats_show: false})
         })
     }
@@ -318,45 +322,15 @@ class Mediation_Analysis extends React.Component {
                                 </Select>
                                 <FormHelperText>Select predictor variable</FormHelperText>
                             </FormControl>
-                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
-                            {/*    <InputLabel id="mediator-selector-label">Mediator variable(s)</InputLabel>*/}
-                            {/*    <Select*/}
-                            {/*            labelId="mediator-selector-label"*/}
-                            {/*            id="mediator-selector"*/}
-                            {/*            value= {this.state.selected_mediator_variable}*/}
-                            {/*            label="mediator"*/}
-                            {/*            onChange={this.handleSelectMediatorVariableChange}*/}
-                            {/*    >*/}
-                            {/*        {this.state.columns.map((column) => (*/}
-                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
-                            {/*        ))}*/}
-                            {/*    </Select>*/}
-                            {/*    <FormHelperText>Select mediator variable(s).</FormHelperText>*/}
-                            {/*</FormControl>*/}
-                            <h4>Mediator variable(s)</h4>
+                            <Typography>Mediator variable(s)</Typography>
                             <SelectorWithCheckBoxes
                                     key={this.state.FrenderChild}
                                     data={this.state.columns}
                                     onChildClick={this.handleChildSelectMediatorVariableNameChange}
                             />
-                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
-                            {/*    <InputLabel id="column-selector-label">Covariate variables</InputLabel>*/}
-                            {/*    <Select*/}
-                            {/*            labelId="Covariate-selector-label"*/}
-                            {/*            id="Covariate-selector"*/}
-                            {/*            value= {this.state.selected_independent_variables}*/}
-                            {/*            label="Covariate"*/}
-                            {/*            onChange={this.handleSelectIndependentVariableChange}*/}
-                            {/*    >*/}
-                            {/*        {this.state.columns.map((column) => (*/}
-                            {/*                <MenuItem value={column}>{column}</MenuItem>*/}
-                            {/*        ))}*/}
-                            {/*    </Select>*/}
-                            {/*    <FormHelperText>Select Covariate variables</FormHelperText>*/}
-                            {/*</FormControl>*/}
-                            <h4>Covariate variables</h4>
+                            <Typography>Covariate variables</Typography>
                             <SelectorWithCheckBoxes
-                                    key={this.state.FrenderChild}
+                                    key={this.state.FrenderChild2}
                                     data={this.state.columns}
                                     onChildClick={this.handleChildSelectIndependentVariableNameChange}
                             />
@@ -367,10 +341,9 @@ class Mediation_Analysis extends React.Component {
                                             this.state.selected_exposure_variable.length<1}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -391,7 +364,7 @@ class Mediation_Analysis extends React.Component {
                             </Button>
                         </Grid>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected Mediator variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected Mediator variables </FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_mediator_variable.map((column) => (
@@ -407,7 +380,7 @@ class Mediation_Analysis extends React.Component {
                             </div>
                         </FormControl>
                         <FormControl sx={{m: 1, width:'95%'}} size={"small"} >
-                            <FormHelperText>Selected Independent variables [click to remove]</FormHelperText>
+                            <FormHelperText>Selected Independent variables </FormHelperText>
                             <div>
                                 <span>
                                     {this.state.selected_independent_variables.map((column) => (
@@ -422,6 +395,7 @@ class Mediation_Analysis extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>

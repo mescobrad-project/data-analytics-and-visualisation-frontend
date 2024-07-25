@@ -63,6 +63,7 @@ class General_Stats_Average extends React.Component {
             selected_variables: [],
             selected_file_name: "",
             selected_variable_name: "",
+            FrenderChild:0,
             Results:[],
             stats_show: false,
         };
@@ -192,6 +193,7 @@ class General_Stats_Average extends React.Component {
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_variables=[]
+            this.state.FrenderChild+=1
             this.setState({stats_show: false})
         })
     }

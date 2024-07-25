@@ -64,6 +64,7 @@ class Two_Related_samples_t_test extends React.Component {
             selected_alternative: "two-sided",
             selected_nan_policy:"omit",
             selected_statistical_test:"t-test on TWO RELATED samples of scores",
+            FrenderChild:0,
             stats_show:false
         };
         //Binding functions of the class
@@ -71,7 +72,7 @@ class Two_Related_samples_t_test extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
         this.fetchDatasetContent = this.fetchDatasetContent.bind(this);
-        this.handleProceed = this.handleProceed.bind(this);
+        // this.handleProceed = this.handleProceed.bind(this);
         this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -156,28 +157,28 @@ class Two_Related_samples_t_test extends React.Component {
             this.setState({tabvalue:1})
         });
     }
-    async handleProceed(event) {
-        event.preventDefault();
-        const params = new URLSearchParams(window.location.search);
-        API.put("save_hypothesis_output",
-                {
-                    workflow_id: params.get("workflow_id"),
-                    run_id: params.get("run_id"),
-                    step_id: params.get("step_id")
-                }
-        ).then(res => {
-            this.setState({output_return_data: res.data})
-        });
-        API.get("/task/complete", {
-            params: {
-                run_id: params.get("run_id"),
-                step_id: params.get("step_id"),
-            }
-
-    }).then(res => {
-            window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
-        });
-    }
+    // async handleProceed(event) {
+    //     event.preventDefault();
+    //     const params = new URLSearchParams(window.location.search);
+    //     API.put("save_hypothesis_output",
+    //             {
+    //                 workflow_id: params.get("workflow_id"),
+    //                 run_id: params.get("run_id"),
+    //                 step_id: params.get("step_id")
+    //             }
+    //     ).then(res => {
+    //         this.setState({output_return_data: res.data})
+    //     });
+    //     API.get("/task/complete", {
+    //         params: {
+    //             run_id: params.get("run_id"),
+    //             step_id: params.get("step_id"),
+    //         }
+    //
+    // }).then(res => {
+    //         window.location.replace("https://es.platform.mes-cobrad.eu/workflow/" + params.get('workflow_id') + "/run/" + params.get("run_id"))
+    //     });
+    // }
 
     /**
      * Update state when selection changes in the form
@@ -199,6 +200,7 @@ class Two_Related_samples_t_test extends React.Component {
             this.fetchColumnNames()
             this.fetchDatasetContent()
             this.state.selected_variables=[]
+            this.state.FrenderChild+=1
             this.setState({stats_show: false})
         })
     }
@@ -267,10 +269,9 @@ class Two_Related_samples_t_test extends React.Component {
                                     disabled={this.state.selected_variables.length !== 2}
                                     type="submit"
                             >
-                                Submit
+                                Run Analysis
                             </Button>
                         </form>
-                        <ProceedButton></ProceedButton>
                         <br/>
                         <br/>
                         <hr/>
@@ -289,6 +290,7 @@ class Two_Related_samples_t_test extends React.Component {
                                 </span>
                             </div>
                         </FormControl>
+                        <ProceedButton></ProceedButton>
                     </Grid>
                     <Grid item xs={9}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
@@ -313,8 +315,8 @@ class Two_Related_samples_t_test extends React.Component {
                                         <Typography variant="h6" color='indianred' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Status :  { this.state.test_data['status']}</Typography>
                                     </Grid>
                                     <Grid style={{display: (this.state.test_data['status']==='Success' ? 'block' : 'none')}}>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toFixed(5)}</Typography>
-                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toFixed(5)}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>Statistic :  { Number.parseFloat(this.state.test_data['statistic']).toExponential(9)}</Typography>
+                                        <Typography variant="h6" color='royalblue' sx={{ flexGrow: 1, textAlign: "Left", padding:'20px'}}>p value :    { Number.parseFloat(this.state.test_data['p-value']).toExponential(9)}</Typography>
                                         <JsonTable className="jsonResultsTable"
                                                    rows = {this.state.mean_std}/>
                                     </Grid>
