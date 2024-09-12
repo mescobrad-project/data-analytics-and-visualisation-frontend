@@ -30,6 +30,8 @@ import PropTypes from "prop-types";
 import ProceedButton from "../ui-components/ProceedButton";
 import ReactLoading from "react-loading";
 import LoadingWidget from "../ui-components/LoadingWidget";
+import SelectorWithCheckBoxes from "../ui-components/SelectorWithCheckBoxes";
+import qs from "qs";
 const params = new URLSearchParams(window.location.search);
 
 function CustomToolbar() {
@@ -104,6 +106,9 @@ class ActigraphyFunctionPage extends React.Component {
         super(props);
         this.state = {
             assessment_list: [],
+            selected_variables: [],
+            FrenderChild: 0,
+            mask : "No",
             temp_assessment_list: [],
             first_tab_done: true,
             second_tab_done: true,
@@ -200,6 +205,8 @@ class ActigraphyFunctionPage extends React.Component {
         this.handleSubmitFinalStagesVisualisationResults = this.handleSubmitFinalStagesVisualisationResults.bind(this);
         this.handleMaskPeriodStartDateChange = this.handleMaskPeriodStartDateChange.bind(this);
         this.handleMaskPeriodEndDateChange = this.handleMaskPeriodEndDateChange.bind(this);
+        this.handleMaskChange = this.handleMaskChange.bind(this);
+        this.handleChildSelectVariableNameChange = this.handleChildSelectVariableNameChange.bind(this);
         this.fetchFileNames = this.fetchFileNames.bind(this);
         this.fetchFileNames();
         this.handleSelectFileNameChange = this.handleSelectFileNameChange.bind(this);
@@ -250,10 +257,15 @@ class ActigraphyFunctionPage extends React.Component {
                 step_id: params.get("step_id"),
                 dataset: this.state.selected_file_name,
                 start_date: this.state.start_date,
-                end_date: this.state.end_date
+                end_date: this.state.end_date,
+                mask: this.state.mask,
+                selected_dates: this.state.selected_dates},
+            paramsSerializer : params => {
+                return qs.stringify(params, { arrayFormat: "repeat" })
             }
         }).then(res => {
-            console.log("VisualisationResults")
+            console.log("VisualisationResults AND MASKING")
+            console.log(res.data.selected_dates)
             console.log(res.data.visualisation_figure)
             let json_response = JSON.parse(res.data.visualisation_figure)
             this.setState({data_plot_daily: json_response["data"]})
@@ -415,6 +427,7 @@ class ActigraphyFunctionPage extends React.Component {
                 algorithm: this.state.algorithm,
                 start_date: this.state.start_date,
                 end_date: this.state.end_date
+
             }
         }).then(res => {
             console.log("ACTIGRAPHIES_DAILY_PLOT")
@@ -501,6 +514,8 @@ class ActigraphyFunctionPage extends React.Component {
             this.fetchDates()
             this.handleSubmitInitialDataset()
             // this.setState({stats_show: false})
+            this.state.FrenderChild+=1
+            this.state.selected_dates=[]
         })
         this.setState({first_tab_done:false})
     }
@@ -527,6 +542,14 @@ class ActigraphyFunctionPage extends React.Component {
 
     handleMaskPeriodEndDateChange(event){
         this.setState({mask_period_end: event.target.value})
+    }
+
+    handleMaskChange(event){
+        this.setState({mask: event.target.value})
+    }
+
+    handleChildSelectVariableNameChange(checkedValues){
+        this.setState({selected_dates:checkedValues})
     }
 
     handleTabChange(event, newvalue){
@@ -560,6 +583,9 @@ class ActigraphyFunctionPage extends React.Component {
                     <FormHelperText>Select dataset.</FormHelperText>
                 </FormControl>
                 <hr/>
+                <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                    Assessment Parameters
+                </Typography>
                 <FormControl sx={{m: 1, width:'90%'}} size={"small"} >
                     <FormHelperText><span style={{fontWeight: 'bold'}}>Selected Variables</span></FormHelperText>
                     <List style={{fontSize:'10px', backgroundColor:"powderblue", borderRadius:'10%'}}>
@@ -621,6 +647,32 @@ class ActigraphyFunctionPage extends React.Component {
                         </Select>
                         <FormHelperText>Select the assessment algorithm to run on the dataset.</FormHelperText>
                     </FormControl>
+                    <hr/>
+                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
+                        Data Masking
+                    </Typography>
+                    <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                        <InputLabel id="rotation-label">Assessment Algorithm</InputLabel>
+                        <Select
+                                labelId="mask-label"
+                                id="mask-selector"
+                                value= {this.state.mask}
+                                label="mask"
+                                onChange={this.handleMaskChange}
+                        >
+                            <MenuItem value={"Yes"}><em>Yes</em></MenuItem>
+                            <MenuItem value={"No"}><em>No</em></MenuItem>
+                        </Select>
+                        <FormHelperText>Select whether you want to apply masking to the data.</FormHelperText>
+                    </FormControl>
+
+                    <SelectorWithCheckBoxes
+                            key={this.state.FrenderChild}
+                            data={this.state.dates}
+                            // rerender={this.state.rerender_child}
+                            onChildClick={this.handleChildSelectVariableNameChange}
+                    />
+
                     <FormControl sx={{m: 1, width:'20%'}} size={"small"} >
                         <Button variant="contained" color="primary" type="submit" onClick={() => {
                             this.setState({second_tab_done: false});
