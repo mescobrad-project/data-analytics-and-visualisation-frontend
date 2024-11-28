@@ -69,6 +69,7 @@ class ReconAllResults extends React.Component {
         this.handleTabChange = this.handleTabChange.bind(this);
         this.downloadData = this.downloadData.bind(this);
         this.handleProceed = this.handleProceed.bind(this)
+        this.redirectToPage = this.redirectToPage.bind(this);
         this.downloadData()
     }
 
@@ -98,6 +99,33 @@ class ReconAllResults extends React.Component {
         )
         window.location.replace("/")
     }
+
+    async redirectToPage(function_name, bucket, file) {
+        // Send the request
+        const params = new URLSearchParams(window.location.search);
+        let files_to_send = []
+        for (let it = 0; it < bucket.length; it++) {
+            files_to_send.push([bucket[it], file[it]])
+        }
+        console.log(files_to_send)
+
+        API.put("function/navigation/",
+            {
+                workflow_id: params.get("workflow_id"),
+                run_id: params.get("run_id"),
+                step_id: params.get("step_id"),
+                function: function_name,
+                token: "",
+                metadata: {
+                    // [["saved"] , "demo_sample_questionnaire.csv"],
+                    "files": files_to_send
+                },
+            }
+        ).then(res => {
+            window.location.assign(res.data.url)
+        });
+    }
+
 
     render() {
         return (
@@ -180,6 +208,15 @@ class ReconAllResults extends React.Component {
                                                 <div className="Aseg">
                                                     <Aseg/>
                                                 </div>
+                                                <Box sx={{borderTop: 1, borderColor: 'divider'}}>
+                                                    <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={this.redirectToPage.bind(this, "free_surfer", [], [])}
+                                                    >
+                                                        Return to upload data
+                                                    </Button>
+                                                </Box>
                                             </div>
                                         </TabPanel>
                                         <TabPanel value={this.state.tabvalue} index={1}>
