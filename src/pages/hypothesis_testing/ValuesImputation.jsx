@@ -278,6 +278,7 @@ class ValuesImputation extends React.Component {
                                     <MenuItem value={"constant"}><em>constant</em></MenuItem>
                                     <MenuItem value={"KNN"}><em>KNN</em></MenuItem>
                                     <MenuItem value={"iterative"}><em>iterative</em></MenuItem>
+                                    <MenuItem value={"Random_forest"}><em>Random forest</em></MenuItem>
                                 </Select>
                                 <FormHelperText>Defines the imputation strategy.</FormHelperText>
                             </FormControl>
