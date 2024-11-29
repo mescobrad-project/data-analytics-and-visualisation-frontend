@@ -11,45 +11,45 @@ const LayoutMain = ({children}) => {
     const [keycloak, setKeycloak] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
 
-    useEffect(() => {
-        // console.log(this.state.keycloak)
-        // console.log(this.state.authenticated)
-
-        const keycloak = new Keycloak({
-            "realm": "mescobrad",
-            "url": "https://idm.digital-enabler.eng.it/auth/",
-            "clientId": "data-analytics",
-            // "clientSecret" : "36V5m563FNSTKn5nuDBALZcA35xupub3"
-        })
-        keycloak.init({onLoad: 'login-required', checkLoginIframe: false}).then(authenticated => {
-            console.log("AUthenticated")
-            setAuthenticated(authenticated)
-            setKeycloak(keycloak)
-            // this.setState(({keycloak: keycloak, authenticated: authenticated}))
-            if (authenticated) {
-                window.accessToken = keycloak.token;
-            }
-
-            let bodyToSend = {"token" : keycloak.token }
-            API.post("/save/token", bodyToSend).then(res => {
-
-                console.log("Success,cookie is set")
-                // console.log(keycloak)
-                // const cookies = new Cookies();
-                // cookies.set('my_token', keycloak.token, {path:'/'});
-                // console.log(cookies.get('my_token'));
-
-            });
-
-            console.log(keycloak)
-        }).catch(error => console.error("Keycloak initialization error:", error));
-    }, []);
+    // useEffect(() => {
+    //     // console.log(this.state.keycloak)
+    //     // console.log(this.state.authenticated)
+    //
+    //     const keycloak = new Keycloak({
+    //         "realm": "mescobrad",
+    //         "url": "https://idm.digital-enabler.eng.it/auth/",
+    //         "clientId": "data-analytics",
+    //         // "clientSecret" : "36V5m563FNSTKn5nuDBALZcA35xupub3"
+    //     })
+    //     keycloak.init({onLoad: 'login-required', checkLoginIframe: false}).then(authenticated => {
+    //         console.log("AUthenticated")
+    //         setAuthenticated(authenticated)
+    //         setKeycloak(keycloak)
+    //         // this.setState(({keycloak: keycloak, authenticated: authenticated}))
+    //         if (authenticated) {
+    //             window.accessToken = keycloak.token;
+    //         }
+    //
+    //         let bodyToSend = {"token" : keycloak.token }
+    //         API.post("/save/token", bodyToSend).then(res => {
+    //
+    //             console.log("Success,cookie is set")
+    //             // console.log(keycloak)
+    //             // const cookies = new Cookies();
+    //             // cookies.set('my_token', keycloak.token, {path:'/'});
+    //             // console.log(cookies.get('my_token'));
+    //
+    //         });
+    //
+    //         console.log(keycloak)
+    //     }).catch(error => console.error("Keycloak initialization error:", error));
+    // }, []);
 
     // TODO add a variable to check if file is downloaded from backend when applicable
-    if (keycloak) {
-       if (authenticated) return (
-    // if (true) {
-    //     if (true) return (
+    // if (keycloak) {
+    //    if (authenticated) return (
+    if (true) {
+        if (true) return (
                 <Grid container spacing={0} direction= "column">
                     <Grid item xs={12}>
                         <AppBarCustom/>

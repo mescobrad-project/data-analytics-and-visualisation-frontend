@@ -80,6 +80,14 @@ class MRIModelBatchInference extends React.Component {
             ip = process.env.REACT_APP_BASEURL
         }
         this.state = {
+            // Variables for form elements
+            selected_model: '',
+            model_names: [],
+            selected_data: '',
+            data_names: [],
+            selected_csv: '',
+            csv_names: [],
+
             // List of columns sent by the backend
             selected_lr: 0.001,
             selected_batch_size: 4,
@@ -103,6 +111,11 @@ class MRIModelBatchInference extends React.Component {
         this.handleSelectBatchSizeChange = this.handleSelectBatchSizeChange.bind(this);
         this.handleSelectIterationsChange = this.handleSelectIterationsChange.bind(this);
         this.handleSelectEarlyStoppingPatienceChange = this.handleSelectEarlyStoppingPatienceChange.bind(this);
+
+
+        this.handleSelectModelChange = this.handleSelectModelChange.bind(this);
+        this.handleSelectDataChange = this.handleSelectDataChange.bind(this);
+        this.handleSelectCsvChange = this.handleSelectCsvChange.bind(this);
 
         this.fetchFileNames();
     }
@@ -156,6 +169,18 @@ class MRIModelBatchInference extends React.Component {
     }
 
 
+    handleSelectModelChange(event) {
+        this.setState({ selected_model: event.target.value });
+    }
+
+    handleSelectDataChange(event) {
+        this.setState({ selected_data: event.target.value });
+    }
+
+    handleSelectCsvChange(event) {
+        this.setState({ selected_csv: event.target.value });
+    }
+
     handleSelectLrChange(event){
         this.setState( {selected_lr: event.target.value})
     }
@@ -181,6 +206,52 @@ class MRIModelBatchInference extends React.Component {
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="model-selector-label">Model</InputLabel>
+                                <Select
+                                        labelId="model-selector-label"
+                                        id="model-selector"
+                                        value={this.state.selected_model}
+                                        label="Model"
+                                        onChange={this.handleSelectModelChange}
+                                >
+                                    {this.state.model_names.map((model) => (
+                                            <MenuItem value={model}>{model}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select model.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="data-selector-label">Data</InputLabel>
+                                <Select
+                                        labelId="data-selector-label"
+                                        id="data-selector"
+                                        value={this.state.selected_data}
+                                        label="Data"
+                                        onChange={this.handleSelectDataChange}
+                                >
+                                    {this.state.data_names.map((data) => (
+                                            <MenuItem value={data}>{data}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select data.</FormHelperText>
+                            </FormControl>
+
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="csv-selector-label">CSV</InputLabel>
+                                <Select
+                                        labelId="csv-selector-label"
+                                        id="csv-selector"
+                                        value={this.state.selected_csv}
+                                        label="CSV"
+                                        onChange={this.handleSelectCsvChange}
+                                >
+                                    {this.state.csv_names.map((csv) => (
+                                            <MenuItem value={csv}>{csv}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select CSV file.</FormHelperText>
+                            </FormControl>
                             {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
                             {/*    <InputLabel id="file-selector-label">File</InputLabel>*/}
                             {/*    <Select*/}
@@ -249,7 +320,7 @@ class MRIModelBatchInference extends React.Component {
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Model Training Results
+                            Results
                         </Typography>
                         <hr className="result"/>
                         <div style={{alignSelf: 'center'}}>

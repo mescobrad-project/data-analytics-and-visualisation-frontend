@@ -86,6 +86,11 @@ class MRIModelTraining extends React.Component {
         }
         this.state = {
             // List of columns sent by the backend
+            model_names: [],
+            selected_data: '',
+            data_names: [],
+            selected_csv: '',
+            csv_names: [],
             selected_lr: 0.001,
             selected_batch_size: 4,
             selected_iterations: 1,
@@ -102,6 +107,8 @@ class MRIModelTraining extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelectDataChange = this.handleSelectDataChange.bind(this);
+        this.handleSelectCsvChange = this.handleSelectCsvChange.bind(this);
         this.handleSelectLrChange = this.handleSelectLrChange.bind(this);
         this.handleSelectBatchSizeChange = this.handleSelectBatchSizeChange.bind(this);
         this.handleSelectIterationsChange = this.handleSelectIterationsChange.bind(this);
@@ -159,20 +166,30 @@ class MRIModelTraining extends React.Component {
     }
 
 
-    handleSelectLrChange(event){
-        this.setState( {selected_lr: event.target.value})
+
+
+    handleSelectDataChange(event) {
+        this.setState({ selected_data: event.target.value });
     }
 
-    handleSelectBatchSizeChange(event){
-        this.setState( {selected_batch_size: event.target.value})
+    handleSelectCsvChange(event) {
+        this.setState({ selected_csv: event.target.value });
     }
 
-    handleSelectIterationsChange(event){
-        this.setState( {selected_iterations: event.target.value})
+    handleSelectLrChange(event) {
+        this.setState({ selected_lr: event.target.value });
     }
 
-    handleSelectEarlyStoppingPatienceChange(event){
-        this.setState( {selected_early_stopping_patience: event.target.value})
+    handleSelectBatchSizeChange(event) {
+        this.setState({ selected_batch_size: event.target.value });
+    }
+
+    handleSelectIterationsChange(event) {
+        this.setState({ selected_iterations: event.target.value });
+    }
+
+    handleSelectEarlyStoppingPatienceChange(event) {
+        this.setState({ selected_early_stopping_patience: event.target.value });
     }
 
     render() {
@@ -199,46 +216,76 @@ class MRIModelTraining extends React.Component {
                             {/*    </Select>*/}
                             {/*    <FormHelperText>Select dataset.</FormHelperText>*/}
                             {/*</FormControl>*/}
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="data-selector-label">Data</InputLabel>
+                                <Select
+                                        labelId="data-selector-label"
+                                        id="data-selector"
+                                        value={this.state.selected_data}
+                                        label="Data"
+                                        onChange={this.handleSelectDataChange}
+                                >
+                                    {this.state.data_names.map((data) => (
+                                            <MenuItem value={data}>{data}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select data.</FormHelperText>
+                            </FormControl>
 
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="csv-selector-label">CSV</InputLabel>
+                                <Select
+                                        labelId="csv-selector-label"
+                                        id="csv-selector"
+                                        value={this.state.selected_csv}
+                                        label="CSV"
+                                        onChange={this.handleSelectCsvChange}
+                                >
+                                    {this.state.csv_names.map((csv) => (
+                                            <MenuItem value={csv}>{csv}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select CSV file.</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelid="model-name-selector-label"
                                         id="model-name-selector"
                                         value= {this.state.selected_lr}
-                                        label="model-name"
+                                        label="Learning Rate"
                                         onChange={this.handleSelectLrChange}
                                 />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
+                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function </FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelid="model-name-selector-label"
                                         id="model-name-selector"
                                         value= {this.state.selected_batch_size}
-                                        label="model-name"
+                                        label="Batch Size"
                                         onChange={this.handleSelectBatchSizeChange}
                                 />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
+                                <FormHelperText>Batch Size</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelid="model-name-selector-label"
                                         id="model-name-selector"
                                         value= {this.state.selected_iterations}
-                                        label="model-name"
+                                        label="Iterations"
                                         onChange={this.handleSelectIterationsChange}
                                 />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
+                                <FormHelperText>Iterations</FormHelperText>
                             </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <TextField
                                         labelid="model-name-selector-label"
                                         id="model-name-selector"
                                         value= {this.state.selected_early_stopping_patience}
-                                        label="model-name"
+                                        label="Early Stopping Patience"
                                         onChange={this.handleSelectEarlyStoppingPatienceChange}
                                 />
-                                <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>
+                                <FormHelperText> Early Stopping Patience</FormHelperText>
                             </FormControl>
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
