@@ -164,6 +164,7 @@ import SVCModelLoad from "../../pages/AI/SVCModelLoad";
 import XGBoostModelLoad from "../../pages/AI/XGBoostModelLoad";
 import XGBoostModelCreation from "../../pages/AI/XGBoostModelCreation";
 import AutoencoderModelCreation from "../../pages/AI/AutoencoderModelCreation";
+import DNNModelCreation from "../../pages/AI/DNNModelCreation";
 import AutoencoderModelLoad from "../../pages/AI/AutoencoderModelLoad";
 import DatasetConcat from "../../pages/hypothesis_testing/DatasetConcat";
 
@@ -479,6 +480,8 @@ const App = () => {
                                        element={(<LayoutMain><XGBoostModelLoad/></LayoutMain>)}/>
                                 <Route exact path="/AutoencoderModelCreation"
                                        element={(<LayoutMain><AutoencoderModelCreation/></LayoutMain>)}/>
+                                <Route exact path="/DNNModelCreation"
+                                       element={(<LayoutMain><DNNModelCreation/></LayoutMain>)}/>
                                 <Route exact path="/AutoencoderModelLoad"
                                        element={(<LayoutMain><AutoencoderModelLoad/></LayoutMain>)}/>
                                 <Route exact path="/DatasetConcat"

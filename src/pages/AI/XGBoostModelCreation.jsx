@@ -250,7 +250,7 @@ class XGBoostModelCreation extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            XGBoost Regression Parameterisation
+                            XGBoost Parameterisation
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
@@ -407,16 +407,16 @@ class XGBoostModelCreation extends React.Component {
                                                     </Table>
                                                 </TableContainer>
                                                 <br/>
-                                                <Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}
-                                                     mb={2}
-                                                     display="flex"
-                                                     flexDirection="column"
-                                                     marginLeft='auto'
-                                                     marginRight= 'auto'
-                                                     padding='5px'>
-                                                    <Typography variant="h6" component="div">Estimated coefficients for the XGBoost regression problem.</Typography>
-                                                    <JsonTable className="jsonResultsTable"
-                                                               rows = {this.state.dfslope}/></Box>
+                                                {/*<Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}*/}
+                                                {/*     mb={2}*/}
+                                                {/*     display="flex"*/}
+                                                {/*     flexDirection="column"*/}
+                                                {/*     marginLeft='auto'*/}
+                                                {/*     marginRight= 'auto'*/}
+                                                {/*     padding='5px'>*/}
+                                                {/*    <Typography variant="h6" component="div">Estimated coefficients for the XGBoost regression problem.</Typography>*/}
+                                                {/*    <JsonTable className="jsonResultsTable"*/}
+                                                {/*               rows = {this.state.dfslope}/></Box>*/}
                                                 <Box component={Paper} className="SampleCharacteristics" sx={{width:'90%'}}
                                                      mb={2}
                                                      display="flex"
