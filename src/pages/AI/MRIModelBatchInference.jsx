@@ -323,22 +323,41 @@ class MRIModelBatchInference extends React.Component {
                             Results
                         </Typography>
                         <hr className="result"/>
+                        <TableContainer component={Paper} className="ExtremeValues" sx={{width: '90%'}}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow sx={{alignContent: "right"}}>
+                                        <TableCell className="tableHeadCell">Cortical Displasia Status</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
+                                        <TableCell
+                                                className="tableCell"> - </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <br/>
                         <div style={{alignSelf: 'center'}}>
                             <img src={this.state.model_confusion_path + "?random=" + new Date().getTime()}
-                                 srcSet={this.state.model_confusion_path + "?random=" + new Date().getTime() + '?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                 srcSet={this.state.model_confusion_path + "?random=" + new Date().getTime() + '?w=500&h=500&fit=crop&auto=format&dpr=2 2x'}
                                  loading="lazy"
                                  style={{zoom: '70%'}}
                             />
                         </div>
                         <div style={{alignSelf: 'center'}}>
                             <img src={this.state.model_classification_path + "?random=" + new Date().getTime()}
-                                 srcSet={this.state.model_classification_path + "?random=" + new Date().getTime() + '?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                 srcSet={this.state.model_classification_path + "?random=" + new Date().getTime() + '?w=500&h=500&fit=crop&auto=format&dpr=2 2x'}
                                  loading="lazy"
                                  style={{zoom: '70%'}}
                             />
                         </div>
+                        <br/>
 
-                    </Grid>
+
+                </Grid>
                 </Grid>
         )
     }
