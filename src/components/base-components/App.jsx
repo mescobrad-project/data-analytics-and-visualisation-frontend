@@ -167,6 +167,8 @@ import AutoencoderModelCreation from "../../pages/AI/AutoencoderModelCreation";
 import AutoencoderModelLoad from "../../pages/AI/AutoencoderModelLoad";
 import MRIModelTraining from "../../pages/AI/MRIModelTraining";
 import MRIModelBatchInference from "../../pages/AI/MRIModelBatchInference";
+import IctalPrediction from "./Ictal_Prediction";
+import EEGExplainability from "./eeg_explainability";
 // import MRIInferenceAndExplainability from "../../pages/AI/MRIInferenceAndExplanability";
 
 // Theme Colors Declaration
@@ -485,6 +487,10 @@ const App = () => {
                                        element={(<LayoutMain><MRIModelTraining/></LayoutMain>)}/>
                                 <Route exact path="/MRIModelBatchInference"
                                        element={(<LayoutMain><MRIModelBatchInference/></LayoutMain>)}/>
+                                <Route exact path="/EEGExplainability"
+                                       element={(<LayoutMain><EEGExplainability/></LayoutMain>)}/>
+                                <Route exact path="/IctalPrediction"
+                                       element={(<LayoutMain><IctalPrediction/></LayoutMain>)}/>
                                 {/*<Route exact path="/MRIInferenceAndExplainability"*/}
                                 {/*       element={(<LayoutMain><MRIInferenceAndExplainability/></LayoutMain>)}/>*/}
                             </Routes>
