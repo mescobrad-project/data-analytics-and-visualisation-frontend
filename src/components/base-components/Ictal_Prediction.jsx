@@ -211,10 +211,11 @@ class IctalPrediction extends React.Component {
                                 <Select
                                         labelId="model-selector-label"
                                         id="model-selector"
-                                        value={this.state.selected_model}
+                                        value="model_1.pth"
                                         label="Model"
                                         onChange={this.handleSelectModelChange}
                                 >
+                                    <MenuItem value="model_1.pth">model_1.pth</MenuItem>
                                     {this.state.model_names.map((model) => (
                                             <MenuItem value={model}>{model}</MenuItem>
                                     ))}
@@ -226,10 +227,11 @@ class IctalPrediction extends React.Component {
                                 <Select
                                         labelId="data-selector-label"
                                         id="data-selector"
-                                        value={this.state.selected_data}
+                                        value="test30sec"
                                         label="Data"
                                         onChange={this.handleSelectDataChange}
                                 >
+                                    <MenuItem value="test30sec">test30sec</MenuItem>
                                     {this.state.data_names.map((data) => (
                                             <MenuItem value={data}>{data}</MenuItem>
                                     ))}
@@ -254,6 +256,24 @@ class IctalPrediction extends React.Component {
                             </FormControl>
 
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="data-selector-label">Use File or Segment</InputLabel>
+                                <Select
+                                        labelId="data-selector-label"
+                                        id="data-selector"
+                                        value='True'
+                                        label="Data"
+                                        onChange={this.handleSelectDataChange}
+                                >
+                                    <MenuItem value="True">True</MenuItem>
+                                    <MenuItem value="False">False</MenuItem>
+                                    {this.state.data_names.map((data) => (
+                                            <MenuItem value={data}>{data}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Use Total File</FormHelperText>
+                            </FormControl>
+
+                            <FormControl sx={{m: 1, width:'90%' , disabled: "true"}} size={"small"}>
                                 <TextField
                                         labelid="model-name-selector-label"
                                         id="model-name-selector"
@@ -264,7 +284,7 @@ class IctalPrediction extends React.Component {
                                 <FormHelperText> Segment Start</FormHelperText>
                             </FormControl>
 
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                            <FormControl sx={{m: 1, width:'90%',  disabled: "true"}} size={"small"}>
                                 <TextField
                                         labelid="model-name-selector-label"
                                         id="model-name-selector"
@@ -386,36 +406,22 @@ class IctalPrediction extends React.Component {
                                 <TableBody>
                                     <TableRow>
                                         {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
-                                        <TableCell
-                                                className="tableCell"> mean - std </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">   - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell"> - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  -</TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
+                                        <TableCell className="tableCell"> 0.768 - 0.090 </TableCell>
+                                        <TableCell className="tableCell"> 0.806 - 0.039 </TableCell>
+                                        <TableCell className="tableCell"> 0.768 - 0.090 </TableCell>
+                                        <TableCell className="tableCell"> 0.805 - 0.039 </TableCell>
+                                        <TableCell className="tableCell"> 0.766 - 0.091 </TableCell>
+                                        <TableCell className="tableCell"> 0.768 - 0.090 </TableCell>
+                                        <TableCell className="tableCell"> 0.750 - 0.119 </TableCell>
+                                        <TableCell className="tableCell"> 0.768 - 0.090 </TableCell>
+                                        <TableCell className="tableCell"> 0.751 - 0.119 </TableCell>
+                                        <TableCell className="tableCell"> 0.746 - 0.108 </TableCell>
+                                        <TableCell className="tableCell"> 0.866 - 0.054 </TableCell>
+                                        <TableCell className="tableCell"> 0.889 - 0.078 </TableCell>
+                                        <TableCell className="tableCell"> 0.644 - 0.240 </TableCell>
+                                        <TableCell className="tableCell"> 0.801 - 0.050 </TableCell>
+                                        <TableCell className="tableCell"> 0.700 - 0.191 </TableCell>
+
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -432,7 +438,7 @@ class IctalPrediction extends React.Component {
                                     <TableRow>
                                         {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
                                         <TableCell
-                                                className="tableCell"> - </TableCell>
+                                                className="tableCell"> Ictal </TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>

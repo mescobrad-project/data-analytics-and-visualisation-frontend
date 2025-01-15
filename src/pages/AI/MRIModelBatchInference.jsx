@@ -236,7 +236,21 @@ class MRIModelBatchInference extends React.Component {
                                 </Select>
                                 <FormHelperText>Select data.</FormHelperText>
                             </FormControl>
-
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="data-selector-label">Data</InputLabel>
+                                <Select
+                                        labelId="data-selector-label"
+                                        id="data-selector"
+                                        value={this.state.selected_data}
+                                        label="MRI Image"
+                                        onChange={this.handleSelectDataChange}
+                                >
+                                    {this.state.data_names.map((data) => (
+                                            <MenuItem value={data}>{data}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select MRI Image</FormHelperText>
+                            </FormControl>
                             <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
                                 <InputLabel id="csv-selector-label">CSV</InputLabel>
                                 <Select
@@ -327,14 +341,17 @@ class MRIModelBatchInference extends React.Component {
                             <Table>
                                 <TableHead>
                                     <TableRow sx={{alignContent: "right"}}>
-                                        <TableCell className="tableHeadCell">Cortical Displasia Status</TableCell>
+                                        <TableCell className="tableHeadCell">Cortical Dysplasia Status</TableCell>
+                                        <TableCell className="tableHeadCell">Probability</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
                                         {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
                                         <TableCell
-                                                className="tableCell"> - </TableCell>
+                                                className="tableCell"> FCD </TableCell>
+                                        <TableCell
+                                                className="tableCell"> 0.88</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>

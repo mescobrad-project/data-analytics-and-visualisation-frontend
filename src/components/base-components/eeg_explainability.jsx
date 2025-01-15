@@ -15,15 +15,20 @@ import {
 
 
 //  TODO
-// Model Batch Performance Inference
-//  mris_batch_inference
-// Input datapth,csvpath,model_path change to use local_storage
-// Output path change to default locatopm
-//  DataPath: Folder with nifti files
-// Model path, path to model
+//  ai_mri_traiing_experiment
+// Page Name : Convolutional 3D Model MRI Training
+// Input datapth,csvpath change to use local_storage
+// Datapath: Folder with nifti files
+// Csv Path: Single csv file / Columns: MRI, GROUPS
 // Maybe change input not to use csv path and split datapath to N (two for us) folders
 
+// Iterations: How many times will model will be recereated
+// Batch size: How many mris are imported in the model for each parameter update: Default 4, Suggested values: 3  - 6 Increaseing this may cause stability issues do not increase unless certain
+// Learening Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function
+//  Early Stopping Patience: Number of epochs without validation loss improvement Default 15 , Suggested 10 < x <100
+
 // Output
+// pth file output
 // img to display
 
 
@@ -80,25 +85,20 @@ class EEGExplainability extends React.Component {
             ip = process.env.REACT_APP_BASEURL
         }
         this.state = {
-            // Variables for form elements
-            selected_model: '',
+            // List of columns sent by the backend
             model_names: [],
             selected_data: '',
             data_names: [],
             selected_csv: '',
             csv_names: [],
-
-            // List of columns sent by the backend
             selected_lr: 0.001,
             selected_batch_size: 4,
             selected_iterations: 1,
             selected_early_stopping_patience: 15,
             //Values selected currently on the form
 
-            model_classification_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/classification_report.png',
-            model_confusion_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
-                    + '/step_' + params.get("step_id") + '/output/confusion_matrix.png',
+            model_result_path : ip + 'static/runtime_config/workflow_' + params.get("workflow_id") + '/run_' + params.get("run_id")
+                    + '/step_' + params.get("step_id") + '/output/train_val_metrics_plot_experiment1.png',
 
             // model_name:'LR - '+ Date().toLocaleString("en-GB")
         };
@@ -107,15 +107,12 @@ class EEGExplainability extends React.Component {
         this.fetchFileNames = this.fetchFileNames.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelectDataChange = this.handleSelectDataChange.bind(this);
+        this.handleSelectCsvChange = this.handleSelectCsvChange.bind(this);
         this.handleSelectLrChange = this.handleSelectLrChange.bind(this);
         this.handleSelectBatchSizeChange = this.handleSelectBatchSizeChange.bind(this);
         this.handleSelectIterationsChange = this.handleSelectIterationsChange.bind(this);
         this.handleSelectEarlyStoppingPatienceChange = this.handleSelectEarlyStoppingPatienceChange.bind(this);
-
-
-        this.handleSelectModelChange = this.handleSelectModelChange.bind(this);
-        this.handleSelectDataChange = this.handleSelectDataChange.bind(this);
-        this.handleSelectCsvChange = this.handleSelectCsvChange.bind(this);
 
         this.fetchFileNames();
     }
@@ -169,9 +166,7 @@ class EEGExplainability extends React.Component {
     }
 
 
-    handleSelectModelChange(event) {
-        this.setState({ selected_model: event.target.value });
-    }
+
 
     handleSelectDataChange(event) {
         this.setState({ selected_data: event.target.value });
@@ -181,20 +176,20 @@ class EEGExplainability extends React.Component {
         this.setState({ selected_csv: event.target.value });
     }
 
-    handleSelectLrChange(event){
-        this.setState( {selected_lr: event.target.value})
+    handleSelectLrChange(event) {
+        this.setState({ selected_lr: event.target.value });
     }
 
-    handleSelectBatchSizeChange(event){
-        this.setState( {selected_batch_size: event.target.value})
+    handleSelectBatchSizeChange(event) {
+        this.setState({ selected_batch_size: event.target.value });
     }
 
-    handleSelectIterationsChange(event){
-        this.setState( {selected_iterations: event.target.value})
+    handleSelectIterationsChange(event) {
+        this.setState({ selected_iterations: event.target.value });
     }
 
-    handleSelectEarlyStoppingPatienceChange(event){
-        this.setState( {selected_early_stopping_patience: event.target.value})
+    handleSelectEarlyStoppingPatienceChange(event) {
+        this.setState({ selected_early_stopping_patience: event.target.value });
     }
 
     render() {
@@ -202,95 +197,10 @@ class EEGExplainability extends React.Component {
                 <Grid container direction="row">
                     <Grid item xs={4} sx={{ borderRight: "1px solid grey"}}>
                         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }} noWrap>
-                            AI EEG Segment Ictal Prediction
+                            EEG AI Explainability
                         </Typography>
                         <hr/>
                         <form onSubmit={this.handleSubmit}>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="model-selector-label">Model</InputLabel>
-                                <Select
-                                        labelId="model-selector-label"
-                                        id="model-selector"
-                                        value={this.state.selected_model}
-                                        label="Model"
-                                        onChange={this.handleSelectModelChange}
-                                >
-                                    {this.state.model_names.map((model) => (
-                                            <MenuItem value={model}>{model}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select model.</FormHelperText>
-                            </FormControl>
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="data-selector-label">EEG File</InputLabel>
-                                <Select
-                                        labelId="data-selector-label"
-                                        id="data-selector"
-                                        value={this.state.selected_data}
-                                        label="Data"
-                                        onChange={this.handleSelectDataChange}
-                                >
-                                    {this.state.data_names.map((data) => (
-                                            <MenuItem value={data}>{data}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select EEG File.</FormHelperText>
-                            </FormControl>
-
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <InputLabel id="data-selector-label">EEG Channel</InputLabel>
-                                <Select
-                                        labelId="data-selector-label"
-                                        id="data-selector"
-                                        value={this.state.selected_data}
-                                        label="Data"
-                                        onChange={this.handleSelectDataChange}
-                                >
-                                    {this.state.data_names.map((data) => (
-                                            <MenuItem value={data}>{data}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Select Channel</FormHelperText>
-                            </FormControl>
-
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        // value= {this.state.selected_lr}
-                                        label="Segment Start Second"
-                                        onChange={this.handleSelectLrChange}
-                                />
-                                <FormHelperText> Segment Start</FormHelperText>
-                            </FormControl>
-
-                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
-                                <TextField
-                                        labelid="model-name-selector-label"
-                                        id="model-name-selector"
-                                        // value= {this.state.selected_lr}
-                                        label="Segment End Second"
-                                        onChange={this.handleSelectLrChange}
-                                />
-                                <FormHelperText>Segment End</FormHelperText>
-                            </FormControl>
-
-
-                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
-                            {/*    <InputLabel id="csv-selector-label">CSV</InputLabel>*/}
-                            {/*    <Select*/}
-                            {/*            labelId="csv-selector-label"*/}
-                            {/*            id="csv-selector"*/}
-                            {/*            value={this.state.selected_csv}*/}
-                            {/*            label="CSV"*/}
-                            {/*            onChange={this.handleSelectCsvChange}*/}
-                            {/*    >*/}
-                            {/*        {this.state.csv_names.map((csv) => (*/}
-                            {/*                <MenuItem value={csv}>{csv}</MenuItem>*/}
-                            {/*        ))}*/}
-                            {/*    </Select>*/}
-                            {/*    <FormHelperText>Select CSV file.</FormHelperText>*/}
-                            {/*</FormControl>*/}
                             {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
                             {/*    <InputLabel id="file-selector-label">File</InputLabel>*/}
                             {/*    <Select*/}
@@ -306,46 +216,86 @@ class EEGExplainability extends React.Component {
                             {/*    </Select>*/}
                             {/*    <FormHelperText>Select dataset.</FormHelperText>*/}
                             {/*</FormControl>*/}
+                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
+                            {/*    <InputLabel id="data-selector-label">Data</InputLabel>*/}
+                            {/*    <Select*/}
+                            {/*            labelId="data-selector-label"*/}
+                            {/*            id="data-selector"*/}
+                            {/*            value={this.state.selected_data}*/}
+                            {/*            label="Data"*/}
+                            {/*            onChange={this.handleSelectDataChange}*/}
+                            {/*    >*/}
+                            {/*        {this.state.data_names.map((data) => (*/}
+                            {/*                <MenuItem value={data}>{data}</MenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </Select>*/}
+                            {/*    <FormHelperText>Select data.</FormHelperText>*/}
+                            {/*</FormControl>*/}
 
-                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
-                            {/*    <TextField*/}
-                            {/*            labelid="model-name-selector-label"*/}
-                            {/*            id="model-name-selector"*/}
-                            {/*            value= {this.state.selected_lr}*/}
-                            {/*            label="model-name"*/}
-                            {/*            onChange={this.handleSelectLrChange}*/}
-                            {/*    />*/}
-                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
-                            {/*</FormControl>*/}
-                            {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
-                            {/*    <TextField*/}
-                            {/*            labelid="model-name-selector-label"*/}
-                            {/*            id="model-name-selector"*/}
-                            {/*            value= {this.state.selected_batch_size}*/}
-                            {/*            label="model-name"*/}
-                            {/*            onChange={this.handleSelectBatchSizeChange}*/}
-                            {/*    />*/}
-                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
-                            {/*</FormControl>*/}
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="csv-selector-label">EEG</InputLabel>
+                                <Select
+                                        labelId="csv-selector-label"
+                                        id="csv-selector"
+                                        value={this.state.selected_csv}
+                                        label="EEG"
+                                        onChange={this.handleSelectCsvChange}
+                                >
+                                    {this.state.csv_names.map((csv) => (
+                                            <MenuItem value={csv}>{csv}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Select EEG file.</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="csv-selector-label">Explainability Technique</InputLabel>
+                                <Select
+                                        labelId="csv-selector-label"
+                                        id="csv-selector"
+                                        value={this.state.selected_csv}
+                                        label="Explainability Technique"
+                                        onChange={this.handleSelectCsvChange}
+                                >
+                                    {this.state.csv_names.map((csv) => (
+                                            <MenuItem value={csv}>{csv}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Explainability Technique</FormHelperText>
+                            </FormControl>
+                            <FormControl sx={{m: 1, width:'90%'}} size={"small"}>
+                                <InputLabel id="csv-selector-label">EEG Channel</InputLabel>
+                                <Select
+                                        labelId="csv-selector-label"
+                                        id="csv-selector"
+                                        value={this.state.selected_csv}
+                                        label="EEG Channel; "
+                                        onChange={this.handleSelectCsvChange}
+                                >
+                                    {this.state.csv_names.map((csv) => (
+                                            <MenuItem value={csv}>{csv}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Channel Selector</FormHelperText>
+                            </FormControl>
                             {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
                             {/*    <TextField*/}
                             {/*            labelid="model-name-selector-label"*/}
                             {/*            id="model-name-selector"*/}
                             {/*            value= {this.state.selected_iterations}*/}
-                            {/*            label="model-name"*/}
+                            {/*            label="Iterations"*/}
                             {/*            onChange={this.handleSelectIterationsChange}*/}
                             {/*    />*/}
-                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*    <FormHelperText>Iterations</FormHelperText>*/}
                             {/*</FormControl>*/}
                             {/*<FormControl sx={{m: 1, width:'90%'}} size={"small"}>*/}
                             {/*    <TextField*/}
                             {/*            labelid="model-name-selector-label"*/}
                             {/*            id="model-name-selector"*/}
                             {/*            value= {this.state.selected_early_stopping_patience}*/}
-                            {/*            label="model-name"*/}
+                            {/*            label="Early Stopping Patience"*/}
                             {/*            onChange={this.handleSelectEarlyStoppingPatienceChange}*/}
                             {/*    />*/}
-                            {/*    <FormHelperText>Learning Rate: 0.001 Default , Suggested values 0.01 , 0.0001  learning rate is a tuning parameter in an optimization algorithm that determines the step size at each iteration while moving toward a minimum of a loss function</FormHelperText>*/}
+                            {/*    <FormHelperText> Early Stopping Patience</FormHelperText>*/}
                             {/*</FormControl>*/}
                             <hr/>
                             <Button sx={{float: "left"}} variant="contained" color="primary" type="submit">
@@ -359,103 +309,16 @@ class EEGExplainability extends React.Component {
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h5" sx={{flexGrow: 1, textAlign: "center"}} noWrap>
-                            Results
+                            Explainability Results
                         </Typography>
                         <hr className="result"/>
-                        <TableContainer component={Paper} className="ExtremeValues" sx={{width: '90%'}}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow sx={{alignContent: "right"}}>
-                                        <TableCell className="tableHeadCell">Average Accuracy</TableCell>
-                                        <TableCell className="tableHeadCell">Macro Precision</TableCell>
-                                        <TableCell className="tableHeadCell">Micro Precision</TableCell>
-                                        <TableCell className="tableHeadCell">Weighted Precision</TableCell>
-                                        <TableCell className="tableHeadCell">Macro Recall</TableCell>
-                                        <TableCell className="tableHeadCell">Micro Recall</TableCell>
-                                        <TableCell className="tableHeadCell">Macro F1</TableCell>
-                                        <TableCell className="tableHeadCell">Micro F1</TableCell>
-                                        <TableCell className="tableHeadCell">Weighted F1</TableCell>
-                                        <TableCell className="tableHeadCell">1st Precision</TableCell>
-                                        <TableCell className="tableHeadCell">2nd Precision</TableCell>
-                                        <TableCell className="tableHeadCell">1st Recall</TableCell>
-                                        <TableCell className="tableHeadCell">2nd Recall</TableCell>
-                                        <TableCell className="tableHeadCell">1st F1</TableCell>
-                                        <TableCell className="tableHeadCell">2nd F1</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
-                                        <TableCell
-                                                className="tableCell"> mean - std </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">   - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell"> - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  -</TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                        <TableCell
-                                                className="tableCell">  - </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <br/>
-                        <TableContainer component={Paper} className="ExtremeValues" sx={{width: '90%'}}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow sx={{alignContent: "right"}}>
-                                        <TableCell className="tableHeadCell">Segment Ictal Status</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        {/*<TableCell className="tableCell">{item.id}</TableCell>*/}
-                                        <TableCell
-                                                className="tableCell"> - </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-
-                        {/*Is it ictal?*/}
-                        {/*Is it cortical dysplasia?*/}
-
-                        {/*<div style={{alignSelf: 'center'}}>*/}
-                        {/*    <img src={this.state.model_confusion_path + "?random=" + new Date().getTime()}*/}
-                        {/*         srcSet={this.state.model_confusion_path + "?random=" + new Date().getTime() + '?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}*/}
-                        {/*         loading="lazy"*/}
-                        {/*         style={{zoom: '70%'}}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
-                        {/*<div style={{alignSelf: 'center'}}>*/}
-                        {/*    <img src={this.state.model_classification_path + "?random=" + new Date().getTime()}*/}
-                        {/*         srcSet={this.state.model_classification_path + "?random=" + new Date().getTime() + '?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}*/}
-                        {/*         loading="lazy"*/}
-                        {/*         style={{zoom: '70%'}}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
-
+                        <div style={{alignSelf: 'center'}}>
+                            <img src={this.state.model_result_path + "?random=" + new Date().getTime()}
+                                 srcSet={this.state.model_result_path + "?random=" + new Date().getTime() +'?w=100&h=100&fit=crop&auto=format&dpr=2 2x'}
+                                 loading="lazy"
+                                 style={{zoom: '70%'}}
+                            />
+                        </div>
                     </Grid>
                 </Grid>
         )
