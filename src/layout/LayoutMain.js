@@ -19,7 +19,6 @@ const LayoutMain = ({children}) => {
             "realm": "mescobrad",
             "url": "https://idm.digital-enabler.eng.it/auth/",
             "clientId": "data-analytics",
-            // "clientSecret" : "36V5m563FNSTKn5nuDBALZcA35xupub3"
         })
         keycloak.init({onLoad: 'login-required', checkLoginIframe: false}).then(authenticated => {
             console.log("AUthenticated")
